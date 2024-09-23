@@ -1,0 +1,3731 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Paymattic - Payments made simple\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-23 10:22+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.6; wp-6.5.3\n"
+"X-Domain: wp-payment-form"
+
+#: app/Modules/FormComponents/CustomerEmailComponent.php:134
+msgid " does not match"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:556
+msgid " is required"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:498
+msgid " to "
+msgstr ""
+
+#: app/Views/elements/user_submissions_table.php:3
+msgid "#"
+msgstr ""
+
+#: app/Services/Integrations/GlobalNotificationManager.php:146
+msgid "(truncated)"
+msgstr ""
+
+#: app/Modules/FormComponents/SelectComponent.php:97
+msgid "--Select Option--"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:631
+msgid "Abandoned"
+msgstr ""
+
+#: app/Views/user/dashboard.php:147 app/Views/user/dashboard.php:215
+msgid "Action"
+msgstr ""
+
+#: app/Services/TransStrings.php:79
+#: app/Views/elements/user_submissions_table.php:11
+msgid "Actions"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:62
+msgid "Activate License"
+msgstr ""
+
+#: app/Services/TransStrings.php:243
+msgid "Activate Paymattic Pro"
+msgstr ""
+
+#: app/Services/TransStrings.php:241
+msgid "Activate WPPay Form Pro"
+msgstr ""
+
+#: app/Services/TransStrings.php:25
+msgid "Add New Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:125
+msgid "Add New Integration"
+msgstr ""
+
+#: app/Services/TransStrings.php:114
+msgid "Add New Notification"
+msgstr ""
+
+#: app/Services/TransStrings.php:181
+msgid "Add the following shortcode to the page to show payment receipt"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:207
+msgid "Admin Email"
+msgstr ""
+
+#: app/Services/TransStrings.php:41
+msgid "Advanced Editor"
+msgstr ""
+
+#: app/Services/CountryNames.php:25
+msgid "Afghanistan"
+msgstr ""
+
+#: app/Services/TransStrings.php:101
+msgid "After Form Submission"
+msgstr ""
+
+#: app/Modules/FormComponents/ConsentComponent.php:117
+msgid "Agreed"
+msgstr ""
+
+#: app/Services/CountryNames.php:27
+msgid "Albania"
+msgstr ""
+
+#: app/Services/CountryNames.php:28
+msgid "Algeria"
+msgstr ""
+
+#: app/Services/TransStrings.php:48
+msgid "All Category"
+msgstr ""
+
+#: app/Services/TransStrings.php:124
+msgid "All Form Integrations"
+msgstr ""
+
+#: app/Services/TransStrings.php:24 app/Hooks/Handlers/AdminMenuHandler.php:72
+#: app/Views/admin/global/global_menu.php:14
+msgid "All Forms"
+msgstr ""
+
+#: app/Models/Form.php:603
+msgid "All Input Field"
+msgstr ""
+
+#: app/Models/Form.php:604
+msgid "All Input Field With Empty Fields"
+msgstr ""
+
+#: app/Services/TransStrings.php:119
+msgid "All the seetings of this"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:180
+msgid ""
+"Allow FluentCRM integration conditionally based on your submission values"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:503
+msgid "AM"
+msgstr ""
+
+#: app/Services/CountryNames.php:29
+msgid "American Samoa"
+msgstr ""
+
+#: app/Views/user/dashboard.php:143
+msgid "Amount"
+msgstr ""
+
+#: app/Services/CountryNames.php:30
+msgid "Andorra"
+msgstr ""
+
+#: app/Services/CountryNames.php:31
+msgid "Angola"
+msgstr ""
+
+#: app/Services/CountryNames.php:32
+msgid "Anguilla"
+msgstr ""
+
+#: app/Services/CountryNames.php:33
+msgid "Antarctica"
+msgstr ""
+
+#: app/Services/CountryNames.php:34
+msgid "Antigua and Barbuda"
+msgstr ""
+
+#: app/Services/TransStrings.php:264
+msgid "Any questions or problems with your license"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:439
+msgid "Apr"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:453
+msgid "April"
+msgstr ""
+
+#: app/Views/user/dashboard.php:275
+msgid "Are you sure to cancel this subscription ?"
+msgstr ""
+
+#: app/Services/TransStrings.php:121
+msgid "Are you sure to delete this?"
+msgstr ""
+
+#: app/Services/CountryNames.php:35
+msgid "Argentina"
+msgstr ""
+
+#: app/Services/CountryNames.php:36
+msgid "Armenia"
+msgstr ""
+
+#: app/Services/CountryNames.php:37
+msgid "Aruba"
+msgstr ""
+
+#: app/Services/TransStrings.php:147
+msgid "As Per Global Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:140
+msgid "As per global settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:172
+msgid "as your css selector prefix to target this specific form"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:118
+msgid ""
+"Associate your FluentCRM merge tags to the appropriate WPPayForm fields by "
+"selecting the appropriate form field from the list."
+msgstr ""
+
+#: app/Services/TransStrings.php:153
+msgid "Asterisk Position"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:443
+msgid "Aug"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:457
+msgid "August"
+msgstr ""
+
+#: app/Services/CountryNames.php:38
+msgid "Australia"
+msgstr ""
+
+#: app/Services/CountryNames.php:39
+msgid "Austria"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:158
+msgid "Author"
+msgstr ""
+
+#: app/Services/CountryNames.php:40
+msgid "Azerbaijan"
+msgstr ""
+
+#: app/Services/CountryNames.php:41
+msgid "Bahamas"
+msgstr ""
+
+#: app/Services/CountryNames.php:42
+msgid "Bahrain"
+msgstr ""
+
+#: app/Services/CountryNames.php:43
+msgid "Bangladesh"
+msgstr ""
+
+#: app/Services/CountryNames.php:44
+msgid "Barbados"
+msgstr ""
+
+#: app/Services/CountryNames.php:45
+msgid "Belarus"
+msgstr ""
+
+#: app/Services/CountryNames.php:47
+msgid "Belau"
+msgstr ""
+
+#: app/Services/CountryNames.php:46
+msgid "Belgium"
+msgstr ""
+
+#: app/Services/CountryNames.php:48
+msgid "Belize"
+msgstr ""
+
+#: app/Services/CountryNames.php:49
+msgid "Benin"
+msgstr ""
+
+#: app/Services/CountryNames.php:50
+msgid "Bermuda"
+msgstr ""
+
+#: app/Services/CountryNames.php:51
+msgid "Bhutan"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:179
+msgid "Billing Address"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:189
+msgid "Billing address from stripe has been logged in the submission data"
+msgstr ""
+
+#: app/Views/user/dashboard.php:212
+msgid "Billing Time"
+msgstr ""
+
+#: app/Services/CountryNames.php:52
+msgid "Bolivia"
+msgstr ""
+
+#: app/Services/CountryNames.php:53
+msgid "Bonaire, Saint Eustatius and Saba"
+msgstr ""
+
+#: app/Services/CountryNames.php:54
+msgid "Bosnia and Herzegovina"
+msgstr ""
+
+#: app/Services/CountryNames.php:55
+msgid "Botswana"
+msgstr ""
+
+#: app/Services/CountryNames.php:56
+msgid "Bouvet Island"
+msgstr ""
+
+#: app/Services/CountryNames.php:57
+msgid "Brazil"
+msgstr ""
+
+#: app/Services/CountryNames.php:58
+msgid "British Indian Ocean Territory"
+msgstr ""
+
+#: app/Services/CountryNames.php:59
+msgid "British Virgin Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:60
+msgid "Brunei"
+msgstr ""
+
+#: app/Services/CountryNames.php:61
+msgid "Bulgaria"
+msgstr ""
+
+#: app/Services/CountryNames.php:62
+msgid "Burkina Faso"
+msgstr ""
+
+#: app/Services/CountryNames.php:63
+msgid "Burundi"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:732
+msgid "Burundian Franc"
+msgstr ""
+
+#: app/Services/TransStrings.php:196
+msgid "Caching Interval"
+msgstr ""
+
+#: app/Services/CountryNames.php:64
+msgid "Cambodia"
+msgstr ""
+
+#: app/Services/CountryNames.php:65
+msgid "Cameroon"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:316
+#: app/Http/Controllers/SubmissionController.php:363
+msgid "Can't cancel the subscription at this moment. Please try again"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:297
+msgid "Can't sync the subscription at this moment. Please try again"
+msgstr ""
+
+#: app/Services/CountryNames.php:66
+msgid "Canada"
+msgstr ""
+
+#: app/Views/user/dashboard.php:301
+msgid "Cancel"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:203
+msgid "Cannot connect to MySQL database."
+msgstr ""
+
+#: app/Services/CountryNames.php:67
+msgid "Cape Verde"
+msgstr ""
+
+#: app/Services/TransStrings.php:47
+msgid "Category"
+msgstr ""
+
+#: app/Services/CountryNames.php:68
+msgid "Cayman Islands"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:744
+msgid "Central African Cfa Franc"
+msgstr ""
+
+#: app/Services/CountryNames.php:69
+msgid "Central African Republic"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:746
+msgid "Cfp Franc"
+msgstr ""
+
+#: app/Services/CountryNames.php:70
+msgid "Chad"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:344
+msgid "Changing status is same as current status"
+msgstr ""
+
+#: app/Services/TransStrings.php:235
+msgid "Check All"
+msgstr ""
+
+#: app/Services/TransStrings.php:138
+msgid "Check all"
+msgstr ""
+
+#: app/Services/CountryNames.php:71
+msgid "Chile"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:733
+msgid "Chilean Peso"
+msgstr ""
+
+#: app/Services/CountryNames.php:72
+msgid "China"
+msgstr ""
+
+#: app/Services/TransStrings.php:38
+msgid "Choose form"
+msgstr ""
+
+#: app/Services/TransStrings.php:39
+msgid "Choose form template"
+msgstr ""
+
+#: app/Services/TransStrings.php:46
+msgid "Choose template"
+msgstr ""
+
+#: app/Services/TransStrings.php:40
+msgid "Choose your new form template type!"
+msgstr ""
+
+#: app/Services/CountryNames.php:73
+msgid "Christmas Island"
+msgstr ""
+
+#: app/Services/TransStrings.php:219
+msgid "Clear Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:237
+msgid "Click Here"
+msgstr ""
+
+#: app/Services/TransStrings.php:229
+msgid "click here"
+msgstr ""
+
+#: app/Services/TransStrings.php:245
+msgid "click here to check again"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:501
+msgid "Click to toggle"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:515
+msgid "Cloud flare turnstile validation failed. Please try again."
+msgstr ""
+
+#: app/Services/TransStrings.php:218
+msgid "Cloudflare Turnstile Settings"
+msgstr ""
+
+#: app/Services/CountryNames.php:74
+msgid "Cocos (Keeling) Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:75
+msgid "Colombia"
+msgstr ""
+
+#: app/Services/TransStrings.php:199
+msgid "Comma as Thousand and Dot as Decimal (EG: 12,000.00)"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:737
+msgid "Comorian Franc"
+msgstr ""
+
+#: app/Services/CountryNames.php:76
+msgid "Comoros"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:416
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:418
+msgid "Company Name"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:179
+msgid "Conditional Logics"
+msgstr ""
+
+#: app/Modules/PDF/Templates/CustomTemplate.php:46
+#: app/Modules/PDF/Templates/GeneralTemplate.php:49
+msgid "Conditional PDF Body Content is supported in Fluent Forms Pro Version"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:131
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:46
+msgid "Configuration required!"
+msgstr ""
+
+#: app/Views/user/dashboard.php:270
+msgid "Confirm subscription cancellation"
+msgstr ""
+
+#: app/Services/TransStrings.php:89
+msgid "Confirmation Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:99
+msgid "Confirmation Type"
+msgstr ""
+
+#: app/Services/CountryNames.php:77
+msgid "Congo (Brazzaville)"
+msgstr ""
+
+#: app/Services/CountryNames.php:78
+msgid "Congo (Kinshasa)"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:33
+msgid ""
+"Connect FluentCRM with Paymattic and subscribe a contact when a form is "
+"submitted."
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:273
+msgid ""
+"Contact creation has been skipped because contact already exist in the "
+"database, Subscriber #"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:320
+msgid "Contact has been created in FluentCRM. Contact ID: "
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:149
+msgid "Contact Tags"
+msgstr ""
+
+#: app/Services/TransStrings.php:238
+msgid "Contact us"
+msgstr ""
+
+#: app/Services/CountryNames.php:79
+msgid "Cook Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:80
+msgid "Costa Rica"
+msgstr ""
+
+#: app/Services/TransStrings.php:36
+msgid "Create a Form"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Create and Accept Payments in minutes with Stripe, PayPal & other top "
+"gateways with built-in form builder"
+msgstr ""
+
+#: app/Services/TransStrings.php:44
+msgid "Create blank form"
+msgstr ""
+
+#: app/Services/TransStrings.php:33
+msgid "Create Date"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:78
+msgid "Create Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:68
+msgid "Created At"
+msgstr ""
+
+#: app/Services/CountryNames.php:81
+msgid "Croatia"
+msgstr ""
+
+#: app/Services/CountryNames.php:82
+msgid "Cuba"
+msgstr ""
+
+#: app/Services/CountryNames.php:83
+msgid "Cura&ccedil;ao"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:267
+msgid "cURL Enabled"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:272
+msgid "cURL Version"
+msgstr ""
+
+#: app/Services/TransStrings.php:194
+msgid "Currency"
+msgstr ""
+
+#: app/Services/TransStrings.php:146
+msgid "Currency & Locale Setting"
+msgstr ""
+
+#: app/Services/TransStrings.php:144
+msgid "Currency and Language Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:195
+msgid "Currency Conversion Api Key"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Charge.php:69
+#: app/Modules/PaymentMethods/Stripe/Plan.php:118
+msgid "Currency is required"
+msgstr ""
+
+#: app/Services/TransStrings.php:198
+msgid "Currency Separators"
+msgstr ""
+
+#: app/Services/TransStrings.php:192
+msgid "Currency Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:197
+msgid "Currency Sign Position"
+msgstr ""
+
+#: app/Services/TransStrings.php:169
+msgid "Custom CSS"
+msgstr ""
+
+#: app/Services/TransStrings.php:167
+msgid "Custom CSS and JS"
+msgstr ""
+
+#: app/Services/TransStrings.php:174
+msgid "Custom Javascript"
+msgstr ""
+
+#: app/Services/TransStrings.php:143
+msgid "Custom PayPal ID"
+msgstr ""
+
+#: app/Services/TransStrings.php:148
+msgid "Custom Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:141
+msgid "Custom Stripe Credentials"
+msgstr ""
+
+#: app/Services/TransStrings.php:182
+msgid "Custom URL"
+msgstr ""
+
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:183
+msgid "Customer Details"
+msgstr ""
+
+#: app/Models/Form.php:596
+msgid "Customer Email"
+msgstr ""
+
+#: app/Services/TransStrings.php:67
+msgid "Customer From"
+msgstr ""
+
+#: app/Models/Form.php:595
+msgid "Customer Name"
+msgstr ""
+
+#: app/Services/TransStrings.php:65 app/Hooks/Handlers/AdminMenuHandler.php:105
+msgid "Customers"
+msgstr ""
+
+#: app/Services/TransStrings.php:43
+msgid ""
+"Customize only the ready input fields and enjoy simplest form building with "
+"the cleanest editor"
+msgstr ""
+
+#: app/Services/CountryNames.php:84
+msgid "Cyprus"
+msgstr ""
+
+#: app/Services/CountryNames.php:85
+msgid "Czech Republic"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:49 app/Views/user/dashboard.php:57
+msgid "Dashboard"
+msgstr ""
+
+#: app/Views/user/dashboard.php:276
+msgid "dashboard"
+msgstr ""
+
+#: app/Services/TransStrings.php:254 app/Services/FormPlaceholders.php:273
+#: app/Views/user/dashboard.php:144
+#: app/Views/elements/user_submissions_table.php:4
+msgid "Date"
+msgstr ""
+
+#: app/Views/receipt/payment_info.php:11
+msgid "Date:"
+msgstr ""
+
+#: app/Services/TransStrings.php:240
+msgid "Deactivate License"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:447
+msgid "Dec"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:461
+msgid "December"
+msgstr ""
+
+#: app/Services/TransStrings.php:269
+msgid "Default payment method"
+msgstr ""
+
+#: app/Services/TransStrings.php:30
+msgid "Delete"
+msgstr ""
+
+#: app/Hooks/actions.php:153
+msgid "Demo"
+msgstr ""
+
+#: app/Services/CountryNames.php:86
+msgid "Denmark"
+msgstr ""
+
+#: app/Services/TransStrings.php:217
+msgid "Disable"
+msgstr ""
+
+#: app/Services/TransStrings.php:207
+msgid "disable"
+msgstr ""
+
+#: app/Services/TransStrings.php:261
+msgid ""
+"Disable IP Address Logging (If you check this then advanced analytics can "
+"not be performed)"
+msgstr ""
+
+#: app/Views/user/dashboard.php:280
+msgid "Dismiss"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:227
+msgid "Display Errors"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:236
+msgid "Display name"
+msgstr ""
+
+#: app/Services/CountryNames.php:87
+msgid "Djibouti"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:734
+msgid "Djiboutian Franc"
+msgstr ""
+
+#: app/Hooks/actions.php:151
+msgid "Docs"
+msgstr ""
+
+#: app/Services/CountryNames.php:88
+msgid "Dominica"
+msgstr ""
+
+#: app/Services/CountryNames.php:89
+msgid "Dominican Republic"
+msgstr ""
+
+#: app/Services/TransStrings.php:203
+msgid "Donation Leaderboard Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:132
+msgid "Donations"
+msgstr ""
+
+#: app/Services/TransStrings.php:200
+msgid "Dot as Thousand and Comma as Decimal ( EG: 12.000,00 )"
+msgstr ""
+
+#: app/Services/TransStrings.php:31
+msgid "Duplicate Form"
+msgstr ""
+
+#: app/Services/CountryNames.php:90
+msgid "Ecuador"
+msgstr ""
+
+#: app/Services/TransStrings.php:28
+msgid "Edit"
+msgstr ""
+
+#: app/Services/TransStrings.php:15
+msgid "Editor"
+msgstr ""
+
+#: app/Services/CountryNames.php:91
+msgid "Egypt"
+msgstr ""
+
+#: app/Services/CountryNames.php:92
+msgid "El Salvador"
+msgstr ""
+
+#: app/Services/TransStrings.php:16
+msgid "Email"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:125
+msgid "Email Address"
+msgstr ""
+
+#: app/Services/TransStrings.php:115
+msgid "Email Notifications"
+msgstr ""
+
+#: app/Modules/FormComponents/CustomerEmailComponent.php:49
+msgid "Enable Confirm Email Field"
+msgstr ""
+
+#: app/Services/TransStrings.php:159
+msgid "Enable Default form styles"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:173
+msgid "Enable Double Option for new contacts"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:158
+msgid "Enable Dynamic Tag Selection"
+msgstr ""
+
+#: app/Services/TransStrings.php:210
+msgid "Enable Honeypot Security"
+msgstr ""
+
+#: app/Services/TransStrings.php:213
+msgid "Enable Paymattic Coupon Module"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:188
+msgid "Enable This feed"
+msgstr ""
+
+#: app/Services/TransStrings.php:211
+msgid ""
+"Enable your users to apply coupon/discount code while purchasing something "
+"using Paymattic Payment Module. Just activate this module and setup your "
+"your coupons."
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:240
+msgid "Enabled"
+msgstr ""
+
+#: app/Services/TransStrings.php:242
+msgid "Enter your license key"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:51
+msgid ""
+"Enter your Mailchimp API Key, if you do not have <br>Please login to your "
+"MailChimp account and go to<br>Profile -> Extras -> Api Keys"
+msgstr ""
+
+#: app/Services/TransStrings.php:18 app/Hooks/Handlers/AdminMenuHandler.php:83
+#: app/Views/admin/global/global_menu.php:17
+msgid "Entries"
+msgstr ""
+
+#: app/Services/TransStrings.php:77
+msgid "Entry Status"
+msgstr ""
+
+#: app/Services/CountryNames.php:93
+msgid "Equatorial Guinea"
+msgstr ""
+
+#: app/Services/CountryNames.php:94
+msgid "Eritrea"
+msgstr ""
+
+#: app/Services/CountryNames.php:95
+msgid "Estonia"
+msgstr ""
+
+#: app/Services/CountryNames.php:96
+msgid "Ethiopia"
+msgstr ""
+
+#: app/Services/TransStrings.php:45
+msgid ""
+"Experience ultimate form building with dynamic functionalities like "
+"conditional logic, CSS class, etc"
+msgstr ""
+
+#: app/Services/TransStrings.php:110
+msgid "Export"
+msgstr ""
+
+#: app/Services/TransStrings.php:111
+msgid "Export as CSV"
+msgstr ""
+
+#: app/Services/TransStrings.php:112
+msgid "Export as Excel (xlsv)"
+msgstr ""
+
+#: app/Services/TransStrings.php:113
+msgid "Export as ODS"
+msgstr ""
+
+#: app/Services/TransStrings.php:225
+msgid "Export Form"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:629
+msgid "Failed"
+msgstr ""
+
+#: app/Services/CountryNames.php:97
+msgid "Falkland Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:98
+msgid "Faroe Islands"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:437
+msgid "Feb"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:451
+msgid "February"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:262
+msgid "Feed has been created, edit the feed now"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:100
+msgid "Feed Name"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:387
+msgid "Feed name is required"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:409
+msgid "Feed successfully deleted"
+msgstr ""
+
+#: app/Services/CountryNames.php:99
+msgid "Fiji"
+msgstr ""
+
+#: app/Modules/File/FileHandler.php:33
+msgid "File size needs to be less than "
+msgstr ""
+
+#: app/Services/TransStrings.php:82
+msgid "Filter By Entry Status"
+msgstr ""
+
+#: app/Services/TransStrings.php:80
+msgid "Filter By Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:81
+msgid "Filter By Payment Status"
+msgstr ""
+
+#: app/Services/CountryNames.php:100
+msgid "Finland"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:226
+msgid "First name"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:351
+msgid "FleuntCRM Contact added Successfully on"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:261
+msgid "FluentCRM API called skipped because no valid email available"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:120
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:142
+msgid "FluentCRM Field"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:48
+msgid ""
+"FluentCRM is not configured yet! Please configure your FluentCRM api first"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:107
+msgid "FluentCRM List"
+msgstr ""
+
+#: app/Services/TransStrings.php:208
+msgid "For all form"
+msgstr ""
+
+#: app/Services/TransStrings.php:209
+msgid "For specific form"
+msgstr ""
+
+#: app/Services/TransStrings.php:73
+#: app/Views/elements/user_submissions_table.php:5
+msgid "Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:90
+msgid "Form Confirmation Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:149
+msgid "Form Design Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:155
+msgid "Form Element Stylings"
+msgstr ""
+
+#: app/Services/TransStrings.php:109
+msgid "Form Entries"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:121
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:143
+msgid "Form Field"
+msgstr ""
+
+#: app/Models/Form.php:473
+msgid "Form has been successfully submitted"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:757
+msgid "Form is successfully submitted"
+msgstr ""
+
+#: app/Services/TransStrings.php:156
+msgid "Form Labels Font Weight"
+msgstr ""
+
+#: app/Services/TransStrings.php:151
+msgid "Form Layout"
+msgstr ""
+
+#: app/Models/Form.php:45
+msgid "Form not found"
+msgstr ""
+
+#: app/Http/Controllers/FormsController.php:67
+msgid "Form query error"
+msgstr ""
+
+#: app/Services/TransStrings.php:161
+msgid "Form Scheduling"
+msgstr ""
+
+#: app/Services/TransStrings.php:165
+msgid "Form Scheduling & Restrictions"
+msgstr ""
+
+#: app/Modules/FormComponents/StepFormComponent.php:50
+msgid "Form Step"
+msgstr ""
+
+#: app/Models/Form.php:783
+msgid ""
+"Form submission time schedule is not started yet. Please check back later"
+msgstr ""
+
+#: app/Http/Controllers/FormsController.php:40
+msgid "Form successfully created."
+msgstr ""
+
+#: app/Http/Controllers/FormController.php:175
+msgid "Form successfully duplicated"
+msgstr ""
+
+#: app/Http/Controllers/FormController.php:108
+msgid "Form successfully updated"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:523
+#: app/Hooks/Handlers/SubmissionHandler.php:540
+msgid "Form Validation failed"
+msgstr ""
+
+#: app/Services/CountryNames.php:101
+msgid "France"
+msgstr ""
+
+#: app/Services/CountryNames.php:102
+msgid "French Guiana"
+msgstr ""
+
+#: app/Services/CountryNames.php:103
+msgid "French Polynesia"
+msgstr ""
+
+#: app/Services/CountryNames.php:104
+msgid "French Southern Territories"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:480
+msgid "Fri"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:471
+msgid "Friday"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:131
+msgid "Full Name"
+msgstr ""
+
+#: app/Services/CountryNames.php:105
+msgid "Gabon"
+msgstr ""
+
+#: app/Services/CountryNames.php:106
+msgid "Gambia"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Charge.php:54
+#: app/Modules/PaymentMethods/Stripe/Customer.php:42
+#: app/Modules/PaymentMethods/Stripe/Plan.php:39
+msgid "General Error"
+msgstr ""
+
+#: app/Services/TransStrings.php:191
+msgid "General Settings"
+msgstr ""
+
+#: app/Services/CountryNames.php:107
+msgid "Georgia"
+msgstr ""
+
+#: app/Services/CountryNames.php:108
+msgid "Germany"
+msgstr ""
+
+#: app/Hooks/actions.php:152
+msgid "Get Support"
+msgstr ""
+
+#: app/Services/CountryNames.php:109
+msgid "Ghana"
+msgstr ""
+
+#: app/Services/CountryNames.php:110
+msgid "Gibraltar"
+msgstr ""
+
+#: app/Services/CountryNames.php:111
+msgid "Greece"
+msgstr ""
+
+#: app/Services/CountryNames.php:112
+msgid "Greenland"
+msgstr ""
+
+#: app/Services/CountryNames.php:113
+msgid "Grenada"
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:30
+msgid "Gross Total"
+msgstr ""
+
+#: app/Services/CountryNames.php:114
+msgid "Guadeloupe"
+msgstr ""
+
+#: app/Services/CountryNames.php:115
+msgid "Guam"
+msgstr ""
+
+#: app/Services/CountryNames.php:116
+msgid "Guatemala"
+msgstr ""
+
+#: app/Services/CountryNames.php:117
+msgid "Guernsey"
+msgstr ""
+
+#: app/Services/CountryNames.php:118
+msgid "Guinea"
+msgstr ""
+
+#: app/Services/CountryNames.php:119
+msgid "Guinea-Bissau"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:735
+msgid "Guinean Franc"
+msgstr ""
+
+#: app/Services/CountryNames.php:120
+msgid "Guyana"
+msgstr ""
+
+#: app/Services/CountryNames.php:121
+msgid "Haiti"
+msgstr ""
+
+#: app/Services/TransStrings.php:244
+msgid "Have a new license key? Please"
+msgstr ""
+
+#: app/Services/CountryNames.php:122
+msgid "Heard Island and McDonald Islands"
+msgstr ""
+
+#: app/Services/TransStrings.php:88
+msgid ""
+"Here is the list of all Paymattic modules. You can enable or disable the "
+"modules based on your need."
+msgstr ""
+
+#: app/Services/TransStrings.php:201
+msgid "Hide decimal points for rounded numbers"
+msgstr ""
+
+#: app/Services/TransStrings.php:127
+msgid "Hide Form"
+msgstr ""
+
+#: app/Services/CountryNames.php:123
+msgid "Honduras"
+msgstr ""
+
+#: app/Services/CountryNames.php:124
+msgid "Hong Kong"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://paymattic.com"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://paymattic.com/"
+msgstr ""
+
+#: app/Services/CountryNames.php:125
+msgid "Hungary"
+msgstr ""
+
+#: app/Services/CountryNames.php:126
+msgid "Iceland"
+msgstr ""
+
+#: app/Services/TransStrings.php:26 app/Views/user/dashboard.php:142
+msgid "ID"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:132
+msgid ""
+"If First Name & Last Name is not available full name will be used to get "
+"first name and last name"
+msgstr ""
+
+#: app/Services/TransStrings.php:232
+msgid "If you already renewed your license then please"
+msgstr ""
+
+#: app/Services/TransStrings.php:257
+msgid ""
+"If you want use donation leaderboard then you have to use this shortcode"
+msgstr ""
+
+#: app/Services/TransStrings.php:226
+msgid "Import Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:258
+msgid "in your page or post. for more customization follow this"
+msgstr ""
+
+#: app/Services/CountryNames.php:127
+msgid "India"
+msgstr ""
+
+#: app/Services/CountryNames.php:128
+msgid "Indonesia"
+msgstr ""
+
+#: app/Views/elements/subscriptions_info.php:11
+msgid "Initial Amount"
+msgstr ""
+
+#: app/Services/TransStrings.php:158
+msgid "Input Item Styles"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:25 app/Services/FormPlaceholders.php:88
+msgid "Inputs"
+msgstr ""
+
+#: app/Modules/Integrations/TinyMceBlock.php:41
+msgid "Insert Form Shortcode"
+msgstr ""
+
+#: app/Modules/Integrations/TinyMceBlock.php:43
+msgid "Insert Shortcode"
+msgstr ""
+
+#: app/Services/TransStrings.php:126
+msgid "Integration"
+msgstr ""
+
+#: app/Services/Integrations/GlobalIntegrationManager.php:255
+msgid "Integration successfully saved"
+msgstr ""
+
+#: app/Services/Integrations/GlobalIntegrationManager.php:142
+msgid "Integration successfully updated"
+msgstr ""
+
+#: app/Services/TransStrings.php:19 app/Hooks/Handlers/AdminMenuHandler.php:112
+#: app/Views/admin/global/global_menu.php:20
+msgid "Integrations"
+msgstr ""
+
+#: app/Views/user/dashboard.php:214
+msgid "Interval"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Charge.php:66
+#: app/Modules/PaymentMethods/Stripe/Plan.php:115
+msgid "Invalid currency"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:60
+msgid "Invalid request. Please try again"
+msgstr ""
+
+#: app/Modules/Builder/PaymentReceipt.php:49
+msgid "Invalid submission. No receipt found"
+msgstr ""
+
+#: app/Services/TransStrings.php:216
+msgid "Invisible"
+msgstr ""
+
+#: app/Services/CountryNames.php:129
+msgid "Iran"
+msgstr ""
+
+#: app/Services/CountryNames.php:130
+msgid "Iraq"
+msgstr ""
+
+#: app/Services/CountryNames.php:131
+msgid "Ireland"
+msgstr ""
+
+#: app/Modules/FormComponents/BaseComponent.php:437
+#: app/Modules/Builder/Render.php:512
+msgid "is required"
+msgstr ""
+
+#: app/Services/CountryNames.php:132
+msgid "Isle of Man"
+msgstr ""
+
+#: app/Services/CountryNames.php:133
+msgid "Israel"
+msgstr ""
+
+#: app/Services/CountryNames.php:134
+msgid "Italy"
+msgstr ""
+
+#: app/Services/TransStrings.php:56 app/Views/elements/order_items_table.php:13
+msgid "Item"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:144
+msgid "Item has been marked as "
+msgstr ""
+
+#: app/Modules/Builder/PaymentReceipt.php:160
+msgid "Items Details"
+msgstr ""
+
+#: app/Services/CountryNames.php:135
+msgid "Ivory Coast"
+msgstr ""
+
+#: app/Services/CountryNames.php:136
+msgid "Jamaica"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:436
+msgid "Jan"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:450
+msgid "January"
+msgstr ""
+
+#: app/Services/CountryNames.php:137
+msgid "Japan"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:736
+msgid "Japanese Yen"
+msgstr ""
+
+#: app/Services/CountryNames.php:138
+msgid "Jersey"
+msgstr ""
+
+#: app/Services/CountryNames.php:139
+msgid "Jordan"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:442
+msgid "Jul"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:456
+msgid "July"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:441
+msgid "Jun"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:455
+msgid "June"
+msgstr ""
+
+#: app/Services/CountryNames.php:140
+msgid "Kazakhstan"
+msgstr ""
+
+#: app/Services/CountryNames.php:141
+msgid "Kenya"
+msgstr ""
+
+#: app/Services/CountryNames.php:142
+msgid "Kiribati"
+msgstr ""
+
+#: app/Services/CountryNames.php:143
+msgid "Kuwait"
+msgstr ""
+
+#: app/Services/CountryNames.php:144
+msgid "Kyrgyzstan"
+msgstr ""
+
+#: app/Services/TransStrings.php:152
+msgid "Label Alignment"
+msgstr ""
+
+#: app/Services/CountryNames.php:145
+msgid "Laos"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:231
+msgid "Last name"
+msgstr ""
+
+#: app/Services/CountryNames.php:146
+msgid "Latvia"
+msgstr ""
+
+#: app/Views/leaderBoard/template_0.php:4
+msgid "Leaderboard template not found"
+msgstr ""
+
+#: app/Services/CountryNames.php:147
+msgid "Lebanon"
+msgstr ""
+
+#: app/Services/CountryNames.php:148
+msgid "Lesotho"
+msgstr ""
+
+#: app/Services/CountryNames.php:149
+msgid "Liberia"
+msgstr ""
+
+#: app/Services/CountryNames.php:150
+msgid "Libya"
+msgstr ""
+
+#: app/Services/TransStrings.php:265
+msgid "License Key"
+msgstr ""
+
+#: app/Services/TransStrings.php:236
+msgid "Licensing"
+msgstr ""
+
+#: app/Services/TransStrings.php:247
+msgid "Licensing has been expired"
+msgstr ""
+
+#: app/Services/CountryNames.php:151
+msgid "Liechtenstein"
+msgstr ""
+
+#: app/Services/TransStrings.php:137
+msgid "Limit accepted methods "
+msgstr ""
+
+#: app/Services/TransStrings.php:162
+msgid "Limit by payments"
+msgstr ""
+
+#: app/Services/TransStrings.php:58 app/Views/elements/order_items_table.php:23
+msgid "Line Total"
+msgstr ""
+
+#: app/Services/TransStrings.php:259
+msgid "link"
+msgstr ""
+
+#: app/Services/CountryNames.php:152
+msgid "Lithuania"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:386
+msgid "Live Mode"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:392
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:394
+msgid "Live public key"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:404
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:406
+msgid "Live Secret Key"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:310
+msgid "Locale"
+msgstr ""
+
+#: app/Services/TransStrings.php:163
+msgid "Login Requirement Settings"
+msgstr ""
+
+#: app/Views/user/dashboard.php:67
+msgid "Logout"
+msgstr ""
+
+#: app/Services/CountryNames.php:153
+msgid "Luxembourg"
+msgstr ""
+
+#: app/Services/CountryNames.php:154
+msgid "Macao S.A.R., China"
+msgstr ""
+
+#: app/Services/CountryNames.php:155
+msgid "Macedonia"
+msgstr ""
+
+#: app/Services/CountryNames.php:156
+msgid "Madagascar"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:52
+msgid "Mailchimp API Key"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:128
+msgid "Mailchimp Feed"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:43
+msgid ""
+"Mailchimp is a marketing platform for small businesses. Send beautiful "
+"emails, connect your e-commerce store, advertise, and build your brand. Use "
+"Paymattic to collect customer information and automatically add it to your "
+"Mailchimp campaign list. If you don't have a Mailchimp account, you can <a "
+"href=\"http://www.mailchimp.com/\" target=\"_blank\">sign up for one here."
+"</a>"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:133
+msgid ""
+"Mailchimp is not configured yet! Please configure your mailchimp api first"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:42
+msgid "Mailchimp Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:157
+msgid "Make Labels as bold"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:739
+msgid "Malagasy Ariary"
+msgstr ""
+
+#: app/Services/CountryNames.php:157
+msgid "Malawi"
+msgstr ""
+
+#: app/Services/CountryNames.php:158
+msgid "Malaysia"
+msgstr ""
+
+#: app/Services/CountryNames.php:159
+msgid "Maldives"
+msgstr ""
+
+#: app/Services/CountryNames.php:160
+msgid "Mali"
+msgstr ""
+
+#: app/Services/CountryNames.php:161
+msgid "Malta"
+msgstr ""
+
+#: app/Views/user/dashboard.php:62
+msgid "Manage Subscription"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:438
+msgid "Mar"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:452
+msgid "March"
+msgstr ""
+
+#: app/Services/CountryNames.php:162
+msgid "Marshall Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:163
+msgid "Martinique"
+msgstr ""
+
+#: app/Services/CountryNames.php:164
+msgid "Mauritania"
+msgstr ""
+
+#: app/Services/CountryNames.php:165
+msgid "Mauritius"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:257
+msgid "Max Execution Time"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:261
+msgid "Max Input Vars"
+msgstr ""
+
+#: app/Services/TransStrings.php:160
+msgid "Maximum Number of Entries"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:440 app/Modules/Builder/Render.php:454
+msgid "May"
+msgstr ""
+
+#: app/Services/CountryNames.php:166
+msgid "Mayotte"
+msgstr ""
+
+#: app/Services/TransStrings.php:100
+msgid "Message to show"
+msgstr ""
+
+#: app/Services/CountryNames.php:167
+msgid "Mexico"
+msgstr ""
+
+#: app/Services/CountryNames.php:168
+msgid "Micronesia"
+msgstr ""
+
+#: app/Services/CountryNames.php:169
+msgid "Moldova"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:476
+msgid "Mon"
+msgstr ""
+
+#: app/Services/CountryNames.php:170
+msgid "Monaco"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:467
+msgid "Monday"
+msgstr ""
+
+#: app/Services/CountryNames.php:171
+msgid "Mongolia"
+msgstr ""
+
+#: app/Services/CountryNames.php:172
+msgid "Montenegro"
+msgstr ""
+
+#: app/Services/CountryNames.php:173
+msgid "Montserrat"
+msgstr ""
+
+#: app/Services/CountryNames.php:174
+msgid "Morocco"
+msgstr ""
+
+#: app/Services/CountryNames.php:175
+msgid "Mozambique"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:240
+msgid "MultiByte String"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:314
+msgid "Multisite"
+msgstr ""
+
+#: app/Services/CountryNames.php:176
+msgid "Myanmar"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:222
+msgid "MySQL Version"
+msgstr ""
+
+#: app/Services/TransStrings.php:66
+msgid "Name"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:205
+msgid "Name on Card"
+msgstr ""
+
+#: app/Services/CountryNames.php:177
+msgid "Namibia"
+msgstr ""
+
+#: app/Services/CountryNames.php:178
+msgid "Nauru"
+msgstr ""
+
+#: app/Services/CountryNames.php:179
+msgid "Nepal"
+msgstr ""
+
+#: app/Services/TransStrings.php:255
+msgid "Net"
+msgstr ""
+
+#: app/Services/CountryNames.php:180
+msgid "Netherlands"
+msgstr ""
+
+#: app/Services/CountryNames.php:181
+msgid "New Caledonia"
+msgstr ""
+
+#: app/Services/TransStrings.php:250
+msgid "New Customers"
+msgstr ""
+
+#: app/Services/CountryNames.php:182
+msgid "New Zealand"
+msgstr ""
+
+#: app/Modules/FormComponents/StepFormComponent.php:36
+#: app/Modules/Builder/Render.php:125
+msgid "Next"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:433
+msgid "Next Month"
+msgstr ""
+
+#: app/Services/CountryNames.php:183
+msgid "Nicaragua"
+msgstr ""
+
+#: app/Services/CountryNames.php:184
+msgid "Niger"
+msgstr ""
+
+#: app/Services/CountryNames.php:185
+msgid "Nigeria"
+msgstr ""
+
+#: app/Services/CountryNames.php:186
+msgid "Niue"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:250
+msgid "No"
+msgstr ""
+
+#: app/Services/TransStrings.php:122
+msgid "No email notifications configured yet."
+msgstr ""
+
+#: app/Http/Controllers/FormController.php:169
+msgid "No form found when duplicating the form"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:716
+msgid "Non Payments"
+msgstr ""
+
+#: app/Services/CountryNames.php:187
+msgid "Norfolk Island"
+msgstr ""
+
+#: app/Services/CountryNames.php:189
+msgid "North Korea"
+msgstr ""
+
+#: app/Services/CountryNames.php:188
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:190
+msgid "Norway"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:246
+msgid "Not"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:241 app/Modules/Debug/Debug.php:268
+msgid "Not Enabled (issue)"
+msgstr ""
+
+#: app/Services/TransStrings.php:256
+msgid "Note"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:127
+msgid "Note successfully added"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:446
+msgid "Nov"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:460
+msgid "November"
+msgstr ""
+
+#: app/Models/Form.php:777
+msgid "Number of entry has been exceeds, Please check back later"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:445
+msgid "Oct"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:459
+msgid "October"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:783
+msgid "Offline Payment recorded and change the status to pending"
+msgstr ""
+
+#: app/Services/CountryNames.php:191
+msgid "Oman"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:797
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:551
+msgid "One time Payment Successfully made via stripe. Charge ID: "
+msgstr ""
+
+#: app/Views/receipt/payment_info.php:4
+msgid "Order ID:"
+msgstr ""
+
+#: app/Models/Form.php:606
+msgid "Order Items Table"
+msgstr ""
+
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:170
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:175
+msgid "Order Number:"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:37 app/Services/FormPlaceholders.php:52
+#: app/Services/FormPlaceholders.php:104
+msgid "Other"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:139
+msgid "Other Fields"
+msgstr ""
+
+#: app/Services/TransStrings.php:260
+msgid "Other Settings"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:626
+msgid "Paid"
+msgstr ""
+
+#: app/Services/CountryNames.php:192
+msgid "Pakistan"
+msgstr ""
+
+#: app/Services/CountryNames.php:193
+msgid "Palestinian Territory"
+msgstr ""
+
+#: app/Services/CountryNames.php:194
+msgid "Panama"
+msgstr ""
+
+#: app/Services/CountryNames.php:195
+msgid "Papua New Guinea"
+msgstr ""
+
+#: app/Services/CountryNames.php:196
+msgid "Paraguay"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:740
+msgid "Paraguayan Guaraní"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:32
+#: app/Hooks/Handlers/AdminMenuHandler.php:574
+msgid "Paymattic"
+msgstr ""
+
+#. Name of the plugin
+msgid "Paymattic - Payments made simple"
+msgstr ""
+
+#: app/Services/TransStrings.php:233
+msgid "Paymattic Admin Permission"
+msgstr ""
+
+#: app/Services/TransStrings.php:212
+msgid "Paymattic Coupon Module"
+msgstr ""
+
+#: app/Http/Controllers/GlobalSettingsController.php:155
+msgid "Paymattic Dashboard"
+msgstr ""
+
+#: app/Views/admin/settings/index.php:13
+msgid "Paymattic Global Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:220
+msgid ""
+"Paymattic integrates with Cloudflare Turnstile, a free service that protects "
+"your website from spam and abuse. Please note, these settings are required "
+"only if you decide to use the Turnstile field."
+msgstr ""
+
+#: app/Modules/Integrations/DashboardWidget.php:26
+msgid "Paymattic Latest Submissions"
+msgstr ""
+
+#: app/Services/TransStrings.php:87
+msgid "Paymattic Modules"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:548
+msgid "Paymattic User Profile"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Charge.php:78
+#: app/Modules/PaymentMethods/Stripe/Plan.php:127
+msgid "Payment Amount can not be 0"
+msgstr ""
+
+#: app/Modules/FormComponents/PaymentItemComponent.php:131
+msgid "Payment amount is required for item:"
+msgstr ""
+
+#: app/Services/TransStrings.php:248
+msgid "Payment Analytics"
+msgstr ""
+
+#: database/Migrations/Pages.php:12
+msgid "Payment Confirmation"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Charge.php:21
+#: app/Modules/PaymentMethods/Stripe/Customer.php:19
+msgid "Payment data validation failed"
+msgstr ""
+
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:179
+msgid "Payment Date:"
+msgstr ""
+
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:200
+msgid "Payment Details"
+msgstr ""
+
+#: database/Migrations/Pages.php:23
+msgid "Payment Failed"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:186
+msgid "Payment Failed via stripe. Status changed from Pending to Failed."
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:275
+msgid "Payment Failed! Please try again"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:507
+msgid "Payment Failed! Your card may declined"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:118
+#: app/Views/admin/global/global_menu.php:28
+msgid "Payment Gateway"
+msgstr ""
+
+#: app/Services/TransStrings.php:189
+msgid "Payment Gateways"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:580
+msgid "Payment has been failed"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:560
+msgid "Payment has been successfully completed"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:466
+msgid ""
+"Payment is authorized. need to capture it before the expiration, payment "
+"status changes from pending to authorized and customer made transaction with:"
+" card"
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:180
+msgid "Payment is not marked as paid yet."
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:29 app/Services/FormPlaceholders.php:96
+msgid "Payment Items"
+msgstr ""
+
+#: app/Models/Form.php:597 app/Services/TransStrings.php:76
+#: app/Views/user/dashboard.php:146
+msgid "Payment Method"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:271
+msgid "Payment method not supported"
+msgstr ""
+
+#: app/Services/TransStrings.php:268
+msgid "Payment method settings"
+msgstr ""
+
+#: app/Views/receipt/payment_info.php:26
+msgid "Payment Method:"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:383
+msgid "Payment Mode"
+msgstr ""
+
+#: app/Models/Form.php:617
+msgid "Payment Receipt"
+msgstr ""
+
+#: app/Services/TransStrings.php:129
+msgid "Payment Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:74
+msgid "Payment Status"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:784
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:786
+msgid "Payment status changed from authorized to paid"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:788
+msgid "Payment status changed from authorized to refunded"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:559
+msgid "Payment status changed from pending to paid"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:244
+msgid "Payment status successfully changed"
+msgstr ""
+
+#: app/Views/receipt/payment_info.php:32
+msgid "Payment Status:"
+msgstr ""
+
+#: app/Modules/Exterior/FramelessProcessor.php:46
+msgid "Payment Success"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:341
+msgid "Payment success with 100% discount and the status updated Paid"
+msgstr ""
+
+#: app/Services/TransStrings.php:60
+msgid "Payment Summary"
+msgstr ""
+
+#: app/Models/Form.php:790
+msgid "Payment target amount reached, Please check back later."
+msgstr ""
+
+#: app/Models/Form.php:621 app/Services/TransStrings.php:75
+msgid "Payment Total"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:714
+msgid "Payments"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:439
+msgid "PayPal"
+msgstr ""
+
+#: app/Services/TransStrings.php:190
+msgid "PayPal Account"
+msgstr ""
+
+#: app/Services/TransStrings.php:142
+msgid "PayPal Settings"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:775
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:813
+msgid "PDF"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:524
+msgid "PDF Downloads"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:260
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:86
+msgid "PDF Settings"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:628
+msgid "Pending"
+msgstr ""
+
+#: app/Services/TransStrings.php:234
+msgid "Permission Settings"
+msgstr ""
+
+#: app/Services/CountryNames.php:197
+msgid "Peru"
+msgstr ""
+
+#: app/Services/CountryNames.php:198
+msgid "Philippines"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:196
+msgid "Phone"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:214
+msgid "PHP Version"
+msgstr ""
+
+#: app/Services/CountryNames.php:199
+msgid "Pitcairn"
+msgstr ""
+
+#: app/Views/user/dashboard.php:211
+msgid "Plan"
+msgstr ""
+
+#: app/Models/Form.php:61
+msgid "Please add at least one input element"
+msgstr ""
+
+#: app/Services/TransStrings.php:173
+msgid "Please don't include"
+msgstr ""
+
+#: app/Services/TransStrings.php:221
+msgid "Please generate API key and API secret using Cloudflare Turnstile"
+msgstr ""
+
+#: app/Services/TransStrings.php:135
+msgid "Please Map meta Data for Stripe"
+msgstr ""
+
+#: app/Views/leaderBoard/template_0.php:5
+msgid "Please provide a valid template id"
+msgstr ""
+
+#: app/Models/Form.php:280
+msgid "Please provide form title"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:270
+msgid "Please provide Live Publishable key and Live Secret Key"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:262
+msgid "Please provide Test Publishable key and Test Secret Key"
+msgstr ""
+
+#: app/Models/GlobalSettings.php:18
+msgid "Please select a currency"
+msgstr ""
+
+#: app/Modules/Integrations/TinyMceBlock.php:42
+msgid "Please select a Form"
+msgstr ""
+
+#: app/Http/Controllers/GlobalSettingsController.php:406
+msgid "Please upload a valid image file"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:510
+msgid "Please verify cloudflare turnstile first"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:509
+msgid "Please verify reCAPTCHA first"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:157
+msgid ""
+"Please wait... You are redirecting to Secure Payment page powered by Stripe"
+msgstr ""
+
+#: app/Models/Form.php:356 app/Modules/Builder/Render.php:319
+msgid "Please Wait…"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:504
+msgid "PM"
+msgstr ""
+
+#: app/Services/CountryNames.php:200
+msgid "Poland"
+msgstr ""
+
+#: app/Services/CountryNames.php:201
+msgid "Portugal"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:135
+msgid "Post Author"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:141
+msgid "Post Author Email"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:117
+msgid "Post ID"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:253
+msgid "Post Max Size"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:147
+msgid "Post Meta"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:123
+msgid "Post Title"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:129
+msgid "Post URL"
+msgstr ""
+
+#: app/Services/TransStrings.php:29
+msgid "Preview"
+msgstr ""
+
+#: app/Views/admin/show_review.php:11
+msgid "Preview Form"
+msgstr ""
+
+#: app/Modules/FormComponents/StepFormComponent.php:29
+#: app/Modules/Builder/Render.php:124
+msgid "Previous"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:432
+msgid "Previous Month"
+msgstr ""
+
+#: app/Services/TransStrings.php:59 app/Views/elements/order_items_table.php:19
+msgid "Price"
+msgstr ""
+
+#: app/Modules/FormComponents/PaymentItemComponent.php:135
+msgid "Pricing Details is required for item:"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:117
+msgid "Primary Fields"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:627
+msgid "Processing"
+msgstr ""
+
+#: app/Services/TransStrings.php:131
+msgid "Products"
+msgstr ""
+
+#: app/Services/CountryNames.php:202
+msgid "Puerto Rico"
+msgstr ""
+
+#: app/Services/TransStrings.php:134
+msgid "Push Form Data to Stripe"
+msgstr ""
+
+#: app/Services/CountryNames.php:203
+msgid "Qatar"
+msgstr ""
+
+#: app/Services/TransStrings.php:57
+msgid "Qty"
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:16
+msgid "Quantity"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:267
+msgid "Query String"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:724
+msgid "Read"
+msgstr ""
+
+#: app/Services/TransStrings.php:205
+msgid "Read more"
+msgstr ""
+
+#: app/Services/TransStrings.php:94
+msgid ""
+"reCAPTCHA has not been configured yet! Please configure reCAPTCHA from "
+"Settings -> reCaptcha Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:215
+msgid "reCaptcha Mode"
+msgstr ""
+
+#: app/Services/TransStrings.php:214
+msgid "reCAPTCHA Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:93
+msgid "reCaptcha Settings"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:501
+msgid "reCAPTCHA validation failed. Please try again."
+msgstr ""
+
+#: app/Services/TransStrings.php:92
+msgid "Receipt Customization"
+msgstr ""
+
+#: app/Services/TransStrings.php:103
+msgid "Receipt Footer Content"
+msgstr ""
+
+#: app/Services/TransStrings.php:102
+msgid "Receipt Header Content"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:630
+msgid "Refunded"
+msgstr ""
+
+#: app/Views/user/dashboard.php:46
+msgid "Registered since"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:100
+#: app/Views/admin/global/global_menu.php:24
+msgid "Reports"
+msgstr ""
+
+#: app/Services/TransStrings.php:164
+msgid "Require user to be logged in"
+msgstr ""
+
+#: app/Services/TransStrings.php:128
+msgid "Reset Form"
+msgstr ""
+
+#: app/Services/CountryNames.php:204
+msgid "Reunion"
+msgstr ""
+
+#: app/Services/TransStrings.php:266
+msgid "Revenue breakdown"
+msgstr ""
+
+#: app/Services/CountryNames.php:205
+msgid "Romania"
+msgstr ""
+
+#: app/Services/CountryNames.php:206
+msgid "Russia"
+msgstr ""
+
+#: app/Services/CountryNames.php:207
+msgid "Rwanda"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:741
+msgid "Rwandan Franc"
+msgstr ""
+
+#: app/Services/CountryNames.php:217
+msgid "S&atilde;o Tom&eacute; and Pr&iacute;ncipe"
+msgstr ""
+
+#: app/Services/CountryNames.php:208
+msgid "Saint Barth&eacute;lemy"
+msgstr ""
+
+#: app/Services/CountryNames.php:209
+msgid "Saint Helena"
+msgstr ""
+
+#: app/Services/CountryNames.php:210
+msgid "Saint Kitts and Nevis"
+msgstr ""
+
+#: app/Services/CountryNames.php:211
+msgid "Saint Lucia"
+msgstr ""
+
+#: app/Services/CountryNames.php:213
+msgid "Saint Martin (Dutch part)"
+msgstr ""
+
+#: app/Services/CountryNames.php:212
+msgid "Saint Martin (French part)"
+msgstr ""
+
+#: app/Services/CountryNames.php:214
+msgid "Saint Pierre and Miquelon"
+msgstr ""
+
+#: app/Services/CountryNames.php:215
+msgid "Saint Vincent and the Grenadines"
+msgstr ""
+
+#: app/Services/TransStrings.php:178
+msgid "Same Page"
+msgstr ""
+
+#: app/Services/CountryNames.php:270
+msgid "Samoa"
+msgstr ""
+
+#: app/Services/CountryNames.php:216
+msgid "San Marino"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:481
+msgid "Sat"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:472
+msgid "Saturday"
+msgstr ""
+
+#: app/Services/CountryNames.php:218
+msgid "Saudi Arabia"
+msgstr ""
+
+#: app/Services/TransStrings.php:123
+msgid "Save"
+msgstr ""
+
+#: app/Services/TransStrings.php:91
+msgid "Save Confirmation Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:168
+msgid "Save CSS and JS"
+msgstr ""
+
+#: app/Services/TransStrings.php:145
+msgid "Save Currency Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:150
+msgid "Save Design Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:95
+msgid "Save reCAPTCHA Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:104
+msgid "Save Receipt Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:166
+#: app/Services/Integrations/GlobalIntegrationManager.php:29
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:46
+msgid "Save Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:98
+msgid "Save turnstile Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:130
+msgid "Saving"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:486
+msgid ""
+"SCA is required for this payment. Payment status changed from pending to "
+"intended"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:494
+msgid "SCA is required for this payment. Requested SCA info from customer"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:500
+msgid "Scroll to increment"
+msgstr ""
+
+#: app/Services/TransStrings.php:35
+msgid "Search"
+msgstr ""
+
+#: app/Services/TransStrings.php:49
+msgid "Search Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:223
+msgid "Secret Key"
+msgstr ""
+
+#: app/Modules/Integrations/TinyMceBlock.php:40
+msgid "Select a Form to insert"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:108
+msgid "Select FluentCRM List"
+msgstr ""
+
+#: app/Services/TransStrings.php:37
+msgid "Select from demo"
+msgstr ""
+
+#: app/Services/TransStrings.php:267
+msgid "Select payment method"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:150
+msgid "Select Tags"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:109
+msgid "Select the FluentCRM List you would like to add your contacts to."
+msgstr ""
+
+#: app/Services/TransStrings.php:228
+msgid "Select the form to export"
+msgstr ""
+
+#: app/Http/Controllers/FormController.php:46
+msgid "Selected form successfully deleted"
+msgstr ""
+
+#: app/Services/Integrations/GlobalIntegrationManager.php:271
+msgid "Selected integration feed successfully deleted"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:257
+msgid "Selected submission successfully deleted"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:425
+msgid "Send Form input data to stripe metadata"
+msgstr ""
+
+#: app/Services/TransStrings.php:118
+msgid "Sending Action"
+msgstr ""
+
+#: app/Services/CountryNames.php:219
+msgid "Senegal"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:444
+msgid "Sep"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:458
+msgid "September"
+msgstr ""
+
+#: app/Services/CountryNames.php:220
+msgid "Serbia"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:232
+msgid "Server Memory Limit (PHP)"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:218
+msgid "Server Timezone"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:49
+msgid "Set FluentCRM"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:134
+msgid "Set Mailchimp API"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:160
+msgid "Set Tag"
+msgstr ""
+
+#: app/Services/TransStrings.php:17 app/Hooks/Handlers/AdminMenuHandler.php:125
+#: app/Hooks/Handlers/AdminMenuHandler.php:126
+#: app/Views/admin/global/global_menu.php:32
+msgid "Settings"
+msgstr ""
+
+#: app/Http/Controllers/FormController.php:78
+msgid "Settings has been saved."
+msgstr ""
+
+#: app/Models/Form.php:324 app/Http/Controllers/FormController.php:31
+#: app/Http/Controllers/FormController.php:124
+#: app/Http/Controllers/GlobalSettingsController.php:234
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:162
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:397
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:295
+msgid "Settings successfully updated"
+msgstr ""
+
+#: app/Services/CountryNames.php:221
+msgid "Seychelles"
+msgstr ""
+
+#: app/Services/TransStrings.php:34
+msgid "ShortCode"
+msgstr ""
+
+#: app/Services/TransStrings.php:105
+msgid "Show Order Item details in the receipt (if any)"
+msgstr ""
+
+#: app/Services/TransStrings.php:106
+msgid "Show Submission info in the receipt"
+msgstr ""
+
+#: app/Services/CountryNames.php:222
+msgid "Sierra Leone"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:125
+msgid "Signup Fee for"
+msgstr ""
+
+#: app/Services/TransStrings.php:42
+msgid "Simple Form Templates"
+msgstr ""
+
+#: app/Services/CountryNames.php:223
+msgid "Singapore"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:290
+msgid "Site Homepage"
+msgstr ""
+
+#: app/Services/TransStrings.php:222
+msgid "Site Key"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:286
+msgid "Site Name"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:195
+msgid "Site Title"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:201
+msgid "Site URL"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:294
+msgid "Site Url"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:167
+msgid "Skip if contact already exist in FluentCRM"
+msgstr ""
+
+#: app/Services/CountryNames.php:224
+msgid "Slovakia"
+msgstr ""
+
+#: app/Services/CountryNames.php:225
+msgid "Slovenia"
+msgstr ""
+
+#: app/Views/user/dashboard.php:277
+msgid "So no further payment will be processed."
+msgstr ""
+
+#: app/Services/CountryNames.php:226
+msgid "Solomon Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:227
+msgid "Somalia"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:511
+msgid "Something is wrong when submitting the form"
+msgstr ""
+
+#: app/Http/Controllers/GlobalSettingsController.php:419
+msgid "Something is wrong when uploading the file"
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:181
+msgid ""
+"Sometimes, PayPal payments take a few moments to mark as paid! Try reloading "
+"receipt page after sometime."
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:551
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:576
+msgid "Sorry! no associate submission found"
+msgstr ""
+
+#: app/Services/Integrations/GlobalIntegrationManager.php:24
+msgid "Sorry! No integration failed found with: "
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:308
+msgid "Sorry! No template Class found!"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:241
+msgid "Sorry! No template Class found!!"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:232
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:299
+msgid "Sorry! No template found!"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:241
+msgid ""
+"Sorry! there has an error when creating the subscription plan. Please try "
+"again"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:853
+msgid "Sorry! You have to login first."
+msgstr ""
+
+#: app/Services/Integrations/GlobalIntegrationManager.php:61
+msgid ""
+"Sorry, no Integration found. Please make sure that latest version of "
+"Paymattic pro installed"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:173
+msgid "Sorry, No Submission found"
+msgstr ""
+
+#: app/Hooks/Handlers/DependencyHandler.php:89
+msgid "Sorry, no submission receipt found, Please check your receipt URL"
+msgstr ""
+
+#: app/Services/AccessControl.php:328
+#: app/Http/Controllers/GlobalSettingsController.php:91
+#: app/Http/Controllers/GlobalSettingsController.php:180
+msgid ""
+"Sorry, You can not update permissions. Only administrators can update "
+"permissions"
+msgstr ""
+
+#: app/Services/AccessControl.php:75
+msgid "Sorry, You do not have permission to do this action: "
+msgstr ""
+
+#: app/Services/CountryNames.php:228
+msgid "South Africa"
+msgstr ""
+
+#: app/Services/CountryNames.php:229
+msgid "South Georgia/Sandwich Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:230
+msgid "South Korea"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:738
+msgid "South Korean Won"
+msgstr ""
+
+#: app/Services/CountryNames.php:231
+msgid "South Sudan"
+msgstr ""
+
+#: app/Services/CountryNames.php:232
+msgid "Spain"
+msgstr ""
+
+#: app/Services/CountryNames.php:233
+msgid "Sri Lanka"
+msgstr ""
+
+#: app/Services/TransStrings.php:116 app/Views/user/dashboard.php:145
+#: app/Views/user/dashboard.php:213
+#: app/Views/elements/subscriptions_info.php:13
+#: app/Views/elements/user_submissions_table.php:8
+msgid "Status"
+msgstr ""
+
+#: app/Services/TransStrings.php:139
+msgid "Stripe Account"
+msgstr ""
+
+#: app/Services/TransStrings.php:193
+msgid "Stripe Checkout Locale"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:80
+msgid ""
+"Stripe error when creating subscription plan for you. Please contact site "
+"admin"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:78
+msgid ""
+"Stripe error when creating subscription plan for you. Your card might be "
+"charged for atleast one subscription. Please contact site admin to resolve "
+"the issue"
+msgstr ""
+
+#: app/Services/TransStrings.php:136
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:422
+msgid "Stripe Meta Data"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:143
+msgid "Stripe One time payment has marked as paid."
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:637
+msgid "Stripe recurring payments synced from upstream"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:684
+msgid "Stripe recurring subscription Cancelled"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:137
+#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:83
+msgid "Stripe recurring subscription successfully initiated"
+msgstr ""
+
+#: app/Services/TransStrings.php:133
+msgid "Stripe Settings"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Charge.php:73
+#: app/Modules/PaymentMethods/Stripe/Plan.php:122
+msgid "Stripe Token is required"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Customer.php:68
+msgid "Stripe token/payment_method is required"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:501
+msgid ""
+"Strong Customer Authentication is required. Please complete 2 factor "
+"authentication."
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:141
+msgid "Sub Total"
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:118
+msgid "Sub-Total"
+msgstr ""
+
+#: app/Services/TransStrings.php:117
+msgid "Subject"
+msgstr ""
+
+#: app/Services/TransStrings.php:202
+msgid "Submission Abandoned After"
+msgstr ""
+
+#: app/Views/receipt/customer_details.php:2
+msgid "Submission Details"
+msgstr ""
+
+#: app/Models/Form.php:594
+msgid "Submission Hash ID"
+msgstr ""
+
+#: app/Models/Form.php:593
+msgid "Submission ID"
+msgstr ""
+
+#: app/Views/receipt/payment_info.php:6
+msgid "Submission ID:"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:21 app/Services/FormPlaceholders.php:92
+msgid "Submission Info"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:792
+msgid "Submission PDF link"
+msgstr ""
+
+#: app/Models/Form.php:598
+msgid "Submission Time"
+msgstr ""
+
+#: app/Services/TransStrings.php:32
+msgid "Submissions"
+msgstr ""
+
+#: app/Models/Form.php:355 app/Modules/Builder/Render.php:323
+msgid "Submit"
+msgstr ""
+
+#: app/Services/TransStrings.php:154
+msgid "Submit Button Position"
+msgstr ""
+
+#: app/Services/TransStrings.php:78
+msgid "Submitted At"
+msgstr ""
+
+#: app/Views/elements/subscriptions_info.php:10
+msgid "Subscription"
+msgstr ""
+
+#: app/Modules/Builder/PaymentReceipt.php:202
+msgid "Subscription Details"
+msgstr ""
+
+#: app/Models/Form.php:613
+msgid "Subscription Details Table"
+msgstr ""
+
+#: app/Models/Form.php:614
+msgid "Subscription ID "
+msgstr ""
+
+#: app/Modules/FormComponents/DemoCouponComponent.php:37
+msgid "Subscription Payment"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:152
+msgid "Subscription status changed to : "
+msgstr ""
+
+#: app/Services/GeneralSettings.php:715
+msgid "Subscriptions"
+msgstr ""
+
+#: app/Http/Controllers/GlobalSettingsController.php:145
+msgid "Successfully enable customer/donor dashboard module"
+msgstr ""
+
+#: app/Services/AccessControl.php:325
+msgid "Successfully updated the role(s)."
+msgstr ""
+
+#: app/Services/CountryNames.php:234
+msgid "Sudan"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:475
+msgid "Sun"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:466
+msgid "Sunday"
+msgstr ""
+
+#: app/Hooks/actions.php:152
+msgid "Support"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:150
+msgid "Support & Debug"
+msgstr ""
+
+#: app/Services/CountryNames.php:235
+msgid "Suriname"
+msgstr ""
+
+#: app/Services/CountryNames.php:236
+msgid "Svalbard and Jan Mayen"
+msgstr ""
+
+#: app/Services/CountryNames.php:237
+msgid "Swaziland"
+msgstr ""
+
+#: app/Services/CountryNames.php:238
+msgid "Sweden"
+msgstr ""
+
+#: app/Services/CountryNames.php:239
+msgid "Switzerland"
+msgstr ""
+
+#: app/Services/CountryNames.php:240
+msgid "Syria"
+msgstr ""
+
+#: app/Modules/FormComponents/DemoCouponComponent.php:32
+msgid "Tabular Product Items"
+msgstr ""
+
+#: app/Services/CountryNames.php:241
+msgid "Taiwan"
+msgstr ""
+
+#: app/Services/CountryNames.php:242
+msgid "Tajikistan"
+msgstr ""
+
+#: app/Services/CountryNames.php:243
+msgid "Tanzania"
+msgstr ""
+
+#: app/Modules/FormComponents/ItemQuantityComponent.php:126
+msgid "Target Product is required for item:"
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:27
+msgid "Tax Total"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:385
+msgid "Test Mode"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:398
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:400
+msgid "Test public key"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:410
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:412
+msgid "Test Secret Key"
+msgstr ""
+
+#: app/Services/CountryNames.php:244
+msgid "Thailand"
+msgstr ""
+
+#: app/Models/Form.php:499
+msgid "Thanks for your order. Here are the details of your order:"
+msgstr ""
+
+#: app/Services/TransStrings.php:176
+msgid "The Following JavaScrip variables are available that you can use"
+msgstr ""
+
+#: app/Services/TransStrings.php:177
+msgid "The Javascript DOM object of the Form"
+msgstr ""
+
+#: app/Http/Controllers/SubmissionController.php:189
+msgid "The submission have the same status"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:150
+msgid "Theme Name"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:162
+msgid "Theme URI"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:154
+msgid "Theme Version"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/ApiRequest.php:127
+#: app/Modules/PaymentMethods/Stripe/ApiRequest.php:151
+msgid "There was a problem connecting to the Stripe API endpoint."
+msgstr ""
+
+#: app/Services/TransStrings.php:107
+msgid "This content will show wherever you use the shortcode:"
+msgstr ""
+
+#: app/Services/TransStrings.php:120
+msgid "this email setup will be deleted."
+msgstr ""
+
+#: app/Views/user/dashboard.php:276
+msgid "This will also cancel the subscription at"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:479
+msgid "Thu"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:470
+msgid "Thursday"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:279
+msgid "Time"
+msgstr ""
+
+#: app/Views/elements/subscriptions_info.php:12
+msgid "Times Billed"
+msgstr ""
+
+#: app/Services/CountryNames.php:245
+msgid "Timor-Leste"
+msgstr ""
+
+#: app/Services/TransStrings.php:27
+msgid "Title"
+msgstr ""
+
+#: app/Services/TransStrings.php:180
+msgid "To a Custom URL"
+msgstr ""
+
+#: app/Services/TransStrings.php:179
+msgid "To a Page"
+msgstr ""
+
+#: app/Services/TransStrings.php:263
+msgid "to get a license key from your purchase"
+msgstr ""
+
+#: app/Services/CountryNames.php:246
+msgid "Togo"
+msgstr ""
+
+#: app/Services/CountryNames.php:247
+msgid "Tokelau"
+msgstr ""
+
+#: app/Services/CountryNames.php:248
+msgid "Tonga"
+msgstr ""
+
+#: app/Services/TransStrings.php:224
+msgid "Tools"
+msgstr ""
+
+#: app/Services/TransStrings.php:253
+msgid "Top Customers"
+msgstr ""
+
+#: app/Views/elements/order_items_table.php:167
+#: app/Views/elements/user_submissions_table.php:7
+msgid "Total"
+msgstr ""
+
+#: app/Services/TransStrings.php:251
+msgid "Total Customers"
+msgstr ""
+
+#: app/Views/user/dashboard.php:109
+msgid "Total Orders"
+msgstr ""
+
+#: app/Modules/Integrations/DashboardWidget.php:69
+msgid "Total Paid & Active Payment Received"
+msgstr ""
+
+#: app/Services/TransStrings.php:249
+msgid "Total revenue"
+msgstr ""
+
+#: app/Views/user/dashboard.php:96
+msgid "Total Spend"
+msgstr ""
+
+#: app/Views/user/dashboard.php:123
+msgid "Total Subscription"
+msgstr ""
+
+#: app/Views/receipt/payment_info.php:20
+msgid "Total:"
+msgstr ""
+
+#: app/Models/Form.php:607
+msgid "Transaction ID"
+msgstr ""
+
+#: app/Services/CountryNames.php:249
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:477
+msgid "Tue"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:468
+msgid "Tuesday"
+msgstr ""
+
+#: app/Services/CountryNames.php:250
+msgid "Tunisia"
+msgstr ""
+
+#: app/Services/CountryNames.php:251
+msgid "Turkey"
+msgstr ""
+
+#: app/Services/CountryNames.php:252
+msgid "Turkmenistan"
+msgstr ""
+
+#: app/Services/CountryNames.php:253
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+#: app/Services/TransStrings.php:97
+msgid ""
+"Turnstile has not been configured yet! Please configure turnstile from "
+"Settings -> turnstile Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:96
+msgid "Turnstile Settings"
+msgstr ""
+
+#: app/Services/CountryNames.php:254
+msgid "Tuvalu"
+msgstr ""
+
+#: app/Services/CountryNames.php:255
+msgid "Uganda"
+msgstr ""
+
+#: app/Services/CountryNames.php:256
+msgid "Ukraine"
+msgstr ""
+
+#: app/Services/CountryNames.php:257
+msgid "United Arab Emirates"
+msgstr ""
+
+#: app/Services/CountryNames.php:258
+msgid "United Kingdom (UK)"
+msgstr ""
+
+#: app/Services/CountryNames.php:259
+msgid "United States (US)"
+msgstr ""
+
+#: app/Services/CountryNames.php:260
+msgid "United States (US) Minor Outlying Islands"
+msgstr ""
+
+#: app/Services/CountryNames.php:261
+msgid "United States (US) Virgin Islands"
+msgstr ""
+
+#: app/Services/TransStrings.php:14
+msgid "Unlock in Pro"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:723
+msgid "Unread"
+msgstr ""
+
+#: app/Views/elements/subscriptions_info.php:29
+msgid "Until cancelled"
+msgstr ""
+
+#: app/Hooks/actions.php:156 app/Views/admin/global/global_menu.php:47
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: app/Services/TransStrings.php:231
+msgid "Upload .json file"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:236
+msgid "Upload Max Filesize"
+msgstr ""
+
+#: app/Services/CountryNames.php:262
+msgid "Uruguay"
+msgstr ""
+
+#: app/Services/TransStrings.php:204
+msgid "Use this shortcode to configure donation leaderboard."
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:251
+msgid "User Description"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:171
+msgid "User Display Name"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:177 app/Services/FormPlaceholders.php:241
+msgid "User Email"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:159
+msgid "User First Name"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:153 app/Services/FormPlaceholders.php:221
+msgid "User ID"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:285
+msgid "User IP Address"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:165
+msgid "User Last Name"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:189
+msgid "User Meta"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:256
+msgid "User Role"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:183 app/Services/FormPlaceholders.php:246
+msgid "User URL"
+msgstr ""
+
+#: app/Services/CountryNames.php:263
+msgid "Uzbekistan"
+msgstr ""
+
+#: app/Modules/FormComponents/CustomerEmailComponent.php:126
+msgid "Valid email address is required for field:"
+msgstr ""
+
+#: app/Models/Form.php:59
+msgid "Validation Error, Please try again"
+msgstr ""
+
+#: app/Models/Form.php:86
+msgid "Validation failed when saving the form"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:167
+msgid "Validation failed, because selected payment method could not be found"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:180
+msgid "Validation failed, Please fill up card details"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:513
+msgid "Validation failed, please fill-up required fields"
+msgstr ""
+
+#: app/Modules/FormComponents/HiddenInputComponent.php:61
+msgid "Value is required for item:"
+msgstr ""
+
+#: app/Services/CountryNames.php:264
+msgid "Vanuatu"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:743
+msgid "Vanuatu Vatu"
+msgstr ""
+
+#: app/Services/CountryNames.php:265
+msgid "Vatican"
+msgstr ""
+
+#: app/Services/CountryNames.php:266
+msgid "Venezuela"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:211
+msgid "Verifying your card details. Please wait..."
+msgstr ""
+
+#: app/Services/CountryNames.php:267
+msgid "Vietnam"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:742
+msgid "Vietnamese Dong"
+msgstr ""
+
+#: app/Hooks/actions.php:151
+msgid "View Fluent Form Documentation"
+msgstr ""
+
+#: app/Views/user/dashboard.php:192
+msgid "View Receipt"
+msgstr ""
+
+#: app/Services/TransStrings.php:206
+msgid "Visibility Of Donation Leaderboard"
+msgstr ""
+
+#: app/Services/CountryNames.php:268
+msgid "Wallis and Futuna"
+msgstr ""
+
+#. %s: The [simpay_errors] shortcode
+#: database/Migrations/Pages.php:25
+msgid ""
+"We're sorry, but your transaction failed to process. Please try again or "
+"contact site support."
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:210
+msgid "Web Server"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:434
+msgid "Webhook URL"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:478
+msgid "Wed"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:469
+msgid "Wednesday"
+msgstr ""
+
+#: app/Services/TransStrings.php:252
+msgid "Weekly Revenue"
+msgstr ""
+
+#: app/Services/GeneralSettings.php:745
+msgid "West African Cfa Franc"
+msgstr ""
+
+#: app/Services/CountryNames.php:269
+msgid "Western Sahara"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:499
+msgid "Wk"
+msgstr ""
+
+#: app/Services/FormPlaceholders.php:33 app/Services/FormPlaceholders.php:48
+#: app/Services/FormPlaceholders.php:100
+msgid "WordPress"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:302
+msgid "WP Debug"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:306
+msgid "WP Debug log"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:318
+msgid "WP Memory Limit"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:375
+msgid "WP Remote GET"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:406
+msgid "WP Remote POST"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:298
+msgid "WP Version"
+msgstr ""
+
+#. Author of the plugin
+msgid "WPManageNinja LLC"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:506
+msgid "Year"
+msgstr ""
+
+#: app/Services/CountryNames.php:271
+msgid "Yemen"
+msgstr ""
+
+#: app/Modules/Debug/Debug.php:228 app/Modules/Debug/Debug.php:241
+#: app/Modules/Debug/Debug.php:246 app/Modules/Debug/Debug.php:250
+#: app/Modules/Debug/Debug.php:268
+msgid "Yes"
+msgstr ""
+
+#: app/Views/user/dashboard.php:285
+msgid "Yes, Cancel this Subscription"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Stripe.php:424
+msgid ""
+"You can choose what will show after a successful payment<br /> or if there "
+"is any fails."
+msgstr ""
+
+#: app/Services/TransStrings.php:227
+msgid ""
+"You can export any form as .json format that you have and then you can "
+"import the form in Paymattic"
+msgstr ""
+
+#: app/Services/TransStrings.php:230
+msgid "You can import any form that is exported from paymattic"
+msgstr ""
+
+#: app/Modules/PDF/Templates/CustomTemplate.php:41
+#: app/Modules/PDF/Templates/GeneralTemplate.php:44
+#, php-format
+msgid ""
+"You can use Conditional Content in PDF body, for details please check this "
+"%s. "
+msgstr ""
+
+#: app/Services/TransStrings.php:170
+msgid ""
+"You can write your custom CSS here for this form. This css will be applied "
+"in this current form only."
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:868
+msgid "You don't have permission to download the PDF."
+msgstr ""
+
+#: app/Views/user/dashboard.php:319
+msgid "You have not any access for read your entries from the administration"
+msgstr ""
+
+#: app/Services/TransStrings.php:262
+msgid ""
+"You have to activate your Paymattic Pro by providing the license key bellow. "
+"If you don't have a license key please"
+msgstr ""
+
+#: app/Services/TransStrings.php:171
+msgid "You may add"
+msgstr ""
+
+#: app/Services/TransStrings.php:108
+msgid ""
+"You may use this shortcode in email notification, success message or in your "
+"success page content"
+msgstr ""
+
+#: app/Models/Form.php:794
+msgid "You need to login to submit this form"
+msgstr ""
+
+#: app/Services/TransStrings.php:175
+msgid ""
+"Your additional JS code will run after this form initialized. Please provide "
+"valid javascript code. Invalid JS code may break the Form."
+msgstr ""
+
+#: app/Services/Integrations/GlobalIntegrationManager.php:37
+msgid "Your API Key is not valid"
+msgstr ""
+
+#: app/Services/Integrations/GlobalIntegrationManager.php:33
+msgid "Your API Key is valid"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeCardElementComponent.php:82
+msgid "Your Card Info (Powered By Stripe)"
+msgstr ""
+
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:102
+msgid "Your Feed Name"
+msgstr ""
+
+#: app/Services/TransStrings.php:246
+msgid "Your License is Active"
+msgstr ""
+
+#: app/Services/TransStrings.php:239
+msgid "Your license is active! Enjoy Paymattic Pro"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:120
+msgid "Your mailchimp api key has been verified and successfully set"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:45
+msgid "Your Mailchimp API Key is not valid"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:44
+msgid "Your Mailchimp API Key is valid"
+msgstr ""
+
+#: app/Services/Integrations/MailChimp/MailChimpIntegration.php:91
+msgid "Your settings has been updated and disconnected"
+msgstr ""
+
+#: app/Views/user/dashboard.php:74
+msgid "Your Submission Stats"
+msgstr ""
+
+#: app/Views/user/dashboard.php:137
+msgid "Your Submissions"
+msgstr ""
+
+#: app/Views/user/dashboard.php:206
+msgid "Your Subscription"
+msgstr ""
+
+#: app/Services/CountryNames.php:272
+msgid "Zambia"
+msgstr ""
+
+#: app/Services/CountryNames.php:273
+msgid "Zimbabwe"
+msgstr ""
+
+#: app/Services/CountryNames.php:26
+msgid "Åland Islands"
+msgstr ""
