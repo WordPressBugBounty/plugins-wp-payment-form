@@ -124,7 +124,8 @@ class WPPayFormPdfBuilder extends PdfBuilder
             'downloadFonts' => 'downloadFonts'
         ];
 
-        $route = sanitize_text_field($_REQUEST['route']);
+        $route = isset($_REQUEST['route']);
+        $route = sanitize_text_field(wp_unslash($_REQUEST['route']));
 
         AccessControl::hasTopLevelMenuPermission();
 
@@ -156,7 +157,8 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function saveGlobalSettings()
     {
-        $settings = wp_unslash($_REQUEST['settings']);
+        $settings = isset($_REQUEST['settings']);
+        $settings = sanitize_text_field(wp_unslash($_REQUEST['settings']));
         update_option($this->optionKey, $settings);
         wp_send_json_success([
             'message' => __('Settings successfully updated', 'wp-payment-form')
@@ -182,7 +184,8 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function getFeedList()
     {
-        $formId = intval($_REQUEST['form_id']);
+        $formId = isset($_REQUEST['form_id']);
+        $formId = intval(sanitize_text_field(wp_unslash($_REQUEST['form_id'])));
 
         $feeds = $this->getFeeds($formId);
 
@@ -281,9 +284,11 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function getFeed($request)
     {  
-        $formId = intval($_REQUEST['form_id']);
+        $formId = isset($_REQUEST['form_id']);
+        $formId = intval(sanitize_text_field(wp_unslash($_REQUEST['form_id'])));
 
-        $feedId = intval($_REQUEST['feed_id']);
+        $feedId = isset($_REQUEST['feed_id']);
+        $feedId = intval(sanitize_text_field(wp_unslash($_REQUEST['feed_id'])));
 
         $feed = Meta::where('id', $feedId)
             ->where('meta_key', '_pdf_feeds')
@@ -310,15 +315,15 @@ class WPPayFormPdfBuilder extends PdfBuilder
         }
         $instance = new $class();
 
-        $globalFields = $this->getGlobalFields();
+        $appearanceFields = $this->defaultAppearanceFields();
 
-        $globalFields[] = [
+        $appearanceFields[] = [
             'key' => 'watermark_image',
             'label' => 'Water Mark Image',
             'type' => 'image_widget'
         ];
 
-        $globalFields[] = [
+        $appearanceFields[] = [
             'key' => 'watermark_text',
             'label' => 'Water Mark Text',
             'type' => 'text',
@@ -326,20 +331,20 @@ class WPPayFormPdfBuilder extends PdfBuilder
             'tips' => 'Water mark text will be set only if watermark image is not set',
         ];
 
-        $globalFields[] = [
+        $appearanceFields[] = [
             'key' => 'watermark_opacity',
             'label' => 'Water Mark Opacity',
             'type' => 'number',
             'inline_tip' => 'Value should be between 1 to 100'
         ];
-        $globalFields[] = [
+        $appearanceFields[] = [
             'key' => 'watermark_img_behind',
             'label' => 'Water Mark Position',
             'type' => 'checkbox',
             'inline_tip' => 'Set as background'
         ];
 
-        $globalFields[] = [
+        $appearanceFields[] = [
             'key' => 'security_pass',
             'label' => 'PDF Password',
             'type' => 'text',
@@ -348,16 +353,16 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
         $settingsFields = $instance->getSettingsFields();
 
-        $settingsFields[] = [
-            'key' => 'allow_download',
-            'label' => 'Allow Download',
-            'tips' => 'Allow this feed to be downloaded on form submission. Only logged in users will be able to download.',
-            'type' => 'radio_choice',
-            'options' => [
-                true => 'Yes',
-                false => 'No'
-            ]
-        ];
+        // $settingsFields[] = [
+        //     'key' => 'allow_download',
+        //     'label' => 'Allow Download',
+        //     'tips' => 'Allow this feed to be downloaded on form submission. Only logged in users will be able to download.',
+        //     'type' => 'radio_choice',
+        //     'options' => [
+        //         true => 'Yes',
+        //         false => 'No'
+        //     ]
+        // ];
 
         $settingsFields[] = [
             'key' => 'shortcode',
@@ -372,7 +377,7 @@ class WPPayFormPdfBuilder extends PdfBuilder
         wp_send_json_success([
             'feed' => $settings,
             'settings_fields' => $settingsFields,
-            'appearance_fields' => $globalFields
+            'appearance_fields' => $appearanceFields
         ], 200);
     }
 
@@ -449,7 +454,8 @@ class WPPayFormPdfBuilder extends PdfBuilder
     * @return [ key name]
     * global pdf setting fields
     */
-    public function getGlobalFields()
+    // commented out old structure which is better for dynamic fields, but temporarily using new structure which prefer better UI
+    public function defaultAppearanceFields()
     {
         return [
             [
@@ -507,6 +513,76 @@ class WPPayFormPdfBuilder extends PdfBuilder
         ];
     }
 
+    public function getGlobalFields()
+    {
+        return [
+            'row_1' => [
+                [
+                    'key' => 'paper_size',
+                    'label' => 'Paper size',
+                    'type' => 'dropdown',
+                    'tips' => 'All available templates are shown here, select a default template',
+                    'options' => AvailableOptions::getPaperSizes()
+                ],
+                [
+                    'key' => 'orientation',
+                    'label' => 'Orientation',
+                    'type' => 'dropdown',
+                    'options' => AvailableOptions::getOrientations()
+                ],
+            ],
+            'row_2' => [
+                [
+                    'key' => 'font_family',
+                    'label' => 'Font Family',
+                    'type' => 'dropdown-group',
+                    'placeholder' => 'Select Font',
+                    'options' => AvailableOptions::getInstalledFonts()
+                ],
+                [
+                    'key' => 'font_size',
+                    'label' => 'Font size',
+                    'tips' => 'Font size for the PDF',
+                    'placeholder' => '14',
+                    'options' => [],
+                    'type' => 'number'
+                ],
+            ],
+                
+            'row_3' => [
+                [
+                    'key' => 'font_color',
+                    'label' => 'Font color',
+                    'type' => 'color_picker'
+                ],
+                [
+                    'key' => 'heading_color',
+                    'label' => 'Heading color',
+                    'tips' => 'The Color Form Headings',
+                    'type' => 'color_picker'
+                ],
+                [
+                    'key' => 'accent_color',
+                    'label' => 'Accent color',
+                    'tips' => 'The accent color is used for the borders, breaks etc.',
+                    'type' => 'color_picker'
+                ],
+            ],
+            'row_4' => [
+                [
+                    'key' => 'language_direction',
+                    'label' => 'Language Direction',
+                    'tips' => 'Script like Arabic and Hebrew are written right to left. For Arabic/Hebrew please select RTL',
+                    'type' => 'radio_choice',
+                    'options' => [
+                        'ltr' => 'LTR',
+                        'rtl' => 'RTL'
+                    ]
+                ]
+            ],
+        ];
+    }
+
     public function pushPdfButtons($widgets, $data)
     {
         $fontManager = new FontDownloader();
@@ -554,8 +630,10 @@ class WPPayFormPdfBuilder extends PdfBuilder
     */
     public function getPdf()
     {
-        $feedId = intval($_REQUEST['id']);
-        $submissionId = intval($_REQUEST['submission_id']);
+        $feedId = isset($_REQUEST['id']);
+        $feedId = intval(sanitize_text_field(wp_unslash($_REQUEST['id'])));
+        $submissionId = isset($_REQUEST['submission_id']);
+        $submissionId = intval(sanitize_text_field(wp_unslash($_REQUEST['submission_id'])));
         $feed = Meta::where('id', $feedId)
             ->where('meta_key', '_pdf_feeds')
             ->first();
@@ -860,7 +938,8 @@ class WPPayFormPdfBuilder extends PdfBuilder
         $hasPermission = AccessControl::hasTopLevelMenuPermission();
 
         if (!$hasPermission) {
-            $submissionId = intval($_REQUEST['submission_id']);
+            $submissionId = isset($_REQUEST['submission_id']);
+            $submissionId = intval(sanitize_text_field(wp_unslash($_REQUEST['submission_id'])));
             $submissionModel = new Submission();
             $submission = $submissionModel->getSubmission($submissionId);
 
@@ -891,8 +970,15 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function downloadPublic()
     {
-        $feedId = intval(Protector::decrypt(base64_decode($_REQUEST['id'])));
-        $submissionId = intval(Protector::decrypt(base64_decode($_REQUEST['submission_id'])));
+        // $feedId = intval(Protector::decrypt(base64_decode($_REQUEST['id'])));
+        if (isset($_REQUEST['id'])) {
+            $id_raw = sanitize_text_field(wp_unslash($_REQUEST['id']));
+            $feedId = intval(Protector::decrypt(base64_decode($id_raw)));
+        }
+        if (isset($_REQUEST['submission_id'])) {
+            $submissionId = sanitize_text_field(wp_unslash($_REQUEST['submission_id']));
+            $submissionId = intval(Protector::decrypt(base64_decode($submissionId)));
+        }
 
         $_REQUEST['id'] = $feedId;
         $_REQUEST['submission_id'] = $submissionId;

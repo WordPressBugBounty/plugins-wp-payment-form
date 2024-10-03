@@ -478,4 +478,10 @@ class CountryNames
         $country_code = array_search($country_name, $countries);
         return $country_code ? $country_code : '';
     }
+
+    public static function getCountryName($country_code)
+    {
+        $countries = self::getAll();
+        return $countries[$country_code] ? $countries[$country_code] : '';
+    }
 }

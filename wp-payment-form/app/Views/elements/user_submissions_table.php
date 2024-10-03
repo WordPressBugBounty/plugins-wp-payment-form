@@ -1,14 +1,14 @@
 <table class="table wpf_submissions_table wpf_striped_table wpf_table table_bordered">
     <thead>
-    <th style="min-width: 60px"><?php _e('#', 'wp-payment-form'); ?></th>
-    <th style="min-width: 120px"><?php _e('Date', 'wp-payment-form'); ?></th>
-    <th><?php _e('Form', 'wp-payment-form'); ?></th>
+    <th style="min-width: 60px"><?php esc_html_e('#', 'wp-payment-form'); ?></th>
+    <th style="min-width: 120px"><?php esc_html_e('Date', 'wp-payment-form'); ?></th>
+    <th><?php esc_html_e('Form', 'wp-payment-form'); ?></th>
     <?php if ($show_payments) : ?>
-        <th style="width: 100px"><?php _e('Total', 'wp-payment-form'); ?></th>
-        <th style="width: 90px"><?php _e('Status', 'wp-payment-form'); ?></th>
+        <th style="width: 100px"><?php esc_html_e('Total', 'wp-payment-form'); ?></th>
+        <th style="width: 90px"><?php esc_html_e('Status', 'wp-payment-form'); ?></th>
     <?php endif; ?>
     <?php if ($show_url) : ?>
-        <th style="width: 90px"><?php _e('Actions', 'wp-payment-form'); ?></th>
+        <th style="width: 90px"><?php esc_html_e('Actions', 'wp-payment-form'); ?></th>
     <?php endif; ?>
     </thead>
     <tbody>
@@ -16,10 +16,10 @@
     <?php foreach ($submissions as $submission) : ?>
         <tr>
             <td class="wpf_highlight"><?php echo esc_html($submission->id); ?></td>
-            <td><?php echo date('d M, Y', strtotime($submission->created_at)); ?></td>
+            <td><?php echo esc_html(date('d M, Y', strtotime($submission->created_at))); ?></td>
             <td><?php echo esc_html($submission->post_title); ?></td>
             <?php if ($show_payments) : ?>
-                <td><?php echo wpPayFormFormatMoney($submission->payment_total, $submission->form_id); ?></td>
+                <td><?php echo esc_html(wpPayFormFormatMoney($submission->payment_total, $submission->form_id)); ?></td>
                 <td><?php echo esc_attr($submission->payment_status); ?></td>
             <?php endif; ?>
             <?php if ($show_url) : ?>

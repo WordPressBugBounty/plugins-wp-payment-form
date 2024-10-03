@@ -32,6 +32,7 @@ abstract class IntegrationManager
     public function registerAdminHooks()
     {
         $globalModules = get_option('wppayform_global_modules_status');
+
         $isEnabled = $globalModules && isset($globalModules[$this->integrationKey]) && $globalModules[$this->integrationKey] === 'yes';
 
         add_filter('wppayform_global_addons', function ($addons) use ($isEnabled) {
@@ -40,13 +41,15 @@ abstract class IntegrationManager
                 'category' => $this->category,
                 'disable_global_settings' => $this->disableGlobalSettings,
                 'description' => $this->description,
-                'config_url' => ($this->disableGlobalSettings != 'yes') ? admin_url('admin.php?page=wppayform_settings#general-' . $this->integrationKey . '-settings') : '',
+                'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/' . $this->integrationKey),
+                'is_configured' => $this->isConfigured() ? 'yes' : 'no',
                 'logo' => $this->logo,
                 'enabled' => ($isEnabled) ? 'yes' : 'no'
             ];
             return $addons;
         }, $this->priority, 1);
 
+       
         if (!$isEnabled) {
             return;
         }
@@ -56,7 +59,7 @@ abstract class IntegrationManager
         // Global Settings Here
 
         if ($this->hasGlobalMenu) {
-            add_filter('wppayform_global_settings_components', array($this, 'addGlobalMenu'));
+            // add_filter('wppayform_global_settings_components', array($this, 'addGlobalMenu'));
             add_filter('wppayform_global_integration_settings_' . $this->integrationKey, array($this, 'getGlobalSettings'), $this->priority, 1);
             add_filter('wppayform_global_integration_fields_' . $this->integrationKey, array($this, 'getGlobalFields'), $this->priority, 1);
             add_action('wppayform_save_global_integration_settings_' . $this->integrationKey, array($this, 'saveGlobalSettings'), $this->priority, 1);
@@ -110,6 +113,18 @@ abstract class IntegrationManager
     public function addActiveNotificationType($types)
     {
         $types[$this->settingsKey] = $this->integrationKey;
+
+        // Add previous specific types as zapier, webhook, slack used to handled specifically, since 4.6.0
+        if ($this->integrationKey == 'zapier') {
+            $types[$this->integrationKey] = 'zapier';
+        }
+        if ($this->integrationKey == 'webhook') {
+            $types[$this->integrationKey] = 'webhook';
+        }
+        if ($this->integrationKey == 'slack') {
+            $types[$this->integrationKey] = 'slack';
+        }
+
         return $types;
     }
 
@@ -177,6 +192,7 @@ abstract class IntegrationManager
 
     public function isConfigured()
     {
+
         $globalStatus = $this->getApiSettings();
         return $globalStatus && $globalStatus['status'];
     }

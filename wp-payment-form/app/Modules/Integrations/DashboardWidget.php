@@ -28,7 +28,6 @@ class DashboardWidget
 
     public function showStat()
     {
-
         $status = Form::getStatus();
         $stats = Arr::get($status, 'stats', []);
         $paidStats = Arr::get($status, 'paidStats', []);
@@ -48,7 +47,7 @@ class DashboardWidget
             <?php foreach ($stats as $stat) : ?>
                 <li>
                     <a title="Form: <?php echo esc_attr($stat->post_title); ?>"
-                       href="<?php echo admin_url('admin.php?page=wppayform.php#/edit-form/' . intval($stat->form_id) . '/entries/' . intval($stat->id) . '/view'); ?>">
+                       href="<?php echo esc_url(admin_url('admin.php?page=wppayform.php#/edit-form/' . intval($stat->form_id) . '/entries/' . intval($stat->id) . '/view')); ?>">
                         #<?php echo (int) $stat->id; ?> - <?php echo esc_html($stat->customer_name); ?>
                         <?php if ($stat->recurring_amount) { ?>
                             <span class="wpf_status wpf_status_<?php echo esc_attr($stat->status); ?>">

@@ -33,6 +33,11 @@ class IntegrationController extends Controller
         return (new GlobalIntegrationManager())->saveIntegrationSettings($formId, $this->request->all());
     }
 
+    public function verify($formId)
+    {
+        return (new GlobalIntegrationManager())->verify($formId, $this->request->all());
+    }
+
     public function deleteSettings($formId)
     {
         return (new GlobalIntegrationManager())->deleteIntegrationFeed($formId, $this->request->all());

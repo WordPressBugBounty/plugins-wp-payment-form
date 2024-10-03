@@ -21,7 +21,6 @@ class AddOnModule
             'description' => 'Get realtime notification in slack channel when a new submission will be added.',
             'logo' => WPPAYFORM_URL . '/assets/images/integrations/slack.png',
             'enabled' => GeneralSettings::isModuleEnabled('slack') ? 'yes' : 'no',
-            'config_url' => '',
             'category' => 'crm'
         ];
 
@@ -29,8 +28,9 @@ class AddOnModule
             'title' => 'Zapier',
             'description' => 'Get realtime notification in zapier channel when a new submission will be added.',
             'logo' => WPPAYFORM_URL . '/assets/images/integrations/zapier.png',
+            'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/zapier'),
+            'is_configured' =>  'no',
             'enabled' => GeneralSettings::isModuleEnabled('zapier') ? 'yes' : 'no',
-            'config_url' => '',
             'category' => 'crm'
         ];
         $addOns['webhook'] = [
@@ -38,7 +38,8 @@ class AddOnModule
             'description' => 'Broadcast your Paymattic Submission to any web api endpoint with the powerful webhook module.',
             'logo' => WPPAYFORM_URL . '/assets/images/integrations/webhook.png',
             'enabled' => GeneralSettings::isModuleEnabled('webhook') ? 'yes' : 'no',
-            'config_url' => '',
+            'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/webhook'),
+            'is_configured' =>  'no',
             'category' => 'crm'
         ];
 
@@ -53,6 +54,7 @@ class AddOnModule
             $addOns = array_merge($addOns, self::getFluentSupport());
         }
 
+        $addOns = apply_filters('wppayform_global_addons', $addOns);
 
         return array(
             'status' => $status,
@@ -93,22 +95,21 @@ class AddOnModule
                 'category'     => 'wp_core',
                 'btnTxt'       => 'Upgrade To Pro',
             ),
-            'webhook' => array(
-                'title' => 'Webhook',
-                'description' => 'Broadcast your Paymattic Submission to any web api endpoint with the powerful webhook module.',
-                'logo' => WPPAYFORM_URL . '/assets/images/integrations/webhook.png',
-                'enabled' => 'no',
-                'config_url' => '',
-                'category' => 'crm',
-                'purchase_url' => $purchaseUrl,
-                'btnTxt'       => 'Upgrade To Pro',
-            ),
+            // 'webhook' => array(
+            //     'title' => 'Webhook',
+            //     'description' => 'Broadcast your Paymattic Submission to any web api endpoint with the powerful webhook module.',
+            //     'logo' => WPPAYFORM_URL . '/assets/images/integrations/webhook.png',
+            //     'enabled' => 'no',
+            //     'config_url' => '',
+            //     'category' => 'crm',
+            //     'purchase_url' => $purchaseUrl,
+            //     'btnTxt'       => 'Upgrade To Pro',
+            // ),
             'sms_notification' => array(
                 'title' => 'Twilio',
                 'description' => 'Send SMS in real time when a form is submitted with Twilio.',
                 'logo' => WPPAYFORM_URL . 'assets/images/integrations/twilio.png',
                 'enabled' => 'no',
-                'config_url' => '',
                 'category' => 'crm',
                 'purchase_url' => $purchaseUrl,
                 'btnTxt'       => 'Upgrade To Pro',
@@ -118,7 +119,6 @@ class AddOnModule
                 'description' => 'Send notification to Telegram channel or group when a form is submitted',
                 'logo' => WPPAYFORM_URL . 'assets/images/integrations/telegram.png',
                 'enabled' => 'no',
-                'config_url' => '',
                 'category' => 'crm',
                 'purchase_url' => $purchaseUrl,
                 'btnTxt'       => 'Upgrade To Pro',
@@ -128,7 +128,6 @@ class AddOnModule
                 'description'  => 'Add Paymattic Forms Submission to Google sheets when a form is submitted.',
                 'logo'         => WPPAYFORM_URL . 'assets/images/integrations/google-sheets.png',
                 'enabled'      => 'no',
-                'config_url' => '',
                 'purchase_url' => $purchaseUrl,
                 'category'     => 'crm',
                 'btnTxt'       => 'Upgrade To Pro'
@@ -181,7 +180,7 @@ class AddOnModule
     public static function getFluentSupport()
     {
         return array(
-            'fluent-crm'   => array(
+            'fluent-support'   => array(
                 'title'        => 'Fluent Support',
                 'description'  => 'Paymattic\'s connection with Fluent Support enables you to take payments from users in return of services.',
                 'logo'         =>  WPPAYFORM_URL . 'assets/images/integrations/fluentsupport.svg',

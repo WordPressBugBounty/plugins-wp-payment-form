@@ -120,8 +120,8 @@ class Render
                             }
                             if (sizeof($isStepForm['editor_elements']['form_steps']) == $key + 1) {
                             ?>
-                                <button class="wpf_step_button" id="wpf_step_prev">&larr; <?php echo __('Previous', 'wp-payment-form') ?></button>
-                                <button class="wpf_step_button" id="wpf_step_next"><?php echo __('Next', 'wp-payment-form') ?> &rarr;</button>
+                                <button class="wpf_step_button" id="wpf_step_prev">&larr; <?php echo esc_html__('Previous', 'wp-payment-form') ?></button>
+                                <button class="wpf_step_button" id="wpf_step_next"><?php echo esc_html__('Next', 'wp-payment-form') ?> &rarr;</button>
                                 <div style="display: none" class="wpf_form_notices"></div> <?php
                                                                                         }
                                                                                             ?>
@@ -412,6 +412,12 @@ class Render
             }
         }
 
+        public function addAssetsForPreview($form)
+        {
+
+            $this->addAssets($form, 'wpf_preview');
+        }
+
         private function addAssets($form, $instanceCssClass)
         {
             $submitButton = Form::getButtonSettings($form->ID);
@@ -520,6 +526,10 @@ class Render
             ));
         }
 
+        public function registerTemplatePreviewScripts($form) {
+            $this->registerScripts($form);
+        }
+
         private function registerScripts($form)
         {
             do_action('wppayform/wppayform_adding_assets', $form);
@@ -529,9 +539,10 @@ class Render
             wp_register_script('dropzone', WPPAYFORM_URL . 'assets/libs/dropzone/dropzone.min.js', array('jquery'), '5.5.0', true);
             wp_register_script('wppayform_file_upload', WPPAYFORM_URL . 'assets/js/fileupload.js', array('jquery', 'wppayform_public', 'dropzone'), WPPAYFORM_VERSION, true);
 
-            wp_register_style('intlTelInput', WPPAYFORM_URL . 'assets/libs/intl-tel-input/css/intlTelInput.min.css', array(), '16.0.0', 'all');
-            wp_register_script('intlTelInput', WPPAYFORM_URL . 'assets/libs/intl-tel-input/js/intlTelInput.min.js', array('jquery'), '4.6.7', true);
-            wp_register_script('intlTelInputUtils', WPPAYFORM_URL . 'assets/libs/intl-tel-input/js/utils.js', array('jquery'), '4.6.7', true);
+            wp_register_style('wpf-intlTelInput', WPPAYFORM_URL . 'assets/libs/intl-tel-input/css/intlTelInput.min.css', [], '24.5.0', 'all');
+            wp_register_script('wpf-intlTelInputUtils', WPPAYFORM_URL . 'assets/libs/intl-tel-input/js/utils.js', [], '24.5.0', true);
+            wp_register_script('wpf-intlTelInput', WPPAYFORM_URL . 'assets/libs/intl-tel-input/js/intlTelInput.min.js', [], '24.5.0', true);
+
         }
 
         private function elementorPopupScripts()
@@ -604,7 +615,7 @@ class Render
                 if (is_array($attribute)) {
                     $attribute = json_encode($attribute);
                 }
-                echo esc_attr($attributeKey) . "='" . htmlspecialchars($attribute, ENT_QUOTES) . "' ";
+                echo esc_attr($attributeKey) . "='" . esc_attr($attribute, ENT_QUOTES) . "' ";
             }
         }
     }

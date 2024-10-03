@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
 Tested up to: 6.6
-Stable tag: 4.5.8
+Stable tag: 4.6.0
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -52,11 +52,15 @@ That includes: ⬇️
 
 - Pre-built templates (both payment and donation)
 
+- Horizontal payment layout
+
 - Donation progress bar
 
 - PDF invoice
 
 - Form editor fields
+
+- Multi column form fields
 
 - Currency Settings
 
@@ -98,7 +102,7 @@ Paymattic offers you the features of a complete WordPress payment plugin. Let’
 
 - **Form export and import:** Exporting or importing forms in Paymattic is easy with just a few clicks.
 
-- **Subscription payment:** Accept WordPress subscription payments with **Stripe**, **PayPal**, and **Square** with Paymattic Pro.
+- **Subscription payment:** Accept WordPress subscription payments with **Stripe**, **PayPal**, **Square** , and **Moneris** with Paymattic Pro.
 
 - **Tabular product items:** Paymattic Pro lets you choose your tabular layout from 3 integrated templates. And showcase the payment summary (like add to cart) right on the bottom.
 
@@ -126,7 +130,7 @@ Let’s look at the Paymattic’s fundraising features: ⬇️
 
 - **Custom donation amount:** Allow custom donations from your donors with Paymattic Pro. Also, you can set predefined donation amounts in the same form.
 
-- **Recurring donations:** Receive WordPress recurring donations with **Stripe**, **PayPal**, and **Square** with your _preferred billing intervals_ in Paymattic Pro.
+- **Recurring donations:** Receive WordPress recurring donations with **Stripe**, **PayPal**, **Square** , and **Moneris** with your _preferred billing intervals_ in Paymattic Pro.
 
 - **Currency switcher:** Paymattic Pro lets your donors switch to their native currency.
 
@@ -196,6 +200,8 @@ Paymattic Pro includes ⬇️
 
 - Custom donation amount
 
+- Multi column form fields
+
 - Custom payment amount
 
 - Ready-to-use payment templates
@@ -242,6 +248,8 @@ Paymattic lets you manage your transactions worldwide with 13 payment gateways.
 
 - [**Square**](https://paymattic.com/docs/how-to-integrate-square-with-paymattic-in-wordpress/)**:** One-time payment, one-time donation, and subscription payment
 
+- [**Moneris**](https://paymattic.com/docs/how-to-integrate-moneris-payment-gateway-in-paymattic/)**:** One-time payment, one-time donation, and subscription payment
+
 - [**Mollie**](https://paymattic.com/docs/how-to-integrate-mollie-in-wordpress-with-paymattic/)
 
 - [**Billplz**](https://paymattic.com/docs/how-to-configure-billplz-in-wordpress-with-paymattic/)
@@ -256,15 +264,13 @@ Paymattic lets you manage your transactions worldwide with 13 payment gateways.
 
 - [**Xendit**](https://paymattic.com/docs/how-to-integrate-xendit-in-wordpress/)
 
-- [**Moneris**](https://paymattic.com/docs/how-to-integrate-moneris-payment-gateway-in-paymattic/)
-
 - [**Vivawallet**](https://paymattic.com/docs/how-to-integrate-viva-wallet-with-paymattic/)
 
 - [**SSLcommerz**](https://paymattic.com/docs/how-to-integrate-sslcommerz-with-paymattic-in-wordpress/)
 
 #### **➡️ Offline Payment Method:**
 
-Get offline payments with Paymattic Pro. Give your customers and donors the transaction details. And then sync the transaction manually to enlist your customers or donors.
+Get offline payments with Paymattic Pro. Give your customers and donors the transaction details and receive bank transfers.
 
 ### **⚙️ Customize and Enhance Your Functionality**
 
@@ -549,16 +555,33 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+
+= 4.6.0 Oct 3, 2024 =
+- Updates UI/UX for all modules
+- Adds Resizable column containers
+- Adds Offline payment support for free users
+- Adds Report page for free users
+- Adds Form-specific leader-board
+- Adds Option to set an initial raised amount for leaderboards
+- Adds Introduces horizontal payment items
+- Updates Donation recurring interval button for improved usability
+- Improvement Webhook integration
+- Improvement Phone field validation and formatting
+- Fixes Google Sheets integration issue
+- Fixes Alignment issue in custom HTML component
+- Fixes Email notification issue for Stripe Embedded payment success
+- Fixes Issue allowing "+" sign in the email field
+
 = 4.5.8 Sep 5, 2024 =
-- Adds Subscriptions with 100% discount coupons
-- Fixes Email notifications for Stripe embedded payment
-- Fixes Undefined php_uname function issue
-- Fixes Step form component rendering issues for editor
-- Fixes Payment item shortcode issue.
+- Adds Support for subscriptions with 100% discount coupons
+- Fixes an issue where email notifications were not being sent on successful payments with the Stripe Embedded payment method
+- Fixes the bug related to calling the undefined php_uname function
+- Fixes Step form component rendering issues in the editor
+- Fixes the issue with the payment item shortcode.
 
 = 4.5.7 Jun 12, 2024 =
 - Fixes Stripe related issues
-- Stripe error handling improvement
+- Improvement Stripe error handling 
 
 = 4.5.6 May 31, 2024 =
 - Fixes Stripe Embedded Checkout issue

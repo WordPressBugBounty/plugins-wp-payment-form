@@ -33,6 +33,11 @@ class CheckBoxComponent extends BaseComponent
                     'type' => 'switch',
                     'group' => 'general'
                 ),
+                'inline' => array(
+                    'label' => 'Inline Checkbox Items',
+                    'type' => 'switch',
+                    'group' => 'general'
+                ),
                 'default_value' => array(
                     'label' => 'Default Value',
                     'type' => 'text',
@@ -77,6 +82,7 @@ class CheckBoxComponent extends BaseComponent
                 'label' => 'Checkboxes',
                 'required' => 'no',
                 'default_value' => '',
+                'inline' => 'no',
                 'conditional_logic_option' => array(
                     'conditional_logic' => 'no',
                     'conditional_type'  => 'any',

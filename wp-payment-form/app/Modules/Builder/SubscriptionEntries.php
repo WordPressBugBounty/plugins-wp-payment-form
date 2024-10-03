@@ -5,6 +5,25 @@ use WPPayForm\Framework\Support\Arr;
 
 use WPPayForm\App\Services\GlobalTools;
 
+function getPaymentStatus($status) {
+    $assetUrl = WPPAYFORM_URL . 'assets/images/payment-status';
+
+    if(!empty($status)){
+        return $assetUrl . '/' . strtolower($status) . '.svg';
+    }
+    return '';
+}
+
+function getPaymentGateways($gateways) {
+    $assetUrl = WPPAYFORM_URL . 'assets/images/gateways';
+
+    if (!empty($gateways)) {
+        return $assetUrl . '/' . strtolower($gateways) . '.svg';
+    }
+
+    return '';
+}
+
 class SubscriptionEntries
 {
     public function render($subscriptionEntry, $subscriptionStatus, $formId, $submissionHash, $can_sync_subscription_billings, $isNotOfflinePayment, $planName)
@@ -56,11 +75,13 @@ class SubscriptionEntries
                             </div>
                             <div class='wpf-user-dashboard-table__column'>
                                 <span class='wpf-payment-status <?php echo esc_attr(Arr::get($donationItem, 'status', ''))?>'>
+                                    <img src="<?php echo esc_url(getPaymentStatus(Arr::get($donationItem, 'status', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'status', '')); ?>">
                                     <?php echo esc_html(Arr::get($donationItem, 'status', '')) ?>
                                 </span>
                             </div>
                             <div class='wpf-user-dashboard-table__column'>
-                                <?php echo esc_html(ucfirst(Arr::get($donationItem, 'payment_method', ''))) ?>
+                                <!-- <?php echo esc_html(ucfirst(Arr::get($donationItem, 'payment_method', ''))) ?> -->
+                                <img src="<?php echo esc_html(getPaymentGateways(Arr::get($donationItem, 'payment_method', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'payment_method', '')); ?>">
                             </div>
                         </div>
                     <?php endforeach ?>

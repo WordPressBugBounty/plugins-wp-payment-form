@@ -10,24 +10,24 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
     <table class="table wpf_order_items_table wpf_table table_bordered">
         <thead>
             <th>
-                <?php _e('Item', 'wp-payment-form'); ?>
+                <?php esc_html_e('Item', 'wp-payment-form'); ?>
             </th>
             <th>
-                <?php _e('Quantity', 'wp-payment-form'); ?>
+                <?php esc_html_e('Quantity', 'wp-payment-form'); ?>
             </th>
             <th>
-                <?php _e('Price', 'wp-payment-form'); ?>
+                <?php esc_html_e('Price', 'wp-payment-form'); ?>
             </th>
            
             <th>
-                <?php _e('Line Total', 'wp-payment-form'); ?>
+                <?php esc_html_e('Line Total', 'wp-payment-form'); ?>
             </th>
             <?php if ($submission->tax_items->count()): ?>
                 <th>
-                    <?php _e('Tax Total', 'wp-payment-form'); ?>
+                    <?php esc_html_e('Tax Total', 'wp-payment-form'); ?>
                 </th>
                 <th>
-                    <?php _e('Gross Total', 'wp-payment-form'); ?>
+                    <?php esc_html_e('Gross Total', 'wp-payment-form'); ?>
                 </th>
             <?php endif; ?>
         </thead>
@@ -46,10 +46,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
                                 <?php echo esc_html($order_item['quantity']); ?>
                             </td>
                             <td style="text-align:center">
-                                <?php echo wpPayFormFormattedMoney($order_item['item_price'], $currencySetting); ?>
+                                <?php echo esc_html(wpPayFormFormattedMoney($order_item['item_price'], $currencySetting)); ?>
                             </td style="text-align:center">
                             <td style="text-align:center">
-                                <?php echo wpPayFormFormattedMoney($order_item['line_total'], $currencySetting); ?>
+                                <?php echo esc_html(wpPayFormFormattedMoney($order_item['line_total'], $currencySetting)); ?>
                             </td>
                             <?php foreach ($submission->tax_items as $tax_item) : ?> 
                                 <?php 
@@ -60,10 +60,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
 
                             <?php if ($tax_total) : ?>
                                 <td style="text-align:center">
-                                    <?php echo wpPayFormFormattedMoney($tax_total, $currencySetting); ?>
+                                    <?php echo esc_html(wpPayFormFormattedMoney($tax_total, $currencySetting)); ?>
                                 </td>
                                 <td style="text-align:center">
-                                    <?php echo wpPayFormFormattedMoney($tax_total + $order_item['line_total'], $currencySetting); ?>
+                                    <?php echo esc_html(wpPayFormFormattedMoney($tax_total + $order_item['line_total'], $currencySetting)); ?>
                                 </td>
                             <?php endif; ?>
                         </tr>
@@ -81,10 +81,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
                                 <?php echo esc_html($order_item->quantity); ?>
                             </td>
                             <td style="text-align:center">
-                                <?php echo wpPayFormFormattedMoney($order_item->item_price, $currencySetting); ?>
+                                <?php echo esc_html(wpPayFormFormattedMoney($order_item->item_price, $currencySetting)); ?>
                             </td>
                             <td style="text-align:center">
-                                <?php echo wpPayFormFormattedMoney($order_item->line_total, $currencySetting); ?>
+                                <?php echo esc_html(wpPayFormFormattedMoney($order_item->line_total, $currencySetting)); ?>
                             </td>
                             <?php foreach ($submission->tax_items as $tax_item) : ?> 
                                 <?php 
@@ -95,10 +95,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
 
                             <?php if ($tax_total) : ?>
                                 <td style="text-align:center">
-                                    <?php echo wpPayFormFormattedMoney($tax_total, $currencySetting); ?>
+                                    <?php echo esc_html(wpPayFormFormattedMoney($tax_total, $currencySetting)); ?>
                                 </td>
                                 <td style="text-align:center">
-                                    <?php echo wpPayFormFormattedMoney($tax_total + $order_item->line_total, $currencySetting); ?>
+                                    <?php echo esc_html(wpPayFormFormattedMoney($tax_total + $order_item->line_total, $currencySetting)); ?>
                                 </td>
                             <?php endif; ?>
                         </tr>
@@ -115,10 +115,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
             if (isset($submission->discounts['applied']) && count($submission->discounts['applied'])): ?>
                 <tr class="wpf_total_row">
                     <th style="text-align: right" colspan="3">
-                        <?php _e('Sub-Total', 'wp-payment-form'); ?>
+                        <?php esc_html__('Sub-Total', 'wp-payment-form'); ?>
                     </th>
                     <td>
-                        <?php echo wpPayFormFormattedMoney($subTotal, $currencySetting); ?>
+                        <?php echo esc_html(wpPayFormFormattedMoney($subTotal, $currencySetting)); ?>
                     </td>
                 </tr>
                 <?php
@@ -127,10 +127,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
                     ?>
                     <tr class="wpf_discount_row">
                         <th style="text-align: right" colspan="3">
-                            <?php echo 'Discounts (' . $discount->item_name . ' )'; ?>
+                            <?php echo esc_html__('Discounts') . ' (' . esc_html($discount->item_name) . ')'; ?>
                         </th>
                         <td>
-                            <?php echo '-' . wpPayFormFormattedMoney($discount->line_total, $currencySetting); ?>
+                            <?php echo '-' . esc_html(wpPayFormFormattedMoney($discount->line_total, $currencySetting)); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -138,10 +138,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
             <?php if ($submission->tax_items->count()): ?>
                 <tr class="wpf_sub_total_row">
                     <th style="text-align: right" colspan="5">
-                        <?php _e('Sub Total', 'wp-payment-form'); ?>
+                        <?php esc_html__('Sub Total', 'wp-payment-form'); ?>
                     </th>
                     <td>
-                        <?php echo wpPayFormFormattedMoney($subTotal - $discountTotal, $currencySetting); ?>
+                        <?php echo esc_html(wpPayFormFormattedMoney($subTotal - $discountTotal, $currencySetting)); ?>
                     </td>
                 </tr>
                 <?php foreach ($submission->tax_items as $tax_item): ?>
@@ -150,7 +150,7 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
                             <?php echo esc_html($tax_item->item_name); ?>
                         </td>
                         <td>
-                            <?php echo wpPayFormFormattedMoney($tax_item->line_total, $currencySetting); ?>
+                            <?php echo esc_html(wpPayFormFormattedMoney($tax_item->line_total, $currencySetting)); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -164,10 +164,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
                             <?php echo '3' ?> 
                         <?php endif  ?>
                     ">
-                    <?php _e('Total', 'wp-payment-form'); ?>
+                    <?php esc_html__('Total', 'wp-payment-form'); ?>
                 </th>
                 <td>
-                    <?php echo wpPayFormFormattedMoney(intval($submission->payment_total), $currencySetting); ?>
+                    <?php echo esc_html(wpPayFormFormattedMoney(intval($submission->payment_total), $currencySetting)); ?>
                 </td>
             </tr>
         </tfoot>
@@ -177,7 +177,11 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
 <?php
 if ($submission->payment_method === 'paypal' && $submission->payment_status == 'pending') { ?>
     <div style="background: #f7fafc; border: 1px solid #cac8c8; padding: 10px; font-size:13px; margin-bottom: 12px;">
-        <h3><?php _e('Payment is not marked as paid yet.', 'wp-payment-form') ?></h3>
-        <?php _e('Sometimes, PayPal payments take a few moments to mark as paid! Try reloading receipt page after sometime.', 'wp-payment-form') ?>
+        <h3><?php esc_html_e('Payment is not marked as paid yet.', 'wp-payment-form') ?></h3>
+        <?php esc_html_e('Sometimes, PayPal payments take a few moments to mark as paid! Try reloading receipt page after sometime.', 'wp-payment-form') ?>
+        <div class="wpf_pending-loader">
+            <div class="spinner"></div>
+            <div class="countdown"></div>
+        </div>
     </div>
 <?php } ?>

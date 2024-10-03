@@ -191,7 +191,7 @@ abstract class BaseComponent
              class="<?php echo esc_attr($controlClass); ?>">
             <?php $this->buildLabel($fieldOptions, $form, array('for' => $inputId)); ?>
             <div class="wpf_input_content">
-                <input style="padding-left: 48px;" <?php $this->printAttributes($attributes); ?> />
+                <input style="padding-left: 65px;" <?php $this->printAttributes($attributes); ?> />
                 <input <?php $this->printAttributes($hidden_attributes); ?> />
             </div>
         </div>
@@ -203,12 +203,16 @@ abstract class BaseComponent
         $fieldOptions = Arr::get($element, 'field_options', false);
         $hidden_attr = Arr::get($element, 'field_options.conditional_logic_option.conditional_logic') === 'yes' ? 'none' : 'block';
         $disable = Arr::get($fieldOptions, 'disable', false);
+        $inline_radio_buttons = Arr::get($fieldOptions, 'inline', 'no');
 
         if (!$fieldOptions || $disable) {
             return;
         }
 
         $controlClass = $this->elementControlClass($element);
+        if($inline_radio_buttons == 'yes'){
+            $controlClass .= ' wpf_inline_radio';
+        }
         $inputClass = $this->elementInputClass($element);
         $inputId = 'wpf_input_' . $form->ID . '_' . $element['id'];
 
@@ -263,10 +267,16 @@ abstract class BaseComponent
         $disable = Arr::get($fieldOptions, 'disable', false);
         $has_pro = defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO;
         $displayValue = $has_pro === true ? $hiddenAttr : '';
+        $inlineCheckboxes = Arr::get($fieldOptions, 'inline', 'no');
         if (!$fieldOptions || $disable) {
             return;
         }
         $controlClass = $this->elementControlClass($element);
+
+        if ($inlineCheckboxes == 'yes') {
+            $controlClass .= ' wpf_inline_checkbox';
+        }
+        
         $inputClass = $this->elementInputClass($element);
         $inputId = 'wpf_input_' . $form->ID . '_' . $element['id'];
         $defaultValue = Arr::get($fieldOptions, 'default_value');
@@ -345,7 +355,7 @@ abstract class BaseComponent
                 continue;
             }
             
-            $atts .= $attributeKey . '="' . htmlspecialchars($attribute, ENT_QUOTES) . '" ';
+            $atts .= esc_attr($attributeKey) . '="' . esc_attr($attribute) . '" ';
         }
         return $atts;
     }
@@ -357,7 +367,7 @@ abstract class BaseComponent
             if (is_array($attribute)) {
                 $attribute = json_encode($attribute);
             }
-            echo esc_attr($attributeKey).'="'. htmlspecialchars($attribute ?? '', ENT_QUOTES ?? '') . '" ';
+            echo esc_attr($attributeKey).'="'. esc_attr($attribute ?? '') . '" ';
         }
     }
 

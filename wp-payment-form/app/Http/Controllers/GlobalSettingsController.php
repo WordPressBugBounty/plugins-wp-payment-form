@@ -5,6 +5,7 @@ namespace WPPayForm\App\Http\Controllers;
 use WPPayForm\App\Models\Form;
 use WPPayForm\App\Models\GlobalSettings;
 use WPPayForm\App\Modules\PaymentMethods\Stripe\Stripe;
+use WPPayForm\App\Modules\PaymentMethods\Offline\OfflineSettings;
 use WPPayForm\App\Services\AccessControl;
 use WPPayForm\App\Services\GeneralSettings;
 use WPPayForm\App\Services\Turnstile\Turnstile;
@@ -38,7 +39,8 @@ class GlobalSettingsController extends Controller
             ], 423);
         }
     }
-    public function getDefaultSubscriptionCancelEmailSettings() {
+    public function getDefaultSubscriptionCancelEmailSettings()
+    {
         $notifications = [
             'enable_cancel_subscription_email' => 'no',
             'customer_email_settings' => [
@@ -169,7 +171,7 @@ class GlobalSettingsController extends Controller
     {
         try {
             if (current_user_can('manage_options')) {
-                update_option('_wppayform_global_cancel_subsription_email_settings', Arr::get($paymatticUserPermissions, 'notifications', null), null );
+                update_option('_wppayform_global_cancel_subsription_email_settings', Arr::get($paymatticUserPermissions, 'notifications', null), null);
                 $this->addPaymatticCustomUser($paymatticUserPermissions['paymatticUserPermissions']);
                 update_option('_wppayform_enable_paymattic_user_dashboard', $paymatticUserPermissions, 'no');
                 update_option('_wppayform_user_dashboard_page', Arr::get($paymatticUserPermissions, 'activePage'));
@@ -237,24 +239,81 @@ class GlobalSettingsController extends Controller
 
     public function donorLeaderboardSettings()
     {
+        $form_id = Arr::get($this->request->all(), 'form_id', 0);
+        $option_key = 'wppayform_donation_leaderboard_settings';
+        
+        if ($form_id != 0) {
+            $option_key = 'wppayform_donation_leaderboard_settings_' . $form_id;
+        }
+
+        $settings = get_option($option_key, array(
+            'enable_donation_for' => 'all',
+            'template_id' => 3,
+            'enable_donation_for_specific' => [],
+            'orderby' => 'grand_total',
+        )
+        );
+
+        // If initial_raised_amount is not set or empty, set it to 0
+        if (!isset($settings['initial_raised_amount']) || $settings['initial_raised_amount'] === '') {
+            $settings['initial_raised_amount'] = 0;
+        }
+
         return array(
-            'settings' => get_option('wppayform_donation_leaderboard_settings',  array(
-                'enable_donation_for' => 'all',
-                'template_id' => 3,
-                'enable_donation_for_specific' => [],
-                'orderby' => 'grand_total'
-            )),
+            'settings' => $settings,
             'forms' => Form::getAllForms()
         );
+    }
+
+    public function sanitizeDonationLeaderboardSettings($settings)
+    {
+        foreach ($settings as $key => $setting) {
+            if (is_array($setting)) {
+                $settings[$key] = array_map('sanitize_text_field', $setting);
+                continue;
+            }
+            if (gettype($setting) == 'boolean') {
+                $settings[$key] = rest_sanitize_boolean($setting);
+                continue;
+            }
+            $settings[$key] = sanitize_text_field($setting);
+        }
+
+        return $settings;
     }
 
     public function saveDonationLeaderboardSettings()
     {
         $donation_leaderboard_settings = $this->request->donation_leaderboard_settings;
-        update_option('wppayform_donation_leaderboard_settings', $donation_leaderboard_settings, false);
+        $donation_leaderboard_settings = $this->sanitizeDonationLeaderboardSettings($donation_leaderboard_settings);
+        $option_key = 'wppayform_donation_leaderboard_settings';
+        $form_id = Arr::get($donation_leaderboard_settings, 'form_id', 0);
+
+        if ($form_id) {
+            $form = Form::find($form_id);
+            if (!$form) {
+                return $this->sendError([
+                    'message' => 'Invalid form id'
+                ], 423);
+            }
+
+            $option_key = 'wppayform_donation_leaderboard_settings_' . $form_id;
+        }
+
+        update_option($option_key, $donation_leaderboard_settings, false);
         return array(
             'message' => 'Settings successfully updated'
         );
+    }
+
+    public function offlineSettings()
+    {
+        return (new OfflineSettings())->getPaymentSettings();
+    }
+
+    public function saveOfflineSettings()
+    {
+        return (new OfflineSettings())->savePaymentMethodSettings($this->request, 'offline');
     }
 
     public function stripe()
@@ -393,9 +452,11 @@ class GlobalSettingsController extends Controller
     public function handleFileUpload()
     {
         if (!function_exists('wp_handle_upload')) {
-            require_once(ABSPATH . 'wp-admin/includes/file.php');
+            require_once (ABSPATH . 'wp-admin/includes/file.php');
         }
-        $uploadedfile = $_FILES['file'];
+        if(isset($_FILES['file'])){
+            $uploadedfile = sanitize_text_field($_FILES['file']);
+        }
 
         $acceptedFilles = array(
             'image/png',

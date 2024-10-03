@@ -22,11 +22,11 @@
 
 <div class="wppayform_header_logo">
     <?php if ($site_logo): ?>
-        <a class="wppayform_site_logo" href="<?php echo site_url(); ?>">
+        <a class="wppayform_site_logo" href="<?php echo esc_url(site_url()); ?>">
             <img alt="<?php echo esc_attr($company_name); ?>" src="<?php echo esc_url($site_logo); ?>"/>
         </a>
     <?php else: ?>
-        <a class="wppayform_site_name" href="<?php echo site_url(); ?>"><?php echo esc_html($company_name); ?></a>
+        <a class="wppayform_site_name" href="<?php echo esc_url(site_url()); ?>"><?php echo esc_html($company_name); ?></a>
     <?php endif; ?>
 </div>
 

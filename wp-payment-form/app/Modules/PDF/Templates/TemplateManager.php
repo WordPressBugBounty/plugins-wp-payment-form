@@ -175,27 +175,27 @@ abstract class TemplateManager
         ob_start();
 ?>
         .wpf_pdf_wrapper, p, li, td, th {
-        color: <?php echo $mainColor; ?>;
-        font-size: <?php echo $fontSize; ?>px;
+        color: <?php echo esc_attr($mainColor); ?>;
+        font-size: <?php echo esc_attr($fontSize); ?>px;
         }
 
         .ff_all_data, table {
         empty-cells: show;
         border-collapse: collapse;
-        border: 1px solid <?php echo $secondaryColor; ?>;
+        border: 1px solid <?php echo esc_attr($secondaryColor); ?>;
         width: 100%;
-        color: <?php echo $mainColor; ?>;
+        color: <?php echo esc_attr($mainColor); ?>;
         }
         hr {
-        color: <?php echo $secondaryColor; ?>;
-        background-color: <?php echo $secondaryColor; ?>;
+        color: <?php echo esc_attr($secondaryColor); ?>;
+        background-color: <?php echo esc_attr($secondaryColor); ?>;
         }
         h1, h2, h3, h4, h5, h6 {
-        color: <?php echo $headingColor; ?>;
+        color: <?php echo esc_attr($headingColor); ?>;
         }
         .ff_all_data th {
-        border-bottom: 1px solid <?php echo $secondaryColor; ?>;
-        border-top: 1px solid <?php echo $secondaryColor; ?>;
+        border-bottom: 1px solid <?php echo esc_attr($secondaryColor); ?>;
+        border-top: 1px solid <?php echo esc_attr($secondaryColor); ?>;
         padding-bottom: 10px !important;
         }
         .ff_all_data tr td {
@@ -205,7 +205,7 @@ abstract class TemplateManager
         }
 
         .ff_all_data tr td, .ff_all_data tr th {
-        border: 1px solid <?php echo $secondaryColor; ?>;
+        border: 1px solid <?php echo esc_attr($secondaryColor); ?>;
         text-align: left;
         }
 

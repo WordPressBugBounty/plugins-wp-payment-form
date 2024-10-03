@@ -236,8 +236,12 @@ class StripeInlineHandler extends StripeHandler
      * */
     public function confirmScaSetupIntentsPayment()
     {
-        $submissionId = intval($_REQUEST['submission_id']);
-        $intentId = sanitize_text_field($_REQUEST['payment_intent_id']);
+        if(isset($_REQUEST['submission_id'])){
+            $submissionId = intval(sanitize_text_field(wp_unslash($_REQUEST['submission_id'])));
+        }
+        if(isset($_REQUEST['payment_intent_id'])) {
+            $intentId = sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id']));
+        }
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
 
@@ -352,12 +356,18 @@ class StripeInlineHandler extends StripeHandler
      */
     public function confirmScaPayment()
     {
-        $submissionId = intval($_REQUEST['submission_id']);
-        $paymentMethod = sanitize_text_field($_REQUEST['payment_method']);
+        if(isset($_REQUEST['submission_id'])){
+            $submissionId = intval($_REQUEST['submission_id']);    
+        }
+        if(isset($_REQUEST['payment_method'])){
+            $paymentMethod = sanitize_text_field(wp_unslash($_REQUEST['payment_method']));
+        }
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
         $transactionModel = new Transaction();
-        $paymentIntentId = sanitize_text_field($_REQUEST['payment_intent_id']);
+        if(isset($_REQUEST['payment_intent_id'])) {
+            $paymentIntentId = sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id']));
+        }
         $transaction = $transactionModel->getLatestTransaction($submissionId);
 
         do_action('wppayform/form_submission_activity_start', $submission->form_id);

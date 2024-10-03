@@ -161,7 +161,7 @@ class Browser
      */
     public function reset()
     {
-        $this->_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_textarea_field($_SERVER['HTTP_USER_AGENT']) : "";
+        $this->_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_textarea_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : "";
         $this->_browser_name = self::BROWSER_UNKNOWN;
         $this->_version = self::VERSION_UNKNOWN;
         $this->_platform = self::PLATFORM_UNKNOWN;
@@ -1729,10 +1729,14 @@ class Browser
     public function getIp()
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return sanitize_text_field($_SERVER['HTTP_CLIENT_IP']);
+            return sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return sanitize_text_field($_SERVER['HTTP_X_FORWARDED_FOR']);
+            return sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']));
         }
-        return sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        elseif(!empty($_SERVER['REMOTE_ADDR'])) {
+            return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
+        }
+        // return sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        return null;
     }
 }

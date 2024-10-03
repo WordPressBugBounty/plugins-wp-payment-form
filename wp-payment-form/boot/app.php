@@ -19,14 +19,15 @@ return function ($file) {
             add_action('admin_notices', function () {
                 $class = 'notice notice-error fc_message';
                 $message = 'Looks like you are using PHP 7.0 which is not supported by WPPayForm. Please upgrade your PHP Version greater than to 7.2';
-                printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), $message);
+                printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_attr($message));
             });
         } else {
             do_action('wppayform_loaded', new Application($file));
         }
-        if (get_option('paymattic_ui_update_notice', 0) < current_time('timestamp')) {
+      
+        if ((defined('WPPAYFORMPRO_VERSION') && version_compare(WPPAYFORMPRO_VERSION, '4.6.0', '<')) && (defined('WPPAYFORM_VERSION') &&version_compare(WPPAYFORM_VERSION, '4.6.0', '>='))) {
             $demoPage = new \WPPayForm\App\Modules\Exterior\ProcessDemoPage();
             $demoPage->injectAgreement();
-        };
+        }
     });
 };

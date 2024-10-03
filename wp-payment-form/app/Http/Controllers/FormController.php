@@ -54,10 +54,13 @@ class FormController extends Controller
 
     public function editors($formId)
     {
+
         $builderSettings = Form::getBuilderSettings($formId);
+        $allComponents = GeneralSettings::getComponents();
+
         return array(
             'builder_settings' => $builderSettings,
-            'components' => GeneralSettings::getComponents(),
+            'components' => $allComponents,
             'form_button_settings' => Form::getButtonSettings($formId),
             'currency_settings' => Form::getCurrencyAndLocale($formId)
         );
@@ -84,7 +87,7 @@ class FormController extends Controller
     public function getIntegration(Meta $meta, $formId)
     {
         try {
-            return $meta->getIntegration($formId);
+            dd($meta->getIntegration($formId));
         } catch (\Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage()
@@ -128,6 +131,7 @@ class FormController extends Controller
     public function settings(Form $form, $formId)
     {
         $allPages = $form->getAllPages();
+        $allPosts = $form->getAllPosts();
 
         return array(
             'confirmation_settings' => Form::getConfirmationSettings($formId),
@@ -137,6 +141,7 @@ class FormController extends Controller
             'currencies' => GeneralSettings::getCurrencies(),
             'locales' => GeneralSettings::getLocales(),
             'pages' => $allPages,
+            'posts' => $allPosts,
             'recaptcha_settings' => GeneralSettings::getRecaptchaSettings(),
             'form_recaptcha_status' => get_post_meta($formId, '_recaptcha_status', true),
             'turnstile_settings' => GeneralSettings::getTurnstileSettings(),

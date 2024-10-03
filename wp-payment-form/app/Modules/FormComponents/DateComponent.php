@@ -227,10 +227,10 @@ class DateComponent extends BaseComponent
                             return;
                         }
                         flatpickr.localize(window.wp_payform_general.date_i18n);
-                        var config = <?php echo $config ?>;
+                        var config = <?php echo wp_json_encode($config) ?>;
 
                         try {
-                            var customConfig =  <?php echo $customConfigObject; ?> 
+                            var customConfig =  <?php echo wp_json_encode($customConfigObject); ?> 
                         } catch (e) {
                             var customConfig = {};
                         }

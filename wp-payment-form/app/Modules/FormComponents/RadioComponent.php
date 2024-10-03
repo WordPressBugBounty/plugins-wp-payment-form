@@ -33,6 +33,11 @@ class RadioComponent extends BaseComponent
                     'type' => 'switch',
                     'group' => 'general'
                 ),
+                'inline' => array(
+                    'label' => 'Inline Radio Items',
+                    'type' => 'switch',
+                    'group' => 'general'
+                ),
                 'default_value' => array(
                     'label' => 'Default Value',
                     'type' => 'text',
@@ -77,6 +82,7 @@ class RadioComponent extends BaseComponent
                 'label' => 'Radio',
                 'placeholder' => '',
                 'required' => 'no',
+                'inline' => 'no',
                 'options' => array(
                     array(
                         'label' => 'Radio Item 1',

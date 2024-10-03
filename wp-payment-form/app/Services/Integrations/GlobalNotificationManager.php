@@ -74,6 +74,11 @@ class GlobalNotificationManager
             // We will decide if this feed will run on async or sync
             $integrationKey = Arr::get($feedKeys, $feed['meta_key']);
 
+            // Giving support of legacy integration for zapier,webhook and slack as they were used to work separately before 4.6.0
+            if ($feed['meta_key'] == 'webhook' || $feed['meta_key'] == 'zapier' || $feed['meta_key'] == 'slack') {
+                $feed['meta_key'] = $feed['meta_key'] . '_feeds';
+            }
+
             $action = 'wppayform_integration_notify_' . $feed['meta_key'];
 
             if (!$entry) {

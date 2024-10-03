@@ -27,16 +27,17 @@ function wpPayFormFormatMoney($amountInCents, $formId = false)
 function wpPayFormFormattedMoney($amountInCents, $currencySettings)
 {
     //get exact currency symbol from currency code ex: get $ from &#36;
-    $symbol = $currencySettings['currency_sign'];
-    $position = $currencySettings['currency_sign_position'];
+    $Arr = new WPPayForm\Framework\Support\Arr();
+    $symbol = $Arr::get($currencySettings, 'currency_sign');
+    $position = $Arr::get($currencySettings, 'currency_sign_position');
     $decmalSeparator = '.';
     $thousandSeparator = ',';
-    if ($currencySettings['currency_separator'] != 'dot_comma') {
+    if ($Arr::get($currencySettings, 'currency_separator') != 'dot_comma') {
         $decmalSeparator = ',';
         $thousandSeparator = '.';
     }
     $decimalPoints = 2;
-    if ($amountInCents % 100 == 0 && $currencySettings['decimal_points'] == 0) {
+    if ($amountInCents % 100 == 0 && $Arr::get($currencySettings, 'decimal_points') == 0) {
         $decimalPoints = 0;
     }
 

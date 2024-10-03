@@ -12,6 +12,14 @@ use WPPayForm\App\Modules\Integrations\DashboardWidget;
 
 class DependencyHandler
 {
+
+    public function registerOffline()
+    {
+         // Register Offline Payment Gateway
+        $offline = new \WPPayForm\App\Modules\PaymentMethods\Offline\OfflineProcessor();
+        $offline->init();
+    }
+
     public function registerStripe()
     {
         // Stripe Payment Method Init Here

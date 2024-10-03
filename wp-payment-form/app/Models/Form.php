@@ -21,6 +21,13 @@ class Form extends Model
             ->get();
     }
 
+
+    public function deleteForms($formIds) {
+        foreach ($formIds as $formId) {
+            static::deleteForm($formId);
+        }
+    }
+    
     public static function getFormStatus($formId)
     {
         $formId = sanitize_text_field($formId);
@@ -150,6 +157,11 @@ class Form extends Model
         $perPage = absint(Arr::get($request, 'per_page'));
         $pageNumber = absint(Arr::get($request, 'page_number'));
         $searchString = sanitize_text_field(Arr::get($request, 'search_string'));
+        $startDate = sanitize_text_field( Arr::get($request, 'filter_by_date.0', null));
+        $endDate = sanitize_text_field( Arr::get($request, 'filter_by_date.1', null));
+        $orderBy = sanitize_text_field(Arr::get($request, 'order_by', 'ID'));
+        $order = sanitize_text_field(Arr::get($request, 'order', 'DESC'));
+        // ('created_at', [$startDate, $endOfDay])
         $args = array(
             'posts_per_page' => $perPage,
             'offset' => $perPage * ($pageNumber - 1)
@@ -159,7 +171,7 @@ class Form extends Model
             $args['s'] = $searchString;
         }
 
-        return static::getForms($request, $args, $with = array('entries_count'));
+        return static::getForms($request, $args, $with = array('entries_count'), $startDate, $endDate, $orderBy, $order);
     }
 
     public static function storeData($request)
@@ -192,7 +204,7 @@ class Form extends Model
         return $formId;
     }
 
-    public static function getForms($request, $args = array(), $with = array())
+    public static function getForms($request, $args = array(), $with = array(), $startDate = null, $endDate = null, $orderBy = 'ID', $order = 'DESC')
     {
 
         $whereArgs = array(
@@ -206,7 +218,7 @@ class Form extends Model
 
         $keyword = !empty($args['s']) ? $args['s'] : '';
 
-        $formsQuery = static::orderBy('ID', 'DESC');
+        $formsQuery = static::orderBy($orderBy, 'DESC');
 
         foreach ($whereArgs as $key => $where) {
             if(is_array($where)){
@@ -220,6 +232,10 @@ class Form extends Model
             $query->where('post_title', 'LIKE', "%{$keyword}%")
                 ->orWhere('ID', 'LIKE', "%{$keyword}%");
         });
+
+        if ($startDate && $endDate) {
+            $formsQuery->whereBetween('post_date', [$startDate, $endDate]);
+        }
 
         $total = $formsQuery->count();
         $forms = $formsQuery->select('*')->limit($perPage)->offset($args['offset'])->get();
@@ -358,7 +374,7 @@ class Form extends Model
             'css_class' => ''
         );
 
-        if ($settings['button_text'] == 'Submit') {
+        if (Arr::get($settings, 'button_text')== 'Submit') {
             $settings['button_text'] = $buttonDefault['button_text'];
         }
 
@@ -369,6 +385,15 @@ class Form extends Model
     {
         return $this->select(array('ID', 'post_title'))
             ->where('post_type', 'page')
+            ->where('post_status', 'publish')
+            ->get();
+    }
+    
+    // make a static function to return all the posts
+    public static function getAllPosts()
+    {
+        return static::select(array('ID', 'post_title'))
+            ->where('post_type', 'post')
             ->where('post_status', 'publish')
             ->get();
     }
@@ -398,13 +423,27 @@ class Form extends Model
             if (isset($element['field_options']['disable']) && $element['field_options']['disable'] == true) {
                 continue;
             }
-
-            $formattedElements[$element['group']][$element['id']] = array(
-                'options' => Arr::get($element, 'field_options'),
-                'type' => $element['type'],
-                'id' => $element['id'],
-                'label' => Arr::get($element, 'field_options.label')
-            );
+            if (Arr::get($element, 'type') == 'container') {
+                $columns = Arr::get($element, 'field_options.columns', []);
+                foreach ($columns as $column) {
+                    $fields = Arr::get($column, 'fields', []);
+                    foreach ($fields as $field) {
+                        $formattedElements[$field['group']][$field['id']] = array(
+                            'options' => Arr::get($field, 'field_options'),
+                            'type' => $field['type'],
+                            'id' => $field['id'],
+                            'label' => Arr::get($field, 'field_options.label')
+                        );
+                    }
+                }
+            } else {
+                $formattedElements[$element['group']][$element['id']] = array(
+                    'options' => Arr::get($element, 'field_options'),
+                    'type' => $element['type'],
+                    'id' => $element['id'],
+                    'label' => Arr::get($element, 'field_options.label')
+                );
+            }
         }
 
         return $formattedElements;
@@ -667,22 +706,13 @@ class Form extends Model
         }
         $defaultSettings = array();
         $elements = wp_parse_args($builderSettings, $defaultSettings);
-        $allElements = GeneralSettings::getComponents();
         $parsedElements = array();
-
         foreach ($elements as $elementIndex => $element) {
-            // if (!empty($allElements[$element['type']])) {
-            //     $componentElement = $allElements[$element['type']];
-            //     $fieldOption = Arr::get($element, 'field_options');
-            //     if ($fieldOption) {
-            //         $componentElement['field_options'] = $fieldOption;
-            //     }
-            //     $componentElement['id'] = Arr::get($element, 'id');
-            //     $element = $componentElement;
-            // }
+
             if (empty($element['active_page'])) {
                 $element['active_page'] = 0;
             }
+
             if (empty($element['field_options']['conditional_logic_option'])) {
                 $element['field_options']['conditional_logic_option'] = array(
                     'conditional_logic' => 'no',
@@ -696,12 +726,40 @@ class Form extends Model
                     ),
                 );
             }
+            
             if ($element['type'] == 'choose_payment_method') {
                 $available_methods = apply_filters('wppayform/available_payment_methods', array());
                 $element['editor_elements']['method_settings']['available_methods'] = $available_methods;
             }
+
+            $hasHorizontal = Arr::get($element, 'field_options.horizontal');
+   
+            if ($element['type'] == 'payment_item' && !$hasHorizontal) {
+                $element['editor_elements']['horizontal'] = array(
+                    'label' => 'Horizontal Items',
+                    'type' => 'switch',
+                    'group' => 'general'
+                );
+
+                $element['editor_elements']['paymattic_template'] = array(
+                    'label' => 'Paymattic Template',
+                    'type' => 'payment_item_radio',
+                    'group' => 'general',
+                    'options' => array(
+                        'default_template' => 'Default Template',
+                        'paymattic_inline_template' => 'Paymattic Inline Card Template',
+                        'paymattic_grid_template' => 'Paymattic Grid Card Template'
+                    )
+                );
+
+                $element['field_options']['horizontal'] = 'no';
+                $element['field_options']['paymattic_template'] = 'default_template';
+
+            }
+
             $parsedElements[$elementIndex] = $element;
         }
+
         return $parsedElements;
     }
 
@@ -828,8 +886,12 @@ class Form extends Model
         return false;
     }
 
-    public static function getStatus()
+    public static function getStatus($filter_data = [])
     {
+        $startDate = Arr::get($filter_data, 'start_date');
+        // will use endOfDay from framework after update
+        $endDate = Arr::get($filter_data, 'end_date') . ' 23:59:59';
+
         $stats = Submission::select([
             'wpf_submissions.id',
             'wpf_submissions.form_id',
@@ -847,6 +909,9 @@ class Form extends Model
 
         ])
             ->orderBy('wpf_submissions.updated_at', 'DESC')
+            ->when($startDate, function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('wpf_submissions.updated_at', [$startDate, $endDate]);
+            })
             ->join('posts', 'posts.ID', '=', 'wpf_submissions.form_id')
             ->leftJoin('wpf_subscriptions', function ($table) {
                 $table->on('wpf_subscriptions.submission_id', '=', 'wpf_submissions.id');
@@ -877,6 +942,9 @@ class Form extends Model
             $DB->raw("SUM(payment_total) as total_paid")
         )
             ->whereIn('payment_status', ['paid'])
+            ->when($startDate, function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('updated_at', [$startDate, $endDate]);
+            })
             ->groupBy('currency')
             ->get();
 
@@ -884,6 +952,9 @@ class Form extends Model
             $DB->raw('SUM(payment_total - initial_amount) as recurring_total')
         )
             ->whereIn('status', ['active'])
+            ->when($startDate, function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('updated_at', [$startDate, $endDate]);
+            })
             ->get();
 
         foreach ($paidStats as $paidStat) {

@@ -21,6 +21,7 @@ $router->prefix('file')->withPolicy('AdminPolicy')->group(function ($router) {
 $router->prefix('forms')->withPolicy('AdminPolicy')->group(function ($router) {
     $router->get('/', 'FormsController@index');
     $router->post('/', 'FormsController@store');
+    $router->delete('/remove', 'FormsController@remove');
     $router->get('/demo', 'FormsController@demo');
     $router->get('/formatted', 'FormsController@formatted');
     $router->post('/migrate_order_items', 'FormsController@migrateOrderItems');
@@ -43,6 +44,9 @@ $router->prefix('forms')->withPolicy('AdminPolicy')->group(function ($router) {
 
         $router->get('/stripe', 'GlobalSettingsController@stripe');
         $router->post('/stripe', 'GlobalSettingsController@saveStripe');
+
+        $router->get('/offline', 'GlobalSettingsController@offlineSettings');
+        $router->post('/offline', 'GlobalSettingsController@saveOfflineSettings');
 
         $router->get('/roles', 'GlobalSettingsController@roles');
         $router->post('/roles', 'GlobalSettingsController@setRoles');
@@ -67,6 +71,18 @@ $router->prefix('forms')->withPolicy('AdminPolicy')->group(function ($router) {
         $router->post('/enable', 'IntegrationController@enable');
         $router->post('/chained', 'IntegrationController@chained');
     });
+});
+
+$router->prefix('reports')->withPolicy('AdminPolicy')->group(function ($router) {
+    $router->get('/', 'ReportsController@getReports');
+    $router->get('/todays-data', 'ReportsController@getCustomerAndSubmissionReports');
+    $router->get('/statistics', 'ReportsController@getStatistics');
+    $router->get('/recent-revenues', 'ReportsController@getRecentRevenue');
+    $router->post('/top-customers', 'ReportsController@topCustomers');
+    $router->get('/customers', 'ReportsController@customers');
+    $router->get('/customers/{customer_email}', 'ReportsController@customer');
+    $router->get('/customers/{customer_email}/profile', 'ReportsController@customerProfile');
+    $router->get('/customers/{customer_email}/engagements', 'ReportsController@customerEngagements');
 });
 
 $router->prefix('dashboard')->withPolicy('FrontendUserPolicy')->group(function ($router) {
@@ -117,7 +133,7 @@ $router->prefix('form/{id}')->withPolicy('AdminPolicy')->group(function ($router
         $router->get('/slack', 'FormController@getIntegration')->int('id');
 
         $router->get('/', 'IntegrationController@getIntegrations')->int('id');
-
+        $router->post('/verify', 'IntegrationController@verify')->int('id');
         $router->prefix('/settings')->group(function ($router) {
             $router->get('/', 'IntegrationController@settings')->int('id');
             $router->post('/', 'IntegrationController@saveSettings')->int('id');

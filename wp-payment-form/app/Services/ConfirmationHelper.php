@@ -28,7 +28,8 @@ class ConfirmationHelper
         // add payment hash to the url
         if (
             ($confirmation['redirectTo'] == 'customUrl' && $confirmation['customUrl']) ||
-            ($confirmation['redirectTo'] == 'customPage' && $confirmation['customPage'])
+            ($confirmation['redirectTo'] == 'customPage' && $confirmation['customPage']) ||
+            ($confirmation['redirectTo'] == 'customPost' && $confirmation['customPage'])
         ) {
             if ($confirmation['redirectTo'] == 'customUrl') {
                 $url = $confirmation['customUrl'];

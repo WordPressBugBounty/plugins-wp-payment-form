@@ -2,15 +2,21 @@
     .wpf_payment_receipt{
         display: block !important;
     }
-    .wpf_table {
+    /* .wpf_table {
         width: 100%;
         empty-cells: show;
         font-size: 14px;
         border: 1px solid #cbcbcb !important;
+    } */
+
+    .wpf_order_items_table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
     }
 
     .wpf_table td, .wpf_table th {
-        border-left: 1px solid #cbcbcb;
+        border-left: 1px solid #D6DAE1;
         border-width: 0 0 0 1px;
         font-size: 15px;
         margin: 0;
@@ -24,7 +30,7 @@
     }
 
     .wpf_table thead {
-        background-color: #e3e8ee;
+        background-color: #F5F6F7;
         color: #000;
         /* text-align: left; */
         vertical-align: bottom
@@ -34,16 +40,30 @@
         background-color: transparent
     }
 
+    /* .wpf_table tbody {
+        border-top: 1px solid #D6DAE1;
+    } */
+
     .wpf_table tfoot {
-        border-top: 1px solid #cbcbcb;
+        border-top: 1px solid #D6DAE1;
     }
 
     table.input_items_table {
+        width: 100%;
         border-collapse: collapse;
+        border-radius: 4px;
+    }
+
+    .table.input_items_table tr {
+        border-bottom: 1px solid #D6DAE1;
+    }
+
+    .table.input_items_table tr:last-child {
+        border-bottom: none;
     }
 
     table.input_items_table tr td, table.input_items_table tr th {
-        border: 1px solid #cbcbcb;
+        border-left: 1px solid #D6DAE1;
         text-align: left;
         width: auto;
         word-break: normal;
@@ -54,6 +74,9 @@
     }
 
     .wpf_payment_info {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
         width: 100%;
         -webkit-box-shadow: 0px -2px #e3e8ee;
         box-shadow: 0px -2px #e3e8ee;
@@ -66,7 +89,7 @@
         margin-right: 0px;
         -webkit-box-shadow: inset -1px 0 #e3e8ee;
         box-shadow: inset -1px 0 #e3e8ee;
-        padding: 14px;
+        padding: 10px 30px;
         font-family: Times New Roman;
         font-size: 15px;
     }
@@ -89,6 +112,16 @@
         font-size: 18px;
         font-family: Times New Roman;
 	    font-weight: 600;
+        margin: 0;
+        padding: 30px 0 12px 0;
+    }
+
+    .wpf_item_content.paid {
+        display: flex;
+        gap: 6px;
+        color: #16896B;
+        background: #F3FAF8;
+        border: 1px solid #F3FAF8;
     }
 
     .wpf_order_items_table {
@@ -96,7 +129,28 @@
     }
 
     .wpf_order_items_table tr {
-        border: 1px solid #ccc;
+        border-bottom: 1px solid #D6DAE1;
         text-align: center;
+    }
+
+    .wpf_order_items_table tbody tr {
+        border-top: 1px solid #D6DAE1;
+    }
+
+    .wpf_order_items_table tr:last-child {
+        border-bottom: none;
+    }
+
+    .wpf_order_items_table_wrapper {
+        border: 1px solid #D6DAE1;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .wpf_submission_details {
+        border: 1px solid #D6DAE1;
+        border-radius: 4px;
+        overflow: hidden;
+        padding-bottom: 0 !important;
     }
 </style>

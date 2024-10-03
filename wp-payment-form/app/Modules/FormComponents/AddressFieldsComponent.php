@@ -203,9 +203,9 @@ class AddressFieldsComponent extends BaseComponent
             }
         }
 
-        echo $hasCondition ? "<div required_id=" . $fieldName . " style=" . $hiddenAttr . " class='wpf_address_wrapper wpf_has_condition'>" : '<div class="wpf_address_wrapper">';
+        echo $hasCondition ? "<div required_id=" . esc_attr($fieldName) . " style=" . esc_attr($hiddenAttr) . " class='wpf_address_wrapper wpf_has_condition'>" : '<div class="wpf_address_wrapper">';
         if ($addressLabel = Arr::get($element, 'field_options.label')) {
-            echo '<label condition_id=' . $fieldName . ' class="wpf_address_heading">' . $addressLabel . '</label>';
+            echo '<label condition_id=' . esc_attr($fieldName) . ' class="wpf_address_heading">' . esc_html($addressLabel) . '</label>';
         }
         foreach (array_chunk($inputFields, 2) as $itemGroup) {
             echo '<div class="wpf-t-container">';

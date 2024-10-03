@@ -220,4 +220,41 @@ class Subscription extends Model
         }
         return $subscriptions;
     }
+
+    public function getLatestSubscriptions()
+    {
+        try{
+            $latestSubscriptions = $this->select(
+                'wpf_subscriptions.submission_id',
+                'wpf_subscriptions.form_id as form_id',
+                'wpf_subscriptions.id as subscription_id',
+                'posts.post_title',
+                'wpf_submissions.customer_email',
+                'wpf_submissions.customer_name',
+                'wpf_submissions.currency',
+                'wpf_subscriptions.plan_name',
+                'wpf_subscriptions.recurring_amount',
+                'wpf_subscriptions.payment_total as payment_total',
+                'wpf_subscriptions.bill_count',
+                'wpf_subscriptions.created_at as subscription_date'
+            )->where('wpf_subscriptions.status', 'active')
+                ->where('wpf_subscriptions.bill_count', '>', 0)
+                ->join('posts', 'posts.ID', '=', 'wpf_subscriptions.form_id')
+                ->leftJoin('wpf_submissions', 'wpf_submissions.id', '=', 'wpf_subscriptions.submission_id')
+                ->orderBy('wpf_subscriptions.id', 'desc')
+                ->limit(10)
+                ->get();
+        } catch(\Exception $e) {
+            return [];
+        }
+       
+        return $latestSubscriptions->toArray();
+        }
+
+        public function getSubscriptionEntryIds()
+        {
+            $entryIds = $this->query()->select('wpf_subscriptions.submission_id')->get();
+            return $entryIds->toArray();
+        }
+
 }

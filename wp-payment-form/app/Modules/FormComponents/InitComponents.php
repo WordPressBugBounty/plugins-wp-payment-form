@@ -28,6 +28,9 @@ class InitComponents
         new \WPPayForm\App\Modules\FormComponents\PaymentSummaryComponent();
         new \WPPayForm\App\Modules\FormComponents\CustomPhoneNumber();
         new \WPPayForm\App\Modules\FormComponents\StepFormComponent();
+        new \WPPayForm\App\Modules\FormComponents\Container\TwoColumnContainer();
+        new \WPPayForm\App\Modules\FormComponents\Container\ThreeColumnContainer();
+
          //! Donation component moved to free version(4.5.3+)
          if (!defined('WPPAYFORMPRO_VERSION')) {
             new \WPPayForm\App\Modules\FormComponents\DonationComponent();
@@ -38,6 +41,7 @@ class InitComponents
                 new \WPPayForm\App\Modules\FormComponents\DonationComponent();
             }
         }
+
         // If only free version is installed, then load demo gateways
         if (!defined('WPPAYFORMPRO_VERSION')) {
             //premium modules
@@ -57,7 +61,7 @@ class InitComponents
             new \WPPayForm\App\Modules\FormComponents\DemoXenditComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoRazorpayComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoSquareComponent();
-            new \WPPayForm\App\Modules\FormComponents\DemoOfflineComponent();
+            // new \WPPayForm\App\Modules\FormComponents\DemoOfflineComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoPaystackComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoPayrexxComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoSSLCommerzComponent();

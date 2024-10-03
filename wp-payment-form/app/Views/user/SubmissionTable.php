@@ -4,11 +4,11 @@ use WPPayForm\Framework\Support\Arr;
 ?>
 <div class="wpf-user-dashboard-table">
     <div class="wpf-user-dashboard-table__header">
-        <div class="wpf-user-dashboard-table__column">ID</div>
-        <div class="wpf-user-dashboard-table__column">Amount</div>
-        <div class="wpf-user-dashboard-table__column">Date</div>
-        <div class="wpf-user-dashboard-table__column">Status</div>
-        <div class="wpf-user-dashboard-table__column">Payment Method</div>
+        <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('ID', 'wp-payment-form'); ?></div>
+        <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Amount', 'wp-payment-form'); ?></div>
+        <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Date', 'wp-payment-form'); ?></div>
+        <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Status', 'wp-payment-form'); ?></div>
+        <div class="wpf-user-dashboard-table__column"><?php esc_html_e('Payment Method', 'wp-payment-form'); ?></div>
     </div>
     <div class="wpf-user-dashboard-table__rows">
         <?php
@@ -29,7 +29,7 @@ use WPPayForm\Framework\Support\Arr;
                     <?php echo esc_html(Arr::get($donationItem, 'created_at', '')) ?>
                 </div>
                 <div class="wpf-user-dashboard-table__column">
-                    <span class="wpf-payment-status <?php echo Arr::get($donationItem, 'payment_status', '') ?>">
+                    <span class="wpf-payment-status <?php echo esc_attr(Arr::get($donationItem, 'payment_status', '')) ?>">
                         <?php echo esc_html(Arr::get($donationItem, 'payment_status', '')) ?>
                     </span>
                 </div>

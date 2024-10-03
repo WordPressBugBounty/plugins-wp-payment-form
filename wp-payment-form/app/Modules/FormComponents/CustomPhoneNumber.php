@@ -69,7 +69,7 @@ class CustomPhoneNumber extends BaseComponent
 
                 'admin_label' => array(
                     'label' => 'Admin Label',
-                    'type' => 'number',
+                    'type' => 'text',
                     'group' => 'advanced'
                 ),
                 'wrapper_class' => array(
@@ -119,9 +119,10 @@ class CustomPhoneNumber extends BaseComponent
 
     public function render($element, $form, $elements)
     {
-        wp_enqueue_script('intlTelInput');
-        wp_enqueue_style('intlTelInput');
-        wp_enqueue_script('intlTelInputUtils');
+        wp_enqueue_script('wpf-intlTelInput');
+        wp_enqueue_script('wpf-intlTelInputUtils');
+        wp_enqueue_style('wpf-intlTelInput');
+
         $element['type'] = 'tel';
         $element['field_options']['options'] = Arr::get($element, 'editor_elements.default_country_code.options');
         $this->renderPhoneInput($element, $form);
@@ -181,7 +182,7 @@ class CustomPhoneNumber extends BaseComponent
                         onlyCountries: show_type === 'visible_list' ? priority_countries : '',
                         excludeCountries: show_type === 'hidden_list' ? priority_countries : '',
                         geoIpLookup: getIp,
-                        utilsScript: "../../build/js/utils.js?1638200991544"
+                        utilsScript: "<?php echo esc_url(WPPAYFORM_URL . 'assets/libs/intl-tel-input/js/utils.js'); ?>",
                     });
                     // reset code
                     var reset = function() {
@@ -194,9 +195,7 @@ class CustomPhoneNumber extends BaseComponent
                         if (input.value.trim()) {
                             if (iti.isValidNumber()) {
                                 let inputIndex = $(input).attr('data-intl-tel-input-id');
-                                let counrty_code = $(`div[aria-owns=iti-${inputIndex}__country-listbox]`).attr('title').split(': ')
-                                let full_phone_number = counrty_code[1]?.concat(` ${input.value.trim()}`)
-                                $('#<?php echo esc_attr($hiddenId); ?>').val(full_phone_number)
+                                $('#<?php echo esc_attr($hiddenId); ?>').val(iti.getNumber())
                             } else {
                                 var errorCode = iti.getValidationError();
                                 errorMsg.innerHTML = errorMap[errorCode];

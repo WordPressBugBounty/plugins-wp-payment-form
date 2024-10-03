@@ -330,7 +330,9 @@ class StripeHostedHandler extends StripeHandler
      */
     public function markPaymentSuccess($action = '')
     {
-        $submissionHash = sanitize_text_field($_REQUEST['wpf_hash']);
+        if(isset($_REQUEST['wpf_hash'])){
+            $submissionHash = sanitize_text_field(wp_unslash($_REQUEST['wpf_hash']));
+        }
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmissionByHash($submissionHash);
 
@@ -359,7 +361,9 @@ class StripeHostedHandler extends StripeHandler
 
     public function markPaymentCancel($action = '')
     {
-        $submissionHash = sanitize_text_field($_REQUEST['wpf_hash']);
+        if(isset($_REQUEST['wpf_hash'])) {
+            $submissionHash = sanitize_text_field(wp_unslash($_REQUEST['wpf_hash']));
+        }
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmissionByHash($submissionHash);
 
@@ -542,13 +546,15 @@ class StripeHostedHandler extends StripeHandler
 
     public function showSuccessMessage($action)
     {
-        $submissionHash = sanitize_text_field($_REQUEST['wpf_hash']);
+        if(isset($_REQUEST['wpf_hash'])) {
+            $submissionHash = sanitize_text_field(wp_unslash($_REQUEST['wpf_hash']));
+        }
 
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmissionByHash($submissionHash);
 
         if (!$submission) {
-            echo __('Sorry! no associate submission found', 'wp-payment-form');
+            echo esc_html__('Sorry! no associate submission found', 'wp-payment-form');
             return;
         }
         $confirmation = ConfirmationHelper::getFormConfirmation($submission->form_id, $submission);
@@ -556,30 +562,43 @@ class StripeHostedHandler extends StripeHandler
         if ($confirmation['redirectTo'] == 'customUrl' && $confirmation['customUrl']) {
             wp_redirect($confirmation['customUrl']);
             exit();
+        }    
+        
+        if ($confirmation['redirectTo'] == 'customPost' && $confirmation['customPage']) {
+            $postId = $confirmation['customPage'];
+            $postUrl = get_permalink($postId);
+            $postUrl = add_query_arg('wpf_hash', $submission->submission_hash, $postUrl);
+            wp_redirect($postUrl);
+            exit();
         }
+        // get post url from post id
+        $postUrl = get_permalink($submission->form_id);
+
         $title = __('Payment has been successfully completed', 'wp-payment-form');
 
         $paymentHeader = apply_filters('wppayform/payment_success_title', $title, $submission);
-        echo '<div class="frameless_body_header">' . $paymentHeader . '</div>';
+        echo '<div class="frameless_body_header">' . esc_html($paymentHeader) . '</div>';
         echo do_shortcode($confirmation['messageToShow']);
         return;
     }
 
     public function showCancelMessage($action)
     {
-        $submissionHash = sanitize_text_field($_REQUEST['wpf_hash']);
+        if(isset($_REQUEST['wpf_hash'])){
+            $submissionHash = sanitize_text_field(wp_unslash($_REQUEST['wpf_hash']));   
+        }
 
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmissionByHash($submissionHash);
 
         if (!$submission) {
-            echo __('Sorry! no associate submission found', 'wp-payment-form');
+            echo esc_html__('Sorry! no associate submission found', 'wp-payment-form');
             return;
         }
 
         $title = __('Payment has been failed', 'wp-payment-form');
         $paymentHeader = apply_filters('wppayform/payment_success_title', $title, $submission);
-        echo '<div class="frameless_body_header">' . $paymentHeader . '</div>';
+        echo '<div class="frameless_body_header">' . esc_html($paymentHeader) . '</div>';
         return;
     }
 
@@ -682,7 +701,7 @@ class StripeHostedHandler extends StripeHandler
                 'submission_id' => $submission->id,
                 'type' => 'activity',
                 'created_by' => 'Paymattic BOT',
-                'content' => __('Stripe recurring subscription Cancelled', 'wp-payment-form')
+                'content' => __('The subscription has been cancelled', 'wp-payment-form')
             )
         );
 

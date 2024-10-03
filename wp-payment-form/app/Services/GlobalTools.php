@@ -68,11 +68,11 @@ class GlobalTools
 
     public function handleImportForm()
     {
-        if (!isset($_FILES['import_file'])) {
+        if (!isset($_FILES['file'])) {
             throw new \Exception('No file found');
         }
 
-        $importFile = Arr::get($_FILES, 'import_file');
+        $importFile = Arr::get($_FILES, 'file');
         $tmpName = Arr::get($importFile, 'tmp_name');
 
         $form = json_decode(file_get_contents($tmpName), true);
@@ -93,7 +93,7 @@ class GlobalTools
         $editUrl = admin_url("admin.php?page=wppayform.php#/edit-form/$newForm->ID/form-builder");
 
         do_action('wppayform/form_json_imported', $newForm);
-
+        
         return array(
             'message' => 'Form successfully imported',
             'form' => $newForm,

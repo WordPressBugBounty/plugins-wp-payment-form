@@ -41,20 +41,23 @@ class InvoiceTemplate extends TemplateManager
             [
                 'key' => 'business_name',
                 'label' => 'Business Name',
+                'placeholder' => 'Ex: XYZ Company',
                 'tips' => 'Your Business Name which will be shown in the invoice header',
-                'type' => 'value_text'
+                'type' => 'admin_input'
             ],
             [
                 'key' => 'business_email',
                 'label' => 'Business Email',
+                'placeholder' => 'Ex: xyz@xyz.com',
                 'tips' => 'Your Business Email which will be shown in the invoice header',
-                'type' => 'value_text'
+                'type' => 'admin_input'
             ],
             [
                 'key' => 'business_address',
                 'label' => 'Business Address',
+                'placeholder' => 'Ex: 24/A, XYZ Road, XYZ City',
                 'tips' => 'Your Business Address which will be shown in the invoice header',
-                'type' => 'value_text'
+                'type' => 'admin_input'
             ],
             [
                 'key' => 'customer_name',
@@ -147,18 +150,18 @@ class InvoiceTemplate extends TemplateManager
                 <td style="width: 40%" class="business_details">
                     <?php if($logo): ?>
                     <div class="business_logo">
-                        <img src="<?php echo $logo; ?>" alt="Business-logo" class='buisness-logo' style="margin: 0; padding-bottom: 10px;"/>
+                        <img src="<?php echo esc_url($logo); ?>" alt="Business-logo" class='buisness-logo' style="margin: 0; padding-bottom: 10px;"/>
                     </div>
                     <div>
-                        <h4><?php echo Arr::get($settings, 'business_name'); ?></h4>
-                        <div class="business_email"><?php echo Arr::get($settings, 'business_email'); ?></div>
-                        <div class="business_address"><?php echo Arr::get($settings, 'business_address'); ?></div>
+                        <h4><?php echo esc_html(Arr::get($settings, 'business_name')); ?></h4>
+                        <div class="business_email"><?php echo esc_html(Arr::get($settings, 'business_email')); ?></div>
+                        <div class="business_address"><?php echo esc_html(Arr::get($settings, 'business_address')); ?></div>
                     </div>
                     <?php endif; ?>
                     <?php if($paymentSettings): ?>
                     <div class="business_address">
-                        <div class="business_name"><?php echo Arr::get($paymentSettings, 'business_name'); ?></div>
-                        <div class="business_address"><?php echo Arr::get($paymentSettings, 'business_address'); ?></div>
+                        <div class="business_name"><?php echo esc_html(Arr::get($paymentSettings, 'business_name')); ?></div>
+                        <div class="business_address"><?php echo esc_html(Arr::get($paymentSettings, 'business_address')); ?></div>
                     </div>
                     <?php endif; ?>
                 </td>
@@ -167,23 +170,23 @@ class InvoiceTemplate extends TemplateManager
                     <div  class="heading_items">
                         <?php if (Arr::get($settings, 'invoice_prefix')): ?>
                             <div class="order_number">
-                                <b><?php _e('Order Number:', 'wp-payment-form'); ?></b>
-                                <span class="invoice_prefix" ><?php echo '<b>'. Arr::get($settings, 'invoice_prefix') . '</b>' . '-' . $submission->id; ?></span>
+                                <b><?php esc_html_e('Order Number:', 'wp-payment-form'); ?></b>
+                                <span class="invoice_prefix" ><?php echo '<b>'. esc_html(Arr::get($settings, 'invoice_prefix')) . '</b>' . '-' . esc_html($submission->id); ?></span>
                             </div>
                         <?php else: ?>
                             <div class="order_number">
-                                <b><?php _e('Order Number:', 'wp-payment-form'); ?></b>
-                                <?php echo $submission->id; ?>
+                                <b><?php esc_html_e('Order Number:', 'wp-payment-form'); ?></b>
+                                <?php echo esc_html($submission->id); ?>
                             </div>
                         <?php endif; ?>
-                        <div class="payment_date"><b><?php _e('Payment Date:', 'wp-payment-form'); ?></b> <?php echo date(get_option( 'date_format' ), strtotime($submission->created_at)); ?></div>
+                        <div class="payment_date"><b><?php esc_html_e('Payment Date:', 'wp-payment-form'); ?></b> <?php echo esc_html(date(get_option( 'date_format' ), strtotime($submission->created_at))); ?></div>
                         <br />
                         <div class="customer_details">
                             <?php if(Arr::get($settings, 'customer_name') || Arr::get($settings, 'customer_address') || Arr::get($settings, 'customer_email')): ?>
-                                <p style="font-weight: bold; margin-bottom:10px;" class="customer_heading"><?php _e('Customer Details', 'wp-payment-form'); ?></p>
-                                <p class="customer_name"><?php echo Arr::get($settings, 'customer_name'); ?></p>
-                                <p class="customer_email"><?php echo Arr::get($settings, 'customer_email'); ?></p>
-                                <p class="customer_address"><?php echo Arr::get($settings, 'customer_address'); ?></p>
+                                <p style="font-weight: bold; margin-bottom:10px;" class="customer_heading"><?php esc_html_e('Customer Details', 'wp-payment-form'); ?></p>
+                                <p class="customer_name"><?php echo esc_html(Arr::get($settings, 'customer_name')); ?></p>
+                                <p class="customer_email"><?php echo esc_html(Arr::get($settings, 'customer_email')); ?></p>
+                                <p class="customer_address"><?php echo esc_html(Arr::get($settings, 'customer_address')); ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -191,19 +194,19 @@ class InvoiceTemplate extends TemplateManager
             </tr>
         </table>
         <hr />
-        <div class="receipt_upper_text"><?php echo Arr::get($settings, 'invoice_upper_text'); ?></div>
+        <div class="receipt_upper_text"><?php echo esc_html(Arr::get($settings, 'invoice_upper_text')); ?></div>
 
-        <div class="invoice_lines"><?php echo Arr::get($settings, 'invoice_lines'); ?></div>
+        <div class="invoice_lines"><?php echo esc_html(Arr::get($settings, 'invoice_lines')); ?></div>
 
         <?php if (strpos(Arr::get($settings, 'payment_summary'), 'class="ffp_payment_info_table"') !== false): ?>
             <div class="invoice_summary">
-                <h3><?php _e('Payment Details', 'wp-payment-form');?></h3>
-                <?php echo Arr::get($settings, 'payment_summary'); ?>
+                <h3><?php esc_html_e('Payment Details', 'wp-payment-form');?></h3>
+                <?php echo esc_html(Arr::get($settings, 'payment_summary')); ?>
             </div>
         <?php endif;?>
 
         <div class="invoice_thanks">
-            <?php echo Arr::get($settings, 'invoice_thanks'); ?>
+            <?php echo esc_html(Arr::get($settings, 'invoice_thanks')); ?>
         </div>
         <style>
             .business_logo {

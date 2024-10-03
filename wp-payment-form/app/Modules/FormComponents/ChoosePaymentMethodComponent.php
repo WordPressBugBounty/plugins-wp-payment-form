@@ -160,8 +160,14 @@ class ChoosePaymentMethodComponent extends BaseComponent
                                     $attributes['checked'] = 'true';
                                 } ?>
 
-                                <li><input <?php $this->printAttributes($attributes); ?> />
-                                    <label for="<?php echo esc_attr($optionId); ?>"><img src="<?php echo esc_url($file_path); ?>" alt="<?php echo esc_html($methodName)?>"/></label>
+                                <li>
+                                    <div class="wpf_payment_method_item">
+                                    <input <?php $this->printAttributes($attributes); ?> />
+                                        <label for="<?php echo esc_attr($optionId); ?>">
+                                            <img src="<?php echo esc_url($file_path); ?>" alt="<?php echo esc_html($methodName)?>"/>
+                                        </label>
+                                        
+                                    </div>
                                 </li>
                             <?php endforeach;
                             ?>

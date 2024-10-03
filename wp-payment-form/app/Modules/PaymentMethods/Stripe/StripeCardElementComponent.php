@@ -66,15 +66,18 @@ class StripeCardElementComponent extends BaseComponent
             'editor_elements' => array(
                 'label' => array(
                     'label' => 'Field Label',
-                    'type' => 'text'
+                    'type' => 'text',
+                    'group' => 'general'
                 ),
                 'checkout_display_style' => array(
                     'label' => 'Checkout display style',
-                    'type' => 'checkout_display_options'
+                    'type' => 'checkout_display_options',
+                    'group' => 'general'
                 ),
                 'verify_zip' => array(
                     'label' => 'Verify Zip/Postal Code',
-                    'type' => 'switch'
+                    'type' => 'switch',
+                    'group' => 'general'
                 ),
             ),
             'field_options' => array(

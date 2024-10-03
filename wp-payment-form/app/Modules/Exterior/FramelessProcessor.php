@@ -13,7 +13,9 @@ class FramelessProcessor
             // It's not our page. so skip altogether
             return;
         }
-        $action = sanitize_text_field($_REQUEST['wpf_action']);
+        if(isset($_REQUEST['wpf_action'])){
+            $action = sanitize_text_field(wp_unslash($_REQUEST['wpf_action']));
+        }
         $this->processFramePage($action);
     }
 

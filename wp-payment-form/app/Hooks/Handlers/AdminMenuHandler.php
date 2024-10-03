@@ -115,7 +115,7 @@ class AdminMenuHandler
             );
 
             $submenu['wppayform.php']['gateways'] = array(
-                __('Payment Gateway', 'wp-payment-form'),
+                __('Payment Gateways', 'wp-payment-form'),
                 $menuPermission,
                 'admin.php?page=wppayform.php#/gateways/stripe',
             );
@@ -208,7 +208,7 @@ class AdminMenuHandler
         // components on this page dynamically & easily.
         // N.B. native 'components' will always use
         // 'settings' as their current component.
-        $paymatticPages = isset($_REQUEST['page']) ? $_REQUEST['page'] : [];
+        $paymatticPages = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : [];
         $currentComponent = apply_filters(
             'wppayform_global_settings_current_component',
             $paymatticPages
@@ -235,11 +235,11 @@ class AdminMenuHandler
                 'title' => 'Turnstile(beta)',
                 'svg' => '<img src="' . $assetUrl . '/turnstile.svg"/>',
             ],
-            'tool' => [
-                'hash' => 'tools',
-                'title' => 'Tools',
-                'svg' => '<img  src="' . $assetUrl . '/tools.svg"/>',
-            ],
+            // 'tool' => [
+            //     'hash' => 'tools',
+            //     'title' => 'Tools',
+            //     'svg' => '<img  src="' . $assetUrl . '/tools.svg"/>',
+            // ],
             'permission' => [
                 'hash' => 'permission',
                 'title' => 'Permission',
@@ -398,6 +398,7 @@ class AdminMenuHandler
                     'image_upload_url' => admin_url('admin-ajax.php?action=wpf_global_settings_handler&route=wpf_upload_image'),
                     'forms_count' => Form::getTotalCount(),
                     'assets_url' => WPPAYFORM_URL . 'assets/',
+                    'default_image' => WPPAYFORM_URL . 'assets/images/form/default_product.png',
                     'has_pro' => defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO,
                     'hasValidLicense' => get_option('_wppayform_pro_license_status'),
                     'ajaxurl' => admin_url('admin-ajax.php'),
@@ -428,7 +429,8 @@ class AdminMenuHandler
                     'user_capabilities' => $capabilities,
                     'payment_addons' => $paymentAddons,
                     'currencies' => GeneralSettings::getCurrencies(),
-                    'i18n' => TransStrings::getStrings()
+                    'i18n' => TransStrings::getStrings(),
+                    'wppayformUpgradeUrl' => wppayformUpgradeUrl(),
                 )
             );
 
@@ -535,6 +537,7 @@ class AdminMenuHandler
                 if (AccessControl::isPaymatticUser()) {
                     // Hook the custom function into the template_include action
                     $activePage = get_option('_wppayform_user_dashboard_page', 'Paymattic Dashboard');
+                    $activePage = $activePage ? $activePage : 'Paymattic Dashboard';
                     $public_url = site_url('/' . GlobalTools::convertToSnakeCase($activePage));
 
                     $wp_admin_bar->add_menu(

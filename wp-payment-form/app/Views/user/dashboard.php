@@ -20,6 +20,26 @@ $read_entry = Arr::get($permissions, 'read_entry');
 $read_subscription_entry = Arr::get($permissions, 'read_subscription_entry');
 $can_sync_subscription_billings = Arr::get($permissions, 'can_sync_subscription_billings');
 $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
+function getPaymentStatus($status) {
+    $assetUrl = WPPAYFORM_URL . 'assets/images/payment-status';
+
+    if(!empty($status)){
+        return $assetUrl . '/' . strtolower($status) . '.svg';
+    }
+    return '';
+}
+
+function getPaymentGateways($gateways) {
+    $assetUrl = WPPAYFORM_URL . 'assets/images/gateways';
+
+    if (!empty($gateways)) {
+        return $assetUrl . '/' . strtolower($gateways) . '.svg';
+    }
+
+    return '';
+}
+
+
 ?>
 
 <div class="wpf-user-dashboard">
@@ -43,7 +63,7 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                 <div class="wpf-info-item">
                     <span class="dashicons dashicons-calendar"></span>
                     <span>
-                        <?php echo __('Registered since', 'wp-payment-form') ?> - <?php echo esc_html($user_from) ?>
+                        <?php echo esc_html__('Registered since', 'wp-payment-form') ?> - <?php echo esc_html($user_from) ?>
                     </span>
                 </div>
             </div>
@@ -54,24 +74,24 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
             <div class="wpf-menu">
                 <div class="wpf-menu-item" id="wpf-user-dashboard">
                     <span class="dashicons dashicons-admin-home"></span>
-                    <span><?php echo __('Dashboard', 'wp-payment-form'); ?></span>
+                    <span><?php echo esc_html__('Dashboard', 'wp-payment-form'); ?></span>
                 </div>
                 <?php if ($read_subscription_entry == 'yes'): ?>
                     <div class="wpf-menu-item" id="wpf-subscription">
                         <span class="dashicons dashicons-list-view"></span>
-                        <span><?php echo __('Manage Subscription', 'wp-payment-form'); ?></span>
+                        <span><?php echo esc_html__('Manage Subscription', 'wp-payment-form'); ?></span>
                     </div>
                 <?php endif ?>
                 <div class="wpf-logout-btn" id="wpf-logout">
                     <span class="dashicons dashicons-upload"></span>
-                    <a href="<?php echo wp_logout_url(); ?>"><?php echo __('Logout', 'wp-payment-form'); ?></a>
+                    <a href="<?php echo esc_url(wp_logout_url()); ?>"><?php echo esc_html__('Logout', 'wp-payment-form'); ?></a>
                 </div>
             </div>
             <div class="wpf-content wpf-dashboard" id="content-wpf-user-dashboard">
                 <div class="wpf-user-stats wpf-dashboard-card">
                     <div class="wpf-stats-head">
                         <span class="dashicons dashicons-analytics"></span>
-                        <span><?php echo __('Your Submission Stats', 'wp-payment-form'); ?></span>
+                        <span><?php echo esc_html__('Your Submission Stats', 'wp-payment-form'); ?></span>
                     </div>
                     <div class="wpf-stats-card">
                         <div class="overview-card">
@@ -87,45 +107,46 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                                     <?php endforeach ?>
                                 </div>
                             </div>
-                            <div class="info">
-                                <h4 class="h4">
-                                    <?php echo esc_html(Arr::get(array_values($payment_total), '0')/ 100) ?>
-                                    <?php echo key($payment_total); ?>
-                                </h4>
-                                <p class="wpf_toal_amount_btn" data-modal_id="wpf_toal_amount_modal">Expend All</p>
-                                <span data-v-5e7a3b24=""> <?php echo __('Total Spend', 'wp-payment-form') ?></span>
-                            </div>
                             <div data-v-5e7a3b24="" class="icon">
                                 <img class="spent" src="<?php echo esc_attr(WPPAYFORM_URL . "assets/images/dashboard/spent.svg") ?>"
                                     alt="total-spent" />
                             </div>
+                            <div class="info">
+                                <span data-v-5e7a3b24=""> <?php echo esc_html__('Total Spend', 'wp-payment-form') ?></span>
+                                <h4 class="h4">
+                                    <?php echo esc_html(Arr::get(array_values($payment_total), '0')/ 100) ?>
+                                    <?php echo esc_html(key($payment_total)); ?>
+                                </h4>
+                                <!-- <p class="wpf_toal_amount_btn" data-modal_id="wpf_toal_amount_modal">Expend All</p> -->
+                                <!-- <span data-v-5e7a3b24=""> <?php echo esc_html__('Total Spend', 'wp-payment-form') ?></span> -->
+                            </div>
                         </div>
                         <?php if ($read_entry == 'yes'): ?>
                             <div class="overview-card">
-                                <div class="info">
-                                    <h4 class="h4">
-                                        <?php echo esc_html(count(Arr::get($donationItems, 'orders', []))) ?>
-                                    </h4>
-                                    <span data-v-5e7a3b24=""><?php echo __('Total Orders', 'wp-payment-form') ?></span>
-                                </div>
                                 <div data-v-5e7a3b24="" class="icon">
                                     <img class="order" src="<?php echo esc_attr(WPPAYFORM_URL . "assets/images/dashboard/order.svg") ?>"
                                         alt="order" />
+                                </div>
+                                <div class="info">
+                                    <span data-v-5e7a3b24=""><?php echo esc_html__('Total Orders', 'wp-payment-form') ?></span>
+                                    <h4 class="h4">
+                                        <?php echo esc_html(count(Arr::get($donationItems, 'orders', []))) ?>
+                                    </h4>
                                 </div>
                             </div>
                         <?php endif ?>
                         <?php if ($read_subscription_entry == 'yes'): ?>
                             <div class="overview-card">
-                                <div class="info">
-                                    <h4 class="h4">
-                                        <?php echo esc_html(count(Arr::get($donationItems, 'subscriptions', []))) ?>
-                                    </h4>
-                                    <span data-v-5e7a3b24=""><?php echo __('Total Subscription', 'wp-payment-form') ?></span>
-                                </div>
                                 <div data-v-5e7a3b24="" class="icon">
                                     <img class="subscription"
                                         src="<?php echo esc_attr(WPPAYFORM_URL . "assets/images/dashboard/subscription.svg") ?>"
                                         alt="subscription" />
+                                </div>
+                                <div class="info">
+                                    <span data-v-5e7a3b24=""><?php echo esc_html__('Total Subscription', 'wp-payment-form') ?></span>
+                                    <h4 class="h4">
+                                        <?php echo esc_html(count(Arr::get($donationItems, 'subscriptions', []))) ?>
+                                    </h4>
                                 </div>
                             </div>
                         <?php endif ?>
@@ -134,17 +155,17 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                 <div class="wpf-submission-table wpf-dashboard-card">
                     <div class="wpf-submission-head">
                         <span class="dashicons dashicons-calendar"></span>
-                        <?php echo __('Your Submissions', 'wp-payment-form')?>
+                        <?php echo esc_html__('Your Submissions', 'wp-payment-form')?>
                     </div>
                     <div class="wpf-user-dashboard-table">
                         <div class="wpf-user-dashboard-loader"></div>
                         <div class="wpf-user-dashboard-table__header">
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('ID', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Amount', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Date', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Status', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Payment Method', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Action', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('ID', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Amount', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Date', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Status', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Gateway', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Action', 'wp-payment-form') ?></div>
                         </div>
                         <div class="wpf-user-dashboard-table__rows">
                             <?php
@@ -179,17 +200,19 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                                     </div>
                                     <div class="wpf-user-dashboard-table__column">
                                         <span
-                                            class="wpf-payment-status <?php echo Arr::get($donationItem, 'payment_status', '') ?>">
+                                            class="wpf-payment-status <?php echo esc_attr(Arr::get($donationItem, 'payment_status', '')) ?>">
+                                            <img src="<?php echo esc_url(getPaymentStatus(Arr::get($donationItem, 'payment_status', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'payment_status', '')); ?>">
                                             <?php echo esc_html(Arr::get($donationItem, 'payment_status', '')) ?>
                                         </span>
                                     </div>
                                     <div class="wpf-user-dashboard-table__column">
-                                        <?php echo esc_html(Arr::get($donationItem, 'payment_method', '')) ?>
+                                    <img src="<?php echo esc_url(getPaymentGateways(Arr::get($donationItem, 'payment_method', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'payment_method', '')); ?>">
+                                        <!-- <?php echo esc_html(Arr::get($donationItem, 'payment_method', '')) ?> -->
                                     </div>
-                                    <div class="wpf-user-dashboard-table__column">
+                                    <div class="wpf-user-dashboard-table__column wpf-user-dashboard-last_column">
                                         <span class="wpf-sub-id wpf_toal_amount_btn"
                                             data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $i) ?>">
-                                            <?php echo __('View Receipt', 'wp-payment-form') ?> <span class="dashicons dashicons-arrow-right-alt"></span>
+                                            <?php echo esc_html__('View Receipt', 'wp-payment-form') ?> <span class="dashicons dashicons-arrow-right-alt"></span>
                                         </span>
                                     </div>
                                 </div>
@@ -203,16 +226,16 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                 <div class="wpf-submission-table wpf-dashboard-card">
                     <div class="wpf-submission-head">
                         <span class="dashicons dashicons-calendar"></span>
-                        <?php echo __('Your Subscription', 'wp-payment-form') ?>
+                        <?php echo esc_html__('Your Subscription', 'wp-payment-form') ?>
                     </div>
                     <div class="wpf-user-dashboard-table">
                         <div class="wpf-user-dashboard-loader"></div>
                         <div class="wpf-user-dashboard-table__header">
-                            <div style="flex: 2" class="wpf-user-dashboard-table__column"><?php echo __('Plan', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Billing Time', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Status', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Interval', 'wp-payment-form') ?></div>
-                            <div class="wpf-user-dashboard-table__column"><?php echo __('Action', 'wp-payment-form') ?></div>
+                            <div style="flex: 2" class="wpf-user-dashboard-table__column"><?php echo esc_html__('Plan', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Billing Time', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Status', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Interval', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Action', 'wp-payment-form') ?></div>
                         </div>
                         <div class="wpf-user-dashboard-table__rows">
                             <?php
@@ -226,13 +249,14 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                                         <div class="modal-content">
                                             <div class="submission-modal">
                                                 <span class="wpf-close">&times;</span>
-                                                <div class="wpf-user-dashboard-table-container" style="padding-top: 21px">
+                                                <div class="wpf-user-dashboard-table-container" style="padding-top: 28px">
                                                     <?php
                                                     $receiptHandler = new \WPPayForm\App\Modules\Builder\SubscriptionEntries();
-                                                    $isNotOfflinePayment = Arr::get($donationItem, 'submission.submission.payment_method', '') != 'offline';
+                                                    $paymentMethod = Arr::get($donationItem, 'submission.submission.payment_method', '');
+                                                    $isNotOfflinePayment = $paymentMethod != 'offline';
+                                                    $cancellableSub = $cancel_subscription == 'yes' && ($paymentMethod == 'stripe' ||  $paymentMethod == 'square');
                                                     $planName = Arr::get($donationItem, 'plan_name', '');
                                                     $submission_hash = Arr::get($donationItem, 'submission.submission.submission_hash', '');
-                                                    // dd($donationItem);
                                                     echo $receiptHandler->render(
                                                         Arr::get($donationItem, 'related_payments', []),
                                                         Arr::get($donationItem, 'status', 'active'),
@@ -255,6 +279,7 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                                     </div>
                                     <div class="wpf-user-dashboard-table__column">
                                         <span class="wpf-payment-status <?php echo esc_attr(Arr::get($donationItem, 'status', '')) ?>">
+                                        <img src="<?php echo esc_url(getPaymentStatus(Arr::get($donationItem, 'status', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'status', '')); ?>">
                                             <?php echo esc_html(Arr::get($donationItem, 'status', '')) ?>
                                         </span>
                                     </div>
@@ -267,28 +292,28 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                                             <!-- Modal content -->
                                             <div class="modal-content">
                                                 <div class="modal-title">
-                                                    <p class="title"><?php echo __('Confirm subscription cancellation', 'wp-payment-form') ?></p>
+                                                    <p class="title"><?php echo esc_html__('Confirm subscription cancellation', 'wp-payment-form') ?></p>
                                                     <span class="wpf-close">&times;</span>
                                                 </div>
                                                 <div class="modal-body">
                                                     <span class="dashicons dashicons-info-outline wpf-info-icon"></span>
-                                                    <h4><?php echo __('Are you sure to cancel this subscription ?', 'wp-payment-form') ?></h4>
-                                                    <p><?php echo __('This will also cancel the subscription at', 'wp-payment-form') ?> <?php echo  esc_html(Arr::get($donationItem, 'submission.submission.payment_method', '')) ?> <?php echo __('dashboard', 'wp-payment-form') ?>. 
-                                                    <?php echo __('So no further payment will be processed.', 'wp-payment-form') ?></p>
+                                                    <h4><?php echo esc_html__('Are you sure to cancel this subscription ?', 'wp-payment-form') ?></h4>
+                                                    <p><?php echo esc_html__('This will also cancel the subscription at', 'wp-payment-form') ?> <?php echo  esc_html(Arr::get($donationItem, 'submission.submission.payment_method', '')) ?> <?php echo esc_html__('dashboard', 'wp-payment-form') ?>. 
+                                                    <?php echo esc_html__('So no further payment will be processed.', 'wp-payment-form') ?></p>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button class="modal-btn wpf-cancel"><?php echo __('Dismiss', 'wp-payment-form') ?></button>
+                                                    <button class="modal-btn wpf-cancel"><?php echo esc_html__('Dismiss', 'wp-payment-form') ?></button>
                                                     <button
                                                         class="modal-btn wpf-success wpf-confirm-subscription-cancel"
                                                         data-form_id="<?php echo esc_attr($donationItem['form_id']) ?>"
                                                         data-submission_hash="<?php echo  esc_attr(Arr::get($donationItem, 'submission.submission.submission_hash', '')) ?>"
-                                                        data-subscription_id="<?php echo esc_attr($donationItem['id']) ?>"><?php echo __('Yes, Cancel this Subscription', 'wp-payment-form') ?>
+                                                        data-subscription_id="<?php echo esc_attr($donationItem['id']) ?>"><?php echo esc_html__('Yes, Cancel this Subscription', 'wp-payment-form') ?>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="wpf-subscription-action-btn">
-                                            <?php if ($isNotOfflinePayment && $cancel_subscription == 'yes'): ?>
+                                            <?php if ($cancellableSub): ?>
                                                 <div class="wpf-cancel-subscription">
                                                     <svg
                                                         class="wpf-cancel-subscription-btn <?php echo esc_html(Arr::get($donationItem, 'status', '') == 'active' ? 'active' : '') ?>"
@@ -298,12 +323,12 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
                                                         <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
                                                         </path>
                                                     </svg>
-                                                    <button data-modal_id="<?php echo esc_attr('wpf_toal_amount_cancel_modal' . $i) ?>" class="wpf-cancel-confirm-button"><?php echo __('Cancel', 'wp-payment-form') ?></button>
+                                                    <button data-modal_id="<?php echo esc_attr('wpf_toal_amount_cancel_modal' . $i) ?>" class="wpf-cancel-confirm-button"><?php echo esc_html__('Cancel', 'wp-payment-form') ?></button>
                                                 </div>
                                             <?php endif ?>
                                             <span class="wpf-sub-id wpf_toal_amount_btn"
                                                 data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $i) ?>">
-                                                <span class="dashicons dashicons-visibility"></span>
+                                                <span>View</span>
                                             </span>
                                         </div>
                                     </div>
@@ -316,7 +341,7 @@ $cancel_subscription = Arr::get($permissions, 'cancel_subscription');
         </div>
     <?php } else { ?>
         <div style="padding: 20px;">
-            <?php echo __('You have not any access for read your entries from the administration', 'wp-payment-form') ?>
+            <?php echo esc_html__('You have not any access for read your entries from the administration', 'wp-payment-form') ?>
         </div>
     <?php } ?>
 </div>

@@ -11,6 +11,7 @@ use WPPayForm\App\Http\Controllers\FormController;
 use WPPayForm\Framework\Foundation\App;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\SubscriptionTransaction;
+use WPPayForm\App\Models\Subscription;
 use WPPayForm\App\Services\GeneralSettings;
 
 /**
@@ -164,7 +165,7 @@ class Submission extends Model
         }
 
         $queryType = Arr::get($wheres, 'payment_status');
-
+        
         if (isset($wheres) && $queryType === 'abandoned') {
             $wheres['payment_status'] = 'pending';
             $resultQuery = self::makeQueryAbandoned($resultQuery, '<', true);
@@ -179,8 +180,11 @@ class Submission extends Model
             unset($wheres['payment_status']);
         }
 
-        foreach ($wheres as $whereKey => $where) {
-            $resultQuery->where('wpf_submissions.' . $whereKey, '=', $where);
+
+        if($queryType !== 'subscription' && is_array($wheres)) {
+            foreach ($wheres as $whereKey => $where) {
+                $resultQuery->where('wpf_submissions.' . $whereKey, '=', $where);
+            }
         }
 
         if ($searchString) {
@@ -195,6 +199,19 @@ class Submission extends Model
         //     $resultQuery->where('payment_status', $queryType);
         // }
 
+        if ($queryType === 'subscription') {
+            $subsModel = new Subscription();
+            $subscriptionEntryIds = $subsModel->getSubscriptionEntryIds();
+
+            $resultQuery = $resultQuery->whereIn('wpf_submissions.id', $subscriptionEntryIds);
+
+            // $resultQuery = $resultQuery->where(function($query) use ($subscriptionIds) {
+            //     foreach($subscriptionIds as $subscription) {
+            //         $query->orWhere('wpf_submissions.id', $subscription);
+            //     }
+            // });
+        }
+        
         $totalItems = $resultQuery->count();
 
         if ($perPage) {
@@ -224,7 +241,14 @@ class Submission extends Model
 
     public function getDonationItem($form_id, $searchText = null, $orderByKey = null, $orderByVal = '', $skip = 0, $perPage = null)
     {
-        $leaderboard_settings = get_option("wppayform_donation_leaderboard_settings", array(
+        $form_id = sanitize_text_field($form_id);
+        $option_key = "wppayform_donation_leaderboard_settings";
+        $form_id = $form_id == 0 ? null : $form_id;
+        if($form_id != null) {
+            $option_key = "wppayform_donation_leaderboard_settings_" . $form_id;
+        }
+
+        $leaderboard_settings = get_option($option_key, array(
             'enable_donation_for' => 'all',
             'template_id' => 3,
             'enable_donation_for_specific' => [],
@@ -233,7 +257,7 @@ class Submission extends Model
         
         $donation_for = Arr::get($leaderboard_settings, 'enable_donation_for', 'all');
         $specific_form = Arr::get($leaderboard_settings, 'enable_donation_for_specific', []);
-        // dd($specific_form);
+
         $searchText = sanitize_text_field($searchText);
         $orderByKey = sanitize_text_field($orderByKey);
         $orderByVal = sanitize_text_field($orderByVal);
@@ -299,6 +323,15 @@ class Submission extends Model
             ->skip(null)
             ->take($perPage)
             ->sortBy($orderByKey, SORT_REGULAR, $orderByVal);
+        
+        $total_raised_amount = 0;
+
+        foreach($donationItems as $donationItem) {
+            $total_raised_amount += Arr::get($donationItem, 'grand_total', 0);
+        }
+
+        $initial_raised_amount = Arr::get($leaderboard_settings, 'initial_raised_amount', 0);
+        $total_raised_amount = intval($total_raised_amount) + intval($initial_raised_amount);
 
         $topThreeDonors = $query->sortByDesc('grand_total')->take(3);
 
@@ -306,7 +339,8 @@ class Submission extends Model
             'topThreeDonars' => $topThreeDonors->toArray(),
             'donars' => $donationItems->toArray(),
             'has_more_data' => $total > $perPage ? true : false,
-            'total' => $total
+            'total' => $total,
+            'total_raised_amount' => $total_raised_amount
         );
     }
 
@@ -674,32 +708,51 @@ class Submission extends Model
         $inputValues = $submission->form_data_formatted;
 
         foreach ($elements as $element) {
-            if ($element['group'] == 'input') {
-                $elementId = Arr::get($element, 'id');
-                $elementValue = apply_filters(
-                    'wppayform/rendering_entry_value_' . $element['type'],
-                    Arr::get($inputValues, $elementId),
-                    $submission,
-                    $element
-                );
-
-                if (is_array($elementValue)) {
-					foreach ($elementValue as $key => $value) {
-						if (!is_string($value)) {
-							$elementValue[$key] = '';
-						}
-					}
-                    $elementValue = implode(', ', $elementValue);
+            if (Arr::get($element,'type') == 'container') {
+                $columns = Arr::get($element, 'field_options.columns', []);
+                foreach ($columns as $column) {
+                    $fields = Arr::get($column, 'fields', []);
+                    foreach ($fields as $field) {
+                        if ($field['group'] == 'input') {
+                            $fieldId = Arr::get($field, 'id');
+                            $parsedSubmission[$fieldId] = $this->getInputEntryData($field, $inputValues, $submission);
+                        }  
+                    }
                 }
-                $parsedSubmission[$elementId] = array(
-                    'label' => $this->getLabel($element),
-                    'value' => $elementValue,
-                    'type' => $element['type']
-                );
+            } else {
+                if ($element['group'] == 'input') {
+                    $elementId = Arr::get($element, 'id');
+                    $parsedSubmission[$elementId] = $this->getInputEntryData($element, $inputValues, $submission);
+                }
             }
+            
         }
-
+        // dd($parsedSubmission);
         return apply_filters('wppayform/parsed_entry', $parsedSubmission, $submission);
+    }
+
+    public function getInputEntryData($element, $inputValues, $submission) {
+
+        $elementId = Arr::get($element, 'id');
+        $elementValue = apply_filters(
+            'wppayform/rendering_entry_value_' . $element['type'],
+            Arr::get($inputValues, $elementId),
+            $submission,
+            $element
+        );
+        if (is_array($elementValue)) {
+            foreach ($elementValue as $key => $value) {
+                if (!is_string($value)) {
+                    $elementValue[$key] = '';
+                }
+            }
+            $elementValue = implode(', ', $elementValue);
+        }
+        return  array(
+            'label' => $this->getLabel($element),
+            'value' => $elementValue,
+            'type' => $element['type']
+        );
     }
 
     public function getUnParsedSubmission($submission)
@@ -844,8 +897,11 @@ class Submission extends Model
         return $default;
     }
 
-    public static function getByCustomerEmail()
+    public static function getByCustomerEmail($filter_data = [])
     {
+        $startDate = Arr::get($filter_data, 'start_date');
+        $endDate = Arr::get($filter_data, 'end_date');
+        
         $DB = App::make('db');
         $customers = Submission::select(
             'currency',
@@ -858,7 +914,10 @@ class Submission extends Model
             ->where('payment_total', '>', 0)
             ->groupBy(['customer_email', 'currency'])
             ->orderBy('submissions', 'desc')
-            ->limit(19)
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
+            ->limit(10)
             ->get();
 
         return $customers;

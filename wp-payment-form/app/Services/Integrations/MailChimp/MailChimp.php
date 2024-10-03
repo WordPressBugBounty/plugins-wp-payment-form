@@ -19,7 +19,7 @@ class MailChimp
 
     /*  SSL Verification
         Read before disabling:
-        http://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php-config/
+        http://snippets.webaware.com.au/howto/stop-turning-off-curlopt_ssl_verifypeer-and-fix-your-php/
     */
     public $verify_ssl = true;
 
@@ -40,7 +40,7 @@ class MailChimp
 
         if ($api_endpoint === null) {
             if (strpos($this->api_key, '-') === false) {
-                throw new \Exception("Invalid MailChimp API key `{$api_key}` supplied.");
+                throw new \Exception(esc_html__("Invalid MailChimp API key `{$api_key}` supplied."));
             }
             list(, $data_center) = explode('-', $this->api_key);
             $this->api_endpoint  = str_replace('<dc>', $data_center, $this->api_endpoint);

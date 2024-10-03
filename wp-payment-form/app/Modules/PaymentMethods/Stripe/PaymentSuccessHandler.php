@@ -30,7 +30,7 @@ class PaymentSuccessHandler
         foreach ($subscriptions as $subscription) {
             $subscriptionStatus = 'active';
             if ($subscription->trial_days) {
-                $subscriptionStatus = 'trialling';
+                $subscriptionStatus = 'trialing';
             }
 
             $updateData = [
@@ -45,7 +45,7 @@ class PaymentSuccessHandler
 
             $subscriptionModel->updateSubscription($subscription->id, $updateData);
 
-            if ($subscriptionStatus == 'trialling') {
+            if ($subscriptionStatus == 'trialing') {
                 continue;
             }
 
@@ -86,7 +86,7 @@ class PaymentSuccessHandler
 
         if (!empty($invoice->payment_intent->charges->data[0])) {
             $charge = $invoice->payment_intent->charges->data[0];
-            $this->recoredStripeBillingAddress($charge, $submission);
+            $this->recordStripeBillingAddress($charge, $submission);
         }
 
         if ($sync) {
@@ -119,7 +119,7 @@ class PaymentSuccessHandler
                     $updateDate['card_last_4'] = $card->last4;
                 }
                 if (!empty($charge->billing_details->address)) {
-                    $this->recoredStripeBillingAddress($charge, $submission);
+                    $this->recordStripeBillingAddress($charge, $submission);
                 }
             } else {
                 $updateDate['charge_id'] = $invoice->payment_intent->id;
@@ -144,7 +144,7 @@ class PaymentSuccessHandler
         ));
     }
 
-    private function recoredStripeBillingAddress($charge, $submission)
+    private function recordStripeBillingAddress($charge, $submission)
     {
         $formDataFormatted = $submission->form_data_formatted;
         if (isset($formDataFormatted['__checkout_billing_address_details'])) {

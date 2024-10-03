@@ -56,4 +56,15 @@ class Helper
 
         return $content;
     }
+
+    public function truncateString($string = '', $length = 10) {
+        // Check if the string needs to be truncated
+        if (strlen($string) > $length) {
+            // Truncate the string and add "..."
+            return substr($string, 0, $length) . '...';
+        } else {
+            // If the string is shorter or equal to the length, return it as is
+            return $string;
+        }
+    }
 }

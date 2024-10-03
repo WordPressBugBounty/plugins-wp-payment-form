@@ -45,7 +45,8 @@ class Bootstrap extends IntegrationManager
             'logo' => $this->logo,
             'is_active' => $this->isConfigured(),
             'configure_title' => __('Configuration required!', 'wp-payment-form-pro'),
-            'global_configure_url' => '#',
+            'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/' . $this->integrationKey . ''),
+            'global_configure_url' => admin_url('admin.php?page=wppayform.php#/integrations/' . $this->integrationKey . ''),
             'configure_message' => __('Fluent Support is not configured yet! Please configure your Fluent Support api first', 'wp-payment-form-pro'),
             'configure_button_text' => __('Set Fluent Support', 'wp-payment-form-pro')
         ];

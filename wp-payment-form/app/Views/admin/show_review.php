@@ -23,20 +23,56 @@
             list-style: none;
         }
 
+        .wpf_preview_title ul {
+            display: flex;
+        }
+
         .wpf_preview_title ul li {
-            display: inline-block;
-            padding: 5px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 20px;
             margin: 0;
+            color: #2F3448;
+            font-family: Inter;
+            font-size: 15px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 24px;
+        }
+        .vertical-line {  
+            width: 1px;
+            background: #EAECF0;
+        } 
+        .wpf_preview_title ul li a {
+            color: #017EF3;
+            font-family: Inter;
+            font-size: 15px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 24px;
+            text-decoration-line: underline;
         }
 
         .wpf_preview_action {
-            display: inline-block;
-            background: #dedede;
-            color: #545454;
-            border-radius: 4px;
-            padding: 0px 8px;
-            margin: 5px 0px;
-            height: 30px;
+            display: flex;
+            padding: 7px 12px;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 5px;
+            border-radius: 6px;
+            background: #F5F6F7;
+            color: #565865;
+            text-align: center;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 16px;
+        }
+
+        .wpf_preview_action img {
+            height: 15px;
         }
 
         .wpf_preview_body {
@@ -47,15 +83,28 @@
         }
 
         .wpf_preview_header {
-            top: 0px;
+            /* top: 0px;
             left: 0;
             right: 0px;
             padding: 0px 20px 0px 0px;
             background-color: #ebedee;
             color: black;
             max-height: 60px;
+            font-size: 18px; */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            color: black;
+            max-height: 60px;
             font-size: 18px;
+            padding: 0px 30px;
         }
+        .wpf_preview_action_block {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
 
         .wpf_preview_footer {
             display: block;
@@ -86,15 +135,44 @@
             box-shadow: 0px 5px 5px 6px #e6e6e6;
         }
 
-        .wpf_preview_container_action {
-            margin: 10px;
+        .wpf-preview-expand {
+            border-radius: var(--radius-6, 6px);
+            background: #F5F6F7;
+            padding: 4px 9px;
         }
+        .wpf-preview-contrast {
+            border-radius: 6px;
+            background: #F5F6F7;
+            padding: 4px 9px;
+        }
+        .wpf_copy_notification {
+            display: none;
+            position: absolute;
+            top: 11px;
+            left: 50%;
+            background-color: #e8f5f1;
+            border-color: #d1eae4;
+            color: #189877;
+            font-size: 12px;
+            line-height: 1;
+            border-radius: 8px;
+            min-width: 380px;
+            transform: translateX(-50%);
+            border-width: 1px;
+            border-style: solid;
+            padding: 10px 20px;
+            align-items: center;
+            gap: 10px;
+        }
+        /* .wpf_preview_container_action {
+            margin: 10px;
+        } */
 
-        .wpf_preview_container_action span {
+        /* .wpf_preview_container_action span {
             font-size: 28px;
             color: #605858;
             cursor: pointer;
-        }
+        } */
 
         .wpf_hide {
             display: none;
@@ -140,7 +218,8 @@
             font-weight: bold;
             color: #ff7518;
             cursor: pointer;
-            box-shadow: 0px 1px 2px rgb(0 0 0 / 30%);
+            border: 1px solid #D6DAE1;
+            /* box-shadow: 0px 1px 2px rgb(0 0 0 / 30%); */
         }
 
         .wpf_step_disabled {
@@ -254,19 +333,31 @@
                     <li class="wpf_form_name">
                         <?php echo intval($form->ID) . ' - ' . esc_attr($form->post_title) . ' ( Preview )';  ?>
                     </li>
+                    <div class="vertical-line"></div>
                     <li>
-                        <a href="<?php echo admin_url('admin.php?page=wppayform.php#/edit-form/' . intval($form_id) . '/form-builder') ?>">Edit Fields</a>
+                        <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/editor.svg' ?>" alt="" />
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=wppayform.php#/edit-form/' . intval($form_id) . '/form-builder')) ?>">Edit Fields</a>
                     </li>
                 </ul>
             </div>
-            <div class="wpf_preview_action_block" style="float: right;display: flex;">
+            <div class="wpf_preview_action_block">
                 <div class="wpf_preview_action">
+                    <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/copy-icon.svg' ?>" alt="">
                     [wppayform id="<?php echo intval($form_id); ?>"]
                 </div>
                 <div class="wpf_preview_container_action">
-                    <span class=" wpf_hide wpf-preview-expand dashicons dashicons-editor-expand"></span>
-                    <span class="wpf-preview-contrast dashicons dashicons-editor-contract"></span>
+                    <span class=" wpf_hide wpf-preview-expand">
+                        <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/preview-max-min.svg' ?>" alt="">
+                    </span>
+                    <span class="wpf-preview-contrast">
+                        <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/preview-max-min.svg' ?>" alt="">
+                    </span>
                 </div>
+            </div>
+            <!-- Notification div -->
+            <div id="wpf_copy_notification" class="wpf_copy_notification">
+                <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/payment-status/active.svg' ?>" alt="">
+                [wppayform id="<?php echo intval($form_id); ?>"] copied successfully!
             </div>
 
         </div>
@@ -318,6 +409,29 @@
                 licenseKey: 'your_license_key',
                 speed: 500,
                 // ... other settings
+            });
+        </script>
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                jQuery('.wpf_preview_action').click(function() {
+                    var textToCopy = jQuery(this).clone()  // Clone the div
+                                        .children('img') // Select the img element inside the div
+                                        .remove()        // Remove the img element
+                                        .end()           // Return to the cloned div
+                                        .text().trim();  // Get the text and trim any whitespace
+
+                    // Create a temporary input element to hold the text
+                    var tempInput = jQuery('<input>');
+                    jQuery('body').append(tempInput);
+                    tempInput.val(textToCopy).select();
+                    var success = document.execCommand('copy');
+
+                    // Remove the temporary input element
+                    tempInput.remove();
+                    if (success) {
+                        jQuery('#wpf_copy_notification').css("display", "flex").fadeIn(300).delay(1000).fadeOut(300);
+                    }
+                });
             });
         </script>
 </body>

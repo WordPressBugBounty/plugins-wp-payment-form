@@ -87,7 +87,7 @@ class SubmissionController extends Controller
         }
 
         $submission = apply_filters('wppayform/form_entry_recurring_info', $submission);
-
+        
         $parsedEntry = $submissionModel->getParsedSubmission($submission);
 
         $submission['widgets'] = apply_filters('wppayform_single_entry_widgets', [], array('submission' => $submission));

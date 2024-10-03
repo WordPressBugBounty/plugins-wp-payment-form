@@ -44,12 +44,14 @@ class SubmissionHandler
         parse_str($_REQUEST['form_data'], $form_data);
         $form_localize = Arr::get($_REQUEST['form_localize'], 'conditional_logic');
         // Now Validate the form please
-        $formId = absint($_REQUEST['form_id']);
+        if(isset($_REQUEST['form_id'])){
+            $formId = absint(sanitize_text_field(wp_unslash($_REQUEST['form_id'])));
+        }
         $this->formID = $formId;
 
         // Get Original Form Elements Now
-        $totalPayableAmount = intval($_REQUEST['main_total']);
-
+        $totalPayableAmount = isset($_REQUEST['main_total']);
+        $totalPayableAmount = intval(wp_unslash($_REQUEST['main_total']));
         do_action('wppayform/form_submission_activity_start', $formId);
 
         $form = Form::getForm($formId);
@@ -602,11 +604,15 @@ class SubmissionHandler
     private function getIp()
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return sanitize_text_field($_SERVER['HTTP_CLIENT_IP']);
+            return sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return sanitize_text_field($_SERVER['HTTP_X_FORWARDED_FOR']);
+            return sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']));
         }
-        return sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        elseif (isset($_SERVER['REMOTE_ADDR'])) {
+            return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
+        }
+        // return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
+        return null;
     }
 
     private function getItemQuantity($quantityElements, $tragetItemId, $formData)

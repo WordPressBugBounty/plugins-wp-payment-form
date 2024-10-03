@@ -3,6 +3,7 @@
 namespace WPPayForm\App\Modules\FormComponents;
 
 use WPPayForm\App\Models\Form;
+use WPPayForm\App\Services\GeneralSettings;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\Submission;
 
@@ -117,7 +118,8 @@ class DonationComponent extends BaseComponent
                     'allow_recurring' => 'no',
                     'bill_time_max' => '0',
                     'intervals' => [__('day', 'wp-payment-form-pro'), __('week', 'wp-payment-form-pro'), __('month', 'wp-payment-form-pro'), __('year', 'wp-payment-form-pro')],
-                    'interval_options' => [__('day', 'wp-payment-form-pro'), __('week', 'wp-payment-form-pro'), __('month', 'wp-payment-form-pro'), __('year', 'wp-payment-form-pro')]
+                    'interval_options' => [__('day', 'wp-payment-form-pro'), __('week', 'wp-payment-form-pro'), __('month', 'wp-payment-form-pro'), __('year', 'wp-payment-form-pro')],
+                    'interval_display_type' => 'dropdown'
                 )
             )
         );
@@ -181,13 +183,13 @@ class DonationComponent extends BaseComponent
             ); ?>
             <div <?php echo $this->builtAttributes($controlAttributes); ?>>
                 <div class="wpf_input_label wpf_single_amount_label">
-                    <?php echo $title ?>: <span
-                        class="wpf_single_amount"><?php echo wpPayFormFormattedMoney(wpPayFormConverToCents($amount), $currencySettings); ?></span>
+                    <?php echo esc_html($title) ?>: <span
+                        class="wpf_single_amount"><?php echo wp_kses_post(wpPayFormFormattedMoney(wpPayFormConverToCents($amount), $currencySettings)); ?></span>
                 </div>
             </div>
             <?php
         }
-        echo '<input customname =' . $element['editor_title'] . ' name=' . $element['id'] . ' type="hidden" class="wpf_payment_item" data-price="' . wpPayFormConverToCents($amount) . '" value="' . $amount . '" />';
+        echo '<input customname =' . esc_attr($element['editor_title']) . ' name=' . esc_attr($element['id']) . ' type="hidden" class="wpf_payment_item" data-price="' . esc_attr(wpPayFormConverToCents($amount)) . '" value="' . esc_attr($amount) . '" />';
     }
 
 
@@ -201,9 +203,9 @@ class DonationComponent extends BaseComponent
         $altText = Arr::get($image, 'alt_text');
 
         if ($lightboxed) {
-            return '<a class="wpf_lightbox" href="' . $imageFull . '"><img class="wpf_donation_image_container" src="' . $imageFull . '" alt="' . $altText . '" /></a>';
+            return '<a class="wpf_lightbox" href="' . esc_url($imageFull) . '"><img class="wpf_donation_image_container" src="' . esc_url($imageFull) . '" alt="' . esc_attr($altText) . '" /></a>';
         }
-        return '<img class="wpf_donation_image_container" src="' . $imageFull . '" alt="' . $altText . '" style="width:100%;"';
+        return '<img class="wpf_donation_image_container" src="' . esc_url($imageFull) . '" alt="' . esc_attr($altText) . '" style="width:100%;"';
     }
 
     public function renderSingleChoice($type, $element, $form, $prices = array())
@@ -284,7 +286,7 @@ class DonationComponent extends BaseComponent
         }
         ?>
 
-        <div style = "display : <?php echo $hiddenAttr; ?>" <?php echo $this->builtAttributes($controlAttributes); ?> >
+        <div style = "display : <?php echo esc_attr($hiddenAttr); ?>" <?php echo $this->builtAttributes($controlAttributes); ?> >
 
         <?php
             if ($enableImage) {
@@ -306,28 +308,28 @@ class DonationComponent extends BaseComponent
         $bar_name = "wpf_form_id_". $form->ID . "_bar";
 
         ?>
-        <div class="donation-wrapper <?php echo $isSimpleDonationForm ?>">
+        <div class="donation-wrapper <?php echo esc_attr($isSimpleDonationForm) ?>">
         <?php
         if ($showStatistic && isset($goal) && intval($goal) >= 0) : ?>
             <div class="wpf_donation_status">
                 <div class="raised_amount">
-                    <div class="number" name="<?php echo $name_raised ?>" data-raised="<?php echo $raised ?>">
-                        <?php echo $currencySign; echo $raised; ?>
+                    <div class="number" name="<?php echo esc_attr($name_raised) ?>" data-raised="<?php echo esc_attr($raised * 100) ?>">
+                        <?php echo  esc_html(wpPayFormFormattedMoney($raised * 100, $currencySettings)) ; ?>
                     </div>
-                    <div class="text"><?php echo __('Raised', 'wp-payment-form-pro'); ?></div>
+                    <div class="text"><?php echo esc_html__('Raised', 'wp-payment-form-pro'); ?></div>
                 </div>
                 <div class="count_amount">
                     <div class="number">
-                        <?php echo $donations; ?>
+                        <?php echo esc_html($donations); ?>
                     </div>
 
-                    <div class="text"><?php echo __('Donations', 'wp-payment-form-pro'); ?></div>
+                    <div class="text"><?php echo esc_html__('Donations', 'wp-payment-form-pro'); ?></div>
                 </div>
                 <div class="goal_amount">
-                    <div class="number" name="<?php echo $goal_amount ?>" data-goal="<?php echo $goal ?>">
-                        <?php echo$currencySign ; echo $goal ?>
+                    <div class="number" name="<?php echo esc_attr($goal_amount) ?>" data-goal="<?php echo esc_attr($goal * 100) ?>">
+                        <?php echo esc_html(wpPayFormFormattedMoney($goal * 100, $currencySettings)) ; ?>
                     </div>
-                    <div class="text"><?php echo __('Goal', 'wp-payment-form-pro'); ?></div>
+                    <div class="text"><?php echo esc_html__('Goal', 'wp-payment-form-pro'); ?></div>
                 </div>
             </div>
         <?php
@@ -337,11 +339,11 @@ class DonationComponent extends BaseComponent
                 <div class="wpf_donation_fields_bar">
                     <div
                         class="wpf_bar"
-                        style="<?php echo $style; ?>"
-                        name="<?php echo $bar_name ?>"
-                        data-percentage="<?php echo $percentage ?>"
+                        style="<?php echo esc_attr($style); ?>"
+                        name="<?php echo esc_attr($bar_name) ?>"
+                        data-percentage="<?php echo esc_attr($percentage) ?>"
                     >
-                        <?php echo $percentage . '%'; ?>
+                        <?php echo esc_html($percentage) . '%'; ?>
                     </div>
                 </div>
             </div>
@@ -354,7 +356,7 @@ class DonationComponent extends BaseComponent
                 <?php $this->buildLabel($fieldOptions, $form, array('for' => $inputId)); ?>
                 <div class="wpf_form_item_group">
                     <div class="wpf_input-group-prepend">
-                        <div class="wpf_input-group-text wpf_input-group-text-prepend"><?php echo $currencySign; ?></div>
+                        <div class="wpf_input-group-text wpf_input-group-text-prepend"><?php echo esc_html($currencySign); ?></div>
                     </div>
                     <input <?php echo $this->builtAttributes($attributes); ?> />
                     <?php if (Arr::get($attributes, 'disabled') == true) { ?>
@@ -391,14 +393,14 @@ class DonationComponent extends BaseComponent
                 ?>
                     <div class="form-check">
                         <input <?php echo $this->builtAttributes($attributesRadio); ?>>
-                        <label class="form-check-label" for="<?php echo $optionId; ?>">
+                        <label class="form-check-label" for="<?php echo esc_attr($optionId); ?>">
                             <span class="wpf_price_option_name"
                                     itemprop="description">
                                     <?php
-                                    echo !empty($price['label']) ? $price['label'] :  wpPayFormFormattedMoney(wpPayFormConverToCents($price['value']), $currencySettings);
+                                    echo !empty($price['label']) ? esc_html($price['label']) :  wp_kses_post(wpPayFormFormattedMoney(wpPayFormConverToCents($price['value']), $currencySettings));
                                     ?>
                                 </span>
-                            <meta itemprop="price" content="<?php echo $price['value']; ?>">
+                            <meta itemprop="price" content="<?php echo esc_attr($price['value']); ?>">
                         </label>
                     </div>
                 <?php endforeach; ?>
@@ -409,25 +411,33 @@ class DonationComponent extends BaseComponent
                 <div class="form-check wpf_t_c_checks">
                     <input type="checkbox" name="donation_is_recurring"
                         class="wpf_donation_recurring"
-                        customname= <?php echo $element['editor_title'] ?>
-                        id="<?php echo $inputId . '_recurring' ?>">
-                    <label class="form-check-label" for="<?php echo $inputId . '_recurring' ?>"
+                        customname= <?php echo esc_attr($element['editor_title']) ?>
+                        id="<?php echo esc_attr($inputId) . '_recurring' ?>">
+                    <label class="form-check-label" for="<?php echo esc_attr($inputId) . '_recurring' ?>"
                         style="font-style: italic; cursor:pointer;">
-	                    <?php echo __('I would like to make a recurring donation.', 'wp-payment-form-pro'); ?>
+	                    <?php echo esc_html__('I would like to make a recurring donation.', 'wp-payment-form-pro'); ?>
                     </label>
                 </div>
             </div>
-            <div class="wpf_input_content wpf_donation_recurring_infos" style="display:none;">
-                    <label class="form-check-label" style="margin-right: 6px;">
-	                    <?php echo __('Bill me every', 'wp-payment-form-pro'); ?>
-                    </label>
-                    <select type="select" name="donation_recurring_interval"
-                    style="outline: none;cursor:pointer;"  customname= <?php echo $element['editor_title'] ?>>
-                        <?php
-                        foreach ($pricingDetails['intervals'] as $index => $plan): ?>
-                            <option><?php echo esc_attr($plan); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+            <div class="wpf_input_content wpf_donation_recurring_infos" style="display:none;" data-display-type="<?php echo esc_attr(Arr::get($pricingDetails, 'interval_display_type')); ?>">
+                <label class="form-check-label">
+                    <?php echo esc_html__('Bill me every', 'wp-payment-form-pro'); ?>
+                </label>
+
+                <?php if(Arr::get($pricingDetails, 'interval_display_type') === 'dropdown'): ?>
+                <select type="select" name="donation_recurring_interval"
+                style="outline: none;cursor:pointer;"  customname= <?php echo esc_attr($element['editor_title']) ?>>
+                    <?php
+                    foreach ($pricingDetails['intervals'] as $index => $plan): ?>
+                        <option><?php echo esc_attr($plan); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php else: ?>
+                    <?php foreach ($pricingDetails['intervals'] as $plan): ?>
+                    <input type="radio" class="donation_recurring_interval" name="donation_recurring_interval" value="<?php echo esc_attr($plan); ?>" customname="<?php echo esc_attr($element['editor_title']); ?>">
+                    <label for="<?php echo esc_attr($plan); ?>"><?php echo esc_attr($plan); ?></label>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
             <?php endif; ?>
         </div>

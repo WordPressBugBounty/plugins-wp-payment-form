@@ -34,10 +34,13 @@ $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
                 </div>
             </div>
         </div>
-
-        <div class="wpf-donor-card-wrapper wpf-user" data-template="<?php echo $template_id ?>"
-            data-per-page="<?php echo $per_page ?>" data-orderby="<?php echo $orderby ?>"
-            data-form_id="<?php echo $form_id ?>">
+        <div class="wpf_total_raised_amount">
+            <p><?php echo esc_html__('Total Raised Amount', 'wp-payment-form') ?> : </p>
+            <p class="wpf_amount"> <?php echo esc_html($total_raised_amount); ?></p>
+        </div>
+        <div class="wpf-donor-card-wrapper wpf-user" data-template="<?php echo esc_attr($template_id) ?>"
+            data-per-page="<?php echo esc_attr($per_page) ?>" data-orderby="<?php echo esc_attr($orderby) ?>"
+            data-form_id="<?php echo esc_attr($form_id) ?>">
             <?php $top = 0;
             foreach ($donars as $key => $donor):
                 $top = $top + 1;
@@ -48,11 +51,11 @@ $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
                             <?php echo get_avatar($donor['customer_email'], 96); ?>
                         </div>
                     <?php endif; ?>
-                    <div class="<?php echo $donorInfoClass ?>">
+                    <div class="<?php echo esc_attr($donorInfoClass) ?>">
                         <?php if ($show_name == 'true'): ?>
                             <div class="wpf-donor-name three">
                                 <h3>
-                                    <?php echo $donor['customer_name'] ?>
+                                    <?php echo esc_html($donor['customer_name']) ?>
                                 </h3>
                             </div>
                         <?php endif; ?>
@@ -61,8 +64,8 @@ $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
                             <div class="wpf-donor-amount three">
                                 <p>Donation Amount</p>
                                 <span>
-                                    <?php echo $donor['currency'] ?>
-                                    <?php echo $donor['grand_total'] ?>
+                                    <?php echo esc_html($donor['currency']) ?>
+                                    <?php echo esc_html($donor['grand_total']) ?>
                                 </span>
                             </div>
                         <?php endif; ?>
@@ -73,7 +76,7 @@ $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
     
         <?php else: ?>
             <div class="wpf-no-donor-found">
-                <img src="<?php echo $nodonorData ?>" alt="No Donor Found" class="wpf-no-donor-found-image" style="width: 280px">
+                <img src="<?php echo esc_url($nodonorData) ?>" alt="No Donor Found" class="wpf-no-donor-found-image" style="width: 280px">
                 <p style="background: inherit; color: #000; size: 20px;">No donor found yet!</p>
             </div>
         <?php endif; ?>

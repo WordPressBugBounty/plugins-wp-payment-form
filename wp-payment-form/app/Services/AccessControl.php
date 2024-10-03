@@ -327,7 +327,7 @@ class AccessControl
                 'message' => __('Successfully updated the role(s).', 'wp-payment-form')
             );
         } else {
-            throw new \Exception(__('Sorry, You can not update permissions. Only administrators can update permissions', 'wp-payment-form'));
+            throw new \Exception(esc_html__('Sorry, You can not update permissions. Only administrators can update permissions', 'wp-payment-form'));
         }
     }
 }

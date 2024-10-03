@@ -6,6 +6,7 @@ use WPPayForm\App\Models\Form;
 use WPPayForm\App\Models\Meta;
 use WPPayForm\App\Models\ScheduledActions;
 use WPPayForm\App\Services\FormPlaceholders;
+use WPPayForm\App\Modules\AddOnModules\AddOnModule;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\Framework\Foundation\App;
 
@@ -18,6 +19,15 @@ class GlobalIntegrationManager
         $fieldSettings = apply_filters('wppayform_global_integration_fields_' . $settingsKey, []);
 
         if (!$fieldSettings) {
+            $allAddOns = AddOnModule::showAddOns()['addOns'];
+            if (isset($allAddOns[$settingsKey])) {
+                $fieldSettings = $allAddOns[$settingsKey];
+                wp_send_json_success([
+                    'integration' => $settings,
+                    'settings' => $fieldSettings
+                ], 200);
+
+            }
             wp_send_json_error([
                 'settings' => $settings,
                 'settings_key' => $settingsKey,
@@ -67,7 +77,6 @@ class GlobalIntegrationManager
         $formattedFeeds = $this->getNotificationFeeds($formId);
 
         $availableIntegrations = apply_filters('wppayform_get_available_form_integrations', [], $formId);
-
         return [
             'feeds' => $formattedFeeds,
             'available_integrations' => $availableIntegrations,
@@ -83,12 +92,12 @@ class GlobalIntegrationManager
                 ->whereIn('meta_key', $notificationKeys)
                 ->orderBy('id', 'DESC')
                 ->get();
+            apply_filters('wppayform_global_notification_feeds', $feeds, $formId);
         } else {
             $feeds = [];
         }
 
         $formattedFeeds = [];
-
         foreach ($feeds as $feed) {
             $data = json_decode($feed->meta_value, true);
             $enabled = $data['enabled'];
@@ -104,7 +113,17 @@ class GlobalIntegrationManager
                 'provider' => $feed->meta_key,
                 'feed' => $data
             ];
-            $feedData = apply_filters('wppayform_global_notification_feed_' . $feed->meta_key, $feedData, $formId);
+
+            $filter_action = 'wppayform_global_notification_feed_' . $feed->meta_key;
+            // Giving support of legacy integration for zapier,webhook and slack as they were used to work separately before 4.6.0
+            if ($feed->meta_key == 'zapier' || $feed->meta_key == 'webhook' || $feed->meta_key == 'slack') {
+                $filter_action = 'wppayform_global_notification_feed_' . $feed->meta_key . '_feeds';
+                if ($feed->meta_key == 'slack') {
+                    $feedData['name'] = $data['textTitle'];
+                }
+            }
+
+            $feedData = apply_filters($filter_action, $feedData, $formId);
             $formattedFeeds[] = $feedData;
         }
         return $formattedFeeds;
@@ -257,6 +276,18 @@ class GlobalIntegrationManager
             'integration_name' => $integrationName,
             'created' => $created
         ];
+    }
+
+    public function verify($formId, $request)
+    {
+        $integrationName = Arr::get($request, 'integration_name');
+        $response = apply_filters('wppayform_verify_integration_endpoint_' . $integrationName, $formId);
+        if ($response['success'] == false) {
+            wp_send_json_error($response);
+        }
+
+        wp_send_json_success($response);
+        
     }
 
     public function deleteIntegrationFeed($formId, $request)

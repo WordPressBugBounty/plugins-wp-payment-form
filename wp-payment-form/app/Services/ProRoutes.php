@@ -21,6 +21,13 @@ class ProRoutes
                 ]
             ],
             [
+                'path' => 'offline',
+                'name' => 'offline',
+                'meta'=> [
+                    'title' => 'Offline' 
+                ]
+            ],
+            [
                 'path' => 'paypal',
                 'name' => 'paypal',
                 'meta'=> [
@@ -122,6 +129,12 @@ class ProRoutes
                 'svg' => WPPAYFORM_URL .'assets/images/gateways/stripe.svg',
             ),
 
+            'offline' => array(
+                'title' => 'Offline',
+                'route_name' => 'offline',
+                'svg' => WPPAYFORM_URL .'assets/images/gateways/offline.svg',
+            ),
+
             'paypal' => array(
                 'title' => 'PayPal',
                 'route_name' => 'paypal',
@@ -197,12 +210,6 @@ class ProRoutes
                 'route_name' => 'xendit',
                 'route_query' => [],
                 'svg' => WPPAYFORM_URL .'assets/images/gateways/xendit.svg',
-            ),
-            'offline' => array(
-                'title' => 'Offline',
-                'route_name' => 'offline',
-                'route_query' => [],
-                'svg' => WPPAYFORM_URL .'assets/images/gateways/offline.svg',
             ),
         );
        

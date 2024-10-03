@@ -42,6 +42,19 @@ class FormsController extends Controller
         );
     }
 
+    public function remove()
+    {
+        $formIds = $this->request->get('forms_ids', []);
+        do_action('wppayform/before_delete_forms', $formIds);
+        $formModel = new Form();
+        $formModel->deleteForms($formIds);
+        do_action('wppayform/after_delete_forms', $formIds);
+
+        return array(
+            'message' => __('Selected submission successfully deleted', 'wp-payment-form')
+        );
+    }
+
     public function demo()
     {
         try {

@@ -134,8 +134,7 @@ class TextAreaComponent extends BaseComponent
             $attributes['required'] = true;
         }
 
-        $defaultValue = apply_filters('wppayform/input_default_value', Arr::get($fieldOptions, 'default_value'), $element, $form);
-
+        $defaultValue = apply_filters('wppayform/input_default_value', Arr::get($fieldOptions, 'default_value', ''), $element, $form);
         ?>
         <div style = "display : <?php echo esc_attr($hidden_attr); ?>" data-element_type="<?php echo esc_attr($this->elementName); ?>"
              class="<?php echo esc_attr($controlClass); ?>">

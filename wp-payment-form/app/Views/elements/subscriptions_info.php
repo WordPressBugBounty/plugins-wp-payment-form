@@ -7,10 +7,10 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
 ?>
 <table class="table wpf_subscriptions_items_table wpf_table table_bordered">
     <thead>
-    <th><?php _e('Subscription', 'wp-payment-form'); ?></th>
-    <th><?php _e('Initial Amount', 'wp-payment-form'); ?></th>
-    <th><?php _e('Times Billed', 'wp-payment-form'); ?></th>
-    <th><?php _e('Status', 'wp-payment-form'); ?></th>
+    <th><?php esc_html_e('Subscription', 'wp-payment-form'); ?></th>
+    <th><?php esc_html_e('Initial Amount', 'wp-payment-form'); ?></th>
+    <th><?php esc_html_e('Times Billed', 'wp-payment-form'); ?></th>
+    <th><?php esc_html_e('Status', 'wp-payment-form'); ?></th>
     </thead>
     <tbody>
     <?php $subTotal = 0; ?>
@@ -19,14 +19,14 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
             <td>
                 <?php echo esc_html($subscription->item_name) . ' (' . esc_html($subscription->plan_name) . ')'; ?>
                 <p style="margin: 0; padding: 5px 0 0; font-size: 12px;">
-                    <?php echo wpPayFormFormattedMoney($subscription->recurring_amount * $subscription->quantity, $currencySetting); ?> / <?php echo esc_html($subscription->billing_interval); ?>
+                    <?php echo esc_html(wpPayFormFormattedMoney($subscription->recurring_amount * $subscription->quantity, $currencySetting)); ?> / <?php echo esc_html($subscription->billing_interval); ?>
                 </p>
             </td>
             <td>
-                <?php echo wpPayFormFormattedMoney($subscription->initial_amount, $currencySetting); ?>
+                <?php echo esc_html(wpPayFormFormattedMoney($subscription->initial_amount, $currencySetting)); ?>
             </td>
             <td><?php echo esc_html($subscription->bill_count); ?>
-                / <?php echo ($subscription->bill_times) ? esc_html($subscription->bill_times) : __('Until cancelled', 'wp-payment-form'); ?> </td>
+                / <?php echo ($subscription->bill_times) ? esc_html($subscription->bill_times) : esc_html__('Until cancelled', 'wp-payment-form'); ?> </td>
             <td><?php echo esc_html($subscription->status); ?></td>
         </tr>
     <?php

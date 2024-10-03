@@ -40,7 +40,7 @@ class MailChimpIntegration extends IntegrationManager
         return [
             'logo'             => $this->logo,
             'menu_title'       => __('Mailchimp Settings', 'wp-payment-form'),
-            'menu_description' => __('Mailchimp is a marketing platform for small businesses. Send beautiful emails, connect your e-commerce store, advertise, and build your brand. Use Paymattic to collect customer information and automatically add it to your Mailchimp campaign list. If you don\'t have a Mailchimp account, you can <a href="http://www.mailchimp.com/" target="_blank">sign up for one here.</a>', 'wp-payment-form'),
+            'menu_description' => __('Mailchimp is a marketing platform for small businesses. Send beautiful emails, connect your e-commerce store, advertise, and build your brand. Use Paymattic to collect customer information and automatically add it to your Mailchimp campaign list. If you don\'t have a Mailchimp account, you can <a style="color: #F98435" href="http://www.mailchimp.com/" target="_blank">sign up for one here.</a>', 'wp-payment-form'),
             'valid_message'    => __('Your Mailchimp API Key is valid', 'wp-payment-form'),
             'invalid_message'  => __('Your Mailchimp API Key is not valid', 'wp-payment-form'),
             'save_button_text' => __('Save Settings', 'wp-payment-form'),
@@ -129,7 +129,8 @@ class MailChimpIntegration extends IntegrationManager
             'logo' => $this->logo,
             'is_active' => $this->isConfigured(),
             'configure_title' => __('Configuration required!', 'wp-payment-form'),
-            'global_configure_url' => admin_url('admin.php?page=wppayform_settings#general-mailchimp-settings'),
+            'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/mailchimp'),
+            'global_configure_url' => admin_url('admin.php?page=wppayform.php#/integrations/mailchimp'),
             'configure_message' => __('Mailchimp is not configured yet! Please configure your mailchimp api first', 'wp-payment-form'),
             'configure_button_text' => __('Set Mailchimp API', 'wp-payment-form')
         ];
@@ -229,6 +230,24 @@ class MailChimpIntegration extends IntegrationManager
                     ],
                     'inline_tip' => 'Please provide each tag by comma separated value, You can use dynamic smart codes'
                 ],
+                // [
+                //     'key' => 'tag_ids',
+                //     'require_list' => false,
+                //     'label' => __('Contact Tags', 'wp-payment-form'),
+                //     'placeholder' => __('Select Tags', 'wp-payment-form'),
+                //     'component' => 'selection_routing',
+                //     'simple_component' => 'select',
+                //     'routing_input_type' => 'select',
+                //     'routing_key' => 'tag_ids_selection_type',
+                //     'settings_key' => 'tag_routers',
+                //     'is_multiple' => true,
+                //     'labels' => [
+                //         'choice_label' => __('Enable Dynamic Tag Selection', 'wp-payment-form'),
+                //         'input_label' => '',
+                //         'input_placeholder' => __('Set Tag', 'wp-payment-form')
+                //     ],
+                //     'options' => $this->getTags()
+                // ],
                 [
                     'key' => 'note',
                     'require_list' => true,

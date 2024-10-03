@@ -165,6 +165,7 @@ add_filter('plugin_row_meta', 'paymatticPluginRowMeta', 10, 2);
 $app->addAction('wppayform_loaded', function ($app) {
     $dependency = new \WPPayForm\App\Hooks\Handlers\DependencyHandler();
     $dependency->registerStripe();
+    $dependency->registerOffline();
     $dependency->registerShortCodes();
     $dependency->tinyMceBlock();
     $dependency->dashboardWidget();
@@ -213,7 +214,8 @@ $app->addAction('wppayform_loaded', function ($app) {
 
     $app->addAction('init', function () use ($app) {
         new \WPPayForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
-        (new \WPPayForm\App\Services\Integrations\Slack\SlackNotificationActions())->register();
+
+        new \WPPayForm\App\Services\Integrations\Slack\Bootstrap();
     });
 
     //Honeypot security

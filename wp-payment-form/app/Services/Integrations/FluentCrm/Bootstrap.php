@@ -44,7 +44,8 @@ class Bootstrap extends IntegrationManager
             'logo' => $this->logo,
             'is_active' => $this->isConfigured(),
             'configure_title' => __('Configuration required!', 'wp-payment-form'),
-            'global_configure_url' => '#',
+            'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/fluentcrm'),
+            'global_configure_url' => admin_url('admin.php?page=wppayform.php#/integrations/fluentcrm'),
             'configure_message' => __('FluentCRM is not configured yet! Please configure your FluentCRM api first', 'wp-payment-form'),
             'configure_button_text' => __('Set FluentCRM', 'wp-payment-form')
         ];
@@ -170,7 +171,8 @@ class Bootstrap extends IntegrationManager
                 [
                     'key' => 'double_opt_in',
                     'require_list' => false,
-                    'checkbox_label' => __('Enable Double Option for new contacts', 'wp-payment-form'),
+                    'checkbox_label' => __('Enable Double Opt-In for new contacts', 'wp-payment-form'),
+                    'tips'         => __('The double opt-in email feature of FluentCRM acts as an extra layer of confirmation to verify each email address is a verified user.', 'wp-payment-form'),
                     'component' => 'checkbox-single'
                 ],
                 [
@@ -371,7 +373,6 @@ class Bootstrap extends IntegrationManager
      */
     protected function getSelectedTagIds($data, $inputData, $simpleKey = 'tag_ids', $routingId = 'tag_ids_selection_type', $routersKey = 'tag_routers')
     {
-        // dd("hitt");
         $routing = Arr::get($data, $routingId, 'simple');
         if (!$routing || $routing == 'simple') {
             return Arr::get($data, $simpleKey, []);

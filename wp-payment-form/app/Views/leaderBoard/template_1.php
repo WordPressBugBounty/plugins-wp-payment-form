@@ -12,10 +12,10 @@
                         $top = $top + 1;
                         $class = "card-" . $top;
                         ?>
-                        <div class="wpf-top-donor-card <?php echo $class ?>">
+                        <div class="wpf-top-donor-card <?php echo esc_attr($class) ?>">
                             <div class="wpf-user-serial">
                                 <span class="wpf-user-serial-text">
-                                    <?php echo $top ?>
+                                    <?php echo esc_html($top) ?>
                                 </span>
                             </div>
                             <div class="info">
@@ -27,17 +27,17 @@
                                 <?php if ($show_name == 'true'): ?>
                                     <div class="wpf-user-name">
                                         <span class="wpf-user-name-text">
-                                            <?php echo $topThreeDonar['customer_name'] ?>
+                                            <?php echo esc_html($topThreeDonar['customer_name']) ?>
                                         </span>
                                     </div>
                                 <?php endif; ?>
                                 <?php if ($show_total == 'true'): ?>
                                     <div class="wpf-user-amount">
                                         <span class="wpf-text-currency">
-                                            <?php echo $topThreeDonar['currency'] ?>
+                                            <?php echo esc_html($topThreeDonar['currency']) ?>
                                         </span>
                                         <span class="wpf-text-amount">
-                                            <?php echo $topThreeDonar['grand_total'] ?>
+                                            <?php echo esc_html($topThreeDonar['grand_total']) ?>
                                         </span>
                                     </div>
                                 <?php endif; ?>
@@ -73,8 +73,8 @@
                 </div>
             </div>
             <!-- donor list section -->
-            <div class="wpf-user" data-per-page="<?php echo $per_page ?>" data-orderby="<?php echo $orderby ?>"
-                data-form_id="<?php echo $form_id ?>">
+            <div class="wpf-user" data-per-page="<?php echo esc_attr($per_page) ?>" data-orderby="<?php echo esc_attr($orderby) ?>"
+                data-form_id="<?php echo esc_attr($form_id) ?>">
 
                 <?php
                 $donarIndex = 0;
@@ -84,7 +84,7 @@
                     <div class="wpf-user-row">
                         <div class="wpf-user-serial">
                             <span class="wpf-user-serial-text">
-                                <?php echo ++$donarIndex ?>
+                                <?php echo esc_html(++$donarIndex) ?>
                             </span>
                         </div>
                         <?php if ($show_avatar == 'true'): ?>
@@ -95,7 +95,7 @@
                         <?php if ($show_name == 'true'): ?>
                             <div class="wpf-user-name">
                                 <span class="wpf-user-name-text">
-                                    <?php echo $donor['customer_name'] ?>
+                                    <?php echo esc_html($donor['customer_name']) ?>
                                 </span>
                             </div>
                         <?php endif; ?>
@@ -104,10 +104,10 @@
                                 <span class="wpf-user-amount-text">Amount Donated</span>
                                 <span class="wpf-user-amount">
                                     <span class="wpf-text-currency">
-                                        <?php echo $donor['currency'] ?>
+                                        <?php echo esc_html($donor['currency']) ?>
                                     </span>
                                     <span class="wpf-text-amount">
-                                        <?php echo $donor['grand_total'] ?>
+                                        <?php echo esc_html($donor['grand_total']) ?>
                                     </span>
                                 </span>
                             </div>
@@ -117,7 +117,7 @@
             </div>
             <?php if ($total <= 0) : ?>
                 <div class="wpf-no-donor-found">
-                    <img src="<?php echo $nodonorData ?>" alt="No Donor Found" class="wpf-no-donor-found-image" style="width: 280px">
+                    <img src="<?php echo esc_url($nodonorData) ?>" alt="No Donor Found" class="wpf-no-donor-found-image" style="width: 280px">
                     <p style="background: inherit; color: #000; size: 20px;">No donor found yet!</p>
                 </div>
                 
