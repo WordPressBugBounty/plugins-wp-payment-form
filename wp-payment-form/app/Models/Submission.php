@@ -238,7 +238,32 @@ class Submission extends Model
         );
     }
 
+    public static function findDonationGoal($form_id) {
+        global $wpdb;
+        $postTable = $wpdb->prefix . 'posts';
+        $metaTable = $wpdb->prefix . 'postmeta';
+        $key = 'wppayform_paymentform_builder_settings';
 
+        $donationGoal = $wpdb->get_var(
+            $wpdb->prepare(
+                '
+                SELECT pm.meta_value
+                FROM ' . $postTable. ' p
+                JOIN ' . $metaTable . ' pm ON p.ID = pm.post_id
+                WHERE p.ID = %d AND pm.meta_key = %s
+                ', $form_id, $key)
+        );
+
+
+        if ($donationGoal !== null) {
+            $unserializedData = maybe_unserialize($donationGoal);
+            if (isset($unserializedData[0]['field_options']['pricing_details']['donation_goals'])) {
+                $result = $unserializedData[0]['field_options']['pricing_details']['donation_goals'];
+                return $result;
+            }
+        } 
+        return null;
+    }
     public function getDonationItem($form_id, $searchText = null, $orderByKey = null, $orderByVal = '', $skip = 0, $perPage = null)
     {
         $form_id = sanitize_text_field($form_id);
@@ -261,6 +286,7 @@ class Submission extends Model
         $searchText = sanitize_text_field($searchText);
         $orderByKey = sanitize_text_field($orderByKey);
         $orderByVal = sanitize_text_field($orderByVal);
+        $donationGoal = $this->findDonationGoal($form_id);
 
         $skip = absint($skip);
         $perPage = absint($perPage);
@@ -308,17 +334,21 @@ class Submission extends Model
                 return $item;
             })
             ->groupBy('customer_email')
-            ->map(function ($item) {
+            ->map(function ($item) use ($form_id) {
                 return [
                     'customer_name' => $item->first()->customer_name,
                     "currency" => GeneralSettings::getCurrencySymbol($item->first()->currency),
                     'customer_email' => md5($item->first()->customer_email),
                     'grand_total' => $item->sum('grand_total'),
                     'created_at' => $item->first()->created_at,
+                    'donations_count' => $this->newQuery()
+                ->where('customer_email', $item->first()->customer_email)
+                ->where('form_id', $form_id)
+                ->count(),
                 ];
             });
         $total = $query->count();
-
+        $total_donations = $query->sum('donations_count');
         $donationItems = $query
             ->skip(null)
             ->take($perPage)
@@ -333,6 +363,11 @@ class Submission extends Model
         $initial_raised_amount = Arr::get($leaderboard_settings, 'initial_raised_amount', 0);
         $total_raised_amount = intval($total_raised_amount) + intval($initial_raised_amount);
 
+        if ($donationGoal > 0) {  
+            $percent = round(($total_raised_amount / $donationGoal) * 100, 2);  
+        } else {  
+            $percent = 0;
+        }  
         $topThreeDonors = $query->sortByDesc('grand_total')->take(3);
 
         return array(
@@ -340,7 +375,10 @@ class Submission extends Model
             'donars' => $donationItems->toArray(),
             'has_more_data' => $total > $perPage ? true : false,
             'total' => $total,
-            'total_raised_amount' => $total_raised_amount
+            'total_raised_amount' => $total_raised_amount,
+            'donation_goal' => $donationGoal,
+            'percent' => $percent,
+            'total_donations' => $total_donations,
         );
     }
 

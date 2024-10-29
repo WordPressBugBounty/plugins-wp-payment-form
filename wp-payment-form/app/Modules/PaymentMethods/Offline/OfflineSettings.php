@@ -88,7 +88,7 @@ class OfflineSettings
 
         if ($validationErrors) {
             wp_send_json_error([
-                'message' => __('Failed to save settings', 'wp-payment-form-pro'),
+                'message' => __('Failed to save settings', 'wp-payment-form'),
                 'errors'  => $validationErrors
             ], 423);
         }
@@ -100,7 +100,7 @@ class OfflineSettings
         do_action('wppayform/before_save_payment_settings_' . $method, $settings);
 
         return array(
-            'message' => __('Settings successfully updated', 'wp-payment-form-pro')
+            'message' => __('Settings successfully updated', 'wp-payment-form')
         );
     }
 
@@ -131,7 +131,7 @@ class OfflineSettings
         AccessControl::checkAndPresponseError('set_payment_settings', 'global');
         $mode = Arr::get($settings, 'payment_mode');
         if (empty($mode)) {
-            $errors['payment_mode'] = __('Please Select a payment mode.', 'wp-payment-form-pro');
+            $errors['payment_mode'] = __('Please Select a payment mode.', 'wp-payment-form');
         }
         return $errors;
     }

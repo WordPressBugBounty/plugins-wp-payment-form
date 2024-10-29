@@ -129,6 +129,12 @@ abstract class BaseComponent
             'data-element_type' => $this->elementName,
             'class'             => $controlClass
         );
+
+        foreach ($options as $option => $value) {
+	        $options[$option]['label'] = apply_filters('wppayform/input_default_value', $value['label'], $element, $form);
+	        $options[$option]['value'] = apply_filters('wppayform/input_default_value', $value['value'], $element, $form);
+        }
+
         ?>
         <div style="display : <?php echo esc_attr($hidden_attr); ?>" <?php $this->printAttributes($controlAttributes); ?>>
             <?php $this->buildLabel($fieldOptions, $form, array('for' => $inputId)); ?>
@@ -354,8 +360,9 @@ abstract class BaseComponent
             if ($attribute == '') {
                 continue;
             }
-            
-            $atts .= esc_attr($attributeKey) . '="' . esc_attr($attribute) . '" ';
+
+            $atts .= $attributeKey . '="' . htmlspecialchars($attribute, ENT_QUOTES) . '" ';
+
         }
         return $atts;
     }
@@ -367,7 +374,7 @@ abstract class BaseComponent
             if (is_array($attribute)) {
                 $attribute = json_encode($attribute);
             }
-            echo esc_attr($attributeKey).'="'. esc_attr($attribute ?? '') . '" ';
+            echo esc_attr($attributeKey).'="'. htmlspecialchars($attribute ?? '', ENT_QUOTES ?? '') . '" ';
         }
     }
 

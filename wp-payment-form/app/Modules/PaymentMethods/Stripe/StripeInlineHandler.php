@@ -144,6 +144,12 @@ class StripeInlineHandler extends StripeHandler
 
         $subscriptionPlans = (new StripeHandler())->getSubmissionPlans($submission, $totalPayable);
 
+        if ($subscriptionPlans && is_wp_error($subscriptionPlans)) {
+           return wp_send_json_error([
+                'message' => $subscriptionPlans->get_error_message()
+            ], 423);
+        }
+
         $items = [];
         foreach ($subscriptionPlans as $subscriptionPlan) {
             $items[] = [

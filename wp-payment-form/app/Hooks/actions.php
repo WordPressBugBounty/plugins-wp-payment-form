@@ -74,9 +74,9 @@ add_action('plugins_loaded', function () {
 });
 
 add_filter('login_redirect', function($redirect_to, $request, $user) {
-
+     $force_redirect = get_option('_wppayform_paymattic_user_force_redirect', 'yes');
     if (is_a($user, 'WP_User') && $user->ID != 0) {
-        if (in_array('paymattic_user', $user->roles)) {
+        if (in_array('paymattic_user', $user->roles) && 'yes' === $force_redirect) {
             // Replace 'custom_url' with your custom URL
             $custom_page = get_option( '_wppayform_user_dashboard_page', home_url() );
             $custom_page = "/" . $custom_page;
@@ -84,7 +84,7 @@ add_filter('login_redirect', function($redirect_to, $request, $user) {
 
             return $redirect_to;
         } else {
-            return home_url();
+            return $redirect_to;
         }
     }
 } , 10, 3);

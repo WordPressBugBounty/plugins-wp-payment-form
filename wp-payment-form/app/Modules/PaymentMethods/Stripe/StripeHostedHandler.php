@@ -72,6 +72,8 @@ class StripeHostedHandler extends StripeHandler
         $placeAholdOnStripeForMultiplePayment = Arr::get($paymentMethodElements, 'choose_payment_method.options.method_settings.payment_settings.stripe.checkout_display_style.place_a_hold_on_stripe') == 'yes';
 
         $paymentMethods = Arr::get($formPaymentSettings, 'stripe_checkout_methods', false);
+
+        // $allowPromotionCodes = Arr::get($formPaymentSettings, 'stripe_checkout_allow_promotion_codes', false);
    
         $checkoutArgs = [
             'cancel_url' => $cancelUrl,
@@ -79,6 +81,7 @@ class StripeHostedHandler extends StripeHandler
             'locale' => 'auto',
             'client_reference_id' => $submissionId,
             'billing_address_collection' => 'required',
+            // 'allow_promotion_codes' => 'true',
             'metadata' => $this->getIntentMetaData($submission)
         ];
 
@@ -101,6 +104,12 @@ class StripeHostedHandler extends StripeHandler
 
         if ($hasSubscriptions) {
             $subscriptionArgs = $this->getSubscriptionArgs($submission, $totalPayable);
+            if ( $subscriptionArgs && is_wp_error($subscriptionArgs)) {
+                wp_send_json_error([
+                    'message' => $subscriptionArgs->get_error_message(),
+                    'payment_error' => true
+                ], 423);
+            }
             if ($subscriptionArgs) {
                 $checkoutArgs['subscription_data'] = $subscriptionArgs;
             }
@@ -283,6 +292,9 @@ class StripeHostedHandler extends StripeHandler
                 $subscriptionItem->trial_days = 0;
             }
             $subscription = Plan::getOrCreatePlan($subscriptionItem, $submission);
+            if ($subscription && is_wp_error($subscription)) {
+                return $subscription;
+            }
 
             $subscriptionItems[] = [
                 'plan' => $subscription->id,
@@ -802,7 +814,7 @@ class StripeHostedHandler extends StripeHandler
 
         $content = '';
         if ($charge->amount_refunded > 0 && $charge->amount_captured > 0) {
-            $content = __('Payment status changed from authorized to paid', 'wp-payment-form') . '. '.  $currencySymbol . $charge->amount_captured / 100 . __(' Captured, and released the remaining ', 'wp-payment-form-pro') . $currencySymbol . $charge->amount_refunded / 100 . __(' to the customer', 'wp-payment-form-pro');
+            $content = __('Payment status changed from authorized to paid', 'wp-payment-form') . '. '.  $currencySymbol . $charge->amount_captured / 100 . __(' Captured, and released the remaining ', 'wp-payment-form') . $currencySymbol . $charge->amount_refunded / 100 . __(' to the customer', 'wp-payment-form');
         } else if ($charge->amount_refunded == 0) {
             $content = __('Payment status changed from authorized to paid', 'wp-payment-form');
         } else if($charge->amount_captured == 0) {
@@ -870,7 +882,7 @@ class StripeHostedHandler extends StripeHandler
                     'submission_id' => $transaction->submission_id,
                     'type' => 'info',
                     'created_by' => 'Payform Bot',
-                    'content' => sprintf(__('Payment Refunded by Admin. Refunded: %s %s', 'wp-payment-form-pro'),  $currencySymbol, $refundedMoney)
+                    'content' => sprintf(__('Payment Refunded by Admin. Refunded: %s %s', 'wp-payment-form'),  $currencySymbol, $refundedMoney)
                 ));
                 $refund = $refundModel->getRefund($refund->id);
                 do_action('wppayform/payment_refunded_stripe', $refund, $refund->form_id, $charge);

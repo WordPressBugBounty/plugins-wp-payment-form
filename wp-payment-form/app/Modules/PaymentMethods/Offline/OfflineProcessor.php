@@ -71,7 +71,7 @@ class OfflineProcessor
             'submission_id' => $submissionId,
             'type' => 'info',
             'created_by' => 'Payform Bot',
-            'content' => __('Offline Payment recorded and change the status to pending', 'wp-payment-form-pro')
+            'content' => __('Offline Payment recorded and change the status to pending', 'wp-payment-form')
         ));
 
         $subscriptionModel = new Subscription();
@@ -83,7 +83,7 @@ class OfflineProcessor
                     'custom' => $subscription->id,
                     'payment_status' => 'pending',
                     'txn_id' => self::generateRandomID(),
-                    'payment_note' => __('Offline subscription initialized and added', 'wp-payment-form-pro'),
+                    'payment_note' => __('Offline subscription initialized and added', 'wp-payment-form'),
                     'payment_gross' =>  $subscription->recurring_amount,
                 );
                 $this->processSubscriptionPayment($vendor_data, $subscription->id);
@@ -112,7 +112,7 @@ class OfflineProcessor
                     'custom' => $subscriptionId,
                     'payment_status' => 'pending',
                     'txn_id' => self::generateRandomID(),
-                    'payment_note' => __('Offline subscription initialized and added as pending.', 'wp-payment-form-pro'),
+                    'payment_note' => __('Offline subscription initialized and added as pending.', 'wp-payment-form'),
                     'payment_gross' =>  $gross_payment,
                 );
 
@@ -134,7 +134,7 @@ class OfflineProcessor
         ));
 
         wp_send_json_success(array(
-            'message' => __('Subscription synced successfully', 'wp-payment-form-pro'),
+            'message' => __('Subscription synced successfully', 'wp-payment-form'),
         ), 200);
     
     }
@@ -259,7 +259,7 @@ class OfflineProcessor
     {
         if(!$transactionId) {
             wp_send_json_error(array(
-                'message' => __("No transaction found", 'wp-payment-form-pro'),
+                'message' => __("No transaction found", 'wp-payment-form'),
             ), 423);
         }
 
@@ -280,7 +280,7 @@ class OfflineProcessor
                 'submission_id' => $submission->id,
                 'type' => 'info',
                 'created_by' => 'Paymattic Bot',
-                'content' => __('Subscription billed for the billing count 2', 'wp-payment-form-pro')
+                'content' => __('Subscription billed for the billing count 2', 'wp-payment-form')
             ));
         }
 
@@ -312,7 +312,7 @@ class OfflineProcessor
         }
 
         wp_send_json_success(array(
-            'message' => __('Subscription payment status successfully changed to ' . $newStatus, 'wp-payment-form-pro')
+            'message' => __('Subscription payment status successfully changed to ' . $newStatus, 'wp-payment-form')
         ), 200);
     }
 
@@ -373,7 +373,7 @@ class OfflineProcessor
             'submission_id' => $submission->id,
             'type' => 'activity',
             'created_by' => 'Paymattic BOT',
-            'content' => __('Subscription Payment has been added as pending', 'wp-payment-form-pro')
+            'content' => __('Subscription Payment has been added as pending', 'wp-payment-form')
         ));
 
     }

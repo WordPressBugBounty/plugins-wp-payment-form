@@ -4,8 +4,8 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
-Tested up to: 6.6
-Stable tag: 4.6.0
+Tested up to: 6.7
+Stable tag: 4.6.1
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -556,6 +556,22 @@ You are most welcome. You can do the following:
 
 == CHANGELOG ==
 
+= 4.6.1 Oct 29, 2024 = 
+- Adds Custom billing interval feature with interval count on subscription field
+- Adds (Fortnightly, Quarterly and Half Yearly) Options for recurring payment on both subscription and donation item field
+- Adds donation progress bar on form specific donor leaderboard
+- Adds ShortCode rendering on Dropdown field
+- Resolves Conditional logic on column container fields
+- Improves product selection on tabular products fields
+- Fixes Escaping/Sanitization issue
+- Fixes Login Redirect issue
+- Fixes issue on User dashboard
+- Fixes css conflict on Date field
+- Fixes Radio component (value missing) on bulk edit editor
+- Fixes target item missing for container fields
+- Fixes Square redirection issue
+- Fixes rendering payment item's name on payment summary
+
 = 4.6.0 Oct 3, 2024 =
 - Updates UI/UX for all modules
 - Adds Resizable column containers
@@ -563,13 +579,12 @@ You are most welcome. You can do the following:
 - Adds Report page for free users
 - Adds Form-specific leader-board
 - Adds Option to set an initial raised amount for leaderboards
-- Adds Introduces horizontal payment items
+- Adds horizontal payment items option
 - Updates Donation recurring interval button for improved usability
-- Improvement Webhook integration
-- Improvement Phone field validation and formatting
+- Improves Webhook integration
+- Improves Phone field validation and formatting
 - Fixes Google Sheets integration issue
 - Fixes Alignment issue in custom HTML component
-- Fixes Email notification issue for Stripe Embedded payment success
 - Fixes Issue allowing "+" sign in the email field
 
 = 4.5.8 Sep 5, 2024 =

@@ -73,6 +73,8 @@ class GlobalSettingsController extends Controller
     {
         $pages = (new Form())->getAllPages()->toArray();
         $activePage = get_option('_wppayform_user_dashboard_page', 'Paymattic Dashboard');
+        $forceUserRedirect = get_option('_wppayform_paymattic_user_force_redirect', 'yes');
+
         $cancel_subscription_email_settings = get_option('_wppayform_global_cancel_subsription_email_settings', null);
         if ($cancel_subscription_email_settings == null) {
             $cancel_subscription_email_settings = $this->getDefaultSubscriptionCancelEmailSettings();
@@ -87,6 +89,7 @@ class GlobalSettingsController extends Controller
                     'data' => $capability,
                     'pages' => $pages,
                     'activePage' => $activePage,
+                    'forceUserRedirect' => $forceUserRedirect,
                     'emailSettings' => $cancel_subscription_email_settings
                 );
             } else {
@@ -175,6 +178,8 @@ class GlobalSettingsController extends Controller
                 $this->addPaymatticCustomUser($paymatticUserPermissions['paymatticUserPermissions']);
                 update_option('_wppayform_enable_paymattic_user_dashboard', $paymatticUserPermissions, 'no');
                 update_option('_wppayform_user_dashboard_page', Arr::get($paymatticUserPermissions, 'activePage'));
+                update_option('_wppayform_paymattic_user_force_redirect', Arr::get($paymatticUserPermissions, 'force_user_redirect', 'yes'));
+
                 return array(
                     'message' => $message
                 );
@@ -455,7 +460,7 @@ class GlobalSettingsController extends Controller
             require_once (ABSPATH . 'wp-admin/includes/file.php');
         }
         if(isset($_FILES['file'])){
-            $uploadedfile = sanitize_text_field($_FILES['file']);
+            $uploadedfile = $_FILES['file'];
         }
 
         $acceptedFilles = array(

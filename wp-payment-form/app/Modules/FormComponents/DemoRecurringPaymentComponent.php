@@ -20,7 +20,7 @@ class DemoRecurringPaymentComponent extends BaseComponent
     {
         return array(
             'type' => 'recurring_payment_item',
-            'editor_title' => __('Subscription Payment', 'wp-payment-form-pro'),
+            'editor_title' => __('Subscription Payment', 'wp-payment-form'),
             'group' => 'payment',
             'is_pro' => 'yes',
             'postion_group' => 'payment',
@@ -52,13 +52,13 @@ class DemoRecurringPaymentComponent extends BaseComponent
                     'label' => 'Configure Subscription Payment Plans',
                     'choice_label' => __('Choose Your Pricing Plan'),
                     'choice_types' => array(
-                        'simple' => __('Simple Subscription Plan (Single)', 'wp-payment-form-pro'),
-                        'choose_single' => __('Chose One From Multiple Pricing Plans', 'wp-payment-form-pro'),
-                        //'choose_multiple' => __('Choose Multiple Plan from Pricing Plans', 'wp-payment-form-pro')
+                        'simple' => __('Simple Subscription Plan (Single)', 'wp-payment-form'),
+                        'choose_single' => __('Chose One From Multiple Pricing Plans', 'wp-payment-form'),
+                        //'choose_multiple' => __('Choose Multiple Plan from Pricing Plans', 'wp-payment-form')
                     ),
                     'selection_types' => array(
-                        'radio' => __('Radio Input Field', 'wp-payment-form-pro'),
-                        'select' => __('Select Input Field', 'wp-payment-form-pro')
+                        'radio' => __('Radio Input Field', 'wp-payment-form'),
+                        'select' => __('Select Input Field', 'wp-payment-form')
                     )
                 ),
                 'admin_label' => array(
@@ -114,7 +114,7 @@ class DemoRecurringPaymentComponent extends BaseComponent
                     'selection_type' => 'radio',
                     'pricing_options' => [
                         [
-                            'name' => __('$9.99 / Month', 'wp-payment-form-pro'),
+                            'name' => __('$9.99 / Month', 'wp-payment-form'),
                             'trial_days' => 0,
                             'has_trial_days' => 'no',
                             'trial_days' => 0,

@@ -3,6 +3,7 @@
 namespace WPPayForm\App\Models;
 
 use Exception;
+use WPPayForm\App\Modules\Builder\Render;
 use WPPayForm\App\Services\GeneralSettings;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\Framework\Foundation\App;
@@ -452,6 +453,8 @@ class Form extends Model
     public static function hasPaymentFields($formId)
     {
         $elements = Form::getBuilderSettings($formId);
+        $container_elements = (new Render)->getContainerElements($elements);
+        $elements = array_merge($elements, $container_elements);
         foreach ($elements as $element) {
             if (in_array($element['group'], ['payment', 'payment_method_element'])) {
                 return true;

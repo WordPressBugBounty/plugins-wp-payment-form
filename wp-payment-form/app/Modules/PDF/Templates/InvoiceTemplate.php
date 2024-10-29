@@ -150,7 +150,7 @@ class InvoiceTemplate extends TemplateManager
                 <td style="width: 40%" class="business_details">
                     <?php if($logo): ?>
                     <div class="business_logo">
-                        <img src="<?php echo esc_url($logo); ?>" alt="Business-logo" class='buisness-logo' style="margin: 0; padding-bottom: 10px;"/>
+                        <img src="<?php echo $logo; ?>" alt="Business-logo" class='buisness-logo' style="margin: 0; padding-bottom: 10px;"/>
                     </div>
                     <div>
                         <h4><?php echo esc_html(Arr::get($settings, 'business_name')); ?></h4>
@@ -194,19 +194,19 @@ class InvoiceTemplate extends TemplateManager
             </tr>
         </table>
         <hr />
-        <div class="receipt_upper_text"><?php echo esc_html(Arr::get($settings, 'invoice_upper_text')); ?></div>
+        <div class="receipt_upper_text"><?php echo Arr::get($settings, 'invoice_upper_text'); ?></div>
 
-        <div class="invoice_lines"><?php echo esc_html(Arr::get($settings, 'invoice_lines')); ?></div>
+        <div class="invoice_lines"><?php echo Arr::get($settings, 'invoice_lines'); ?></div>
 
         <?php if (strpos(Arr::get($settings, 'payment_summary'), 'class="ffp_payment_info_table"') !== false): ?>
             <div class="invoice_summary">
                 <h3><?php esc_html_e('Payment Details', 'wp-payment-form');?></h3>
-                <?php echo esc_html(Arr::get($settings, 'payment_summary')); ?>
+                <?php echo Arr::get($settings, 'payment_summary'); ?>
             </div>
         <?php endif;?>
 
         <div class="invoice_thanks">
-            <?php echo esc_html(Arr::get($settings, 'invoice_thanks')); ?>
+            <?php echo Arr::get($settings, 'invoice_thanks'); ?>
         </div>
         <style>
             .business_logo {

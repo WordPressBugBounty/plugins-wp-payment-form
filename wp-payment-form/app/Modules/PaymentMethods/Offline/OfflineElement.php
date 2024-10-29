@@ -23,7 +23,7 @@ class OfflineElement extends BaseComponent
     public function pushPaymentMethod($methods)
     {
         $methods['offline'] = array(
-            'label' => __('Offline/Cheque Payment', 'wp-payment-form-pro'),
+            'label' => __('Offline/Cheque Payment', 'wp-payment-form'),
             'isActive' => true,
             'logo' => WPPAYFORM_URL . 'assets/images/gateways/offline.svg',
             'editor_elements' => array(
@@ -65,7 +65,7 @@ class OfflineElement extends BaseComponent
                 )
             ),
             'field_options' => array(
-                'label' => __('Direct bank transfer', 'wp-payment-form-pro'),
+                'label' => __('Direct bank transfer', 'wp-payment-form'),
                 'description' => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. The payment will be marked as paid once the amount is deposited'
             )
         );

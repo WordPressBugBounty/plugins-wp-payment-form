@@ -41,7 +41,7 @@ class ConditionAssesor
     public static function assess(&$conditional, &$inputs)
     {
         if ($conditional['field']) {
-            $inputValue = Arr::get($inputs, $conditional['field']);
+            $inputValue = Arr::get($inputs, $conditional['field'], '');
 
             switch ($conditional['operator']) {
                 case '=':

@@ -157,8 +157,7 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function saveGlobalSettings()
     {
-        $settings = isset($_REQUEST['settings']);
-        $settings = sanitize_text_field(wp_unslash($_REQUEST['settings']));
+        $settings = wp_unslash($_REQUEST['settings']);
         update_option($this->optionKey, $settings);
         wp_send_json_success([
             'message' => __('Settings successfully updated', 'wp-payment-form')

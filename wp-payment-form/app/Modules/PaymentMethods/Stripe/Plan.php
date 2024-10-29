@@ -3,6 +3,7 @@
 namespace WPPayForm\App\Modules\PaymentMethods\Stripe;
 
 use WPPayForm\App\Services\GeneralSettings;
+use WPPayForm\Framework\Support\Arr;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -79,15 +80,50 @@ class Plan
             return $stripePlan;
         }
 
+        $intervalCount = 1;
         // We don't have this plan yet. Now we have to create the plan from subscription
         $billingInterval = $subscription->billing_interval;
         if ($billingInterval == 'daily') {
             $billingInterval = 'day';
+        } else if ($billingInterval == 'fortnight') {
+            $billingInterval = 'week';
+            $intervalCount = 2;
+        } else if ($billingInterval == 'quarter') {
+            $billingInterval = 'month';
+            $intervalCount = 3;
+        } else if ($billingInterval == 'half_year') {
+            $billingInterval = 'month';
+            $intervalCount = 6;
+        } 
+
+        $intervalCountFromOriginalPlan = Arr::get($subscription->original_plan, 'interval_count', 1);
+
+        // check interval count limit in days
+        if ($intervalCountFromOriginalPlan > 1 ) {
+           if ($billingInterval == 'week' && $intervalCountFromOriginalPlan > 156) {
+                return new \WP_Error('interval_count', __('Weekly interval count can not be more than 156', 'wp-payment-form')); 
+           } else if ($billingInterval == 'month' && $intervalCountFromOriginalPlan > 36) {
+               return new \WP_Error('interval_count', __('Monthly interval count can not be more than 36', 'wp-payment-form'));
+           } else if ($billingInterval == 'year' && $intervalCountFromOriginalPlan > 3) {
+               return new \WP_Error('interval_count', __('Yearly interval count can not be more than 3', 'wp-payment-form'));
+           } else if ($billingInterval == 'fortnight' && $intervalCountFromOriginalPlan > 78) {
+              return new \WP_Error('interval_count', __('Fortnightly interval count can not be more than 78', 'wp-payment-form'));
+           } else if ($billingInterval == 'quarter' && $intervalCountFromOriginalPlan > 12) {
+                return new \WP_Error('interval_count', __('Quarterly interval count can not be more than 12', 'wp-payment-form'));
+           } else if ($billingInterval == 'half_year' && $intervalCountFromOriginalPlan > 6) {
+                return new \WP_Error('interval_count', __('Half yearly interval count can not be more than 6', 'wp-payment-form'));
+           }
         }
+
+        if ($intervalCountFromOriginalPlan > 1) {
+            $intervalCount = $intervalCount * $intervalCountFromOriginalPlan;
+        }
+
         $plan = array(
             'id' => $subscriptionId,
             'currency' => $submission->currency,
             'interval' => $billingInterval,
+            'interval_count' => $intervalCount,
             'amount' => $subscription->recurring_amount,
             'trial_period_days' => $subscription->trial_days,
             'product' => array(
@@ -137,7 +173,9 @@ class Plan
 
     public static function getGeneratedSubscriptionId($subscription, $currency = 'USD')
     {
-        $subscriptionId = 'wpf_' . $subscription->form_id . '_' . $subscription->element_id . '_' . $subscription->recurring_amount . '_' . $subscription->billing_interval . '_' . $subscription->trial_days . '_' . $currency;;
+        $intervalCount = Arr::get($subscription->original_plan, 'interval_count', 1);
+
+        $subscriptionId = 'wpf_' . $subscription->form_id . '_' . $subscription->element_id . '_' . $subscription->recurring_amount . '_' . $intervalCount . '_' . $subscription->billing_interval . '_' . $subscription->trial_days . '_' . $currency;;
         return apply_filters('wppayform/stripe_plan_name_generated', $subscriptionId, $subscription, $currency);
     }
 

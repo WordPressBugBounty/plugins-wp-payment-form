@@ -24,7 +24,7 @@ class DemoFileUploadComponent extends BaseComponent
     {
         return array(
             'type' => $this->componentName,
-            'editor_title' => __('File Upload', 'wp-payment-form-pro'),
+            'editor_title' => __('File Upload', 'wp-payment-form'),
             'group' => 'input',
             'is_pro' => 'yes',
             'postion_group' => 'general',

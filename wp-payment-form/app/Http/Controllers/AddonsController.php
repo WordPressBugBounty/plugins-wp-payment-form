@@ -28,7 +28,7 @@ class AddonsController extends Controller
         $url = $this->request->get("url") ? $this->request->get("url") : '';
         if(!$addonSlug || !$url) {
             wp_send_json_error([
-                'message' => __('Invalid request. Please try again', 'wp-payment-form-pro'),
+                'message' => __('Invalid request. Please try again', 'wp-payment-form'),
             ],423);
         }
 

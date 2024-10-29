@@ -70,6 +70,10 @@ class StripeHandler
         foreach ($subscriptions as $subscriptionItem) {
             $subscription = PlanSubscription::create($subscriptionItem, $customer, $submission);
 
+            if ($subscription && is_wp_error($subscription)) {
+                return new \WP_Error($subscription->get_error_code(), $subscription->get_error_message(), $subscription);
+            }
+
             if (!$subscription || is_wp_error($subscription)) {
                 $subscriptionModel->update($subscriptionItem->id, [
                     'status' => 'failed',
@@ -237,10 +241,7 @@ class StripeHandler
 
             $plan = Plan::getOrCreatePlan($subscription, $submission);
             if ($plan && is_wp_error($plan)) {
-                wp_send_json_error([
-                    'message' => __('Sorry! there has an error when creating the subscription plan. Please try again', 'wp-payment-form'),
-                    'plan' => $plan
-                ], 423);
+                return $plan;
             } elseif ($plan) {
                 $data = [
                     'plan_id' => $plan->id,

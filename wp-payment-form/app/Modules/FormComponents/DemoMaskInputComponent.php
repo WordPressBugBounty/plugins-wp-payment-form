@@ -66,13 +66,13 @@ class DemoMaskInputComponent extends BaseComponent
                     'label' => 'Mask Format',
                     'type' => 'mask_input',
                     'options' => array(
-                        '' => __('None', 'wp-payment-form-pro'),
+                        '' => __('None', 'wp-payment-form'),
                         '(000) 000-0000' => '(###) ###-####',
                         '(00) 0000-0000' => '(##) ####-####',
-                        '00/00/0000' => __('23/03/2018', 'wp-payment-form-pro'),
-                        '00:00:00' => __('23:59:59', 'wp-payment-form-pro'),
-                        '00/00/0000 00:00:00' => __('23/03/2018 23:59:59', 'wp-payment-form-pro'),
-                        'custom' => __('Custom', 'wp-payment-form-pro'),
+                        '00/00/0000' => __('23/03/2018', 'wp-payment-form'),
+                        '00:00:00' => __('23:59:59', 'wp-payment-form'),
+                        '00/00/0000 00:00:00' => __('23/03/2018 23:59:59', 'wp-payment-form'),
+                        'custom' => __('Custom', 'wp-payment-form'),
                     ),
                 ),
                 'conditional_render' => array(

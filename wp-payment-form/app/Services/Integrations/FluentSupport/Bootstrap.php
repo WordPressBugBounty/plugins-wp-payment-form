@@ -29,7 +29,7 @@ class Bootstrap extends IntegrationManager
 
         $this->logo = WPPAYFORM_URL . 'assets/images/integrations/fluentsupport.svg';
 
-        $this->description = __('Paymattic\'s connection with Fluent Support enables you to take payments from users in return of services.', 'wp-payment-form-pro');
+        $this->description = __('Paymattic\'s connection with Fluent Support enables you to take payments from users in return of services.', 'wp-payment-form');
 
         $this->category = 'crm';
 
@@ -44,11 +44,11 @@ class Bootstrap extends IntegrationManager
             'title' => $this->title . ' Integration',
             'logo' => $this->logo,
             'is_active' => $this->isConfigured(),
-            'configure_title' => __('Configuration required!', 'wp-payment-form-pro'),
+            'configure_title' => __('Configuration required!', 'wp-payment-form'),
             'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/' . $this->integrationKey . ''),
             'global_configure_url' => admin_url('admin.php?page=wppayform.php#/integrations/' . $this->integrationKey . ''),
-            'configure_message' => __('Fluent Support is not configured yet! Please configure your Fluent Support api first', 'wp-payment-form-pro'),
-            'configure_button_text' => __('Set Fluent Support', 'wp-payment-form-pro')
+            'configure_message' => __('Fluent Support is not configured yet! Please configure your Fluent Support api first', 'wp-payment-form'),
+            'configure_button_text' => __('Set Fluent Support', 'wp-payment-form')
         ];
         return $integrations;
     }
@@ -78,46 +78,46 @@ class Bootstrap extends IntegrationManager
             'fields' => [
                 [
                     'key' => 'name',
-                    'label' => __('Feed Name', 'wp-payment-form-pro'),
+                    'label' => __('Feed Name', 'wp-payment-form'),
                     'required' => true,
-                    'placeholder' => __('Your Feed Name', 'wp-payment-form-pro'),
+                    'placeholder' => __('Your Feed Name', 'wp-payment-form'),
                     'component' => 'text'
                 ],
                 [
                     'key' => 'CustomFields',
                     'require_list' => false,
-                    'label' => __('Primary Fields', 'wp-payment-form-pro'),
-                    'tips' => __('Associate your Fluent Support merge tags to the appropriate Paymattic fields by selecting the appropriate form field from the list.', 'wp-payment-form-pro'),
+                    'label' => __('Primary Fields', 'wp-payment-form'),
+                    'tips' => __('Associate your Fluent Support merge tags to the appropriate Paymattic fields by selecting the appropriate form field from the list.', 'wp-payment-form'),
                     'component' => 'map_fields',
-                    'field_label_remote' => __('Fluent Support Field', 'wp-payment-form-pro'),
-                    'field_label_local' => __('Form Field', 'wp-payment-form-pro'),
+                    'field_label_remote' => __('Fluent Support Field', 'wp-payment-form'),
+                    'field_label_local' => __('Form Field', 'wp-payment-form'),
                     'primary_fileds' => [
                         [
                             'key' => 'email',
-                            'label' => __('Email Address', 'wp-payment-form-pro'),
+                            'label' => __('Email Address', 'wp-payment-form'),
                             'required' => true,
                             'input_options' => 'emails'
                         ],
                         [
                             'key' => 'title',
-                            'label' => __('Tickets Title', 'wp-payment-form-pro'),
+                            'label' => __('Tickets Title', 'wp-payment-form'),
                             'required' => true,
                             'input_options' => 'text'
                         ],
                         [
                             'key' => 'full_name',
-                            'label' => __('Full Name', 'wp-payment-form-pro'),
-                            'help_text' => __('If First Name & Last Name is not available full name will be used to get first name and last name', 'wp-payment-form-pro')
+                            'label' => __('Full Name', 'wp-payment-form'),
+                            'help_text' => __('If First Name & Last Name is not available full name will be used to get first name and last name', 'wp-payment-form')
                         ],
                         [
                             'key' => 'Type',
-                            'label' => __('Tickets type', 'wp-payment-form-pro'),
+                            'label' => __('Tickets type', 'wp-payment-form'),
                             'required' => false,
                             'input_options' => 'type'
                         ],
                         [
                             'key' => 'content',
-                            'label' => __('Content', 'wp-payment-form-pro'),
+                            'label' => __('Content', 'wp-payment-form'),
                             'required' => true,
                             'input_options' => 'content'
                         ],
@@ -126,14 +126,14 @@ class Bootstrap extends IntegrationManager
                 [
                     'key' => 'trigger_on_payment',
                     'require_list' => false,
-                    'checkbox_label' => __('Create ticket on payment success only', 'wp-payment-form-pro'),
+                    'checkbox_label' => __('Create ticket on payment success only', 'wp-payment-form'),
                     'component' => 'checkbox-single'
                 ],
                 [
                     'require_list' => false,
                     'key'          => 'conditionals',
-                    'label'        => __('Conditional Logics', 'wp-payment-form-pro'),
-                    'tips'         => __('Allow Fluent Support integration conditionally based on your submission values', 'wp-payment-form-pro'),
+                    'label'        => __('Conditional Logics', 'wp-payment-form'),
+                    'tips'         => __('Allow Fluent Support integration conditionally based on your submission values', 'wp-payment-form'),
                     'component'    => 'conditional_block'
                 ],
                 [
@@ -141,7 +141,7 @@ class Bootstrap extends IntegrationManager
                     'key' => 'enabled',
                     'label' => 'Status',
                     'component' => 'checkbox-single',
-                    'checkbox_label' => __('Enable This feed', 'wp-payment-form-pro')
+                    'checkbox_label' => __('Enable This feed', 'wp-payment-form')
                 ]
             ],
             'button_require_list' => false,
@@ -184,7 +184,7 @@ class Bootstrap extends IntegrationManager
 
         if (!is_email($ticketsData['email'])) {
             $this->addLog(
-                __('Fluent Support ticket creation skipped email, title or content are required!', 'wp-payment-form-pro'),
+                __('Fluent Support ticket creation skipped email, title or content are required!', 'wp-payment-form'),
                 $formId,
                 $entry->id,
                 'failed'
@@ -220,7 +220,7 @@ class Bootstrap extends IntegrationManager
                     do_action('fluentsupport_tickets_created_by_wppayform', $ticket->id, $entry, $formId, $feed);
                 } else {
                     $this->addLog(
-                        __("Ticket creation failed", 'wp-payment-form-pro'),
+                        __("Ticket creation failed", 'wp-payment-form'),
                         $formId,
                         $entry->id,
                         'failed'
@@ -228,7 +228,7 @@ class Bootstrap extends IntegrationManager
                 }
             } else {
                 $this->addLog(
-                    __("Fluent Support is not installed or activated", 'wp-payment-form-pro'),
+                    __("Fluent Support is not installed or activated", 'wp-payment-form'),
                     $formId,
                     $entry->id,
                     'failed'

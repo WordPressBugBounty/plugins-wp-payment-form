@@ -66,7 +66,7 @@ class DemoTabularProductsComponent extends BaseComponent
                     'group' => 'general'
                 ),
                 'table_subtotal_label' => array(
-                    'label' => __('Table Sub Total Label', 'wp-payment-form-pro'),
+                    'label' => __('Table Sub Total Label', 'wp-payment-form'),
                     'type' => 'text',
                     'group' => 'general'
                 ),
@@ -105,12 +105,12 @@ class DemoTabularProductsComponent extends BaseComponent
             'field_options' => array(
                 'label' => 'Add Quantity Of The Products',
                 'show_sub_total' => 'yes',
-                'table_item_label' => __('Product', 'wp-payment-form-pro'),
-                'table_description_label' => __('Description', 'wp-payment-form-pro'),
-                'table_price_label' => __('Item Price', 'wp-payment-form-pro'),
-                'table_quantity_label' => __('Quantity', 'wp-payment-form-pro'),
-                'table_subtotal_label' => __('Sub Total', 'wp-payment-form-pro'),
-                'table_photo_label' => __('Photo', 'wp-payment-form-pro'),
+                'table_item_label' => __('Product', 'wp-payment-form'),
+                'table_description_label' => __('Description', 'wp-payment-form'),
+                'table_price_label' => __('Item Price', 'wp-payment-form'),
+                'table_quantity_label' => __('Quantity', 'wp-payment-form'),
+                'table_subtotal_label' => __('Sub Total', 'wp-payment-form'),
+                'table_photo_label' => __('Photo', 'wp-payment-form'),
                 'layout' => 'table',
                 'enable_quantity' => 'yes',
                 'enable_product_size' => 'yes',
@@ -118,7 +118,7 @@ class DemoTabularProductsComponent extends BaseComponent
                 'enable_feature' => 'yes',
                 'categories' => [
                     array(
-                        'label' => __('Product Category', 'wp-payment-form-pro'),
+                        'label' => __('Product Category', 'wp-payment-form'),
                         'value' => 'product_category'
                     ),
                 ],
@@ -129,7 +129,7 @@ class DemoTabularProductsComponent extends BaseComponent
                         'min_quantity' => 0,
                         'max_quantity' => 100,
                         'product_price' => '10',
-                        'product_description' => __('Product Description', 'wp-payment-form-pro'),
+                        'product_description' => __('Product Description', 'wp-payment-form'),
                         'category' => array(),
                         'enable_product' => 'no',
                         'photo' => [
@@ -160,7 +160,7 @@ class DemoTabularProductsComponent extends BaseComponent
                         'min_quantity' => 0,
                         'max_quantity' => 100,
                         'product_price' => '20',
-                        'product_description' => __('Product Description', 'wp-payment-form-pro'),
+                        'product_description' => __('Product Description', 'wp-payment-form'),
                         'categories' => array('all'),
                         'enable_product' => 'no',
                         'photo' => [

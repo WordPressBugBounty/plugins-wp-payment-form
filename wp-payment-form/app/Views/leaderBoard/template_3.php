@@ -1,4 +1,5 @@
 <?php
+use WPPayForm\App\Modules\LeaderBoard\Render;
 $donorInfoClass = $show_avatar == 'true' ? "wpf-donor-info temp-three" : "wpf-donor-info temp-three wpf-info-flex";
 $assetUrl = WPPAYFORM_URL . 'assets/images/global'; 
 $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
@@ -34,10 +35,15 @@ $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
                 </div>
             </div>
         </div>
-        <div class="wpf_total_raised_amount">
-            <p><?php echo esc_html__('Total Raised Amount', 'wp-payment-form') ?> : </p>
-            <p class="wpf_amount"> <?php echo esc_html($total_raised_amount); ?></p>
-        </div>
+        <?php  
+        if (!empty($form_id)): ?>  
+            <?php echo Render::displayDonationStats($total_raised_amount, $total, $donation_goal, $percent); ?>
+        <?php else: ?>
+        <div class="wpf_total_raised_amount">  
+            <p><?php echo esc_html__('Total Raised Amount', 'wp-payment-form'); ?>:</p>  
+            <p class="wpf_amount"><?php echo esc_html($total_raised_amount); ?></p>  
+        </div> 
+        <?php endif; ?> 
         <div class="wpf-donor-card-wrapper wpf-user" data-template="<?php echo esc_attr($template_id) ?>"
             data-per-page="<?php echo esc_attr($per_page) ?>" data-orderby="<?php echo esc_attr($orderby) ?>"
             data-form_id="<?php echo esc_attr($form_id) ?>">

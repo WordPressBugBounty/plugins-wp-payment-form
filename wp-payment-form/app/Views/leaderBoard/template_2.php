@@ -1,4 +1,5 @@
 <?php 
+use WPPayForm\App\Modules\LeaderBoard\Render;
 $assetUrl = WPPAYFORM_URL . 'assets/images/global'; 
 $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
 $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
@@ -82,14 +83,19 @@ $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
                 </div>
             </div>
             <!-- donor filter section -->
-            <div class="wpf_total_raised_amount">
-                <p><?php echo esc_html__('Total Raised Amount', 'wp-payment-form') ?> : </p>
-                <p class="wpf_amount"> <?php echo esc_html($total_raised_amount); ?></p>
-            </div>
+            <?php  
+            if (!empty($form_id)): ?>  
+                <?php echo Render::displayDonationStats($total_raised_amount, $total_donations, $donation_goal, $percent); ?>
+            <?php else: ?>
+            <div class="wpf_total_raised_amount">  
+                <p><?php echo esc_html__('Total Raised Amount', 'wp-payment-form'); ?>:</p>  
+                <p class="wpf_amount"><?php echo esc_html($total_raised_amount); ?></p>  
+            </div> 
+            <?php endif; ?> 
              <div class="all_donor_section">
                 <div class="wpf-donor-filter-section">
                     <div class="wpf-search-section">
-                        <input type="text" class="wpf-search-input" placeholder=Search donor">
+                        <input type="text" class="wpf-search-input" placeholder="Search" donor>
                         <span class="dashicons dashicons-search wpf-search-icon"></span>
                     </div>
                     <div class="wpf-filter-section">
@@ -112,6 +118,25 @@ $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
                         </div>
                     </div>
                 </div>
+                <div class="wpf_donor_table_header <?php echo !$form_id ? 'wpf-all-forms-user' : ''; ?>">
+                    <div class="wpf-donor-table-header-cell wpf-table-header-serial">
+                        <span class="wpf-table-header-text">Rank</span>
+                    </div>
+                    <div class="wpf-donor-table-header-cell">
+                        <span class="wpf-table-header-text">Donor</span>
+                    </div>
+                    <div class="wpf-donor-table-header-cell">
+                        <span class="wpf-table-header-text">Last Donation</span>
+                    </div>
+                    <?php if ($form_id): ?>
+                    <div class="wpf-donor-table-header-cell wpf-user-donations">
+                        <span class="wpf-table-header-text">Donations</span>
+                    </div>
+                    <?php endif; ?>
+                    <div class="wpf-donor-table-header-cell">
+                        <span class="wpf-table-header-text">Amount</span>
+                    </div>
+                </div>
                 <!-- donor list section -->
                 <div class="wpf-user" data-per-page="<?php echo esc_attr($per_page) ?>" data-orderby="<?php echo esc_attr($orderby) ?>" data-form_id="<?php echo esc_attr($form_id) ?>">
 
@@ -120,23 +145,39 @@ $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
                     foreach ($donars as $key => $donor) :
 
                     ?>
-                        <div class="wpf-user-row">
+                        <div class="wpf-user-row <?php echo !$form_id ? 'wpf-all-forms-user' : ''; ?>">
                             <div class="wpf-user-serial">
                                 <span class="wpf-user-serial-text"><?php echo  esc_html(++$donarIndex) ?></span>
                             </div>
-                            <?php if ($show_avatar == 'true') : ?>
-                                <div class="wpf-user-avatar">
-                                    <?php echo get_avatar($topThreeDonar['customer_email'], 96); ?>
-                                </div>
+                            <?php if ($show_avatar == 'true' || $show_name == 'true') : ?>
+                            <div class="wpf-user-avatar-name">
+                                <?php if ($show_avatar == 'true') : ?>
+                                    <div class="wpf-user-avatar">
+                                        <?php echo get_avatar($topThreeDonar['customer_email'], 96); ?>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($show_name == 'true') : ?>
+                                    <div class="wpf-user-name">
+                                        <span class="wpf-user-name-text"><?php echo esc_html($donor['customer_name']) ?></span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                             <?php endif; ?>
                             <?php if ($show_name == 'true') : ?>
                                 <div class="wpf-user-name">
-                                    <span class="wpf-user-name-text"><?php echo esc_html($donor['customer_name']) ?></span>
+                                    <span class="wpf-user-name-text"><?php
+                                    $originalDate = esc_html($donor['created_at']);
+                                    $date = new DateTime($originalDate);  
+                                    $formattedDate = $date->format('d M, Y');  
+                                    echo $formattedDate  ?></span>
                                 </div>
+                            <?php endif; ?>
+                            <?php if ($form_id): ?>  
+                                <span class="wpf-user-donations"><?php echo esc_html($donor['donations_count']) ?> Donations</span>  
                             <?php endif; ?>
                             <?php if ($show_total == 'true') : ?>
                                 <div class="wpf-user-amount">
-                                    <span class="wpf-user-amount-text">Amount Donated</span>
+                                    <!-- <span class="wpf-user-amount-text">Amount Donated</span> -->
                                     <span class="wpf-user-amount">
                                         <span class="wpf-text-currency"><?php echo esc_html($donor['currency'])  ?></span>
                                         <span class="wpf-text-amount"><?php echo esc_html($donor['grand_total']) ?></span>
@@ -146,7 +187,7 @@ $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <?php if ($total <= 0) : ?>
+                <?php if (isset($total_raised_amount) && is_numeric($total_raised_amount) && $total_raised_amount <= 0) : ?> 
                     <div class="wpf-no-donor-found">
                         <img src="<?php echo esc_url($nodonorData) ?>" alt="No Donor Found" class="wpf-no-donor-found-image" style="width: 280px">
                         <p style="background: inherit; color: #000; size: 20px;">No donor found yet!</p>

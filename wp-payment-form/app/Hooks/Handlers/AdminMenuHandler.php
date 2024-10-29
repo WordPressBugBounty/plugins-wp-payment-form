@@ -208,7 +208,8 @@ class AdminMenuHandler
         // components on this page dynamically & easily.
         // N.B. native 'components' will always use
         // 'settings' as their current component.
-        $paymatticPages = isset($_REQUEST['page']) ? sanitize_text_field(wp_unslash($_REQUEST['page'])) : [];
+        $paymatticPages = isset($_REQUEST['page']) ? wp_unslash($_REQUEST['page']) : [];
+      
         $currentComponent = apply_filters(
             'wppayform_global_settings_current_component',
             $paymatticPages

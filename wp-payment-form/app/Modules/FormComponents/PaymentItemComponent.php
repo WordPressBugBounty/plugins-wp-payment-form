@@ -248,12 +248,12 @@ class PaymentItemComponent extends BaseComponent
                 ?>
                 <div <?php $this->printAttributes($controlAttributes); ?>>
                     <div class="wpf_input_label wpf_single_amount_label">
-                        <?php echo wp_kses_post($title); ?>: <span name=<?php echo esc_attr($element['id']); ?> class="wpf_single_amount"><?php echo wp_kses_post(wpPayFormFormattedMoney(wpPayFormConverToCents($amount), $currenySettings)); ?></span>
+                        <?php echo esc_html($title); ?>: <span name=<?php echo esc_attr($element['id']); ?> class="wpf_single_amount"><?php echo esc_html(wpPayFormFormattedMoney(wpPayFormConverToCents($amount), $currenySettings)); ?></span>
                     </div>
                 </div>
             <?php
             }
-            echo '<input customname= ' . esc_attr($customname) . ' name=' . esc_attr($element['id']) . ' type="hidden" class="wpf_payment_item" data-price="' . esc_attr(wpPayFormConverToCents($amount)) . '" value="' . esc_attr($amount) . '" />';
+            echo '<input customname="' . esc_attr($customname) . '" name="' . esc_attr($element['id']) . '" type="hidden" class="wpf_payment_item" data-price="' . esc_attr(wpPayFormConverToCents($amount)) . '" value="' . esc_attr($amount) . '" />';
             ?>
         </div>
     <?php
@@ -396,7 +396,7 @@ class PaymentItemComponent extends BaseComponent
                             <label class="form-check-label" for="<?php echo esc_attr($optionId); ?>">
                                 <span class="wpf_price_option_name" itemprop="description"><?php echo esc_html($product_title); ?></span>
                                 <span class="wpf_price_option_sep">&nbsp;–&nbsp;</span>
-                                <span class="wpf_price_option_price"><?php echo wp_kses_post(wpPayFormFormattedMoney(wpPayFormConverToCents(Arr::get($price, 'value', 0)), $currenySettings)); ?></span>
+                                <span class="wpf_price_option_price"><?php echo esc_html(wpPayFormFormattedMoney(wpPayFormConverToCents(Arr::get($price, 'value', 0)), $currenySettings)); ?></span>
                                 <meta itemprop="price" content="<?php echo esc_attr(Arr::get($price, 'value', 0)); ?>">
                             </label>
                         </div>
@@ -492,9 +492,9 @@ class PaymentItemComponent extends BaseComponent
                         <div  class="<?php echo $enableImage == 'yes' ? 'form-check' : 'form-check wpf-no-image' ?>" style="margin-bottom: 20px;">
                             <input <?php $this->printAttributes($attributes); ?>>
                             <label class="form-check-label" for="<?php echo esc_attr($optionId); ?>">
-                                <span class="wpf_price_option_name" itemprop="description"><?php echo wp_kses_post($product_title); ?></span>
+                                <span class="wpf_price_option_name" itemprop="description"><?php echo esc_html($product_title); ?></span>
                                 <span class="wpf_price_option_sep">&nbsp;–&nbsp;</span>
-                                <span class="wpf_price_option_price"><?php echo wp_kses_post(wpPayFormFormattedMoney(wpPayFormConverToCents($option['value']), $currenySettings)); ?></span>
+                                <span class="wpf_price_option_price"><?php echo esc_html(wpPayFormFormattedMoney(wpPayFormConverToCents($option['value']), $currenySettings)); ?></span>
                                 <meta itemprop="price" content="<?php echo esc_attr($option['value']); ?>" />
                             </label>
                         </div>

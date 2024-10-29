@@ -117,8 +117,8 @@ class DonationComponent extends BaseComponent
                     'allow_custom_amount' => 'no',
                     'allow_recurring' => 'no',
                     'bill_time_max' => '0',
-                    'intervals' => [__('day', 'wp-payment-form-pro'), __('week', 'wp-payment-form-pro'), __('month', 'wp-payment-form-pro'), __('year', 'wp-payment-form-pro')],
-                    'interval_options' => [__('day', 'wp-payment-form-pro'), __('week', 'wp-payment-form-pro'), __('month', 'wp-payment-form-pro'), __('year', 'wp-payment-form-pro')],
+                    'intervals' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
+                    'interval_options' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
                     'interval_display_type' => 'dropdown'
                 )
             )
@@ -131,7 +131,7 @@ class DonationComponent extends BaseComponent
         $paymentType = Arr::get($pricingDetails, 'one_time_type');
         if ($paymentType == 'single') {
             if (!Arr::get($pricingDetails, 'payment_amount')) {
-                $error = __('Payment amount is required for item:', 'wp-payment-form-pro') . ' ' . Arr::get($element, 'field_options.label');
+                $error = __('Payment amount is required for item:', 'wp-payment-form') . ' ' . Arr::get($element, 'field_options.label');
             }
         }
         return $error;
@@ -184,7 +184,7 @@ class DonationComponent extends BaseComponent
             <div <?php echo $this->builtAttributes($controlAttributes); ?>>
                 <div class="wpf_input_label wpf_single_amount_label">
                     <?php echo esc_html($title) ?>: <span
-                        class="wpf_single_amount"><?php echo wp_kses_post(wpPayFormFormattedMoney(wpPayFormConverToCents($amount), $currencySettings)); ?></span>
+                        class="wpf_single_amount"><?php echo esc_html(wpPayFormFormattedMoney(wpPayFormConverToCents($amount), $currencySettings)); ?></span>
                 </div>
             </div>
             <?php
@@ -279,7 +279,7 @@ class DonationComponent extends BaseComponent
         if ($allowCustomAmount && $isPro) {
             $prices['custom'] = array(
                 'value' => 0,
-                'label' => __('Custom Amount', 'wp-payment-form-pro')
+                'label' => __('Custom Amount', 'wp-payment-form')
             );
         } else {
             $attributes['disabled'] = true;
@@ -316,20 +316,20 @@ class DonationComponent extends BaseComponent
                     <div class="number" name="<?php echo esc_attr($name_raised) ?>" data-raised="<?php echo esc_attr($raised * 100) ?>">
                         <?php echo  esc_html(wpPayFormFormattedMoney($raised * 100, $currencySettings)) ; ?>
                     </div>
-                    <div class="text"><?php echo esc_html__('Raised', 'wp-payment-form-pro'); ?></div>
+                    <div class="text"><?php echo esc_html__('Raised', 'wp-payment-form'); ?></div>
                 </div>
                 <div class="count_amount">
                     <div class="number">
                         <?php echo esc_html($donations); ?>
                     </div>
 
-                    <div class="text"><?php echo esc_html__('Donations', 'wp-payment-form-pro'); ?></div>
+                    <div class="text"><?php echo esc_html__('Donations', 'wp-payment-form'); ?></div>
                 </div>
                 <div class="goal_amount">
                     <div class="number" name="<?php echo esc_attr($goal_amount) ?>" data-goal="<?php echo esc_attr($goal * 100) ?>">
                         <?php echo esc_html(wpPayFormFormattedMoney($goal * 100, $currencySettings)) ; ?>
                     </div>
-                    <div class="text"><?php echo esc_html__('Goal', 'wp-payment-form-pro'); ?></div>
+                    <div class="text"><?php echo esc_html__('Goal', 'wp-payment-form'); ?></div>
                 </div>
             </div>
         <?php
@@ -397,7 +397,7 @@ class DonationComponent extends BaseComponent
                             <span class="wpf_price_option_name"
                                     itemprop="description">
                                     <?php
-                                    echo !empty($price['label']) ? esc_html($price['label']) :  wp_kses_post(wpPayFormFormattedMoney(wpPayFormConverToCents($price['value']), $currencySettings));
+                                    echo !empty($price['label']) ? esc_html($price['label']) :  wpPayFormFormattedMoney(wpPayFormConverToCents($price['value']), $currencySettings);
                                     ?>
                                 </span>
                             <meta itemprop="price" content="<?php echo esc_attr($price['value']); ?>">
@@ -415,13 +415,13 @@ class DonationComponent extends BaseComponent
                         id="<?php echo esc_attr($inputId) . '_recurring' ?>">
                     <label class="form-check-label" for="<?php echo esc_attr($inputId) . '_recurring' ?>"
                         style="font-style: italic; cursor:pointer;">
-	                    <?php echo esc_html__('I would like to make a recurring donation.', 'wp-payment-form-pro'); ?>
+	                    <?php echo esc_html__('I would like to make a recurring donation.', 'wp-payment-form'); ?>
                     </label>
                 </div>
             </div>
             <div class="wpf_input_content wpf_donation_recurring_infos" style="display:none;" data-display-type="<?php echo esc_attr(Arr::get($pricingDetails, 'interval_display_type')); ?>">
                 <label class="form-check-label">
-                    <?php echo esc_html__('Bill me every', 'wp-payment-form-pro'); ?>
+                    <?php echo esc_html__('Bill me every', 'wp-payment-form'); ?>
                 </label>
 
                 <?php if(Arr::get($pricingDetails, 'interval_display_type') === 'dropdown'): ?>

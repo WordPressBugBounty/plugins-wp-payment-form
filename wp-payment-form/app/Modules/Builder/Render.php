@@ -187,6 +187,9 @@ class Render
         //saved conditionals
         $conditions = [];
         $elements = Form::getBuilderSettings($form_data['form_id']);
+        $container_elements = $this->getContainerElements($elements);
+        //merge container elements with form elements
+        $elements = array_merge($elements, $container_elements);
         foreach ($elements as $element) {
             $condition = Arr::get($element, 'field_options.conditional_logic_option');
             if ($condition != null) {
@@ -194,9 +197,26 @@ class Render
             }
         }
         $form_data['conditional_logic'] = $conditions;
+        
         return $form_data;
     }
 
+    public function getContainerElements($elements)
+    {
+        $container_elements = [];
+        foreach ($elements as $element) {
+            if ($element['type'] == 'container') {
+                $columns = Arr::get($element, 'field_options.columns', []);
+                foreach ($columns as $column) {
+                    $fields = Arr::get($column, 'fields', []);
+                    foreach ($fields as $field) {
+                        $container_elements[] = $field;
+                    }
+                }
+            }
+        }
+        return $container_elements;
+    }
 
     public function getInstanceSettings($form, $instanceCssClass)
     {
@@ -615,7 +635,7 @@ class Render
                 if (is_array($attribute)) {
                     $attribute = json_encode($attribute);
                 }
-                echo esc_attr($attributeKey) . "='" . esc_attr($attribute, ENT_QUOTES) . "' ";
+                echo esc_attr($attributeKey) . "='" . htmlspecialchars($attribute, ENT_QUOTES) . "' ";
             }
         }
     }

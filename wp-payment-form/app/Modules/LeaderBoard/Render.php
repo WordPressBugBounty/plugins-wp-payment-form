@@ -19,6 +19,17 @@ if (!defined('ABSPATH')) {
  */
 class Render
 {
+    private $totalRaisedAmount;
+    private $totalDonations;
+    private $donationGoal;
+    private $percent;
+
+    public function __construct($totalRaisedAmount = 0, $totalDonations = 0, $donationGoal = 0, $percent = 0) {
+        $this->totalRaisedAmount = esc_html($totalRaisedAmount);
+        $this->totalDonations = esc_html($totalDonations);
+        $this->donationGoal = esc_html($donationGoal);
+        $this->percent = esc_html($percent);
+    }
     public function render($template_id = '', $form_id = null, $per_page = 10, $show_total = true, $show_name = true, $show_avatar = true, $orderby = null)
     {
         $options = get_option('wppayform_settings', []);
@@ -61,7 +72,10 @@ class Render
         $currency_sign = GeneralSettings::getCurrencySymbol($currency_settings['currency']);
         $currency_settings['currency_sign'] = $currency_sign;
         $total_raised_amount = wpPayFormFormattedMoney(wpPayFormConverToCents(Arr::get($donationItems, 'total_raised_amount', 0)), $currency_settings);
-        
+        $donationGoal = wpPayFormFormattedMoney(wpPayFormConverToCents(Arr::get($donationItems, 'donation_goal', 0)), $currency_settings);
+        $percent = Arr::get($donationItems, 'percent', 0);
+        $total_donations = Arr::get($donationItems, 'total_donations', 0);
+
         ob_start();
         App::make('view')->render($template_src, [
             'donars' => $donationItems['donars'],
@@ -76,11 +90,13 @@ class Render
             'total' => $donationItems['total'],
             'template_id' => $template_id,
             'total_raised_amount' => $total_raised_amount,
+            'donation_goal' => $donationGoal,
+            'percent' => $percent,
+            'total_donations' => $total_donations
         ]);
         $view = ob_get_clean();
         return $view;
     }
-
     public function leaderBoardRender()
     {
         $form_id = isset($_POST['form_id']);
@@ -102,7 +118,19 @@ class Render
     private function getDonarList($form_id, $searchText = null, $sortKey = null, $sortType = '', $per_page = 20)
     {
         $donationItems = (new Submission())->getDonationItem($form_id, $searchText, $sortKey, $sortType, 0, $per_page);
-
         return $donationItems;
+    }
+
+    public static function displayDonationStats($totalRaisedAmount, $totalDonations, $donationGoal, $percent) {  
+        $template_src = 'leaderBoard.stats';  
+        ob_start();  
+        $viewRenderer = App::make('view');  
+        $viewRenderer->render($template_src, [  
+            'raised' => $totalRaisedAmount,  
+            'total_donations'  => $totalDonations,  
+            'goal'   => $donationGoal,  
+            'percent' => $percent,  
+        ]);  
+        return ob_get_clean();  
     }
 }
