@@ -594,6 +594,9 @@ class Form extends Model
     {
         $builderSettings = get_post_meta($formId, 'wppayform_paymentform_builder_settings', true);
 
+        $container_elements = (new Render)->getContainerElements($builderSettings);
+        $builderSettings = array_merge($builderSettings, $container_elements);
+
         if (!$builderSettings) {
             return array();
         }

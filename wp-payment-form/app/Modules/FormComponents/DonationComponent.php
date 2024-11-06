@@ -117,6 +117,8 @@ class DonationComponent extends BaseComponent
                     'allow_custom_amount' => 'no',
                     'allow_recurring' => 'no',
                     'bill_time_max' => '0',
+                    'interval_label' => 'I would like to recurring donation',
+                    'interval_text' => 'Bill my every',
                     'intervals' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
                     'interval_options' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
                     'interval_display_type' => 'dropdown'
@@ -243,6 +245,8 @@ class DonationComponent extends BaseComponent
         <?php
 
         $fieldOptions = Arr::get($element, 'field_options', false);
+        $intervalLabel = Arr::get($fieldOptions, 'pricing_details.interval_label', 'I would like to recurring donation');
+        $intervalText = Arr::get($fieldOptions, 'pricing_details.interval_text', 'Bill my every');
         $currencySettings = Form::getCurrencyAndLocale($form->ID);
         $currencySign = Arr::get($currencySettings, 'currency_sign');
 
@@ -415,13 +419,13 @@ class DonationComponent extends BaseComponent
                         id="<?php echo esc_attr($inputId) . '_recurring' ?>">
                     <label class="form-check-label" for="<?php echo esc_attr($inputId) . '_recurring' ?>"
                         style="font-style: italic; cursor:pointer;">
-	                    <?php echo esc_html__('I would like to make a recurring donation.', 'wp-payment-form'); ?>
+	                    <?php echo esc_html__($intervalLabel, 'wp-payment-form'); ?>
                     </label>
                 </div>
             </div>
             <div class="wpf_input_content wpf_donation_recurring_infos" style="display:none;" data-display-type="<?php echo esc_attr(Arr::get($pricingDetails, 'interval_display_type')); ?>">
                 <label class="form-check-label">
-                    <?php echo esc_html__('Bill me every', 'wp-payment-form'); ?>
+                    <?php echo esc_html__($intervalText, 'wp-payment-form'); ?>
                 </label>
 
                 <?php if(Arr::get($pricingDetails, 'interval_display_type') === 'dropdown'): ?>

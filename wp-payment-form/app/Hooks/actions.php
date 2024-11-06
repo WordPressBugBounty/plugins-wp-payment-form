@@ -76,18 +76,33 @@ add_action('plugins_loaded', function () {
 add_filter('login_redirect', function($redirect_to, $request, $user) {
      $force_redirect = get_option('_wppayform_paymattic_user_force_redirect', 'yes');
     if (is_a($user, 'WP_User') && $user->ID != 0) {
-        if (in_array('paymattic_user', $user->roles) && 'yes' === $force_redirect) {
+        if ( in_array( 'administrator', (array) $user->roles ) ) {
+            return admin_url(); // Redirect admins to the dashboard
+        } else if (in_array('paymattic_user', (array) $user->roles) && count($user->roles) == 1 && 'yes' === $force_redirect) {
             // Replace 'custom_url' with your custom URL
             $custom_page = get_option( '_wppayform_user_dashboard_page', home_url() );
-            $custom_page = "/" . $custom_page;
-            $redirect_to = home_url($custom_page);
+            if (intval($custom_page) > 0) {
+                $page = get_post(intval($custom_page));
+                if ($page && $page->ID) {
+                    return get_permalink($page->ID);
+                } else {
+                    return home_url();
+                }
+            }
 
-            return $redirect_to;
-        } else {
-            return $redirect_to;
+            $lowercaseString = strtolower(str_replace(' ', '-', trim($custom_page)));
+            $page = get_page_by_path($lowercaseString);
+            // can we check if the page exists
+            if ($page && $page->ID) {
+                return get_permalink($page->ID);
+            } else {
+               return home_url();
+            }
         }
     }
+    return $redirect_to;
 } , 10, 3);
+
 
 add_filter('wppayform/print_styles', function ($styles) {
     return [
