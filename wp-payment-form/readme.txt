@@ -270,7 +270,7 @@ Paymattic lets you manage your transactions worldwide with 13 payment gateways.
 
 #### **➡️ Offline Payment Method:**
 
-Get offline payments with Paymattic Pro. Give your customers and donors the transaction details and receive bank transfers.
+Get offline payments with Paymattic. Give your customers and donors the transaction details and receive bank transfers.
 
 ### **⚙️ Customize and Enhance Your Functionality**
 
