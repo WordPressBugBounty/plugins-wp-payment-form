@@ -133,7 +133,7 @@ class StripeInlineHandler extends StripeHandler
         if (is_wp_error($customer)) {
             $this->handlePaymentChargeError($customer->get_error_message(), $submission, $transaction, $form, false, 'customer');
         }
-        if ($transaction) {
+        if ($transaction && $transaction->payment_total) {
             Invoice::createItem([
                 'currency' => $transaction->currency,
                 'customer' => $customer->id,

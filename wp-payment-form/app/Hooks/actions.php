@@ -185,6 +185,10 @@ $app->addAction('wppayform_loaded', function ($app) {
     $dependency->tinyMceBlock();
     $dependency->dashboardWidget();
 
+	if (defined('FLUENT_COMMUNITY_PLUGIN_VERSION')) {
+		(new \WPPayForm\App\Modules\FluentCommunity\FluentCommunity)->register();
+	}
+
     $app->addAction('wppayform_log_data', function ($data) {
         \WPPayForm\App\Models\SubmissionActivity::createActivity($data);
     }, 10, 1);

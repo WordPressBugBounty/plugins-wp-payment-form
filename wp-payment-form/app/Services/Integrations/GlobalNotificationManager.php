@@ -24,19 +24,21 @@ class GlobalNotificationManager
 
         $feeds = Meta::where('form_id', $formId)
             ->whereIn('meta_key', $feedMetaKeys);
+        // all notifications without filtering
+       $allNotifications = (clone $feeds)->orderBy('id', 'ASC')->get();
 
-            if ($triggerAction == 'on_submit') {
-                $feeds->where('meta_group', '!=', 'on_payment');
-            } else {
-                $feeds->where('meta_group', '=', 'on_payment');
-            }
-
+        if ($triggerAction == 'on_submit') {
+            $feeds->where('meta_group', '!=', 'on_payment');
+        } else {
+            $feeds->where('meta_group', '=', 'on_payment');
+        }
+        
         $notifications = $feeds->orderBy('id', 'ASC')->get();
 
-        $this->globalNotify($insertId, $formId, $formData, $feedKeys, $notifications);
+        $this->globalNotify($insertId, $formId, $formData, $feedKeys, $notifications, $allNotifications);
     }
 
-    public function globalNotify($insertId, $formId, $formData, $feedKeys, $feeds)
+    public function globalNotify($insertId, $formId, $formData, $feedKeys, $feeds, $allNotifications)
     {
         if (!$feeds) {
             return;
@@ -61,7 +63,23 @@ class GlobalNotificationManager
             }
         }
 
-        if (!$enabledFeeds) {
+        $allEnabledFeeds = [];
+        foreach ($allNotifications as $notification) {
+            $parsedValue = json_decode($notification->meta_value, true);
+            if ($parsedValue && Arr::get($parsedValue, 'enabled')) {
+                $isConditionMatched = $this->checkCondition($parsedValue, $formData, $insertId);
+                if ($isConditionMatched) {
+                    $item = [
+                        'id'       => $notification->id,
+                        'meta_key' => $notification->meta_key,
+                        'settings' => $parsedValue
+                    ];
+                    $allEnabledFeeds[] = $item;
+                }
+            }
+        }
+
+        if (!$allEnabledFeeds) {
             do_action('wppayform_global_notify_completed', $insertId, $formId);
             return;
         }
@@ -80,7 +98,6 @@ class GlobalNotificationManager
             }
 
             $action = 'wppayform_integration_notify_' . $feed['meta_key'];
-
             if (!$entry) {
                 $entry = $this->getEntryFormatted($insertId);
             }
@@ -110,7 +127,7 @@ class GlobalNotificationManager
             }
         }
 
-        if (!$asyncFeeds) {
+        if (!$allEnabledFeeds) {
             do_action('wppayform_global_notify_completed', $insertId, $formId);
             return;
         }

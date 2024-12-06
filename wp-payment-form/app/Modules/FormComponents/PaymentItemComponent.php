@@ -201,7 +201,7 @@ class PaymentItemComponent extends BaseComponent
     private function enqueueAssets(){
         wp_enqueue_script(
             'wppayform_payment_item',
-            WPPAYFORM_URL . 'resources/public/paymentItem_handler.js',
+            WPPAYFORM_URL . 'assets/js/paymentItem-handler.js',
             array('jquery'),
             WPPAYFORM_VERSION,
             true

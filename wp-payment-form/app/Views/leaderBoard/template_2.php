@@ -85,7 +85,9 @@ $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
             <!-- donor filter section -->
             <?php  
             if (!empty($form_id)): ?>  
-                <?php echo Render::displayDonationStats($total_raised_amount, $total_donations, $donation_goal, $percent); ?>
+                <?php if ($show_statistic === 'yes' && $progress_bar === 'yes'): ?>  
+                    <?php echo Render::displayDonationStats($total_raised_amount, $total_donations, $donation_goal, $percent); ?>
+                <?php endif; ?>
             <?php else: ?>
             <div class="wpf_total_raised_amount">  
                 <p><?php echo esc_html__('Total Raised Amount', 'wp-payment-form'); ?>:</p>  

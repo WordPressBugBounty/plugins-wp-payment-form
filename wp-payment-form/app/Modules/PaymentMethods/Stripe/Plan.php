@@ -73,7 +73,6 @@ class Plan
         // Generate The subscription ID Here
         $subscriptionId = self::getGeneratedSubscriptionId($subscription, $submission->currency);
         $subscriptionId = apply_filters('wppayform/subscription_plan_id_form_' . $submission->form_id, $subscriptionId);
-
         $stripePlan = self::retirive($subscriptionId, $submission->form_id);
 
         if ($stripePlan && !is_wp_error($stripePlan)) {
@@ -175,7 +174,7 @@ class Plan
     {
         $intervalCount = Arr::get($subscription->original_plan, 'interval_count', 1);
 
-        $subscriptionId = 'wpf_' . $subscription->form_id . '_' . $subscription->element_id . '_' . $subscription->recurring_amount . '_' . $intervalCount . '_' . $subscription->billing_interval . '_' . $subscription->trial_days . '_' . $currency;;
+        $subscriptionId = 'wpf_' . $subscription->form_id . '_' . $subscription->element_id . '_' . $subscription->recurring_amount . '_' . $intervalCount . '_' . $subscription->billing_interval . '_' . $subscription->trial_days . '_' . $currency;
         return apply_filters('wppayform/stripe_plan_name_generated', $subscriptionId, $subscription, $currency);
     }
 

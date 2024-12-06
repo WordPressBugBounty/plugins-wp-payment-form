@@ -423,7 +423,7 @@ class DonationComponent extends BaseComponent
                     </label>
                 </div>
             </div>
-            <div class="wpf_input_content wpf_donation_recurring_infos" style="display:none;" data-display-type="<?php echo esc_attr(Arr::get($pricingDetails, 'interval_display_type')); ?>">
+            <div class="wpf_input_content wpf_donation_recurring_infos" style="display:none; align-items: center" data-display-type="<?php echo esc_attr(Arr::get($pricingDetails, 'interval_display_type')); ?>">
                 <label class="form-check-label">
                     <?php echo esc_html__($intervalText, 'wp-payment-form'); ?>
                 </label>
@@ -438,8 +438,10 @@ class DonationComponent extends BaseComponent
                 </select>
                 <?php else: ?>
                     <?php foreach ($pricingDetails['intervals'] as $plan): ?>
-                    <input type="radio" class="donation_recurring_interval" name="donation_recurring_interval" value="<?php echo esc_attr($plan); ?>" customname="<?php echo esc_attr($element['editor_title']); ?>">
-                    <label for="<?php echo esc_attr($plan); ?>"><?php echo esc_attr($plan); ?></label>
+                    <div class="wpf_donation_interval_button" data-donation_interval_button="">
+                        <input type="radio" class="donation_recurring_interval" name="donation_recurring_interval" value="<?php echo esc_attr($plan); ?>" customname="<?php echo esc_attr($element['editor_title']); ?>">
+                        <label for="<?php echo esc_attr($plan); ?>"><?php echo esc_attr($plan); ?></label>
+                    </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>

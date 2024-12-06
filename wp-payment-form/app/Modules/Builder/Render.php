@@ -77,6 +77,8 @@ class Render
 
         if ($elements) {
             $isStepForm = $this->checkIsStepForm($elements);
+            $nextButton = Arr::get($isStepForm, 'editor_elements.settings.next_btn.text', '');
+            $previousButton = Arr::get($isStepForm, 'editor_elements.settings.prev_btn.text', '');
             if (!empty($isStepForm)) {
                 $class = '';
                 if (count($isStepForm['editor_elements']['form_steps']) > 6) {
@@ -119,9 +121,10 @@ class Render
                                 $this->renderFormFooter($form, empty($isStepForm));
                             }
                             if (sizeof($isStepForm['editor_elements']['form_steps']) == $key + 1) {
+
                             ?>
-                                <button class="wpf_step_button" id="wpf_step_prev">&larr; <?php echo esc_html__('Previous', 'wp-payment-form') ?></button>
-                                <button class="wpf_step_button" id="wpf_step_next"><?php echo esc_html__('Next', 'wp-payment-form') ?> &rarr;</button>
+                                <button class="wpf_step_button" id="wpf_step_prev">&larr; <?php echo esc_html__($previousButton, 'wp-payment-form') ?></button>
+                                <button class="wpf_step_button" id="wpf_step_next"><?php echo esc_html__($nextButton, 'wp-payment-form') ?> &rarr;</button>
                                 <div style="display: none" class="wpf_form_notices"></div> <?php
                                                                                         }
                                                                                             ?>

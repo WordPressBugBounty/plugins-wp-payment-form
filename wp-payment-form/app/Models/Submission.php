@@ -238,13 +238,13 @@ class Submission extends Model
         );
     }
 
-    public static function findDonationGoal($form_id) {
+    public static function findMetaValueById($form_id) {
         global $wpdb;
         $postTable = $wpdb->prefix . 'posts';
         $metaTable = $wpdb->prefix . 'postmeta';
         $key = 'wppayform_paymentform_builder_settings';
 
-        $donationGoal = $wpdb->get_var(
+        $formSettings = $wpdb->get_var(
             $wpdb->prepare(
                 '
                 SELECT pm.meta_value
@@ -254,15 +254,30 @@ class Submission extends Model
                 ', $form_id, $key)
         );
 
-
-        if ($donationGoal !== null) {
-            $unserializedData = maybe_unserialize($donationGoal);
-            if (isset($unserializedData[0]['field_options']['pricing_details']['donation_goals'])) {
-                $result = $unserializedData[0]['field_options']['pricing_details']['donation_goals'];
-                return $result;
-            }
-        } 
-        return null;
+        $result = [  
+            'donation_goals' => null,  
+            'show_statistic' => null,  
+            'progress_bar' => null  
+        ];  
+        
+        if ($formSettings !== null) {  
+            $unserializedData = maybe_unserialize($formSettings);  
+            
+            // Find the donation_item field  
+            foreach ($unserializedData as $field) {  
+                if ($field['type'] === 'donation_item' && isset($field['field_options']['pricing_details'])) {  
+                    $pricingDetails = $field['field_options']['pricing_details'];  
+                    
+                    $result['donation_goals'] = $pricingDetails['donation_goals'] ?? null;  
+                    $result['show_statistic'] = $pricingDetails['show_statistic'] ?? null;  
+                    $result['progress_bar'] = $pricingDetails['progress_bar'] ?? null;  
+                    
+                    break;  
+                }  
+            }  
+        }  
+        
+        return $result; 
     }
     public function getDonationItem($form_id, $searchText = null, $orderByKey = null, $orderByVal = '', $skip = 0, $perPage = null)
     {
@@ -286,7 +301,10 @@ class Submission extends Model
         $searchText = sanitize_text_field($searchText);
         $orderByKey = sanitize_text_field($orderByKey);
         $orderByVal = sanitize_text_field($orderByVal);
-        $donationGoal = $this->findDonationGoal($form_id);
+        $metaValue = $this->findMetaValueById($form_id);
+        $donationGoal = Arr::get($metaValue, 'donation_goals', '');
+        $showStatistic = Arr::get($metaValue, 'show_statistic', '');
+        $progress_bar = Arr::get($metaValue, 'progress_bar', '');
 
         $skip = absint($skip);
         $perPage = absint($perPage);
@@ -379,6 +397,8 @@ class Submission extends Model
             'donation_goal' => $donationGoal,
             'percent' => $percent,
             'total_donations' => $total_donations,
+            'show_statistic' => $showStatistic,
+            'progress_bar' => $progress_bar
         );
     }
 

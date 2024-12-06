@@ -1,6 +1,8 @@
 {
+    "/js/Community/CustomerDashboard.js": "/js/Community/CustomerDashboard.js",
     "/js/fileupload.js": "/js/fileupload.js",
     "/js/leaderboard.js": "/js/leaderboard.js",
+    "/js/menu-handler.js": "/js/menu-handler.js",
     "/js/moneris-handler.js": "/js/moneris-handler.js",
     "/js/payforms-admin.js": "/js/payforms-admin.js",
     "/js/payforms-boot.js": "/js/payforms-boot.js",
@@ -15,6 +17,7 @@
     "/css/leaderboard.css": "/css/leaderboard.css",
     "/js/payforms-publicv2.js": "/js/payforms-publicv2.js",
     "/js/payforms-user_dashboard.js": "/js/payforms-user_dashboard.js",
+    "/js/paymentItem-handler.js": "/js/paymentItem-handler.js",
     "/js/payrexx-handler.js": "/js/payrexx-handler.js",
     "/js/paystack-handler.js": "/js/paystack-handler.js",
     "/js/razorpay-handler.js": "/js/razorpay-handler.js",

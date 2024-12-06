@@ -75,6 +75,8 @@ class Render
         $donationGoal = wpPayFormFormattedMoney(wpPayFormConverToCents(Arr::get($donationItems, 'donation_goal', 0)), $currency_settings);
         $percent = Arr::get($donationItems, 'percent', 0);
         $total_donations = Arr::get($donationItems, 'total_donations', 0);
+        $show_statistic = Arr::get($donationItems, 'show_statistic', '');
+        $progress_bar = Arr::get($donationItems, 'progress_bar','');
 
         ob_start();
         App::make('view')->render($template_src, [
@@ -92,7 +94,9 @@ class Render
             'total_raised_amount' => $total_raised_amount,
             'donation_goal' => $donationGoal,
             'percent' => $percent,
-            'total_donations' => $total_donations
+            'total_donations' => $total_donations,
+            'progress_bar' => $progress_bar,
+            'show_statistic' => $show_statistic
         ]);
         $view = ob_get_clean();
         return $view;

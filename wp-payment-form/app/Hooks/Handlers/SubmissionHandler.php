@@ -142,10 +142,14 @@ class SubmissionHandler
         $taxTotal = 0;
         if ($paymentItems) {
             foreach ($paymentItems as $paymentItem) {
-                $paymentTotal += $paymentItem['line_total'];
                 if ($paymentItem['type'] == 'tax_line') {
                     $taxTotal += $paymentItem['line_total'];
                 }
+
+                if (isset($paymentItem['recurring_tax']) && $paymentItem['recurring_tax'] == 'yes') {
+                    continue;
+                }
+                $paymentTotal += $paymentItem['line_total'];
             }
         }
 
@@ -255,6 +259,10 @@ class SubmissionHandler
             $itemModel = new OrderItem();
             if ($paymentItems) {
                 foreach ($paymentItems as $payItem) {
+
+                    if (isset($payItem['recurring_tax']) && $payItem['recurring_tax'] == 'yes') {
+                        continue;
+                    }
                     if (Arr::get($payItem, 'item_meta')) {
                         $payItem['item_meta'] = maybe_serialize($payItem['item_meta']);
                     }
@@ -269,6 +277,7 @@ class SubmissionHandler
             $subscription = new Subscription();
             foreach ($subscriptionItems as $subscriptionItem) {
                 $quantity = isset($subscriptionItem['quantity']) ? $subscriptionItem['quantity'] : 1;
+                $subscriptionItem['recurring_amount'] = $subscriptionItem['recurring_amount'] + $taxTotal;
                 $linePrice = $subscriptionItem['recurring_amount'] * $quantity;
                 $subsTotal += intval($linePrice);
 

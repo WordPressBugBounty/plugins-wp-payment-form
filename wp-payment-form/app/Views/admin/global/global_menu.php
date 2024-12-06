@@ -58,5 +58,16 @@ if ($is_paymattic_user) {
         </div>
         <?php endif; ?>
     </div>
+        <button class="toggle-menu dashicons dashicons-menu"></button> 
     </div>
 </div>
+
+<?php
+wp_enqueue_script(
+    'wppayform_menubar',
+    WPPAYFORM_URL . 'assets/js/menu-handler.js',
+    array('jquery'),
+    WPPAYFORM_VERSION,
+    true
+);
+?>

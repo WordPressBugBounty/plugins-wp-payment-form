@@ -162,11 +162,10 @@ class ChoosePaymentMethodComponent extends BaseComponent
 
                                 <li>
                                     <div class="wpf_payment_method_item">
-                                    <input <?php $this->printAttributes($attributes); ?> />
+                                        <input <?php $this->printAttributes($attributes); ?> />
                                         <label for="<?php echo esc_attr($optionId); ?>">
                                             <img src="<?php echo esc_url($file_path); ?>" alt="<?php echo esc_html($methodName)?>"/>
-                                        </label>
-                                        
+                                        </label>   
                                     </div>
                                 </li>
                             <?php endforeach;

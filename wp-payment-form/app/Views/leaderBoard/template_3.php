@@ -37,7 +37,9 @@ $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
         </div>
         <?php  
         if (!empty($form_id)): ?>  
-            <?php echo Render::displayDonationStats($total_raised_amount, $total, $donation_goal, $percent); ?>
+            <?php if ($show_statistic === 'yes' && $progress_bar === 'yes'): ?>  
+                <?php echo Render::displayDonationStats($total_raised_amount, $total_donations, $donation_goal, $percent); ?>
+            <?php endif; ?>
         <?php else: ?>
         <div class="wpf_total_raised_amount">  
             <p><?php echo esc_html__('Total Raised Amount', 'wp-payment-form'); ?>:</p>  
