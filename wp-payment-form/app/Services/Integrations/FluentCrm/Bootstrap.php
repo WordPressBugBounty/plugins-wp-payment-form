@@ -176,6 +176,24 @@ class Bootstrap extends IntegrationManager
                     'component' => 'checkbox-single'
                 ],
                 [
+                    'key' => 'trigger_on_payment',
+                    'require_list' => false,
+                    'checkbox_label' => __('Add contact on Payment success only', 'wp-payment-form-pro'),
+                    'component' => 'checkbox-single'
+                ],
+                [
+                    'key' => 'remove_on_refund',
+                    'require_list' => false,
+                    'checkbox_label' => __('Remove contact on Payment Refund', 'wp-payment-form-pro'),
+                    'component' => 'checkbox-single'
+                ],
+                [
+                    'key' => 'remove_on_subscription_cancel',
+                    'require_list' => false,
+                    'checkbox_label' => __('Remove conatct on Subscription canceled', 'wp-payment-form-pro'),
+                    'component' => 'checkbox-single'
+                ],
+                [
                     'require_list' => false,
                     'key'          => 'conditionals',
                     'label'        => __('Conditional Logics', 'wp-payment-form'),

@@ -82,6 +82,7 @@
         box-shadow: 0px -2px #e3e8ee;
         background-color: rgb(247, 250, 252);
         color: rgb(56, 56, 56);
+        overflow-x: scroll;
     }
 
     .wpf_payment_info_item {
@@ -144,7 +145,7 @@
     .wpf_order_items_table_wrapper {
         border: 1px solid #D6DAE1;
         border-radius: 4px;
-        overflow: hidden;
+        overflow: scroll;
     }
 
     .wpf_submission_details {

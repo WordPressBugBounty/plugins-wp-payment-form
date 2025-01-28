@@ -6,20 +6,20 @@ class FluentCommunity {
 
 	public function register()
 	{
-		$this->addMenu();
-		$this->loadAssets();
+		add_filter('wppayform/customer_dashboard/menus', array($this, 'addMenu'), 10, 1);
 	}
 
-	public function addMenu()
+	public function addMenu($menus)
 	{
-		add_filter('wppayform/customer_dashboard/menus', function ($menus) {
-			$menus[] = [
-				'name' => __('Spaces & Courses', 'wp-payment-form'),
-				'slug' => 'wpf-community',
-				'icon' => 'dashicons dashicons-buddicons-groups'
-			];
-			return $menus;
-		});
+		$this->loadAssets();
+
+		$menus[] = [
+			'name' => __('Spaces & Courses', 'wp-payment-form'),
+			'slug' => 'wpf-community',
+			'icon' => 'dashicons dashicons-buddicons-groups'
+		];
+
+		return $menus;
 
 	}
 

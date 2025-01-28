@@ -45,6 +45,13 @@ $app->addAction('wppayform/after_create_form', 'FormHandlers@insertTemplate', 10
 
 // $current_user = wp_get_current_user();
 // dd($current_user);
+
+add_action( 'wp_print_scripts', function () {
+    wp_deregister_script('vue.js');
+}, 100 );
+
+
+
 add_action('admin_init', function () {
 
     $disablePages = [
@@ -185,7 +192,7 @@ $app->addAction('wppayform_loaded', function ($app) {
     $dependency->tinyMceBlock();
     $dependency->dashboardWidget();
 
-	if (defined('FLUENT_COMMUNITY_PLUGIN_VERSION')) {
+	if (defined('FLUENT_COMMUNITY_PRO_VERSION')) {
 		(new \WPPayForm\App\Modules\FluentCommunity\FluentCommunity)->register();
 	}
 

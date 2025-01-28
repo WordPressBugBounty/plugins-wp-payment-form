@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
 Tested up to: 6.7
-Stable tag: 4.6.3
+Stable tag: 4.6.4
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -556,7 +556,15 @@ You are most welcome. You can do the following:
 
 == CHANGELOG ==
 
-= 4.6.3 Decmeber 06, 2024 =
+= 4.6.4 January 28, 2025 =
+- Adds a placeholder option in the Name field for improved user experience
+- Fixes an issue with container field entries during export.
+- Fixes a responsive issue with the Payment Receipt layout
+- Resolved a conflict with the MasterStudy Plugin
+- Fixed a conflict with the Complianz plugin
+- Improved UI for Moneris checkout pages
+
+= 4.6.3 December 06, 2024 =
 - Made subscription field available in Tax field
 - Made Step form buttons editable
 - Fixes issue on user registration with password field

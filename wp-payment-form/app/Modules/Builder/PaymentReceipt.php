@@ -51,6 +51,11 @@ class PaymentReceipt
         // get Total subscription amount for make payment_total
         $totalSubscriptionsAmount = 0;
         foreach ($submission->subscriptions as $subscription) {
+            // note: temp solution, in case of stripe solution for initial amount is a order item
+            if ('stripe' === $submission->payment_method) {
+                $totalSubscriptionsAmount += $subscription->recurring_amount;
+                continue;
+            }
             $totalSubscriptionsAmount += $subscription->recurring_amount + $subscription->initial_amount;
         }
         // get Total discount amount for make payment_total
@@ -125,7 +130,17 @@ class PaymentReceipt
                     'item_price' => $subscription->recurring_amount,
                     'line_total' => $subscription->recurring_amount * $subscription->quantity
                 ];
+                // note: temp solution, in case of stripe solution for initial amount is already a order item
+                if ('stripe' !== $submission->payment_method && intval($subscription->initial_amount) > 0) {
+                    $submission->order_items[] = (object) [
+                        'item_name' => __('Signup Fee for Subscription Item', 'wp-payment-form'),
+                        'quantity' => $subscription->quantity,
+                        'item_price' => $subscription->initial_amount,
+                        'line_total' => $subscription->initial_amount * $subscription->quantity
+                    ];
+                }
             }
+
         }
 
 

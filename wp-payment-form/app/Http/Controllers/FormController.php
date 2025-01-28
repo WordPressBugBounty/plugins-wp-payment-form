@@ -250,6 +250,9 @@ class FormController extends Controller
         ), $url);
 
         $response = wp_remote_get($url);
+        if (is_wp_error($response)) {
+            return [];
+        }
         $body = wp_remote_retrieve_body($response);
 
         $rates = [];

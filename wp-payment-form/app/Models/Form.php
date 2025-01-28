@@ -482,25 +482,48 @@ class Form extends Model
 
     public static function getFormInputLabels($formId)
     {
+        // Retrieve form elements from metadata
         $elements = get_post_meta($formId, 'wppayform_paymentform_builder_settings', true);
+
+        // Return an empty object if no elements are found
         if (!$elements) {
-            return (object) array();
+            return (object) [];
         }
-        $formLabels = array();
+
+        $formLabels = [];
+
+        // Helper function to extract label from an element
+        $extractLabel = function ($element) {
+            $label = Arr::get($element, 'field_options.admin_label') 
+                ?? Arr::get($element, 'field_options.label') 
+                ?? Arr::get($element, 'id');
+            return $label;
+        };
+
+        // Process form elements
         foreach ($elements as $element) {
-            if ($element['group'] == 'input') {
+            if ($element['group'] === 'input') {
+                // Extract and store label for input elements
                 $elementId = Arr::get($element, 'id');
-                if (!$label = Arr::get($element, 'field_options.admin_label')) {
-                    $label = Arr::get($element, 'field_options.label');
+                $formLabels[$elementId] = $extractLabel($element);
+            } elseif ($element['type'] === 'container') {
+                // Process container elements with nested columns and fields
+                $columns = Arr::get($element, 'field_options.columns', []);
+                foreach ($columns as $column) {
+                    $fields = Arr::get($column, 'fields', []);
+                    foreach ($fields as $field) {
+                        if ($field['group'] === 'input') {
+                            $elementId = Arr::get($field, 'id');
+                            $formLabels[$elementId] = $extractLabel($field);
+                        }
+                    }
                 }
-                if (!$label) {
-                    $label = $elementId;
-                }
-                $formLabels[$elementId] = $label;
             }
         }
+
         return (object) $formLabels;
     }
+
 
     public static function getConfirmationSettings($formId)
     {
