@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
 Tested up to: 6.7
-Stable tag: 4.6.4
+Stable tag: 4.6.5
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -555,27 +555,32 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.5 February 7, 2025 =
+- Fixes Container form field was not found in the integration feed issue
+- Fixes CSS conflict affecting radio and checkbox inputs
+- Fixes Password truncation issue
+- Improve Donation progress stats bar is now enabled by default
 
-= 4.6.4 January 28, 2025 =
-- Adds a placeholder option in the Name field for improved user experience
-- Fixes an issue with container field entries during export.
-- Fixes a responsive issue with the Payment Receipt layout
-- Resolved a conflict with the MasterStudy Plugin
-- Fixed a conflict with the Complianz plugin
+= 4.6.4 January 27, 2025 =
+- Adds A placeholder option in the Name field for improved user experience
+- Fixes An issue with container field entries during export.
+- Fixes A responsive issue with the Payment Receipt layout
+- Resolved A conflict with the MasterStudy Plugin
+- Fixed A conflict with the Complianz plugin
 - Improved UI for Moneris checkout pages
 
 = 4.6.3 December 06, 2024 =
-- Made subscription field available in Tax field
+- Made Subscription field available in Tax field
 - Made Step form buttons editable
-- Fixes issue on user registration with password field
+- Fixes Issue on user registration with password field
 - Fixes Ui issues
 - Improves Donation component's UI/UX
 
 = 4.6.2 Nov 06, 2024 =
-- Made recurring donation label editable
-- Fixes user login redirect issue
+- Made Recurring donation label editable
+- Fixes User login redirect issue
 
-= 4.6.1 Oct 29, 2024 = 
+= 4.6.1 Oct 29, 2024 =
 - Adds Custom billing interval feature with interval count on subscription field
 - Adds (Fortnightly, Quarterly and Half Yearly) Options for recurring payment on both subscription and donation item field
 - Adds donation progress bar on form specific donor leaderboard
@@ -615,7 +620,7 @@ You are most welcome. You can do the following:
 
 = 4.5.7 Jun 12, 2024 =
 - Fixes Stripe related issues
-- Improvement Stripe error handling 
+- Improvement Stripe error handling
 
 = 4.5.6 May 31, 2024 =
 - Fixes Stripe Embedded Checkout issue
@@ -629,7 +634,7 @@ You are most welcome. You can do the following:
 - Adds Donation Progress Item on the free version
 - Adds Form active/inactive option
 - Adds Conditional logic for coupon code
-- Adds New Free Donation and Payment templates 
+- Adds New Free Donation and Payment templates
 - Adds Necessary improvements to the User Dashboard
 - Adds Necessary improvements to various modules
 - Fixes minor issues
@@ -673,7 +678,7 @@ You are most welcome. You can do the following:
 - Adds Currency Switcher
 - Adds Flutterwave payment gateway addon
 - Adds applied coupons column on exported entries
-- Adds currency sign on payment summary 
+- Adds currency sign on payment summary
 - Makes Address field a free feature
 - Fixes email validation issue for certain domains
 - Fixes fractional mismatch issue on Tax percentage
@@ -708,7 +713,7 @@ You are most welcome. You can do the following:
 - Fixes Coupon amount issue
 - Fixes Single form entry rendering issue
 - Fixes Translation issue
-- Fixes Add more field button issue of Simple Form Templates 
+- Fixes Add more field button issue of Simple Form Templates
 - Fixes Step form issues with elementor/wpbakery
 - Fixes Entry export issue for checkbox
 - Fixes Asynchronous issue on integration module

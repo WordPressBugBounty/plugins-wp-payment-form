@@ -94,7 +94,7 @@ class DonationComponent extends BaseComponent
                     ),
                 ),
                 'pricing_details' => array(
-                    'show_statistic' => 'no',
+                    'show_statistic' => 'yes',
                     'donation_goals' => '1000',
                     'progress_bar' => 'yes',
                     'one_time_type' => 'choose_single',

@@ -722,6 +722,26 @@ class Form extends Model
                         "type" => $element['type']
                     ]
                 );
+            } else if ($element['type'] == 'container') {
+                $columns = Arr::get($element, 'field_options.columns', []);
+                foreach ($columns as $column) {
+                    $fields = Arr::get($column, 'fields', []);
+                    foreach ($fields as $field) {
+                        $elementId = Arr::get($field, 'id');
+                        $label = self::getLabel($field);
+                        $formattedShortcodes[$elementId] = array(
+                            "element" => $elementId,
+                            "admin_label" => Arr::get($field, 'field_options.admin_label'),
+                            "options" => [],
+                            "attributes" => [
+                                "name" => $label,
+                                "code" => "{input." . $elementId . "}",
+                                "type" => $field['type']
+                            ]
+                        );
+                    }
+                }
+                // dd($columns);
             }
         }
         return $formattedShortcodes;

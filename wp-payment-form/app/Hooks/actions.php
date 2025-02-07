@@ -1,6 +1,6 @@
 <?php
 
-// use WPPayForm\App\Modules\Notices\PluginUninstallFeedback;
+use WPPayForm\App\Modules\Notices\PluginUninstallFeedback;
 
 /**
  * All registered action's handlers should be in app\Hooks\Handlers,
@@ -19,28 +19,35 @@
 
 $app->addAction('admin_menu', 'AdminMenuHandler@add');
 $app->addAction('wppayform/after_create_form', 'FormHandlers@insertTemplate', 10, 3);
+// dd('wppayform/after_create_form');
+add_action('current_screen', function () {
+    global $current_screen;
+    if ($current_screen->id === "plugins") {
+        add_action('admin_head', function () {
+	        (new PluginUninstallFeedback())->renderFeedBackForm();
+        });
+    }
+}, 20);
 
-// add_action('current_screen', function () {
-// Load scripts only on plugin page for deactivation form
-// global $current_screen;
-// if ($current_screen->id === "plugins") {
-// $plugin_uninstall_feedback = new PluginUninstallFeedback();
-// $plugin_uninstall_feedback->renderFeedBackForm();
-// wp_enqueue_style(
-//     'wppayform_deactivate',
-//     WPPAYFORM_URL . 'assets/css/wppayform_deactivate.css',
-//     array(),
-//     WPPAYFORM_VERSION
-// );
-// wp_enqueue_script(
-//     'wppayform_deactivate',
-//     WPPAYFORM_URL . 'assets/js/wppayform_deactivate.js',
-//     array('jquery'),
-//     WPPAYFORM_VERSION,
-//     true
-// );
-//     }
-// }, 20);
+add_action('admin_enqueue_scripts', function ($hook) {
+    if ($hook === 'plugins.php') {
+        wp_enqueue_style(
+            'wppayform_deactivate',
+            WPPAYFORM_URL . 'assets/css/wppayform_deactivate.css',
+            array(),
+            WPPAYFORM_VERSION
+        );
+
+        wp_enqueue_script(
+            'wppayform_deactivate',
+            WPPAYFORM_URL . 'assets/js/wppayform_deactivate.js',
+            array('jquery'),
+            WPPAYFORM_VERSION,
+            true
+        );
+    }
+});
+
 // disabled update-notification
 
 // $current_user = wp_get_current_user();
@@ -50,7 +57,11 @@ add_action( 'wp_print_scripts', function () {
     wp_deregister_script('vue.js');
 }, 100 );
 
-
+add_action('wp_enqueue_scripts', function() {
+    if (get_template() === 'twentytwentyone') {
+        wp_enqueue_style('wp-payment-form-twenty-twenty-one', WPPAYFORM_URL . 'assets/css/twenty-twenty-one-fix.css', [], '1.0.0', 'all');
+    }
+});
 
 add_action('admin_init', function () {
 

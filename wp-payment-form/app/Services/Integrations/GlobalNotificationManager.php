@@ -127,7 +127,7 @@ class GlobalNotificationManager
             }
         }
 
-        if (!$allEnabledFeeds) {
+        if (!$asyncFeeds) {
             do_action('wppayform_global_notify_completed', $insertId, $formId);
             return;
         }

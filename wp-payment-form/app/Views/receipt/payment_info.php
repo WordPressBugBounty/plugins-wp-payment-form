@@ -28,6 +28,14 @@
         <div class="wpf_payment_info_item wpf_payment_info_item_payment_method">
             <div class="wpf_item_heading"><?php esc_html_e('Payment Method:', 'wp-payment-form'); ?></div>
             <img src="<?php echo esc_url($imageUrl); ?>" alt="<?php echo esc_attr($paymentMethod); ?>">
+            <?php if (!empty($submission->transactions)  && count($submission->transactions) > 0): 
+                 $transaction = $submission->transactions[0];
+                 if (!empty($transaction->card_last_4)):
+                ?>
+                <span class="wpf_transactions_card_number">
+                    <?php echo  '***'.htmlspecialchars($transaction->card_last_4); ?></span>  
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
     <?php if ($submission->payment_status && $submission->order_items) : 
