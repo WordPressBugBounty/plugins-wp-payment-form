@@ -378,20 +378,15 @@ class AdminMenuHandler
             $payment_methods = apply_filters('wppayform_payment_method_settings', ProRoutes::getMethods());
             $payment_routes = apply_filters('wppayform_payment_method_settings_routes', ProRoutes::getRoutes());
             $paymentAddons = apply_filters('wppayform/available_payment_addons', ProRoutes::getPaymentAddons());
-            $downloadable_font_files = [];
-            $fluent_pdf_update_available = 'no';
 
+            $fluentPdfActive = 'no';
+            $downloadable_font_files = [];
+            
             if (defined('FLUENT_PDF')) {
+                $fluentPdfActive = 'yes';
                 require_once FLUENT_PDF_PATH . '/Classes/Controller/FontDownloader.php';
                 $downloadable_font_files = (new \FluentPdf\Classes\Controller\FontDownloader())->getDownloadableFonts();
-                $result = (new \FluentPdf\Classes\Controller\GlobalPdfConfig())->checkForUpdate('fluent-pdf');
-                $fluent_pdf_update_available = $result['available'];
-                $fluent_pdf_active = "yes";
-                $fluent_pdf_url = $result['url'] ? $result['url'] : 'https://api.github.com/repos/WPManageNinja/fluent-pdf/zipball/1.0.0';
-           } else {
-                $fluent_pdf_active = "no";
-                $fluent_pdf_url = 'https://api.github.com/repos/WPManageNinja/fluent-pdf/zipball/1.0.0';
-           }
+            }
 
             $payformAdminVars = apply_filters(
                 $slug . '/admin_app_vars',
@@ -427,10 +422,8 @@ class AdminMenuHandler
                     'payment_methods' => $payment_methods,
                     'payment_routes' => $payment_routes,
                     'fluent_pdf' => true,
-                    'fluent_pdf_active' => $fluent_pdf_active,
-                    'fluent_pdf_url' => $fluent_pdf_url,
+                    'fluent_pdf_active' => $fluentPdfActive,
                     'downloadable_font_files' => $downloadable_font_files,
-                    'fluent_pdf_update_available' => $fluent_pdf_update_available,
                     'fluent_pdf_dashboard_url' => admin_url('admin.php?page=fluent_pdf.php'),
                     'is_paymattic_user' => AccessControl::isPaymatticUser(),
                     'user_email' => wp_get_current_user()->get('user_email'),

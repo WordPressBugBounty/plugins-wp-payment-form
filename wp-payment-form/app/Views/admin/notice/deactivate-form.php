@@ -1,7 +1,7 @@
 <div id="wpf-feedback" class="wpf-feedback-container" style="display: none;">
     <div class="wpf-feedback-form">
         <div class="header">
-            <img class="logo" src=" <?php echo $logo; ?> " alt="logo">
+            <img class="logo" src=" <?php echo esc_url($logo); ?> " alt="logo">
             <h1 style="padding: 10px 0px;"> Your feedback is precious</h1>
         </div>
         <p class="wpf-feed-description">
@@ -33,7 +33,7 @@
                     <div class="wpf_better_plugin_name wpf-hide">
                         <label>What is the name of plugin ? </label>
                         <input type="text" name="wpf_better_plugin_name" placeholder="Type the plugin name">
-                    </div> 
+                    </div>
                     <label>
                         <input type="checkbox" name="reason" value="I only needed the plugin for a short period">
                         I only needed the plugin for a short period
@@ -66,7 +66,7 @@
                 <a id="wpf-skip-deactivate" class="skip-btn" href="https://paymattic.com">Skip And Deactivate</a>
                 <div>
                     <button type="button" class="btn close" id="wpf-btn-close">Close</button>
-                    <button style="margin-right: 10px;" type="submit" class="btn">Deactivate</button>
+                    <button id="wpf-feedback-submit" style="margin-right: 10px;" type="submit" class="btn">Deactivate</button>
                 </div>
             </div>
         </form>

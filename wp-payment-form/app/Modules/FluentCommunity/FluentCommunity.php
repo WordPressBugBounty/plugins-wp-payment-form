@@ -25,15 +25,13 @@ class FluentCommunity {
 
 	public function loadAssets()
 	{
-		add_action('wp_enqueue_scripts', function () {
-			wp_enqueue_script(
-				'wppayform_community_script',
-				WPPAYFORM_URL . 'assets/js/Community/CustomerDashboard.js',
-				array('jquery'),
-				WPPAYFORM_VERSION,
-				true
-			);
-		});
+		wp_enqueue_script(
+			'wppayform_community_script',
+			WPPAYFORM_URL . 'assets/js/Community/CustomerDashboard.js',
+			array('jquery'),
+			WPPAYFORM_VERSION,
+			true
+		);
 
 	}
 

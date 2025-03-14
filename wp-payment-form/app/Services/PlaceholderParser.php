@@ -38,6 +38,9 @@ class PlaceholderParser
      * Possible Quantity items: [can be found on submission.form_data_raw.INPUTNAME]
      * {quantity.INPUTNAME}
      */
+
+     protected static $cachedValues = []; 
+
     public static function parse($string, $submission)
     {
         $parsables = self::nestedArrayItems($string);
@@ -128,6 +131,7 @@ class PlaceholderParser
         $parsedData = array();
         foreach ($placeholders as $groupKey => $values) {
             foreach ($values as $placeholder => $targetItem) {
+                $cacheKey = $groupKey . '_' . $targetItem;
                 if ($groupKey == 'input') {
                     $parsedData[$placeholder] = $entry->getInput($targetItem);
                 } elseif ($groupKey == 'quantity') {
@@ -135,7 +139,16 @@ class PlaceholderParser
                 } elseif ($groupKey == 'payment_item') {
                     $parsedData[$placeholder] = implode(', ', $entry->getPaymentItems($targetItem));
                 } elseif ($groupKey == 'submission') {
-                    $parsedData[$placeholder] = $entry->{$targetItem};
+                    // $parsedData[$placeholder] = $entry->{$targetItem};
+                    // Cache the payment_total value  
+                    if ($targetItem === 'payment_total') {  
+                        if (!isset(self::$cachedValues[$cacheKey])) {  
+                            self::$cachedValues[$cacheKey] = $entry->{$targetItem};  
+                        }  
+                        $parsedData[$placeholder] = self::$cachedValues[$cacheKey];  
+                    } else {  
+                        $parsedData[$placeholder] = $entry->{$targetItem};
+                    }  
                 } elseif ($groupKey == 'pdf') {
                     if (1 === strpos($placeholder, 'pdf.download_link.')) {
                        $parsedData[$placeholder] =  apply_filters('wppayform_shortcode_parser_callback_pdf.download_link.public', $targetItem, $entry);

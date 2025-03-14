@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
 Tested up to: 6.7
-Stable tag: 4.6.5
+Stable tag: 4.6.6
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -555,6 +555,17 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.6 March 14, 2025 =
+- Fixes Twenty Twenty-Five theme compatibility issue
+- Fixe Email template shortcode rendering issue
+- Fixes Unable to enroll in multiple LearnDash courses
+- Fixes Broken donation input style in Safari
+- Fixes Subscription amount total with tax 
+- Fixes User registration and activity creation on 100% discount
+- Removes Displaying secret courses of (Fluent Community) in Paymattic dashboard
+- Improve choose payment method component
+- Improve Offline-payment method description field
+
 = 4.6.5 February 7, 2025 =
 - Fixes Container form field was not found in the integration feed issue
 - Fixes CSS conflict affecting radio and checkbox inputs

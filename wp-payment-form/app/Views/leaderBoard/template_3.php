@@ -38,7 +38,7 @@ $nodonorData = WPPAYFORM_URL . 'assets/images/empty-cart.svg';
         <?php  
         if (!empty($form_id)): ?>  
             <?php if ($show_statistic === 'yes' && $progress_bar === 'yes'): ?>  
-                <?php echo Render::displayDonationStats($total_raised_amount, $total_donations, $donation_goal, $percent); ?>
+                <?php echo Render::displayDonationStats($total_raised_amount, esc_html($total_donations), esc_html($donation_goal), esc_html($percent)); ?>
             <?php endif; ?>
         <?php else: ?>
         <div class="wpf_total_raised_amount">  

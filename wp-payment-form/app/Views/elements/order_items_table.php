@@ -88,7 +88,7 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
                             </td>
                             <?php foreach ($submission->tax_items as $tax_item) : ?> 
                                 <?php 
-                                if ($tax_item->parent_holder == $order_item->parent_holder) {
+                                if (isset($tax['parent_holder']) && isset($item['parent_holder']) && $tax_item->parent_holder === $order_item->parent_holder) {
                                     $tax_total += $tax_item->line_total;
                                 } ?>
                             <?php endforeach; ?>

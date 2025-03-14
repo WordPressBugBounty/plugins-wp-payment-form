@@ -146,6 +146,13 @@ class SubmissionHandler
                     $taxTotal += $paymentItem['line_total'];
                 }
 
+                $parentHolder = $paymentItem['parent_holder'];
+                $recurringParent = preg_replace('/(_\d+)$/', '', $parentHolder);
+
+                if ($paymentItem['type'] == 'tax_line' && $recurringParent === 'recurring_payment_item') {  
+                    $recurringTaxTotal[$parentHolder] += $paymentItem['line_total'];  
+                }  
+
                 if (isset($paymentItem['recurring_tax']) && $paymentItem['recurring_tax'] == 'yes') {
                     continue;
                 }
@@ -277,7 +284,9 @@ class SubmissionHandler
             $subscription = new Subscription();
             foreach ($subscriptionItems as $subscriptionItem) {
                 $quantity = isset($subscriptionItem['quantity']) ? $subscriptionItem['quantity'] : 1;
-                $subscriptionItem['recurring_amount'] = $subscriptionItem['recurring_amount'] + $taxTotal;
+                $elementId = $subscriptionItem['element_id']; 
+                $subscriptionItem['recurring_amount'] = $subscriptionItem['recurring_amount'] + $recurringTaxTotal[$elementId];
+                
                 $linePrice = $subscriptionItem['recurring_amount'] * $quantity;
                 $subsTotal += intval($linePrice);
 
@@ -341,6 +350,7 @@ class SubmissionHandler
                 }
 
                 $submissionModel = new Submission();
+                $submission = $submissionModel->getSubmission($transaction->submission_id);
                 $submissionModel->updateSubmission($submissionId, array(
                     'payment_mode'   => '',
                     'payment_status' => 'paid',
@@ -355,7 +365,8 @@ class SubmissionHandler
                 }
 
                 do_action('wppayform/after_payment_status_change', $submissionId, 'paid');
-
+                $updateData['updated_at'] = current_time('Y-m-d H:i:s');
+                do_action('wppayform/form_payment_success', $submission, $transaction, $transaction->form_id, $updateData);
                 if ($transaction) {
                     SubmissionActivity::createActivity(array(
                         'form_id'       => $formId,

@@ -27,13 +27,13 @@
         ?>
         <div class="wpf_payment_info_item wpf_payment_info_item_payment_method">
             <div class="wpf_item_heading"><?php esc_html_e('Payment Method:', 'wp-payment-form'); ?></div>
-            <img src="<?php echo esc_url($imageUrl); ?>" alt="<?php echo esc_attr($paymentMethod); ?>">
+            <div class="wpf_item_value"><strong><?php echo ucfirst(esc_html($submission->payment_method)); ?></strong></div>
             <?php if (!empty($submission->transactions)  && count($submission->transactions) > 0): 
                  $transaction = $submission->transactions[0];
                  if (!empty($transaction->card_last_4)):
                 ?>
                 <span class="wpf_transactions_card_number">
-                    <?php echo  '***'.htmlspecialchars($transaction->card_last_4); ?></span>  
+                    <?php echo  '***'. esc_html($transaction->card_last_4); ?></span>  
                 <?php endif; ?>
             <?php endif; ?>
         </div>
@@ -45,8 +45,7 @@
         <div class="wpf_payment_info_item wpf_payment_info_item_payment_status">
             <div class="wpf_item_heading"><?php esc_html_e('Payment Status:', 'wp-payment-form'); ?></div>
             <div class="wpf_item_content <?php echo esc_attr($paymentStatus) ?>">
-                <img src="<?php echo esc_url($imageUrl) ?>" alt="<?php echo esc_attr($paymentStatus); ?>">
-                <div class="wpf_item_value"><?php echo esc_html($paymentStatus); ?></div>
+                <div class="wpf_item_value"><?php echo esc_html($submission->payment_status); ?></div>
             </div>
         </div>
     <?php endif; ?>

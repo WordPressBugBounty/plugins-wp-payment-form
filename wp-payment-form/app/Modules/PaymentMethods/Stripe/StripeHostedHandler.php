@@ -646,6 +646,14 @@ class StripeHostedHandler extends StripeHandler
         $subscriptions = $subscriptionModel->getSubscriptions($submissionId);
         if (isset($subscriptions[0])) {
             $subscriptionId = Arr::get($subscriptions, '0.vendor_subscriptipn_id');
+           if (!$subscriptionId) {
+                return wp_send_json_error(
+                    array(
+                        'message' => 'No subscription Id found!'
+                    ),
+                    423
+                );
+            }
         } else {
             return 'No subscription Id found!';
         }

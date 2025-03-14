@@ -157,6 +157,7 @@ class ChoosePaymentMethodComponent extends BaseComponent
                                 );
                                 $file_path = Arr::get($method, 'logo');
                                 if ($methodName == $defaultValue) {
+                                    $attributes['class'] .=' default_selected';
                                     $attributes['checked'] = 'true';
                                 } ?>
 

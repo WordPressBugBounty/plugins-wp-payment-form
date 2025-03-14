@@ -6,7 +6,7 @@ class Pages
 {
     public static function create()
     {
-        $options = get_option('wppayform_confirmation_pages');
+        $options = get_option('wppayform_confirmation_pages', []);
         if (false === $options || ! array_key_exists('confirmation', $options)) {
             $charge_confirmation = wp_insert_post(array(
                 'post_title'     => __('Payment Confirmation', 'wp-payment-form'),

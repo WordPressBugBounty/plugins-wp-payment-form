@@ -1739,4 +1739,17 @@ class Browser
         // return sanitize_text_field($_SERVER['REMOTE_ADDR']);
         return null;
     }
+
+    public static function isLiveServer() {
+        $local_patterns = ['localhost', '.local', '.test', '.dev', 'staging.', 'dev.'];
+        $current_host = $_SERVER['HTTP_HOST'] ?? '';
+    
+        foreach ($local_patterns as $pattern) {
+            if (strpos($current_host, $pattern) !== false) {
+                return false; // It's a local or development environment
+            }
+        }
+    
+        return true; // It's a live server
+    }
 }

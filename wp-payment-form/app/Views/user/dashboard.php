@@ -80,8 +80,8 @@ if (!function_exists('getWpfPaymentGateways')) {
                 <?php
                 foreach ($menus as $menu) {
                     ?>
-                    <div class="wpf-menu-item" id="<?php echo $menu['slug']; ?>">
-                        <span class="<?php echo $menu['icon']; ?>"></span>
+                    <div class="wpf-menu-item" id="<?php echo esc_attr($menu['slug']); ?>">
+                        <span class="<?php echo esc_attr($menu['icon']); ?>"></span>
                         <span><?php echo esc_html($menu['name']); ?></span>
                     </div>
                     <?php

@@ -86,7 +86,7 @@ $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
             <?php  
             if (!empty($form_id)): ?>  
                 <?php if ($show_statistic === 'yes' && $progress_bar === 'yes'): ?>  
-                    <?php echo Render::displayDonationStats($total_raised_amount, $total_donations, $donation_goal, $percent); ?>
+                    <?php echo Render::displayDonationStats($total_raised_amount, esc_html($total_donations), esc_html($donation_goal), esc_html($percent)); ?>
                 <?php endif; ?>
             <?php else: ?>
             <div class="wpf_total_raised_amount">  
@@ -171,7 +171,7 @@ $top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg';
                                     $originalDate = esc_html($donor['created_at']);
                                     $date = new DateTime($originalDate);  
                                     $formattedDate = $date->format('d M, Y');  
-                                    echo $formattedDate  ?></span>
+                                    echo esc_html($formattedDate)  ?></span>
                                 </div>
                             <?php endif; ?>
                             <?php if ($form_id): ?>  

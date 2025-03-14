@@ -12,6 +12,7 @@ class AddOnModule
      */
     public static function showAddOns()
     {
+        $purchaseUrl = wppayformUpgradeUrl();
         $status = get_option('wppayform_integration_status');
 
         $addOns = apply_filters('wppayform_global_addons', []);
@@ -31,7 +32,9 @@ class AddOnModule
             'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/zapier'),
             'is_configured' =>  'no',
             'enabled' => GeneralSettings::isModuleEnabled('zapier') ? 'yes' : 'no',
-            'category' => 'crm'
+            'purchase_url' => $purchaseUrl,
+            'category' => 'crm',
+            'btnTxt'       => 'Upgrade To Pro'
         ];
         $addOns['webhook'] = [
             'title' => 'Webhook',
@@ -40,7 +43,9 @@ class AddOnModule
             'enabled' => GeneralSettings::isModuleEnabled('webhook') ? 'yes' : 'no',
             'config_url' => admin_url('admin.php?page=wppayform.php#/integrations/webhook'),
             'is_configured' =>  'no',
-            'category' => 'crm'
+            'purchase_url' => $purchaseUrl,
+            'category' => 'crm',
+            'btnTxt'       => 'Upgrade To Pro'
         ];
 
         if (!defined('WPPAYFORMHASPRO')) {
@@ -190,5 +195,41 @@ class AddOnModule
                 'btnTxt'       => 'Install & Activate'
             ),
         );
+    }
+
+
+    // this is not right place to put this function, but for now we are keeping it here, we will move it to a better place later
+    public function getFluentPdfInfo()
+    {
+       
+        $downloadableFontFiles = [];
+        $fluentPdfUpdateAvailable = 'no';
+        $fluentPdfActive = 'no';
+        $fluentPdfUrl = 'https://api.github.com/repos/WPManageNinja/fluent-pdf/zipball/1.0.2'; // initial version, upon install request, it will fetch the latest version
+
+        if (defined('FLUENT_PDF')) {
+            $fluentPdfActive = 'yes';
+            $downloadableFontFiles = (new \FluentPdf\Classes\Controller\FontDownloader())->getDownloadableFonts();
+            $result = (new \FluentPdf\Classes\Controller\GlobalPdfConfig())->checkForUpdate('fluent-pdf');
+            $fluentPdfUpdateAvailable = $result['available'];
+            $fluentPdfUrl = $result['url'] ? $result['url'] : $fluentPdfUrl;
+
+            wp_send_json_success([
+                'fluent_pdf_update_available' => $fluentPdfUpdateAvailable,
+                'fluent_pdf_active' => $fluentPdfActive,
+                'fluent_pdf_url' => $fluentPdfUrl,
+                'downloadable_font_files' => $downloadableFontFiles,
+                'fluent_pdf_dashboard_url' => admin_url('admin.php?page=fluent_pdf.php')
+            ]);
+        }
+
+        wp_send_json_success([
+            'fluent_pdf_update_available' => $fluentPdfUpdateAvailable,
+            'fluent_pdf_active' => $fluentPdfActive,
+            'fluent_pdf_url' => $fluentPdfUrl,
+            'downloadable_font_files' => $downloadableFontFiles,
+            'fluent_pdf_dashboard_url' => admin_url('admin.php?page=fluent_pdf.php')
+        ]);
+
     }
 }

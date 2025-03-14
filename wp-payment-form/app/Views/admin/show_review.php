@@ -335,7 +335,7 @@
                     </li>
                     <div class="vertical-line"></div>
                     <li>
-                        <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/editor.svg' ?>" alt="" />
+                        <img src="<?php echo esc_url(WPPAYFORM_URL . 'assets/'.'images/editor.svg') ?>" alt="" />
                         <a href="<?php echo esc_url(admin_url('admin.php?page=wppayform.php#/edit-form/' . intval($form_id) . '/form-builder')) ?>">Edit Fields</a>
                     </li>
                 </ul>

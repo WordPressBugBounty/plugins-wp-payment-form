@@ -150,7 +150,7 @@ class InvoiceTemplate extends TemplateManager
                 <td style="width: 40%" class="business_details">
                     <?php if($logo): ?>
                     <div class="business_logo">
-                        <img src="<?php echo $logo; ?>" alt="Business-logo" class='buisness-logo' style="margin: 0; padding-bottom: 10px;"/>
+                        <img src="<?php echo esc_url($logo); ?>" alt="Business-logo" class='buisness-logo' style="margin: 0; padding-bottom: 10px;"/>
                     </div>
                     <div>
                         <h4><?php echo esc_html(Arr::get($settings, 'business_name')); ?></h4>

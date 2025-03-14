@@ -401,7 +401,7 @@ class DonationComponent extends BaseComponent
                             <span class="wpf_price_option_name"
                                     itemprop="description">
                                     <?php
-                                    echo !empty($price['label']) ? esc_html($price['label']) :  wpPayFormFormattedMoney(wpPayFormConverToCents($price['value']), $currencySettings);
+                                    echo !empty($price['label']) ? esc_html($price['label']) :  esc_html(wpPayFormFormattedMoney(wpPayFormConverToCents($price['value']), $currencySettings));
                                     ?>
                                 </span>
                             <meta itemprop="price" content="<?php echo esc_attr($price['value']); ?>">

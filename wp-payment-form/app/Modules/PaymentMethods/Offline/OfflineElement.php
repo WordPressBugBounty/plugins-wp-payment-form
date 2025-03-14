@@ -34,7 +34,7 @@ class OfflineElement extends BaseComponent
                 ),
                 'description' => array(
                     'label' => 'Payment instruction (will be shown on the form)',
-                    'type' => 'textarea',
+                    'type' => 'html',
                     'default' => 'Make your payment directly into our bank account. Please use your Order ID as the payment reference. The payment will be marked as paid once the amount is deposited'
                 )
             )
@@ -61,7 +61,7 @@ class OfflineElement extends BaseComponent
                 ),
                 'description' => array(
                     'label' => 'Payment instruction (will be shown on the form)',
-                    'type' => 'textarea'
+                    'type' => 'html'
                 )
             ),
             'field_options' => array(
@@ -77,14 +77,14 @@ class OfflineElement extends BaseComponent
         $controlClass = $this->elementControlClass($element);
 
         $controlAttributes = array(
-            'id' => 'wpf_' . $this->elementName,
-            'data-element_type' => $this->elementName,
-            'class' => $controlClass
+            'id' => 'wpf_' . esc_attr($this->elementName),
+            'data-element_type' => esc_attr($this->elementName),
+            'class' => esc_attr($controlClass)
         );
         $fieldOptions = Arr::get($element, 'field_options'); ?>
         <div <?php echo $this->builtAttributes($controlAttributes); ?>>
-            <?php $this->buildLabel($fieldOptions, $form); ?>
-            <p style="font-size: 18px; margin: 0"><?php echo esc_html(Arr::get($element, 'field_options.description')); ?></p>
+            <?php $this->buildLabel($fieldOptions, $form); ?><?php echo wp_kses(Arr::get($element, 'field_options.description'), wp_kses_allowed_html('post')); ?>
+            
         </div>
         <?php
         echo '<input data-wpf_payment_method="offline" type="hidden" name="__offline_payment_gateway" value="' . esc_attr($value) . '" />';

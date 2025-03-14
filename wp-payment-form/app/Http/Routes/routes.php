@@ -155,6 +155,9 @@ $router->prefix('paymattic/addons')->withPolicy('AdminPolicy')->group(function (
 
 // pdf routes
 $router->prefix('wppayform-pdf')->withPolicy('WPPayForm\App\Http\Policies\AdminPolicy')->group(function ($router) {
+    $router->get('/check_fluent_pdf_info', function () {
+        return (new WPPayForm\App\Modules\AddOnModules\AddOnModule())->getFluentPdfInfo();
+    });
     $router->get('/get_global_settings', function () {
         return (new WPPayForm\App\Modules\PDF\Manager\WPPayFormPdfBuilder())->getGlobalSettings();
     });

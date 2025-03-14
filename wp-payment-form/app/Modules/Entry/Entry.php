@@ -100,7 +100,13 @@ class Entry
 
         foreach ($itemNames as $itemName) {
             if($itemName->item_name && $itemName->line_total){
-                $names[] = $itemName->line_total / 100;
+                $name[] = $itemName->item_name;
+                $total[] = $itemName->line_total / 100;
+                if(count($name) == 1){
+                    $names[] = implode(' - ', $name) . ' - ' . implode(' - ', $total);
+                    $name = [];
+                    $total = [];
+                }
             } else {
                 $names[] = $itemName->item_name;
             }

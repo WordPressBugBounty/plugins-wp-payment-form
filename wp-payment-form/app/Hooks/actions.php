@@ -1,6 +1,7 @@
 <?php
 
 use WPPayForm\App\Modules\Notices\PluginUninstallFeedback;
+use WPPayForm\App\Services\Browser;
 
 /**
  * All registered action's handlers should be in app\Hooks\Handlers,
@@ -22,7 +23,7 @@ $app->addAction('wppayform/after_create_form', 'FormHandlers@insertTemplate', 10
 // dd('wppayform/after_create_form');
 add_action('current_screen', function () {
     global $current_screen;
-    if ($current_screen->id === "plugins") {
+    if ($current_screen->id === "plugins" && Browser::isLiveServer()) {
         add_action('admin_head', function () {
 	        (new PluginUninstallFeedback())->renderFeedBackForm();
         });
@@ -30,7 +31,7 @@ add_action('current_screen', function () {
 }, 20);
 
 add_action('admin_enqueue_scripts', function ($hook) {
-    if ($hook === 'plugins.php') {
+    if ($hook === 'plugins.php' && Browser::isLiveServer()) {
         wp_enqueue_style(
             'wppayform_deactivate',
             WPPAYFORM_URL . 'assets/css/wppayform_deactivate.css',

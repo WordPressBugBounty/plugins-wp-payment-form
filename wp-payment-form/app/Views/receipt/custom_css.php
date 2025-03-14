@@ -90,7 +90,7 @@
         margin-right: 0px;
         -webkit-box-shadow: inset -1px 0 #e3e8ee;
         box-shadow: inset -1px 0 #e3e8ee;
-        padding: 10px 30px;
+        padding: 7px 14px;
         font-family: Times New Roman;
         font-size: 15px;
     }
@@ -119,10 +119,39 @@
 
     .wpf_item_content.paid {
         display: flex;
+        align-items: center;
         gap: 6px;
+        /* background: #F3FAF8; */
+        background: #EDF6F4;
         color: #16896B;
-        background: #F3FAF8;
-        border: 1px solid #F3FAF8;
+        text-align: center;
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 16px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        width: -moz-fit-content;
+        width: fit-content;
+    }
+
+    .wpf_item_content.pending {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #FFF9F3;
+        color: #DC8006;
+        text-align: center;
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 16px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        width: -moz-fit-content;
+        width: fit-content;
     }
 
     .wpf_order_items_table {
@@ -154,4 +183,17 @@
         overflow: hidden;
         padding-bottom: 0 !important;
     }
+@media screen {  
+    @media (max-width: 476px) {  
+        .wpf_payment_info_item {  
+            padding: 4px 8px !important;  
+            font-size: 13px !important;  
+        }  
+        .wpf_item_content.paid {  
+            gap: 5px !important;  
+            padding: 4px 8px !important;  
+        }  
+    }  
+}  
 </style>
+

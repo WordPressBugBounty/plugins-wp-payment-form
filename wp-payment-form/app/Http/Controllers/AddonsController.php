@@ -3,6 +3,7 @@
 namespace WPPayForm\App\Http\Controllers;
 
 use WPPayForm\App\Services\BackgroundInstaller;
+use WPPayFormPro\GateWays\Addons\AddonHelper;
 
 class AddonsController extends Controller
 {
@@ -208,8 +209,16 @@ class AddonsController extends Controller
 
     public function proccedToInstall($name, $addonSlug, $title, $source, $url)
     {
-        $plugin_url = $url;
+        if ('github' == $source && 'fluent-pdf' !== $addonSlug) {
+            // check for the latest version
+            $latestRelease = AddonHelper::checkUpdateFromGithub($addonSlug, 'WPManageNinja', false);
+            if ($latestRelease['url']) {
+                $url = $latestRelease['url'];
+            }
+        }
 
+        $plugin_url = $url;
+    
         if ('' == $plugin_url) {
             wp_send_json_error(['message' => 'No valid url provided to install!'], 423);
         }
