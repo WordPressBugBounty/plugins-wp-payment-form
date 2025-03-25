@@ -52,6 +52,7 @@ class InitComponents
             new \WPPayForm\App\Modules\FormComponents\DemoTabularProductsComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoTaxItemComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoCurrencySwitcherComponent();
+            new \WPPayForm\App\Modules\FormComponents\DemoDynamicPaymentItemComponent();
 
             // Pro payment method modules
             new \WPPayForm\App\Modules\FormComponents\DemoFlutterWaveComponent();

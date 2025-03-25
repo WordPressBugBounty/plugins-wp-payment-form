@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
 Tested up to: 6.7
-Stable tag: 4.6.6
+Stable tag: 4.6.7
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -40,7 +40,7 @@ You can use Paymattic for free. It comes with crazy features.
 
 Let’s dive into the details of what you get in the Paymattic plugin. ⬇️
 
-### **💖 What’s in Paymattic?**
+### **💖 What’s in Paymattic Free?**
 
 Paymattic is a payment plugin as well as a donation plugin. In Paymattic Free, you’ll get everything you demand inside a WordPress **payment** and **donation** plugin.
 
@@ -76,7 +76,7 @@ That includes: ⬇️
 
 - Customizable confirmation message
 
-- **Free integrations:** FluentCRM, Fluent Support, MailChimp, Slack, and Zapier
+- **Free integrations:** FluentCRM, Fluent Support, MailChimp, Slack, Zapier, and FluentCommunity
 
 - Custom CSS support
 
@@ -130,7 +130,7 @@ Let’s look at the Paymattic’s fundraising features: ⬇️
 
 - **Custom donation amount:** Allow custom donations from your donors with Paymattic Pro. Also, you can set predefined donation amounts in the same form.
 
-- **Recurring donations:** Receive WordPress recurring donations with **Stripe**, **PayPal**, **Square** , and **Moneris** with your _preferred billing intervals_ in Paymattic Pro.
+- **Recurring donations:** Receive WordPress recurring donations with **Stripe**, **PayPal**, **Square** , and **Moneris** with your *preferred billing intervals* in Paymattic Pro.
 
 - **Currency switcher:** Paymattic Pro lets your donors switch to their native currency.
 
@@ -190,7 +190,7 @@ The Pro version of Paymattic includes all the features available in the free ver
 
 Paymattic Pro includes ⬇️
 
-- Payment gateways: Stripe, PayPal, Square, Mollie, Billplz, Flutterwave, Paystack, Payrexx, Razorpay, Xendit, Moneris, Vivawallet, and SSLcommerz.
+- Payment gateways: Stripe, PayPal, Authorize.Net, Square, Mollie, Billplz, Flutterwave, Paystack, Payrexx, Razorpay, Xendit, Moneris, Vivawallet, and SSLcommerz.
 
 - Offline payment method
 
@@ -228,7 +228,7 @@ Paymattic Pro includes ⬇️
 
 - Email and SMS notifications
 
-- [**Integrations**](https://paymattic.com/integration/)**:** MailChimp, Slack, Zapier, Active Campaign, Twilio, FluentCRM, Fluent Support, Learndash, TutorLMS, LifterLMS, WP User registration, Telegram, and Google Sheets
+- [**Integrations**](https://paymattic.com/integration/)**:** MailChimp, Slack, Zapier, Active Campaign, Twilio, FluentCRM, Fluent Support, Learndash, TutorLMS, LifterLMS, WP User registration, Telegram, Google Sheets, and FluentCommunity
 
 - Custom CSS support
 
@@ -244,11 +244,13 @@ Paymattic lets you manage your transactions worldwide with 13 payment gateways.
 
 - [**Stripe**](https://paymattic.com/docs/how-to-configure-stripe-payment-gateway-in-wordpress-with-paymattic/): Everything in free, and subscription payments, and recurring donations with Stripe.
 
-- [**PayPal**](https://paymattic.com/docs/how-to-configure-paypal-in-wordpress-with-paymattic/)**:** One-time payment, one-time donation, and subscription payment
+- [**PayPal**](https://paymattic.com/docs/how-to-configure-paypal-in-wordpress-with-paymattic/)**:** Includes subscription payments & donations.
 
-- [**Square**](https://paymattic.com/docs/how-to-integrate-square-with-paymattic-in-wordpress/)**:** One-time payment, one-time donation, and subscription payment
+- [**Square**](https://paymattic.com/docs/how-to-integrate-square-with-paymattic-in-wordpress/)**:** Includes subscription payments & donations.
 
-- [**Moneris**](https://paymattic.com/docs/how-to-integrate-moneris-payment-gateway-in-paymattic/)**:** One-time payment, one-time donation, and subscription payment
+- [**Moneris**](https://paymattic.com/docs/how-to-integrate-moneris-payment-gateway-in-paymattic/)**:** Includes subscription payments & donations.
+
+- [**Authorize.Net**](https://paymattic.com/docs/dynamic-payment-item-field/)**:** Includes subscription payments & donations.
 
 - [**Mollie**](https://paymattic.com/docs/how-to-integrate-mollie-in-wordpress-with-paymattic/)
 
@@ -270,7 +272,7 @@ Paymattic lets you manage your transactions worldwide with 13 payment gateways.
 
 #### **➡️ Offline Payment Method:**
 
-Get offline payments with Paymattic. Give your customers and donors the transaction details and receive bank transfers.
+Get offline payments with Paymattic Pro. Give your customers and donors the transaction details and receive bank transfers.
 
 ### **⚙️ Customize and Enhance Your Functionality**
 
@@ -288,6 +290,8 @@ Paymattic offers 14 seamless integrations. Integrate Paymattic with your go-to p
 
 - Zapier
 
+- FluentCommunity
+
 #### **➡️ Pro Integrations:**
 
 - Everything available in free, and
@@ -304,7 +308,7 @@ Paymattic offers 14 seamless integrations. Integrate Paymattic with your go-to p
 
 #### **➡️ Learning Management System (LMS) Integrations:**
 
-Automatically enroll your students on payment success. Send default WordPress welcome emails. Also, let them enroll automatically into the LMS dashboard after enrollment. Let your students instantly unsubscribe if the payment is refunded.
+Automatically enroll your students on payment success. Send default WordPress welcome emails. Let your students instantly unsubscribe if the payment is refunded.
 
 LMS integrations are Paymattic Pro features. Integrated LMS:
 
@@ -375,7 +379,7 @@ Here are some key features that make Paymattic stand out from the crowd:
 
 #### 🔸 **Custom Payment/Donation Amount:**
 
-Not everyone is equally capable. So let your donors contribute a custom amount according to their own preferences alongside showing some predefined amount as well. This provides more flexibility and convenience to the users. 
+Not everyone is equally capable. So let your donors contribute a custom amount according to their own preferences alongside showing some predefined amount as well. This provides more flexibility and convenience to the users.
 
 #### 🔸 **PDF Invoice:**
 
@@ -420,7 +424,7 @@ Here are some video reviews on Paymattic:
 - [Reports & analytics](https://paymattic.com/docs/#:~:text=Hold%20in%20Paymattic-,Reports%20%26%20Analytics,-1)
 - [Email notification settings](https://paymattic.com/docs/#:~:text=Email%20Notification%20Settings)
 - [Import/Export payment/donation forms](https://paymattic.com/docs/#:~:text=WordPress%20with%20Paymattic%3F-,Import%20%2D%20Export,-2)
-- [Learning Management System(LMS) integrations](https://paymattic.com/docs/#:~:text=Learning%20Management%20System%20\(LMS\)%20Integrations)
+- [Learning Management System(LMS) integrations](<https://paymattic.com/docs/#:~:text=Learning%20Management%20System%20(LMS)%20Integrations>)
 
 This plugin is a meticulously planned project of WPManageNinja LLC. The full source code is available on [GitHub](https://github.com/WPManageNinja/wp-payment-form).
 
@@ -555,7 +559,13 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
-= 4.6.6 March 14, 2025 =
+= 4.6.7 Mar 25, 2025 =
+- Adds Dynamic payment field with numerical expression
+- Adds Authorize.net payment gateway
+- Adds Condition rendering for tax field
+- Fixes Other bugs and improvements
+
+= 4.6.6 March 13, 2025 =
 - Fixes Twenty Twenty-Five theme compatibility issue
 - Fixe Email template shortcode rendering issue
 - Fixes Unable to enroll in multiple LearnDash courses
@@ -630,17 +640,21 @@ You are most welcome. You can do the following:
 - Fixes the issue with the payment item shortcode.
 
 = 4.5.7 Jun 12, 2024 =
+
 - Fixes Stripe related issues
-- Improvement Stripe error handling
+- Stripe error handling improvement
 
 = 4.5.6 May 31, 2024 =
+
 - Fixes Stripe Embedded Checkout issue
 
 = 4.5.5 May 29, 2024 =
+
 - Adds Unique Email validation
 - Fixes Conditional logic issue
 
 = 4.5.4 May 23, 2024 =
+
 - Adds VivaWallet payment gateway (addon)
 - Adds Donation Progress Item on the free version
 - Adds Form active/inactive option
@@ -651,6 +665,7 @@ You are most welcome. You can do the following:
 - Fixes minor issues
 
 = 4.5.2 April 24, 2024 =
+
 - Adds Moneris payment Gateway
 - Adds Place a hold on a payment method (Stripe)
 - Adds email notification on subscription cancel from user dashboard
@@ -664,6 +679,7 @@ You are most welcome. You can do the following:
 - Fixes TutorLMS integration issue for paid courses
 
 = 4.5.0 - February 19, 2024 =
+
 - Adds Customer Dashboard
 - Adds PDF/Invoice
 - Adds Donor Leaderboard
@@ -682,10 +698,12 @@ You are most welcome. You can do the following:
 - FIxes Payment summary issue for subscription items
 
 = 4.4.4 - October 16, 2023 =
+
 - Fixes Email notification translation string issue
 - Fixes Large screen responsive issue
 
 = 4.4.3 - October 05, 2023 =
+
 - Adds Currency Switcher
 - Adds Flutterwave payment gateway addon
 - Adds applied coupons column on exported entries
@@ -698,6 +716,7 @@ You are most welcome. You can do the following:
 - Fixes Square Item name issue
 
 = 4.4.2 - July 10, 2023 =
+
 - Adds Square subscription
 - Adds Xendit payment gateway addon
 - Adds Autologin on LMS integration
@@ -709,6 +728,7 @@ You are most welcome. You can do the following:
 - Fixes autologin issue on User registration
 
 = 4.3.5 - May 12, 2023 =
+
 - Fixes entry exporting issue
 - Fixes quantity field of tabular product issue
 - Fixes tabular product item field's product name issue
@@ -719,6 +739,7 @@ You are most welcome. You can do the following:
 - Fixes certain string translation issue
 
 = 4.3.4 - March 13, 2023 =
+
 - Fixes TutorLMS integration offline payment issue
 - Fixes BillPlz donation templates issue
 - Fixes Coupon amount issue
@@ -735,6 +756,7 @@ You are most welcome. You can do the following:
 - Adds LMS integration module updates
 
 = 4.3.3 - January 17, 2023 =
+
 - Adds Form cart templates
 - Adds Offline subscription management
 - Adds new demo forms for product cart template
@@ -743,6 +765,7 @@ You are most welcome. You can do the following:
 - Fixes step form backward validation issue
 
 = 4.3.2 - December 08, 2022 =
+
 - Adds Step form
 - Adds Turnstile (Cloudflare) security
 - Adds Subscription management from the dashboard
@@ -755,6 +778,7 @@ You are most welcome. You can do the following:
 - Fixes Other minor issues
 
 = 4.3.1 - November 10, 2022 =
+
 - Adds Billplz gateway (Malaysian gateway)
 - Adds Google Sheet integration
 - Adds Developer API for Payment modules
@@ -765,6 +789,7 @@ You are most welcome. You can do the following:
 - Fixes Donation template default image issue
 
 = 4.3.0 - October 20, 2022 =
+
 - Adds New advances Form editor
 - Adds Donation template customize
 - Adds New UI
@@ -775,13 +800,16 @@ You are most welcome. You can do the following:
 - Fixes other Multiple issues
 
 = 4.2.2 - August 16, 2022 =
+
 - Fixes Payment total with tax and coupon issue
 - Fixes Select field issue with required checked
 
 = 4.2.1 - August 06, 2022 =
-- Data sanitization and esc_* improvements
+
+- Data sanitization and esc\_\* improvements
 
 = 4.2.0 - August 05, 2022 =
+
 - Adds Customer profile
 - Adds Condition with a dynamic payment items
 - Adds 100% discount with coupon payment
@@ -791,6 +819,7 @@ You are most welcome. You can do the following:
 - Fixes Other minor issues
 
 = 4.1.0 - July 07, 2022 =
+
 - Adds Conditional logic
 - Adds LifterLMS course Integration
 - Adds LearnDash course Integration
@@ -800,10 +829,12 @@ You are most welcome. You can do the following:
 - Fixes Offline payment with subscription issue
 
 = 4.0.1 - June 16, 2022 =
+
 - Fixes reports no data validation
 - Fixes Menu spell issue
 
 = 4.0.0 - June 15, 2022 =
+
 - Adds New UI with more light free and pro plugin
 - Adds Global Reports modules for payments
 - Adds subscription sync option
@@ -817,8 +848,8 @@ You are most welcome. You can do the following:
 - Adds Custom paypal settings for indivisual form
 - Adds Stripe donation
 - Adds Card supports for stripe settings
-	(Ideal,FPX, BACS dirrect debit(UK), Bancontact,
-	Giropay, Przelewy24 (P24), EPS)
+  (Ideal,FPX, BACS dirrect debit(UK), Bancontact,
+  Giropay, Przelewy24 (P24), EPS)
 - Adds Webhook adds
 - Adds Telegram
 - Adds Zapier
@@ -836,10 +867,12 @@ You are most welcome. You can do the following:
 - Fixes 15+ unlisted bugs
 
 = 3.0.1 - Nov 17, 2021 =
+
 - Fixes Export issue
 - Fixes Accessibility issue
 
 = 3.0.0 - Nov 08, 2021 =
+
 - Adds New codebase & security improvements
 - Adds Mollie payment gateway (One-time payment)
 - Adds Razorpay payment gateway (One-time payment)
@@ -882,20 +915,25 @@ You are most welcome. You can do the following:
 - Fixes 20 more unlisted bugs
 
 = 2.1.0 - Mar 17, 2021 =
+
 - Fixes Zero-amount on payment issue
 - Fixes Rounding error issue on tax
 
 = 2.0.3 - Mar 17, 2021 =
+
 - Fixes checkout logo upload issue
 
 = 2.0.2 - Mar 15, 2021 =
+
 - Fixes footer merged issue
 
 = 2.0.1 - Mar 05, 2021 =
+
 - Adds nonce security for ajax
 - Fixes resend notification issue
 
 = 2.0.0 - Feb 17, 2021 =
+
 - Adds resend / manual email notification
 - Adds disable fields for later use
 - Adds user access control / role base access
@@ -932,14 +970,15 @@ You are most welcome. You can do the following:
 - Fixes recurring payment currency icon issue
 - Fixes missing stripe billing info on multiple payment
 
-
 = 1.9.91 - May 02, 2020 =
+
 - Stripe Payment Issues has been resolved
 - CSV export issue fixed
 - Receipt Issue resolved
 - IP logging issue resolved
 
 = 1.9.8 - February 02, 2020 =
+
 - Improve SCA Payments processing
 - Fix few form handling bug
 - Internal Architecture improvements
@@ -947,12 +986,14 @@ You are most welcome. You can do the following:
 - Ability to push all the form data as stripe meta
 
 = 1.9.3 - September 15, 2019 =
+
 - Improved Payment Receipt
 - Upgrade Stripe API version
 - Fix Currency Formatter
 - Email bug issue fixed
 
 = 1.9.2 - September 15, 2019 =
+
 - Improved Stripe Thank you page
 - 0 Quantity product bug fix
 - Validation Bug fix
@@ -962,6 +1003,7 @@ You are most welcome. You can do the following:
 - PHP improvement
 
 = 1.9.0 - September 13, 2019 =
+
 - SCA integration
 - Added Stripe Checkout version 3
 - Fix Date Picker Bug
@@ -971,24 +1013,28 @@ You are most welcome. You can do the following:
 - Design improvement
 
 = 1.2.6 - August 08, 2019 =
+
 - Fix Stripe webhook
 - Addded Advanced settings in editor
 - Added payment method on placeholders.
 - Improve performance
 
 = 1.2.5 - July 18, 2019 =
+
 - Added Google reCAPTCHA version 2 and 3
 - Fix Asterisk sign
 - Fix function undefined error
 - Fix issues on various types.
 
 = 1.2.1 - July 01, 2019 =
+
 - Fix PayPal Payments for Taxable Items
 - Fix Stripe Trial Period Amounts
 - Rename The plugin
 - Added source vue files
 
 = 1.2.0 - June 19, 2019 =
+
 - Fix Zero Decimal Currency for other elements
 - Added Confirm email field
 - Performance Improvement
@@ -997,11 +1043,13 @@ You are most welcome. You can do the following:
 - Added Meta Tables
 
 = 1.1.6 - June 02, 2019 =
+
 - Fix Zero Decimal Currency charges
 - Added Dashboard Widget
 - Improvement of Editor
 
 = 1.1.5 - March 21, 2019 =
+
 - Added Reporting screen
 - New Date Time picker
 - HTML field bug fix
@@ -1012,8 +1060,10 @@ You are most welcome. You can do the following:
 - estimated human hours for this release: 60 hours & Coffees
 
 = 1.0.1 - March 01, 2019 =
+
 - Fix small bugs
 - Fix pagination issues for form entries
 
 = 1.0.0 - February 15, 2019 =
+
 - initial release

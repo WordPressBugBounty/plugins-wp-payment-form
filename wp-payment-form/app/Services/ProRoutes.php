@@ -38,6 +38,13 @@ class ProRoutes
         
         $premium = array(
             [
+                'path' => 'authorizedotnet',
+                'name' => 'authorizedotnet',
+                'meta'=> [
+                    'title' => 'Authorize.Net' 
+                ]
+            ],
+            [
                 'path' => 'moneris',
                 'name' => 'moneris',
                 'meta'=> [
@@ -145,6 +152,12 @@ class ProRoutes
 
 
         $premium = array(
+            'authorizedotnet' => array(
+                'title' => 'Authorize.Net',
+                'route_name' => 'authorizedotnet',
+                'route_query' => [],
+                'svg' => WPPAYFORM_URL .'assets/images/gateways/authorizedotnet.svg',
+            ),
             'square' => array(
                 'title' => 'Square',
                 'route_name' => 'square',

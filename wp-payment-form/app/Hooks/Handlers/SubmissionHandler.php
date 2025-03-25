@@ -64,6 +64,9 @@ class SubmissionHandler
 
         $formattedElements = Form::getFormattedElements($formId);
 
+        $numericCalculation = [];
+        $submittedNumericCalculation = apply_filters('wppayform/dynamic_payment_calculation', '', $numericCalculation, $formattedElements, $form_data);
+
         $this->validate($form_data, $formattedElements, $form, $form_localize);
 
         $paymentMethod = apply_filters('wppayform/choose_payment_method_for_submission', '', $formattedElements['payment_method_element'], $formId, $form_data);
@@ -797,6 +800,9 @@ class SubmissionHandler
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } elseif ($payment['type'] == 'donation_item') {
             $payItem['item_price'] = wpPayFormConverToCents(floatval($formData[$paymentId . '_custom']));
+            $payItem['line_total'] = $payItem['item_price'] * $quantity;
+        } elseif($payment['type'] === 'dynamic_payment_item'){
+            $payItem['item_price'] = wpPayFormConverToCents(floatval($formData[$paymentId]));
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } else {
             return array();

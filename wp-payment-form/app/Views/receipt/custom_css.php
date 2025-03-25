@@ -22,7 +22,7 @@
         margin: 0;
         overflow: visible;
         padding: .5em 1em;
-        font-family: Times New Roman;
+        font-family: 'Roboto', 'Inter', sans-serif;
     }
 
     .wpf_table td:first-child, .wpf_table th:first-child {
@@ -91,7 +91,7 @@
         -webkit-box-shadow: inset -1px 0 #e3e8ee;
         box-shadow: inset -1px 0 #e3e8ee;
         padding: 7px 14px;
-        font-family: Times New Roman;
+        font-family: 'Roboto', 'Inter', sans-serif;
         font-size: 15px;
     }
 
@@ -111,7 +111,7 @@
 
     .wpf_payment_receipt h4 {
         font-size: 18px;
-        font-family: Times New Roman;
+        font-family: 'Roboto', 'Inter', sans-serif;
 	    font-weight: 600;
         margin: 0;
         padding: 30px 0 12px 0;
@@ -125,7 +125,7 @@
         background: #EDF6F4;
         color: #16896B;
         text-align: center;
-        font-family: "Inter", sans-serif;
+        font-family: 'Roboto', 'Inter', sans-serif;
         font-size: 12px;
         font-style: normal;
         font-weight: 500;
@@ -143,7 +143,7 @@
         background: #FFF9F3;
         color: #DC8006;
         text-align: center;
-        font-family: "Inter", sans-serif;
+        font-family: 'Roboto', 'Inter', sans-serif;
         font-size: 12px;
         font-style: normal;
         font-weight: 500;

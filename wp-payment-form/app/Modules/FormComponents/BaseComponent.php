@@ -22,6 +22,7 @@ abstract class BaseComponent
     {
         add_filter('wppayform/form_components', array($this, 'addComponent'), $priority);
         add_action('wppayform/render_component_' . $elementName, array($this, 'render'), 10, 3);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']); 
     }
 
     public function addComponent($components)
@@ -42,6 +43,8 @@ abstract class BaseComponent
     {
         $hiddenAttr = Arr::get($element, 'field_options.conditional_logic_option.conditional_logic') === 'yes' ? 'none' : 'block';
         $fieldOptions = Arr::get($element, 'field_options', false);
+        $inputType = Arr::get($element, 'type', false);
+        $placeholder = Arr::get($fieldOptions, 'placeholder', false);
         $has_pro = defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO;
         $displayValue = $has_pro === true ? $hiddenAttr : '';
         $disable = Arr::get($fieldOptions, 'disable', false);
@@ -69,7 +72,12 @@ abstract class BaseComponent
             'class'         => $inputClass,
             'id'            => $inputId
         );
-
+        if ($inputType === 'number' && Arr::get($fieldOptions, 'numeric_calculation', 'no') === 'yes') {
+            $attributes['data-numeric_calculation'] = Arr::get($fieldOptions, 'calculation_expression', '');
+        }
+        if ($inputType === 'text' && $placeholder !== false) {  
+            $attributes['placeholder'] = $placeholder;  
+        }  
         if (isset($fieldOptions['min_value'])) {
             $attributes['min'] = $fieldOptions['min_value'];
         }
@@ -463,4 +471,21 @@ abstract class BaseComponent
         $label = $label . ' ' . $labelSufix;
         return apply_filters('wppayform/error_label_text', $label, $element, $formId);
     }
+
+    public function enqueueScripts() {  
+        wp_enqueue_script(  
+            'math-expression-evaluator',  
+            WPPAYFORM_URL.'assets/libs/math-expression/math-expression.min.js',  
+            array(), '1.2.17',
+            true  
+        );  
+
+        wp_enqueue_script(
+            'dynamic-calculation-script',
+            WPPAYFORM_URL . 'assets/js/dynamic-calculation.js',
+            array('jquery'),
+            WPPAYFORM_VERSION,
+            true
+        );
+    }  
 }

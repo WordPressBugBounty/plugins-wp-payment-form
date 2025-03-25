@@ -21,7 +21,8 @@
         }
     ],
     "require": {
-        "wpfluent/framework": "^2.3.1"
+        "wpfluent/framework": "^2.3.1",
+        "symfony/expression-language": "^5.4"
     },
     "autoload": {
         "psr-4": {

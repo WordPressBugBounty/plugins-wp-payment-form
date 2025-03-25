@@ -82,12 +82,26 @@ class CustomAmountComponent extends BaseComponent
                         'all' => 'All'
                     ),
                 ),
+                // 'numeric_calculation' => array(
+                //     'label' => 'Enable Calculation',
+                //     'type' => 'numeric_calculation',
+                //     'group' => 'advanced',
+                // ),
+                // 'numeric_serverside_validation' => array(
+                //     'label' => 'Enable Additional Checks',
+                //     'type' => 'numeric_serverside_validation',
+                //     'group' => 'advanced',
+                //     'info' => 'Extra layer of input checks'
+                // ),
             ),
             'field_options' => array(
                 'disable' => false,
                 'label' => 'Custom Payment Amount',
                 'placeholder' => '',
                 'required' => 'no',
+                // 'numeric_calculation' => 'no',
+                // 'calculation_expression' => '',
+                // 'numeric_serverside_validation' => 'no',
                 'conditional_logic_option' => array(
                     'conditional_logic' => 'no',
                     'conditional_type'  => 'any',
@@ -106,6 +120,7 @@ class CustomAmountComponent extends BaseComponent
     public function render($element, $form, $elements)
     {
         $currencySettings = Form::getCurrencyAndLocale($form->ID);
+        $inputType = Arr::get($element, 'type', '');
         $hidden_attr = Arr::get($element, 'field_options.conditional_logic_option.conditional_logic')  === 'yes' ? 'none' : 'block';
         $fieldOptions = Arr::get($element, 'field_options', false);
         $disable = Arr::get($fieldOptions, 'disable');
@@ -137,6 +152,9 @@ class CustomAmountComponent extends BaseComponent
         if (Arr::get($fieldOptions, 'required') == 'yes') {
             $attributes['required'] = true;
         }
+        // if ($inputType === 'custom_payment_input' && Arr::get($fieldOptions, 'numeric_calculation', 'no') === 'yes') {
+        //     $attributes['data-numeric_calculation'] = Arr::get($fieldOptions, 'calculation_expression', '');
+        // }
         ?>
         <div style= "display : <?php echo esc_attr($hidden_attr); ?>" data-element_type="<?php echo esc_attr($this->elementName); ?>"
              class="<?php echo esc_attr($controlClass); ?>">

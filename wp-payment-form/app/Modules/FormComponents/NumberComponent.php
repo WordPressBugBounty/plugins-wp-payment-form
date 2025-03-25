@@ -84,11 +84,25 @@ class NumberComponent extends BaseComponent
                         'all' => 'All'
                     ),
                 ),
+                'numeric_calculation' => array(
+                    'label' => 'Enable Calculation',
+                    'type' => 'numeric_calculation',
+                    'group' => 'advanced',
+                ),
+                'numeric_serverside_validation' => array(
+                    'label' => 'Enable Additional Checks',
+                    'type' => 'numeric_serverside_validation',
+                    'group' => 'advanced',
+                    'info' => 'Extra layer of input checks'
+                ),
             ),
             'field_options' => array(
                 'label' => 'Numeric Value',
                 'placeholder' => '',
                 'required' => 'no',
+                'numeric_calculation' => 'no',
+                'calculation_expression' => '',
+                'numeric_serverside_validation' => 'no',
                 'conditional_logic_option' => array(
                     'conditional_logic' => 'no',
                     'conditional_type'  => 'any',

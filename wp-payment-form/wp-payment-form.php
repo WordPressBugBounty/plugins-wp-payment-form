@@ -3,7 +3,7 @@
 /*
 Plugin Name: Paymattic - Payments made simple
 Description: Create and Accept Payments in minutes with Stripe, PayPal & other top gateways with built-in form builder
-Version: 4.6.6
+Version: 4.6.7
 Author: WPManageNinja LLC
 Author URI: https://paymattic.com
 Plugin URI: https://paymattic.com/
@@ -14,7 +14,7 @@ Text Domain: wp-payment-form
 
 if (!defined('WPPAYFORM_VERSION')) {
     define('WPPAYFORM_VERSION_LITE', true);
-    define('WPPAYFORM_VERSION', '4.6.6');
+    define('WPPAYFORM_VERSION', '4.6.7');
     define('WPPAYFORM_DB_VERSION', 120);
     // Stripe API version should be in 'YYYY-MM-DD' format.
     define('WPPAYFORM_STRIPE_API_VERSION', '2019-05-16');

@@ -141,6 +141,9 @@ $leaderBoardRender = new WPPayForm\App\Modules\LeaderBoard\Render();
 add_action('wp_ajax_wpf_leader_board_render', array($leaderBoardRender, 'leaderBoardRender'));
 add_action('wp_ajax_nopriv_wpf_leader_board_render', array($leaderBoardRender, 'leaderBoardRender'));
 
+// Numeric Calculation Handler
+$numericCalculationRender = new WPPayForm\App\Modules\NumericCalculation\NumericCalculation();
+
 //integration
 $app->addAction('wppayform/after_submission_data_insert', function ($submissionId, $formId, $formData, $formattedElements) {
     $notificationManager = new \WPPayForm\App\Services\Integrations\GlobalNotificationManager();
