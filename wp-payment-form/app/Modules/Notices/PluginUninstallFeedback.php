@@ -20,9 +20,9 @@ class PluginUninstallFeedback
     public function renderFeedBackForm()
     {
         // Bailout.
-        if (!current_user_can('delete_plugins')) {
-            give_die();
-        }
+        // if (current_user_can('delete_plugins')) {
+        //     wp_die('You do not have sufficient permissions to access this page.');
+        // }
 
         $app = App::getInstance();
         return $app->view->render('admin/notice/deactivate-form', [

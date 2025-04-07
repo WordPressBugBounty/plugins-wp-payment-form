@@ -118,7 +118,7 @@ class DonationComponent extends BaseComponent
                     'allow_recurring' => 'no',
                     'bill_time_max' => '0',
                     'interval_label' => 'I would like to recurring donation',
-                    'interval_text' => 'Bill my every',
+                    'interval_text' => 'Bill me every',
                     'intervals' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
                     'interval_options' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
                     'interval_display_type' => 'dropdown'
@@ -246,7 +246,7 @@ class DonationComponent extends BaseComponent
 
         $fieldOptions = Arr::get($element, 'field_options', false);
         $intervalLabel = Arr::get($fieldOptions, 'pricing_details.interval_label', 'I would like to recurring donation');
-        $intervalText = Arr::get($fieldOptions, 'pricing_details.interval_text', 'Bill my every');
+        $intervalText = Arr::get($fieldOptions, 'pricing_details.interval_text', 'Bill me every');
         $currencySettings = Form::getCurrencyAndLocale($form->ID);
         $currencySign = Arr::get($currencySettings, 'currency_sign');
 
