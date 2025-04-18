@@ -232,6 +232,13 @@ class ProRoutes
     public static function getPaymentAddons()
     {
         $addons = array(
+            'authorizedotnet' => array(
+                'name' => 'authorizedotnet',
+                'slug' => 'authorizedotnet-for-paymattic',
+                'svg' => WPPAYFORM_URL .'assets/images/gateways/authorizedotnet.svg',
+                'src' => 'github',
+                'url' => 'https://api.github.com/repos/WPManageNinja/authorizedotnet-for-paymattic/zipball/1.0.0'
+            ),
             'moneris' => array(
                 'name' => 'moneris',
                 'slug' => 'moneris-payment-for-paymattic',
@@ -248,10 +255,6 @@ class ProRoutes
             ),
             'xendit' => array(
                 'name' => 'xendit',
-                'slug' => 'xendit-payment-for-paymattic',
-                'svg' => WPPAYFORM_URL .'assets/images/gateways/xendit.svg',
-                'src' => 'github',
-                'url' => 'https://api.github.com/repos/WPManageNinja/xendit-payment-for-paymattic/zipball/1.0.0'
             ),
             'flutterwave' => array(
                 'name' => 'flutterwave',

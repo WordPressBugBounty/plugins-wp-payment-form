@@ -4,8 +4,8 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
-Tested up to: 6.7
-Stable tag: 4.6.8
+Tested up to: 6.8
+Stable tag: 4.6.9
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -250,7 +250,7 @@ Paymattic lets you manage your transactions worldwide with 13 payment gateways.
 
 - [**Moneris**](https://paymattic.com/docs/how-to-integrate-moneris-payment-gateway-in-paymattic/)**:** Includes subscription payments & donations.
 
-- [**Authorize.Net**](https://paymattic.com/docs/dynamic-payment-item-field/)**:** Includes subscription payments & donations.
+- [**Authorize.Net**](https://paymattic.com/docs/configure-authorize-net-in-wordpress-through-paymattic/)**:** Includes subscription payments & donations.
 
 - [**Mollie**](https://paymattic.com/docs/how-to-integrate-mollie-in-wordpress-with-paymattic/)
 
@@ -559,6 +559,11 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.9 April 18, 2025 =
+- Load text domain incorrectly
+- Fixes Authorize.Net live payment issue
+- More Bug fixes and improvements
+
 = 4.6.8 April 07, 2025 =
 - Fix notice issue
 
