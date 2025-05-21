@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Paymattic - Payments made simple\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-18 03:36+0000\n"
+"POT-Creation-Date: 2025-05-19 05:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Loco-Version: 2.6.6; wp-6.5.3\n"
 "X-Domain: wp-payment-form"
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:808
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:825
 msgid " Captured, and released the remaining "
 msgstr ""
 
@@ -24,8 +24,12 @@ msgstr ""
 msgid " does not match"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:600
+#: app/Hooks/Handlers/SubmissionHandler.php:623
 msgid " is required"
+msgstr ""
+
+#: app/Services/TransStrings.php:307
+msgid " Paymattic will display the donation leaderboard unless it is disabled."
 msgstr ""
 
 #: app/Services/Integrations/Slack/Bootstrap.php:93
@@ -34,11 +38,11 @@ msgid ""
 "slack webhook URL</a> where Paymattic will send JSON payload."
 msgstr ""
 
-#: app/Modules/Builder/Render.php:503
+#: app/Modules/Builder/Render.php:526
 msgid " to "
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:808
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:825
 msgid " to the customer"
 msgstr ""
 
@@ -50,7 +54,7 @@ msgstr ""
 msgid "$9.99 / Month"
 msgstr ""
 
-#: app/Services/Integrations/GlobalNotificationManager.php:151
+#: app/Services/Integrations/GlobalNotificationManager.php:168
 msgid "(truncated)"
 msgstr ""
 
@@ -70,11 +74,19 @@ msgstr ""
 msgid "23:59:59"
 msgstr ""
 
+#: app/Services/TransStrings.php:348
+msgid "300 Request is free per month."
+msgstr ""
+
+#: app/Services/TransStrings.php:399
+msgid "a key you can register for one at the provided link."
+msgstr ""
+
 #: app/Services/GeneralSettings.php:468
 msgid "Abandoned"
 msgstr ""
 
-#: app/Views/user/dashboard.php:173 app/Views/user/dashboard.php:243
+#: app/Views/user/dashboard.php:173 app/Views/user/dashboard.php:245
 msgid "Action"
 msgstr ""
 
@@ -87,12 +99,20 @@ msgstr ""
 msgid "Activate License"
 msgstr ""
 
-#: app/Services/TransStrings.php:243
+#: app/Services/TransStrings.php:244
 msgid "Activate Paymattic Pro"
 msgstr ""
 
-#: app/Services/TransStrings.php:241
+#: app/Services/TransStrings.php:242
 msgid "Activate WPPay Form Pro"
+msgstr ""
+
+#: app/Services/TransStrings.php:383
+msgid "Active"
+msgstr ""
+
+#: app/Services/TransStrings.php:354
+msgid "Add New Coupon"
 msgstr ""
 
 #: app/Services/TransStrings.php:25
@@ -107,12 +127,16 @@ msgstr ""
 msgid "Add New Notification"
 msgstr ""
 
-#: app/Services/TransStrings.php:181
+#: app/Services/TransStrings.php:182
 msgid "Add the following shortcode to the page to show payment receipt"
 msgstr ""
 
-#: app/Services/TransStrings.php:297
+#: app/Services/TransStrings.php:298
 msgid "Add the following shortcode to the page to show payment receipt:"
+msgstr ""
+
+#: app/Services/TransStrings.php:379
+msgid "Additional Informations"
 msgstr ""
 
 #: app/Services/FormPlaceholders.php:207
@@ -131,11 +155,21 @@ msgstr ""
 msgid "After Form Submission"
 msgstr ""
 
-#: app/Services/TransStrings.php:286
+#: app/Services/TransStrings.php:287
 msgid "After Form Submission Behavior"
 msgstr ""
 
-#: app/Services/TransStrings.php:282
+#: app/Services/TransStrings.php:388
+msgid "After setting all bellow fields you have"
+msgstr ""
+
+#: app/Services/TransStrings.php:389
+msgid ""
+"After setting all bellow fields you have to setup individual form settings "
+"as well"
+msgstr ""
+
+#: app/Services/TransStrings.php:283
 msgid "After submit, where the page will redirect to."
 msgstr ""
 
@@ -164,18 +198,24 @@ msgstr ""
 msgid "All Forms"
 msgstr ""
 
-#: app/Models/Form.php:642
+#: app/Models/Form.php:683
 msgid "All Input Field"
 msgstr ""
 
-#: app/Models/Form.php:643
+#: app/Models/Form.php:684
 msgid "All Input Field With Empty Fields"
 msgstr ""
 
-#: app/Services/TransStrings.php:272
+#: app/Services/TransStrings.php:273
 msgid ""
 "All the data associate with this entry will be deleted, including payment "
 "information and otherassociate information"
+msgstr ""
+
+#: app/Services/TransStrings.php:334
+msgid ""
+"All the data assoscilate with this form will be deleted, including payment "
+"information and other associate information"
 msgstr ""
 
 #: app/Services/TransStrings.php:119
@@ -189,12 +229,12 @@ msgid ""
 "values"
 msgstr ""
 
-#: app/Services/Integrations/FluentCrm/Bootstrap.php:182
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:200
 msgid ""
 "Allow FluentCRM integration conditionally based on your submission values"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:508
+#: app/Modules/Builder/Render.php:531
 msgid "AM"
 msgstr ""
 
@@ -202,7 +242,8 @@ msgstr ""
 msgid "American Samoa"
 msgstr ""
 
-#: app/Views/user/dashboard.php:169 app/Views/user/SubmissionTable.php:8
+#: app/Services/TransStrings.php:357 app/Views/user/dashboard.php:169
+#: app/Views/user/SubmissionTable.php:8
 msgid "Amount"
 msgstr ""
 
@@ -226,24 +267,32 @@ msgstr ""
 msgid "Antigua and Barbuda"
 msgstr ""
 
-#: app/Services/TransStrings.php:264
+#: app/Services/TransStrings.php:265
 msgid "Any questions or problems with your license"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:444
+#: app/Services/TransStrings.php:380
+msgid "Applicable Forms"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:467
 msgid "Apr"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:458
+#: app/Modules/Builder/Render.php:481
 msgid "April"
 msgstr ""
 
-#: app/Views/user/dashboard.php:305
+#: app/Views/user/dashboard.php:307
 msgid "Are you sure to cancel this subscription ?"
 msgstr ""
 
 #: app/Services/TransStrings.php:121
 msgid "Are you sure to delete this?"
+msgstr ""
+
+#: app/Services/TransStrings.php:333
+msgid "Are You Sure, You want to delete this form?"
 msgstr ""
 
 #: app/Services/CountryNames.php:35
@@ -266,7 +315,7 @@ msgstr ""
 msgid "As per global settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:172
+#: app/Services/TransStrings.php:173
 msgid "as your css selector prefix to target this specific form"
 msgstr ""
 
@@ -286,11 +335,11 @@ msgstr ""
 msgid "Asterisk Position"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:448
+#: app/Modules/Builder/Render.php:471
 msgid "Aug"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:462
+#: app/Modules/Builder/Render.php:485
 msgid "August"
 msgstr ""
 
@@ -304,6 +353,10 @@ msgstr ""
 
 #: app/Modules/Debug/Debug.php:158
 msgid "Author"
+msgstr ""
+
+#: app/Services/TransStrings.php:353
+msgid "Available Coupons"
 msgstr ""
 
 #: app/Services/CountryNames.php:40
@@ -354,10 +407,6 @@ msgstr ""
 msgid "Bhutan"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:424
-msgid "Bill me every"
-msgstr ""
-
 #: app/Modules/PaymentMethods/Stripe/Stripe.php:179
 msgid "Billing Address"
 msgstr ""
@@ -366,7 +415,7 @@ msgstr ""
 msgid "Billing address from stripe has been logged in the submission data"
 msgstr ""
 
-#: app/Views/user/dashboard.php:240
+#: app/Views/user/dashboard.php:242
 msgid "Billing Time"
 msgstr ""
 
@@ -422,7 +471,7 @@ msgstr ""
 msgid "Burundian Franc"
 msgstr ""
 
-#: app/Services/TransStrings.php:196
+#: app/Services/TransStrings.php:197
 msgid "Caching Interval"
 msgstr ""
 
@@ -432,6 +481,10 @@ msgstr ""
 
 #: app/Services/CountryNames.php:65
 msgid "Cameroon"
+msgstr ""
+
+#: app/Services/TransStrings.php:385
+msgid "Can this coupon code be combined with other codes"
 msgstr ""
 
 #: app/Http/Controllers/SubmissionController.php:316
@@ -447,7 +500,7 @@ msgstr ""
 msgid "Canada"
 msgstr ""
 
-#: app/Services/TransStrings.php:275 app/Views/user/dashboard.php:331
+#: app/Services/TransStrings.php:276 app/Views/user/dashboard.php:333
 msgid "Cancel"
 msgstr ""
 
@@ -467,7 +520,7 @@ msgstr ""
 msgid "Cayman Islands"
 msgstr ""
 
-#: app/Services/TransStrings.php:302
+#: app/Services/TransStrings.php:303
 msgid "Center"
 msgstr ""
 
@@ -491,12 +544,16 @@ msgstr ""
 msgid "Changing status is same as current status"
 msgstr ""
 
-#: app/Services/TransStrings.php:235
+#: app/Services/TransStrings.php:236
 msgid "Check All"
 msgstr ""
 
 #: app/Services/TransStrings.php:138
 msgid "Check all"
+msgstr ""
+
+#: app/Services/TransStrings.php:331
+msgid "Check Global Integration Settings"
 msgstr ""
 
 #: app/Services/CountryNames.php:71
@@ -519,6 +576,10 @@ msgstr ""
 msgid "Choose form template"
 msgstr ""
 
+#: app/Services/TransStrings.php:418
+msgid "Choose Template"
+msgstr ""
+
 #: app/Services/TransStrings.php:46
 msgid "Choose template"
 msgstr ""
@@ -535,31 +596,35 @@ msgstr ""
 msgid "Christmas Island"
 msgstr ""
 
-#: app/Services/TransStrings.php:219
+#: app/Services/TransStrings.php:220
 msgid "Clear Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:237
+#: app/Services/TransStrings.php:238
 msgid "Click Here"
 msgstr ""
 
-#: app/Services/TransStrings.php:229
+#: app/Services/TransStrings.php:230
 msgid "click here"
 msgstr ""
 
-#: app/Services/TransStrings.php:245
+#: app/Services/TransStrings.php:246
 msgid "click here to check again"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:506
+#: app/Modules/Builder/Render.php:529
 msgid "Click to toggle"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:559
+#: app/Services/TransStrings.php:403
+msgid "Client Secret"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:582
 msgid "Cloud flare turnstile validation failed. Please try again."
 msgstr ""
 
-#: app/Services/TransStrings.php:218
+#: app/Services/TransStrings.php:219
 msgid "Cloudflare Turnstile Settings"
 msgstr ""
 
@@ -567,11 +632,17 @@ msgstr ""
 msgid "Cocos (Keeling) Islands"
 msgstr ""
 
+#: app/Services/TransStrings.php:390
+msgid ""
+"Collect reCAPTCHA keys according to the reCAPTCHA Mode you used on top of "
+"this"
+msgstr ""
+
 #: app/Services/CountryNames.php:75
 msgid "Colombia"
 msgstr ""
 
-#: app/Services/TransStrings.php:199
+#: app/Services/TransStrings.php:200
 msgid "Comma as Thousand and Dot as Decimal (EG: 12,000.00)"
 msgstr ""
 
@@ -588,9 +659,10 @@ msgstr ""
 msgid "Company Name"
 msgstr ""
 
+#: app/Services/TransStrings.php:321
 #: app/Services/Integrations/FluentSupport/Bootstrap.php:135
 #: app/Services/Integrations/Slack/Bootstrap.php:105
-#: app/Services/Integrations/FluentCrm/Bootstrap.php:181
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:199
 msgid "Conditional Logics"
 msgstr ""
 
@@ -606,15 +678,15 @@ msgstr ""
 msgid "Configuration required!"
 msgstr ""
 
-#: app/Services/TransStrings.php:276
+#: app/Services/TransStrings.php:277
 msgid "Confirm Delete"
 msgstr ""
 
-#: app/Views/user/dashboard.php:300
+#: app/Views/user/dashboard.php:302
 msgid "Confirm subscription cancellation"
 msgstr ""
 
-#: app/Services/TransStrings.php:283
+#: app/Services/TransStrings.php:284
 msgid "Confirmation Message Text"
 msgstr ""
 
@@ -640,13 +712,13 @@ msgid ""
 "submitted."
 msgstr ""
 
-#: app/Services/Integrations/FluentCrm/Bootstrap.php:275
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:293
 msgid ""
 "Contact creation has been skipped because contact already exist in the "
 "database, Subscriber #"
 msgstr ""
 
-#: app/Services/Integrations/FluentCrm/Bootstrap.php:322
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:340
 msgid "Contact has been created in FluentCRM. Contact ID: "
 msgstr ""
 
@@ -654,7 +726,7 @@ msgstr ""
 msgid "Contact Tags"
 msgstr ""
 
-#: app/Services/TransStrings.php:238
+#: app/Services/TransStrings.php:239
 msgid "Contact us"
 msgstr ""
 
@@ -668,6 +740,18 @@ msgstr ""
 
 #: app/Services/CountryNames.php:80
 msgid "Costa Rica"
+msgstr ""
+
+#: app/Services/TransStrings.php:362
+msgid "Coupon Code"
+msgstr ""
+
+#: app/Services/TransStrings.php:355
+msgid "Coupon is a pro version feature."
+msgstr ""
+
+#: app/Services/TransStrings.php:360
+msgid "Coupon Title"
 msgstr ""
 
 #: app/Services/TransStrings.php:36
@@ -720,7 +804,7 @@ msgstr ""
 msgid "cURL Version"
 msgstr ""
 
-#: app/Services/TransStrings.php:194
+#: app/Services/TransStrings.php:195
 msgid "Currency"
 msgstr ""
 
@@ -732,44 +816,52 @@ msgstr ""
 msgid "Currency and Language Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:195
+#: app/Services/TransStrings.php:196
 msgid "Currency Conversion Api Key"
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/Charge.php:69
-#: app/Modules/PaymentMethods/Stripe/Plan.php:118
+#: app/Modules/PaymentMethods/Stripe/Plan.php:153
 msgid "Currency is required"
 msgstr ""
 
-#: app/Services/TransStrings.php:198
+#: app/Services/TransStrings.php:199
 msgid "Currency Separators"
 msgstr ""
 
-#: app/Services/TransStrings.php:192
+#: app/Services/TransStrings.php:193
 msgid "Currency Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:197
+#: app/Services/TransStrings.php:198
 msgid "Currency Sign Position"
+msgstr ""
+
+#: app/Services/TransStrings.php:340
+msgid "Currency Switcher is a pro feature."
+msgstr ""
+
+#: app/Services/TransStrings.php:339
+msgid "Currency Switcher Settings"
 msgstr ""
 
 #: app/Modules/FormComponents/DemoMaskInputComponent.php:75
 msgid "Custom"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:282
+#: app/Modules/FormComponents/DonationComponent.php:287
 msgid "Custom Amount"
 msgstr ""
 
-#: app/Services/TransStrings.php:169
+#: app/Services/TransStrings.php:170
 msgid "Custom CSS"
 msgstr ""
 
-#: app/Services/TransStrings.php:167
+#: app/Services/TransStrings.php:168
 msgid "Custom CSS and JS"
 msgstr ""
 
-#: app/Services/TransStrings.php:174
+#: app/Services/TransStrings.php:175
 msgid "Custom Javascript"
 msgstr ""
 
@@ -785,7 +877,7 @@ msgstr ""
 msgid "Custom Stripe Credentials"
 msgstr ""
 
-#: app/Services/TransStrings.php:182
+#: app/Services/TransStrings.php:183
 msgid "Custom URL"
 msgstr ""
 
@@ -793,7 +885,7 @@ msgstr ""
 msgid "Customer Details"
 msgstr ""
 
-#: app/Models/Form.php:635
+#: app/Models/Form.php:676
 msgid "Customer Email"
 msgstr ""
 
@@ -801,11 +893,11 @@ msgstr ""
 msgid "Customer From"
 msgstr ""
 
-#: app/Models/Form.php:634
+#: app/Models/Form.php:675
 msgid "Customer Name"
 msgstr ""
 
-#: app/Services/TransStrings.php:65 app/Hooks/Handlers/AdminMenuHandler.php:105
+#: app/Services/TransStrings.php:65 app/Hooks/Handlers/AdminMenuHandler.php:112
 msgid "Customers"
 msgstr ""
 
@@ -815,7 +907,7 @@ msgid ""
 "the cleanest editor"
 msgstr ""
 
-#: app/Services/TransStrings.php:279
+#: app/Services/TransStrings.php:280
 msgid "Customized your form with pro version"
 msgstr ""
 
@@ -827,15 +919,15 @@ msgstr ""
 msgid "Czech Republic"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:49 app/Views/user/dashboard.php:82
+#: app/Hooks/Handlers/AdminMenuHandler.php:49
 msgid "Dashboard"
 msgstr ""
 
-#: app/Views/user/dashboard.php:306
+#: app/Views/user/dashboard.php:308
 msgid "dashboard"
 msgstr ""
 
-#: app/Services/TransStrings.php:254 app/Services/FormPlaceholders.php:273
+#: app/Services/TransStrings.php:255 app/Services/FormPlaceholders.php:273
 #: app/Views/user/dashboard.php:170 app/Views/user/SubmissionTable.php:9
 #: app/Views/elements/user_submissions_table.php:4
 msgid "Date"
@@ -845,24 +937,24 @@ msgstr ""
 msgid "Date:"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:120
-#: app/Modules/FormComponents/DonationComponent.php:121
+#: app/Modules/FormComponents/DonationComponent.php:122
+#: app/Modules/FormComponents/DonationComponent.php:123
 msgid "day"
 msgstr ""
 
-#: app/Services/TransStrings.php:240
+#: app/Services/TransStrings.php:241
 msgid "Deactivate License"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:452
+#: app/Modules/Builder/Render.php:475
 msgid "Dec"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:466
+#: app/Modules/Builder/Render.php:489
 msgid "December"
 msgstr ""
 
-#: app/Services/TransStrings.php:269
+#: app/Services/TransStrings.php:270
 msgid "Default payment method"
 msgstr ""
 
@@ -870,7 +962,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: app/Hooks/actions.php:153
+#: app/Hooks/actions.php:190
 msgid "Demo"
 msgstr ""
 
@@ -886,22 +978,44 @@ msgstr ""
 msgid "Direct bank transfer"
 msgstr ""
 
-#: app/Services/TransStrings.php:217
+#: app/Services/TransStrings.php:218
 msgid "Disable"
 msgstr ""
 
-#: app/Services/TransStrings.php:207
+#: app/Services/TransStrings.php:208
 msgid "disable"
 msgstr ""
 
-#: app/Services/TransStrings.php:261
+#: app/Services/TransStrings.php:352
+msgid ""
+"Disable IP Address Logging (If you check this then advanced analytics can "
+"not be performed"
+msgstr ""
+
+#: app/Services/TransStrings.php:262
 msgid ""
 "Disable IP Address Logging (If you check this then advanced analytics can "
 "not be performed)"
 msgstr ""
 
-#: app/Views/user/dashboard.php:310
+#: app/Services/TransStrings.php:367
+msgid "Discount Amount / Percent"
+msgstr ""
+
+#: app/Services/TransStrings.php:364
+msgid "Discount Type"
+msgstr ""
+
+#: app/Views/user/dashboard.php:312
 msgid "Dismiss"
+msgstr ""
+
+#: app/Services/TransStrings.php:311
+msgid "Display donor avatar"
+msgstr ""
+
+#: app/Services/TransStrings.php:310
+msgid "Display donor name"
 msgstr ""
 
 #: app/Modules/Debug/Debug.php:227
@@ -912,6 +1026,10 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
+#: app/Services/TransStrings.php:309
+msgid "Display total collected donation amount"
+msgstr ""
+
 #: app/Services/CountryNames.php:87
 msgid "Djibouti"
 msgstr ""
@@ -920,8 +1038,12 @@ msgstr ""
 msgid "Djiboutian Franc"
 msgstr ""
 
-#: app/Hooks/actions.php:151
+#: app/Hooks/actions.php:188
 msgid "Docs"
+msgstr ""
+
+#: app/Services/TransStrings.php:344
+msgid "documentation"
 msgstr ""
 
 #: app/Services/CountryNames.php:88
@@ -932,16 +1054,28 @@ msgstr ""
 msgid "Dominican Republic"
 msgstr ""
 
-#: app/Services/TransStrings.php:203
+#: app/Services/TransStrings.php:204
 msgid "Donation Leaderboard Settings"
 msgstr ""
 
+#: app/Services/TransStrings.php:428
+msgid "Donation Progress Bar Shortcode"
+msgstr ""
+
 #: app/Services/TransStrings.php:132
-#: app/Modules/FormComponents/DonationComponent.php:326
+#: app/Modules/FormComponents/DonationComponent.php:331
 msgid "Donations"
 msgstr ""
 
-#: app/Services/TransStrings.php:200
+#: app/Services/TransStrings.php:417
+msgid "Donor leaderboard is a pro feature."
+msgstr ""
+
+#: app/Services/TransStrings.php:425
+msgid "Donor list display order"
+msgstr ""
+
+#: app/Services/TransStrings.php:201
 msgid "Dot as Thousand and Comma as Decimal ( EG: 12.000,00 )"
 msgstr ""
 
@@ -978,15 +1112,44 @@ msgstr ""
 msgid "Email Address"
 msgstr ""
 
+#: app/Services/TransStrings.php:320
+msgid "Email Body"
+msgstr ""
+
+#: app/Services/TransStrings.php:413
+msgid "Email Notification Settings"
+msgstr ""
+
 #: app/Services/TransStrings.php:115
 msgid "Email Notifications"
+msgstr ""
+
+#: app/Services/TransStrings.php:319
+msgid "Email Subject"
+msgstr ""
+
+#: app/Services/TransStrings.php:317
+msgid "Email To"
+msgstr ""
+
+#: app/Services/TransStrings.php:314
+msgid "Enable \"Progress Bar\""
+msgstr ""
+
+#: app/Services/TransStrings.php:313 app/Services/TransStrings.php:430
+msgid "Enable \"Statistic\""
+msgstr ""
+
+#: app/Services/TransStrings.php:414
+msgid ""
+"Enable and Configure global subscription cancellation email notifications."
 msgstr ""
 
 #: app/Modules/FormComponents/CustomerEmailComponent.php:55
 msgid "Enable Confirm Email Field"
 msgstr ""
 
-#: app/Services/TransStrings.php:159
+#: app/Services/TransStrings.php:160
 msgid "Enable Default form styles"
 msgstr ""
 
@@ -998,21 +1161,29 @@ msgstr ""
 msgid "Enable Dynamic Tag Selection"
 msgstr ""
 
-#: app/Services/TransStrings.php:210
+#: app/Services/TransStrings.php:415
+msgid "Enable Email Notification"
+msgstr ""
+
+#: app/Services/TransStrings.php:211
 msgid "Enable Honeypot Security"
 msgstr ""
 
-#: app/Services/TransStrings.php:213
+#: app/Services/TransStrings.php:214
 msgid "Enable Paymattic Coupon Module"
 msgstr ""
 
 #: app/Services/Integrations/FluentSupport/Bootstrap.php:144
 #: app/Services/Integrations/Slack/Bootstrap.php:114
-#: app/Services/Integrations/FluentCrm/Bootstrap.php:190
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:208
 msgid "Enable This feed"
 msgstr ""
 
-#: app/Services/TransStrings.php:211
+#: app/Services/TransStrings.php:407
+msgid "Enable User dashboard module"
+msgstr ""
+
+#: app/Services/TransStrings.php:212
 msgid ""
 "Enable your users to apply coupon/discount code while purchasing something "
 "using Paymattic Payment Module. Just activate this module and setup your "
@@ -1023,15 +1194,32 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: app/Services/TransStrings.php:284
+#: app/Services/TransStrings.php:377
+msgid "End Date"
+msgstr ""
+
+#: app/Services/TransStrings.php:370
+msgid "Enter minimum amount (leave blank if none"
+msgstr ""
+
+#: app/Services/TransStrings.php:368
+msgid "Enter the discount percentage. 10 = 10%"
+msgstr ""
+
+#: app/Services/TransStrings.php:285
 msgid "Enter the text you would like the user to"
 msgstr ""
 
-#: app/Services/TransStrings.php:294
+#: app/Services/TransStrings.php:295
 msgid "Enter the URL of the webpage you would"
 msgstr ""
 
-#: app/Services/TransStrings.php:242
+#: app/Services/TransStrings.php:363
+msgid ""
+"Enter your discount code (e.g. 10PERCENT) using only letters and numbers."
+msgstr ""
+
+#: app/Services/TransStrings.php:243
 msgid "Enter your license key"
 msgstr ""
 
@@ -1039,6 +1227,14 @@ msgstr ""
 msgid ""
 "Enter your Mailchimp API Key, if you do not have <br>Please login to your "
 "MailChimp account and go to<br>Profile -> Extras -> Api Keys"
+msgstr ""
+
+#: app/Services/TransStrings.php:402
+msgid "Enter your Turnstile Secret Key, if you do not have"
+msgstr ""
+
+#: app/Services/TransStrings.php:398
+msgid "Enter your Turnstile Site Key, if you do not have"
 msgstr ""
 
 #: app/Services/TransStrings.php:18 app/Hooks/Handlers/AdminMenuHandler.php:83
@@ -1072,6 +1268,18 @@ msgid ""
 "conditional logic, CSS class, etc"
 msgstr ""
 
+#: app/Services/TransStrings.php:371
+msgid "Expiration"
+msgstr ""
+
+#: app/Services/TransStrings.php:378
+msgid "Expiration date (yyyy-mm-dd) or leave blank if none."
+msgstr ""
+
+#: app/Services/TransStrings.php:358
+msgid "Expire Date"
+msgstr ""
+
 #: app/Services/TransStrings.php:110
 msgid "Export"
 msgstr ""
@@ -1088,7 +1296,7 @@ msgstr ""
 msgid "Export as ODS"
 msgstr ""
 
-#: app/Services/TransStrings.php:225
+#: app/Services/TransStrings.php:226
 msgid "Export Form"
 msgstr ""
 
@@ -1108,11 +1316,11 @@ msgstr ""
 msgid "Faroe Islands"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:442
+#: app/Modules/Builder/Render.php:465
 msgid "Feb"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:456
+#: app/Modules/Builder/Render.php:479
 msgid "February"
 msgstr ""
 
@@ -1166,7 +1374,7 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: app/Services/Integrations/FluentCrm/Bootstrap.php:353
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:371
 msgid "FleuntCRM Contact added Successfully on"
 msgstr ""
 
@@ -1189,7 +1397,7 @@ msgid ""
 "Fluent Support ticket creation skipped email, title or content are required!"
 msgstr ""
 
-#: app/Services/Integrations/FluentCrm/Bootstrap.php:263
+#: app/Services/Integrations/FluentCrm/Bootstrap.php:281
 msgid "FluentCRM API called skipped because no valid email available"
 msgstr ""
 
@@ -1207,12 +1415,16 @@ msgstr ""
 msgid "FluentCRM List"
 msgstr ""
 
-#: app/Services/TransStrings.php:208
+#: app/Services/TransStrings.php:209
 msgid "For all form"
 msgstr ""
 
-#: app/Services/TransStrings.php:209
+#: app/Services/TransStrings.php:210
 msgid "For specific form"
+msgstr ""
+
+#: app/Services/TransStrings.php:412
+msgid "Force User Redirect"
 msgstr ""
 
 #: app/Services/TransStrings.php:73
@@ -1228,7 +1440,7 @@ msgstr ""
 msgid "Form Design Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:155
+#: app/Services/TransStrings.php:156
 msgid "Form Element Stylings"
 msgstr ""
 
@@ -1242,15 +1454,15 @@ msgstr ""
 msgid "Form Field"
 msgstr ""
 
-#: app/Models/Form.php:512
+#: app/Models/Form.php:550
 msgid "Form has been successfully submitted"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:805
+#: app/Hooks/Handlers/SubmissionHandler.php:831
 msgid "Form is successfully submitted"
 msgstr ""
 
-#: app/Services/TransStrings.php:156
+#: app/Services/TransStrings.php:157
 msgid "Form Labels Font Weight"
 msgstr ""
 
@@ -1258,7 +1470,7 @@ msgstr ""
 msgid "Form Layout"
 msgstr ""
 
-#: app/Models/Form.php:52
+#: app/Models/Form.php:65
 msgid "Form not found"
 msgstr ""
 
@@ -1266,11 +1478,11 @@ msgstr ""
 msgid "Form query error"
 msgstr ""
 
-#: app/Services/TransStrings.php:161
+#: app/Services/TransStrings.php:162
 msgid "Form Scheduling"
 msgstr ""
 
-#: app/Services/TransStrings.php:165
+#: app/Services/TransStrings.php:166
 msgid "Form Scheduling & Restrictions"
 msgstr ""
 
@@ -1278,7 +1490,7 @@ msgstr ""
 msgid "Form Step"
 msgstr ""
 
-#: app/Models/Form.php:841
+#: app/Models/Form.php:914
 msgid ""
 "Form submission time schedule is not started yet. Please check back later"
 msgstr ""
@@ -1295,13 +1507,22 @@ msgstr ""
 msgid "Form successfully updated"
 msgstr ""
 
-#: app/Services/TransStrings.php:274
+#: app/Services/TransStrings.php:275
 msgid "Form Title"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:567
-#: app/Hooks/Handlers/SubmissionHandler.php:584
+#: app/Hooks/Handlers/SubmissionHandler.php:590
+#: app/Hooks/Handlers/SubmissionHandler.php:607
 msgid "Form Validation failed"
+msgstr ""
+
+#: app/Modules/FormComponents/DonationComponent.php:122
+#: app/Modules/FormComponents/DonationComponent.php:123
+msgid "fortnight"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Plan.php:109
+msgid "Fortnightly interval count can not be more than 78"
 msgstr ""
 
 #: app/Services/CountryNames.php:101
@@ -1320,12 +1541,20 @@ msgstr ""
 msgid "French Southern Territories"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:485
+#: app/Modules/Builder/Render.php:508
 msgid "Fri"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:476
+#: app/Modules/Builder/Render.php:499
 msgid "Friday"
+msgstr ""
+
+#: app/Services/TransStrings.php:324
+msgid "From Email"
+msgstr ""
+
+#: app/Services/TransStrings.php:323
+msgid "From Name"
 msgstr ""
 
 #: app/Services/Integrations/FluentSupport/Bootstrap.php:109
@@ -1347,11 +1576,11 @@ msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/Charge.php:54
 #: app/Modules/PaymentMethods/Stripe/Customer.php:42
-#: app/Modules/PaymentMethods/Stripe/Plan.php:39
+#: app/Modules/PaymentMethods/Stripe/Plan.php:40
 msgid "General Error"
 msgstr ""
 
-#: app/Services/TransStrings.php:191
+#: app/Services/TransStrings.php:192
 msgid "General Settings"
 msgstr ""
 
@@ -1363,13 +1592,17 @@ msgstr ""
 msgid "Germany"
 msgstr ""
 
+#: app/Services/TransStrings.php:341
+msgid "Get api key from"
+msgstr ""
+
 #: app/Services/Integrations/Slack/Bootstrap.php:30
 msgid ""
 "Get realtime notification in slack channel when a new submission will be "
 "added."
 msgstr ""
 
-#: app/Hooks/actions.php:152
+#: app/Hooks/actions.php:189
 msgid "Get Support"
 msgstr ""
 
@@ -1381,7 +1614,11 @@ msgstr ""
 msgid "Gibraltar"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:332
+#: app/Services/TransStrings.php:312
+msgid "Go to Donation Progress Item settings"
+msgstr ""
+
+#: app/Modules/FormComponents/DonationComponent.php:337
 msgid "Goal"
 msgstr ""
 
@@ -1437,7 +1674,16 @@ msgstr ""
 msgid "Haiti"
 msgstr ""
 
-#: app/Services/TransStrings.php:244
+#: app/Modules/PaymentMethods/Stripe/Plan.php:113
+msgid "Half yearly interval count can not be more than 6"
+msgstr ""
+
+#: app/Modules/FormComponents/DonationComponent.php:122
+#: app/Modules/FormComponents/DonationComponent.php:123
+msgid "half_year"
+msgstr ""
+
+#: app/Services/TransStrings.php:245
 msgid "Have a new license key? Please"
 msgstr ""
 
@@ -1451,7 +1697,7 @@ msgid ""
 "modules based on your need."
 msgstr ""
 
-#: app/Services/TransStrings.php:201
+#: app/Services/TransStrings.php:202
 msgid "Hide decimal points for rounded numbers"
 msgstr ""
 
@@ -1459,12 +1705,20 @@ msgstr ""
 msgid "Hide Form"
 msgstr ""
 
-#: app/Services/TransStrings.php:298
+#: app/Services/TransStrings.php:299
 msgid "Hide Submit Button"
+msgstr ""
+
+#: app/Services/TransStrings.php:347
+msgid "Higher Caching interval will reduces the amount API request."
 msgstr ""
 
 #: app/Services/CountryNames.php:123
 msgid "Honduras"
+msgstr ""
+
+#: app/Services/TransStrings.php:349
+msgid "Honeypot Security"
 msgstr ""
 
 #: app/Services/CountryNames.php:124
@@ -1487,10 +1741,6 @@ msgstr ""
 msgid "Hungary"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:418
-msgid "I would like to make a recurring donation."
-msgstr ""
-
 #: app/Services/CountryNames.php:126
 msgid "Iceland"
 msgstr ""
@@ -1507,21 +1757,35 @@ msgid ""
 "first name and last name"
 msgstr ""
 
-#: app/Services/TransStrings.php:232
+#: app/Services/TransStrings.php:233
 msgid "If you already renewed your license then please"
 msgstr ""
 
-#: app/Services/TransStrings.php:257
+#: app/Services/TransStrings.php:350
+msgid ""
+"If you enable this then Paymattic will verify honeypot security. Most of the "
+"time, bots will fail this test."
+msgstr ""
+
+#: app/Services/TransStrings.php:258
 msgid ""
 "If you want use donation leaderboard then you have to use this shortcode"
 msgstr ""
 
-#: app/Services/TransStrings.php:226
+#: app/Services/TransStrings.php:227
 msgid "Import Form"
 msgstr ""
 
-#: app/Services/TransStrings.php:258
+#: app/Services/TransStrings.php:342
+msgid "in case you want to use currency switcher in your form."
+msgstr ""
+
+#: app/Services/TransStrings.php:259
 msgid "in your page or post. for more customization follow this"
+msgstr ""
+
+#: app/Services/TransStrings.php:384
+msgid "Inactive"
 msgstr ""
 
 #: app/Services/CountryNames.php:127
@@ -1536,7 +1800,11 @@ msgstr ""
 msgid "Initial Amount"
 msgstr ""
 
-#: app/Services/TransStrings.php:158
+#: app/Services/TransStrings.php:308
+msgid "Initial Raised Amount"
+msgstr ""
+
+#: app/Services/TransStrings.php:159
 msgid "Input Item Styles"
 msgstr ""
 
@@ -1564,21 +1832,21 @@ msgstr ""
 msgid "Integration successfully updated"
 msgstr ""
 
-#: app/Services/TransStrings.php:19 app/Hooks/Handlers/AdminMenuHandler.php:112
+#: app/Services/TransStrings.php:19 app/Hooks/Handlers/AdminMenuHandler.php:119
 #: app/Views/admin/global/global_menu.php:24
 msgid "Integrations"
 msgstr ""
 
-#: app/Views/user/dashboard.php:242
+#: app/Views/user/dashboard.php:244
 msgid "Interval"
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/Charge.php:66
-#: app/Modules/PaymentMethods/Stripe/Plan.php:115
+#: app/Modules/PaymentMethods/Stripe/Plan.php:150
 msgid "Invalid currency"
 msgstr ""
 
-#: app/Http/Controllers/AddonsController.php:31
+#: app/Http/Controllers/AddonsController.php:32
 #: app/Hooks/Handlers/SubmissionHandler.php:61
 msgid "Invalid request. Please try again"
 msgstr ""
@@ -1587,7 +1855,7 @@ msgstr ""
 msgid "Invalid submission. No receipt found"
 msgstr ""
 
-#: app/Services/TransStrings.php:216
+#: app/Services/TransStrings.php:217
 msgid "Invisible"
 msgstr ""
 
@@ -1603,8 +1871,8 @@ msgstr ""
 msgid "Ireland"
 msgstr ""
 
-#: app/Modules/FormComponents/BaseComponent.php:454
-#: app/Modules/Builder/Render.php:517
+#: app/Modules/FormComponents/BaseComponent.php:462
+#: app/Modules/Builder/Render.php:540
 msgid "is required"
 msgstr ""
 
@@ -1632,7 +1900,7 @@ msgstr ""
 msgid "Item Price"
 msgstr ""
 
-#: app/Modules/Builder/PaymentReceipt.php:160
+#: app/Modules/Builder/PaymentReceipt.php:175
 msgid "Items Details"
 msgstr ""
 
@@ -1644,11 +1912,11 @@ msgstr ""
 msgid "Jamaica"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:441
+#: app/Modules/Builder/Render.php:464
 msgid "Jan"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:455
+#: app/Modules/Builder/Render.php:478
 msgid "January"
 msgstr ""
 
@@ -1668,19 +1936,19 @@ msgstr ""
 msgid "Jordan"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:447
+#: app/Modules/Builder/Render.php:470
 msgid "Jul"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:461
+#: app/Modules/Builder/Render.php:484
 msgid "July"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:446
+#: app/Modules/Builder/Render.php:469
 msgid "Jun"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:460
+#: app/Modules/Builder/Render.php:483
 msgid "June"
 msgstr ""
 
@@ -1728,7 +1996,7 @@ msgstr ""
 msgid "Lebanon"
 msgstr ""
 
-#: app/Services/TransStrings.php:300
+#: app/Services/TransStrings.php:301
 msgid "Left"
 msgstr ""
 
@@ -1744,15 +2012,15 @@ msgstr ""
 msgid "Libya"
 msgstr ""
 
-#: app/Services/TransStrings.php:265
+#: app/Services/TransStrings.php:266
 msgid "License Key"
 msgstr ""
 
-#: app/Services/TransStrings.php:236
+#: app/Services/TransStrings.php:237
 msgid "Licensing"
 msgstr ""
 
-#: app/Services/TransStrings.php:247
+#: app/Services/TransStrings.php:248
 msgid "Licensing has been expired"
 msgstr ""
 
@@ -1760,7 +2028,7 @@ msgstr ""
 msgid "Liechtenstein"
 msgstr ""
 
-#: app/Services/TransStrings.php:295
+#: app/Services/TransStrings.php:296
 msgid "like the user to be redirected to after"
 msgstr ""
 
@@ -1768,15 +2036,19 @@ msgstr ""
 msgid "Limit accepted methods "
 msgstr ""
 
-#: app/Services/TransStrings.php:162
+#: app/Services/TransStrings.php:163
 msgid "Limit by payments"
+msgstr ""
+
+#: app/Services/TransStrings.php:372
+msgid "Limit Per User(Email Based)"
 msgstr ""
 
 #: app/Services/TransStrings.php:58 app/Views/elements/order_items_table.php:23
 msgid "Line Total"
 msgstr ""
 
-#: app/Services/TransStrings.php:259
+#: app/Services/TransStrings.php:260
 msgid "link"
 msgstr ""
 
@@ -1803,7 +2075,7 @@ msgstr ""
 msgid "Locale"
 msgstr ""
 
-#: app/Services/TransStrings.php:163
+#: app/Services/TransStrings.php:164
 msgid "Login Requirement Settings"
 msgstr ""
 
@@ -1854,11 +2126,11 @@ msgstr ""
 msgid "Mailchimp Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:157
+#: app/Services/TransStrings.php:158
 msgid "Make Labels as bold"
 msgstr ""
 
-#: app/Services/TransStrings.php:299
+#: app/Services/TransStrings.php:300
 msgid "Make validation failed after submit"
 msgstr ""
 
@@ -1886,15 +2158,11 @@ msgstr ""
 msgid "Malta"
 msgstr ""
 
-#: app/Views/user/dashboard.php:87
-msgid "Manage Subscription"
-msgstr ""
-
-#: app/Modules/Builder/Render.php:443
+#: app/Modules/Builder/Render.php:466
 msgid "Mar"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:457
+#: app/Modules/Builder/Render.php:480
 msgid "March"
 msgstr ""
 
@@ -1922,11 +2190,11 @@ msgstr ""
 msgid "Max Input Vars"
 msgstr ""
 
-#: app/Services/TransStrings.php:160
+#: app/Services/TransStrings.php:161
 msgid "Maximum Number of Entries"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:445 app/Modules/Builder/Render.php:459
+#: app/Modules/Builder/Render.php:468 app/Modules/Builder/Render.php:482
 msgid "May"
 msgstr ""
 
@@ -1946,11 +2214,15 @@ msgstr ""
 msgid "Micronesia"
 msgstr ""
 
+#: app/Services/TransStrings.php:369
+msgid "Min Purchase Amount"
+msgstr ""
+
 #: app/Services/CountryNames.php:169
 msgid "Moldova"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:481
+#: app/Modules/Builder/Render.php:504
 msgid "Mon"
 msgstr ""
 
@@ -1958,7 +2230,7 @@ msgstr ""
 msgid "Monaco"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:472
+#: app/Modules/Builder/Render.php:495
 msgid "Monday"
 msgstr ""
 
@@ -1970,9 +2242,13 @@ msgstr ""
 msgid "Montenegro"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:120
-#: app/Modules/FormComponents/DonationComponent.php:121
+#: app/Modules/FormComponents/DonationComponent.php:122
+#: app/Modules/FormComponents/DonationComponent.php:123
 msgid "month"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Plan.php:105
+msgid "Monthly interval count can not be more than 36"
 msgstr ""
 
 #: app/Services/CountryNames.php:173
@@ -2023,7 +2299,7 @@ msgstr ""
 msgid "Nepal"
 msgstr ""
 
-#: app/Services/TransStrings.php:255
+#: app/Services/TransStrings.php:256
 msgid "Net"
 msgstr ""
 
@@ -2035,7 +2311,7 @@ msgstr ""
 msgid "New Caledonia"
 msgstr ""
 
-#: app/Services/TransStrings.php:250
+#: app/Services/TransStrings.php:251
 msgid "New Customers"
 msgstr ""
 
@@ -2043,12 +2319,16 @@ msgstr ""
 msgid "New Zealand"
 msgstr ""
 
+#: app/Services/TransStrings.php:427
+msgid "Newest first"
+msgstr ""
+
 #: app/Modules/FormComponents/StepFormComponent.php:36
-#: app/Modules/Builder/RenderDemoForm.php:72 app/Modules/Builder/Render.php:124
+#: app/Modules/Builder/RenderDemoForm.php:72
 msgid "Next"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:438
+#: app/Modules/Builder/Render.php:461
 msgid "Next Month"
 msgstr ""
 
@@ -2076,8 +2356,16 @@ msgstr ""
 msgid "No email notifications configured yet."
 msgstr ""
 
+#: app/Services/TransStrings.php:359
+msgid "No Expire Date"
+msgstr ""
+
 #: app/Http/Controllers/FormController.php:174
 msgid "No form found when duplicating the form"
+msgstr ""
+
+#: app/Services/TransStrings.php:356
+msgid "No Limit"
 msgstr ""
 
 #: app/Modules/PaymentMethods/Offline/OfflineProcessor.php:226
@@ -2120,7 +2408,7 @@ msgstr ""
 msgid "Not Enabled (issue)"
 msgstr ""
 
-#: app/Services/TransStrings.php:256
+#: app/Services/TransStrings.php:257
 msgid "Note"
 msgstr ""
 
@@ -2128,27 +2416,31 @@ msgstr ""
 msgid "Note successfully added"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:451
+#: app/Services/TransStrings.php:316
+msgid "Notification Title"
+msgstr ""
+
+#: app/Modules/Builder/Render.php:474
 msgid "Nov"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:465
+#: app/Modules/Builder/Render.php:488
 msgid "November"
 msgstr ""
 
-#: app/Models/Form.php:835
+#: app/Models/Form.php:908
 msgid "Number of entry has been exceeds, Please check back later"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:450
+#: app/Modules/Builder/Render.php:473
 msgid "Oct"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:464
+#: app/Modules/Builder/Render.php:487
 msgid "October"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:831
+#: app/Hooks/Handlers/SubmissionHandler.php:857
 #: app/Modules/PaymentMethods/Offline/OfflineProcessor.php:74
 msgid "Offline Payment recorded and change the status to pending"
 msgstr ""
@@ -2169,19 +2461,27 @@ msgstr ""
 msgid "Oman"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:821
+#: app/Services/TransStrings.php:345
+msgid "on how to get Api Key from"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:838
 msgid "One time Payment Successfully handled by admin. Charge ID: "
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:552
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:558
 msgid "One time Payment Successfully made via stripe. Charge ID: "
+msgstr ""
+
+#: app/Services/TransStrings.php:382
+msgid "Optional for all payment forms."
 msgstr ""
 
 #: app/Views/receipt/payment_info.php:4
 msgid "Order ID:"
 msgstr ""
 
-#: app/Models/Form.php:645
+#: app/Models/Form.php:686
 msgid "Order Items Table"
 msgstr ""
 
@@ -2199,7 +2499,7 @@ msgstr ""
 msgid "Other Fields"
 msgstr ""
 
-#: app/Services/TransStrings.php:260
+#: app/Services/TransStrings.php:261
 msgid "Other Settings"
 msgstr ""
 
@@ -2240,11 +2540,11 @@ msgstr ""
 msgid "Paymattic - Payments made simple"
 msgstr ""
 
-#: app/Services/TransStrings.php:233
+#: app/Services/TransStrings.php:234
 msgid "Paymattic Admin Permission"
 msgstr ""
 
-#: app/Services/TransStrings.php:212
+#: app/Services/TransStrings.php:213
 msgid "Paymattic Coupon Module"
 msgstr ""
 
@@ -2256,10 +2556,17 @@ msgstr ""
 msgid "Paymattic Global Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:220
+#: app/Services/TransStrings.php:221
 msgid ""
 "Paymattic integrates with Cloudflare Turnstile, a free service that protects "
 "your website from spam and abuse. Please note, these settings are required "
+"only if you decide to use the Turnstile field."
+msgstr ""
+
+#: app/Services/TransStrings.php:395
+msgid ""
+"Paymattic integrates with Cloudflare Turnstile, a free service that protects "
+"your website from spam and abuse.Please note, these settings are required "
 "only if you decide to use the Turnstile field."
 msgstr ""
 
@@ -2271,8 +2578,31 @@ msgstr ""
 msgid "Paymattic Modules"
 msgstr ""
 
+#: app/Services/TransStrings.php:409
+msgid ""
+"Paymattic user dashboard is only accessible for Paymattic User roles. You "
+"can manage user capabilities also."
+msgstr ""
+
+#: app/Services/TransStrings.php:405
+msgid "Paymattic User dashboard module"
+msgstr ""
+
+#: app/Services/TransStrings.php:406
+msgid ""
+"Paymattic User dashboard module is not enabled. You can enable it from here."
+msgstr ""
+
+#: app/Services/TransStrings.php:408
+msgid "Paymattic User Permission"
+msgstr ""
+
 #: app/Hooks/Handlers/AdminMenuHandler.php:552
 msgid "Paymattic User Profile"
+msgstr ""
+
+#: app/Services/TransStrings.php:419
+msgid "Paymattic will display the donation leaderboard unless it is disabled."
 msgstr ""
 
 #: app/Services/Integrations/FluentSupport/Bootstrap.php:32
@@ -2282,16 +2612,16 @@ msgid ""
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/Charge.php:78
-#: app/Modules/PaymentMethods/Stripe/Plan.php:127
+#: app/Modules/PaymentMethods/Stripe/Plan.php:162
 msgid "Payment Amount can not be 0"
 msgstr ""
 
 #: app/Modules/FormComponents/PaymentItemComponent.php:155
-#: app/Modules/FormComponents/DonationComponent.php:134
+#: app/Modules/FormComponents/DonationComponent.php:136
 msgid "Payment amount is required for item:"
 msgstr ""
 
-#: app/Services/TransStrings.php:248
+#: app/Services/TransStrings.php:249
 msgid "Payment Analytics"
 msgstr ""
 
@@ -2316,15 +2646,15 @@ msgstr ""
 msgid "Payment Failed"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:186
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:190
 msgid "Payment Failed via stripe. Status changed from Pending to Failed."
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:270
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:276
 msgid "Payment Failed! Please try again"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:508
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:514
 msgid "Payment Failed! Your card may declined"
 msgstr ""
 
@@ -2332,20 +2662,20 @@ msgstr ""
 msgid "Payment Gateway"
 msgstr ""
 
-#: app/Services/TransStrings.php:189
-#: app/Hooks/Handlers/AdminMenuHandler.php:118
+#: app/Services/TransStrings.php:190
+#: app/Hooks/Handlers/AdminMenuHandler.php:125
 msgid "Payment Gateways"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:602
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:611
 msgid "Payment has been failed"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:580
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:589
 msgid "Payment has been successfully completed"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:467
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:473
 msgid ""
 "Payment is authorized. need to capture it before the expiration, payment "
 "status changes from pending to authorized and customer made transaction with:"
@@ -2360,7 +2690,7 @@ msgstr ""
 msgid "Payment Items"
 msgstr ""
 
-#: app/Models/Form.php:636 app/Services/TransStrings.php:76
+#: app/Models/Form.php:677 app/Services/TransStrings.php:76
 #: app/Views/user/SubmissionTable.php:11
 msgid "Payment Method"
 msgstr ""
@@ -2369,7 +2699,7 @@ msgstr ""
 msgid "Payment method not supported"
 msgstr ""
 
-#: app/Services/TransStrings.php:268
+#: app/Services/TransStrings.php:269
 msgid "Payment method settings"
 msgstr ""
 
@@ -2382,11 +2712,11 @@ msgstr ""
 msgid "Payment Mode"
 msgstr ""
 
-#: app/Models/Form.php:656
+#: app/Models/Form.php:697
 msgid "Payment Receipt"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:876
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:893
 #, php-format
 msgid "Payment Refunded by Admin. Refunded: %s %s"
 msgstr ""
@@ -2399,16 +2729,16 @@ msgstr ""
 msgid "Payment Status"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:808
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:810
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:825
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:827
 msgid "Payment status changed from authorized to paid"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:812
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:829
 msgid "Payment status changed from authorized to refunded"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:560
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:566
 msgid "Payment status changed from pending to paid"
 msgstr ""
 
@@ -2416,7 +2746,7 @@ msgstr ""
 msgid "Payment status successfully changed"
 msgstr ""
 
-#: app/Views/receipt/payment_info.php:38
+#: app/Views/receipt/payment_info.php:46
 msgid "Payment Status:"
 msgstr ""
 
@@ -2424,7 +2754,7 @@ msgstr ""
 msgid "Payment Success"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:356
+#: app/Hooks/Handlers/SubmissionHandler.php:379
 msgid "Payment success with 100% discount and the status updated Paid"
 msgstr ""
 
@@ -2432,11 +2762,11 @@ msgstr ""
 msgid "Payment Summary"
 msgstr ""
 
-#: app/Models/Form.php:848
+#: app/Models/Form.php:921
 msgid "Payment target amount reached, Please check back later."
 msgstr ""
 
-#: app/Models/Form.php:660 app/Services/TransStrings.php:75
+#: app/Models/Form.php:701 app/Services/TransStrings.php:75
 msgid "Payment Total"
 msgstr ""
 
@@ -2448,7 +2778,7 @@ msgstr ""
 msgid "PayPal"
 msgstr ""
 
-#: app/Services/TransStrings.php:190
+#: app/Services/TransStrings.php:191
 msgid "PayPal Account"
 msgstr ""
 
@@ -2465,7 +2795,7 @@ msgstr ""
 msgid "PDF Downloads"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:261
+#: app/Hooks/Handlers/AdminMenuHandler.php:268
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:86
 msgid "PDF Settings"
 msgstr ""
@@ -2474,7 +2804,7 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
-#: app/Services/TransStrings.php:234
+#: app/Services/TransStrings.php:235
 msgid "Permission Settings"
 msgstr ""
 
@@ -2502,20 +2832,24 @@ msgstr ""
 msgid "Pitcairn"
 msgstr ""
 
-#: app/Views/user/dashboard.php:239
+#: app/Views/user/dashboard.php:241
 msgid "Plan"
 msgstr ""
 
-#: app/Models/Form.php:68
+#: app/Models/Form.php:81
 msgid "Please add at least one input element"
 msgstr ""
 
-#: app/Services/TransStrings.php:173
+#: app/Services/TransStrings.php:174
 msgid "Please don't include"
 msgstr ""
 
-#: app/Services/TransStrings.php:221
+#: app/Services/TransStrings.php:222
 msgid "Please generate API key and API secret using Cloudflare Turnstile"
+msgstr ""
+
+#: app/Services/TransStrings.php:424
+msgid "Please input the initial raised amount"
 msgstr ""
 
 #: app/Services/TransStrings.php:135
@@ -2526,7 +2860,7 @@ msgstr ""
 msgid "Please provide a valid template id"
 msgstr ""
 
-#: app/Models/Form.php:296
+#: app/Models/Form.php:309
 msgid "Please provide form title"
 msgstr ""
 
@@ -2550,28 +2884,44 @@ msgstr ""
 msgid "Please Select a payment mode."
 msgstr ""
 
+#: app/Services/TransStrings.php:392
+msgid "Please select appropriate reCAPTCHA version when creating the API key"
+msgstr ""
+
+#: app/Services/TransStrings.php:306
+msgid "Please select number of donor per page"
+msgstr ""
+
+#: app/Services/TransStrings.php:423
+msgid "Please select page"
+msgstr ""
+
+#: app/Services/TransStrings.php:387
+msgid "Please select the appropriate mode"
+msgstr ""
+
 #: app/Http/Controllers/GlobalSettingsController.php:472
 msgid "Please upload a valid image file"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:515
+#: app/Modules/Builder/Render.php:538
 msgid "Please verify cloudflare turnstile first"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:514
+#: app/Modules/Builder/Render.php:537
 msgid "Please verify reCAPTCHA first"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:160
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:166
 msgid ""
 "Please wait... You are redirecting to Secure Payment page powered by Stripe"
 msgstr ""
 
-#: app/Models/Form.php:372 app/Modules/Builder/Render.php:318
+#: app/Models/Form.php:385 app/Modules/Builder/Render.php:341
 msgid "Please Wait…"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:509
+#: app/Modules/Builder/Render.php:532
 msgid "PM"
 msgstr ""
 
@@ -2620,11 +2970,11 @@ msgid "Preview Form"
 msgstr ""
 
 #: app/Modules/FormComponents/StepFormComponent.php:29
-#: app/Modules/Builder/RenderDemoForm.php:71 app/Modules/Builder/Render.php:123
+#: app/Modules/Builder/RenderDemoForm.php:71
 msgid "Previous"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:437
+#: app/Modules/Builder/Render.php:460
 msgid "Previous Month"
 msgstr ""
 
@@ -2683,6 +3033,15 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
+#: app/Modules/FormComponents/DonationComponent.php:122
+#: app/Modules/FormComponents/DonationComponent.php:123
+msgid "quarter"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Plan.php:111
+msgid "Quarterly interval count can not be more than 12"
+msgstr ""
+
 #: app/Services/FormPlaceholders.php:267
 msgid "Query String"
 msgstr ""
@@ -2691,7 +3050,7 @@ msgstr ""
 msgid "Radio Input Field"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:319
+#: app/Modules/FormComponents/DonationComponent.php:324
 msgid "Raised"
 msgstr ""
 
@@ -2699,8 +3058,12 @@ msgstr ""
 msgid "Read"
 msgstr ""
 
-#: app/Services/TransStrings.php:205
+#: app/Services/TransStrings.php:206
 msgid "Read more"
+msgstr ""
+
+#: app/Services/TransStrings.php:396
+msgid "Read more about Cloudflare Turnstile."
 msgstr ""
 
 #: app/Services/TransStrings.php:94
@@ -2709,11 +3072,15 @@ msgid ""
 "Settings -> reCaptcha Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:215
+#: app/Services/TransStrings.php:216
 msgid "reCaptcha Mode"
 msgstr ""
 
-#: app/Services/TransStrings.php:214
+#: app/Services/TransStrings.php:394
+msgid "reCAPTCHA Secret Key"
+msgstr ""
+
+#: app/Services/TransStrings.php:215
 msgid "reCAPTCHA Settings"
 msgstr ""
 
@@ -2721,7 +3088,11 @@ msgstr ""
 msgid "reCaptcha Settings"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:545
+#: app/Services/TransStrings.php:393
+msgid "reCAPTCHA Site Key"
+msgstr ""
+
+#: app/Hooks/Handlers/SubmissionHandler.php:568
 msgid "reCAPTCHA validation failed. Please try again."
 msgstr ""
 
@@ -2737,15 +3108,15 @@ msgstr ""
 msgid "Receipt Header Content"
 msgstr ""
 
-#: app/Services/TransStrings.php:290
+#: app/Services/TransStrings.php:291
 msgid "Redirect Form to Page"
 msgstr ""
 
-#: app/Services/TransStrings.php:293
+#: app/Services/TransStrings.php:294
 msgid "Redirect Form to URL"
 msgstr ""
 
-#: app/Services/TransStrings.php:292
+#: app/Services/TransStrings.php:293
 msgid "redirected to after they have submitted the form."
 msgstr ""
 
@@ -2757,12 +3128,16 @@ msgstr ""
 msgid "Registered since"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:100
+#: app/Services/TransStrings.php:318
+msgid "Reply To"
+msgstr ""
+
+#: app/Hooks/Handlers/AdminMenuHandler.php:107
 #: app/Views/admin/global/global_menu.php:28
 msgid "Reports"
 msgstr ""
 
-#: app/Services/TransStrings.php:164
+#: app/Services/TransStrings.php:165
 msgid "Require user to be logged in"
 msgstr ""
 
@@ -2774,11 +3149,11 @@ msgstr ""
 msgid "Reunion"
 msgstr ""
 
-#: app/Services/TransStrings.php:266
+#: app/Services/TransStrings.php:267
 msgid "Revenue breakdown"
 msgstr ""
 
-#: app/Services/TransStrings.php:301
+#: app/Services/TransStrings.php:302
 msgid "Right"
 msgstr ""
 
@@ -2834,7 +3209,7 @@ msgstr ""
 msgid "Saint Vincent and the Grenadines"
 msgstr ""
 
-#: app/Services/TransStrings.php:178
+#: app/Services/TransStrings.php:179
 msgid "Same Page"
 msgstr ""
 
@@ -2846,11 +3221,11 @@ msgstr ""
 msgid "San Marino"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:486
+#: app/Modules/Builder/Render.php:509
 msgid "Sat"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:477
+#: app/Modules/Builder/Render.php:500
 msgid "Saturday"
 msgstr ""
 
@@ -2866,7 +3241,11 @@ msgstr ""
 msgid "Save Confirmation Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:168
+#: app/Services/TransStrings.php:386
+msgid "Save Coupon"
+msgstr ""
+
+#: app/Services/TransStrings.php:169
 msgid "Save CSS and JS"
 msgstr ""
 
@@ -2886,7 +3265,7 @@ msgstr ""
 msgid "Save Receipt Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:166
+#: app/Services/TransStrings.php:167
 #: app/Services/Integrations/GlobalIntegrationManager.php:39
 #: app/Services/Integrations/MailChimp/MailChimpIntegration.php:46
 msgid "Save Settings"
@@ -2900,17 +3279,17 @@ msgstr ""
 msgid "Saving"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:487
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:493
 msgid ""
 "SCA is required for this payment. Payment status changed from pending to "
 "intended"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:495
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:501
 msgid "SCA is required for this payment. Requested SCA info from customer"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:505
+#: app/Modules/Builder/Render.php:528
 msgid "Scroll to increment"
 msgstr ""
 
@@ -2922,27 +3301,55 @@ msgstr ""
 msgid "Search Form"
 msgstr ""
 
-#: app/Services/TransStrings.php:223
+#: app/Services/TransStrings.php:224
 msgid "Secret Key"
 msgstr ""
 
-#: app/Services/TransStrings.php:285
+#: app/Services/TransStrings.php:286
 msgid "see on the confirmation page of this form."
+msgstr ""
+
+#: app/Services/TransStrings.php:343
+msgid "See our"
+msgstr ""
+
+#: app/Services/TransStrings.php:365
+msgid "Select"
 msgstr ""
 
 #: app/Modules/Integrations/TinyMceBlock.php:40
 msgid "Select a Form to insert"
 msgstr ""
 
+#: app/Services/TransStrings.php:338
+msgid "Select Currency"
+msgstr ""
+
 #: app/Services/Integrations/FluentCrm/Bootstrap.php:109
 msgid "Select FluentCRM List"
+msgstr ""
+
+#: app/Services/TransStrings.php:420
+msgid "Select Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:421
+msgid "Select form for which you want to enable donation leaderboard."
+msgstr ""
+
+#: app/Services/TransStrings.php:422
+msgid "Select Form ID"
+msgstr ""
+
+#: app/Services/TransStrings.php:381
+msgid "Select Forms"
 msgstr ""
 
 #: app/Services/TransStrings.php:37
 msgid "Select from demo"
 msgstr ""
 
-#: app/Services/TransStrings.php:303
+#: app/Services/TransStrings.php:304
 msgid ""
 "Select how you want to show the form labels. To make the form labels as bold "
 "check this option."
@@ -2952,31 +3359,39 @@ msgstr ""
 msgid "Select Input Field"
 msgstr ""
 
-#: app/Services/TransStrings.php:289
+#: app/Services/TransStrings.php:290
 msgid "Select Page"
 msgstr ""
 
-#: app/Services/TransStrings.php:267
+#: app/Services/TransStrings.php:268
 msgid "Select payment method"
+msgstr ""
+
+#: app/Services/TransStrings.php:351
+msgid "Select Stripe Checkout Language"
 msgstr ""
 
 #: app/Services/Integrations/FluentCrm/Bootstrap.php:151
 msgid "Select Tags"
 msgstr ""
 
-#: app/Services/TransStrings.php:287
+#: app/Services/TransStrings.php:288
 msgid "Select the behavior after form submission,"
+msgstr ""
+
+#: app/Services/TransStrings.php:366
+msgid "Select the discount type to apply for this discount."
 msgstr ""
 
 #: app/Services/Integrations/FluentCrm/Bootstrap.php:110
 msgid "Select the FluentCRM List you would like to add your contacts to."
 msgstr ""
 
-#: app/Services/TransStrings.php:228
+#: app/Services/TransStrings.php:229
 msgid "Select the form to export"
 msgstr ""
 
-#: app/Services/TransStrings.php:291
+#: app/Services/TransStrings.php:292
 msgid "Select the page you would like the user to be"
 msgstr ""
 
@@ -2993,7 +3408,7 @@ msgstr ""
 msgid "Selected submission successfully deleted"
 msgstr ""
 
-#: app/Services/TransStrings.php:278
+#: app/Services/TransStrings.php:279
 msgid ""
 "Send automatic email when your customers submit the form. You can send email "
 "to your customers as well as to yourself."
@@ -3011,11 +3426,11 @@ msgstr ""
 msgid "Senegal"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:449
+#: app/Modules/Builder/Render.php:472
 msgid "Sep"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:463
+#: app/Modules/Builder/Render.php:486
 msgid "September"
 msgstr ""
 
@@ -3029,6 +3444,10 @@ msgstr ""
 
 #: app/Modules/Debug/Debug.php:218
 msgid "Server Timezone"
+msgstr ""
+
+#: app/Services/TransStrings.php:346
+msgid "Set an Caching Interval for updating the currency rates."
 msgstr ""
 
 #: app/Services/Integrations/FluentSupport/Bootstrap.php:51
@@ -3051,8 +3470,12 @@ msgstr ""
 msgid "Set Tag"
 msgstr ""
 
-#: app/Services/TransStrings.php:17 app/Hooks/Handlers/AdminMenuHandler.php:125
-#: app/Hooks/Handlers/AdminMenuHandler.php:126
+#: app/Services/TransStrings.php:329
+msgid "Setting up a Form in a minute and accept payments"
+msgstr ""
+
+#: app/Services/TransStrings.php:17 app/Hooks/Handlers/AdminMenuHandler.php:132
+#: app/Hooks/Handlers/AdminMenuHandler.php:133
 #: app/Views/admin/global/global_menu.php:38
 msgid "Settings"
 msgstr ""
@@ -3061,7 +3484,7 @@ msgstr ""
 msgid "Settings has been saved."
 msgstr ""
 
-#: app/Models/Form.php:340 app/Http/Controllers/FormController.php:31
+#: app/Models/Form.php:353 app/Http/Controllers/FormController.php:31
 #: app/Http/Controllers/FormController.php:127
 #: app/Http/Controllers/GlobalSettingsController.php:241
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:163
@@ -3095,6 +3518,10 @@ msgstr ""
 msgid "Signup Fee for"
 msgstr ""
 
+#: app/Modules/Builder/PaymentReceipt.php:136
+msgid "Signup Fee for Subscription Item"
+msgstr ""
+
 #: app/Services/TransStrings.php:42
 msgid "Simple Form Templates"
 msgstr ""
@@ -3111,7 +3538,7 @@ msgstr ""
 msgid "Site Homepage"
 msgstr ""
 
-#: app/Services/TransStrings.php:222
+#: app/Services/TransStrings.php:223
 msgid "Site Key"
 msgstr ""
 
@@ -3147,7 +3574,7 @@ msgstr ""
 msgid "Slovenia"
 msgstr ""
 
-#: app/Views/user/dashboard.php:307
+#: app/Views/user/dashboard.php:309
 msgid "So no further payment will be processed."
 msgstr ""
 
@@ -3159,7 +3586,7 @@ msgstr ""
 msgid "Somalia"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:516
+#: app/Modules/Builder/Render.php:539
 msgid "Something is wrong when submitting the form"
 msgstr ""
 
@@ -3173,8 +3600,8 @@ msgid ""
 "receipt page after sometime."
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:560
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:598
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:569
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:607
 msgid "Sorry! no associate submission found"
 msgstr ""
 
@@ -3193,12 +3620,6 @@ msgstr ""
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:234
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:303
 msgid "Sorry! No template found!"
-msgstr ""
-
-#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:241
-msgid ""
-"Sorry! there has an error when creating the subscription plan. Please try "
-"again"
 msgstr ""
 
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:930
@@ -3251,6 +3672,10 @@ msgstr ""
 msgid "South Sudan"
 msgstr ""
 
+#: app/Modules/FluentCommunity/FluentCommunity.php:17
+msgid "Spaces & Courses"
+msgstr ""
+
 #: app/Services/CountryNames.php:232
 msgid "Spain"
 msgstr ""
@@ -3259,8 +3684,16 @@ msgstr ""
 msgid "Sri Lanka"
 msgstr ""
 
+#: app/Services/TransStrings.php:375
+msgid "Start Date"
+msgstr ""
+
+#: app/Services/TransStrings.php:376
+msgid "Start date (yyyy-mm-dd) or leave blank if none."
+msgstr ""
+
 #: app/Services/TransStrings.php:116 app/Views/user/dashboard.php:171
-#: app/Views/user/dashboard.php:241 app/Views/user/SubmissionTable.php:10
+#: app/Views/user/dashboard.php:243 app/Views/user/SubmissionTable.php:10
 #: app/Views/elements/subscriptions_info.php:13
 #: app/Views/elements/user_submissions_table.php:8
 msgid "Status"
@@ -3270,24 +3703,24 @@ msgstr ""
 msgid "Stripe Account"
 msgstr ""
 
-#: app/Services/TransStrings.php:193
+#: app/Services/TransStrings.php:194
 msgid "Stripe Checkout Locale"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:80
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:84
 msgid ""
 "Stripe error when creating subscription plan for you. Please contact site "
 "admin"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:78
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:82
 msgid ""
 "Stripe error when creating subscription plan for you. Your card might be "
 "charged for atleast one subscription. Please contact site admin to resolve "
 "the issue"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:519
+#: app/Modules/Builder/Render.php:542
 msgid "Stripe error, Check Stripe setup"
 msgstr ""
 
@@ -3300,11 +3733,11 @@ msgstr ""
 msgid "Stripe One time payment has marked as paid."
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:659
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:676
 msgid "Stripe recurring payments synced from upstream"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:137
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:141
 #: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:83
 msgid "Stripe recurring subscription successfully initiated"
 msgstr ""
@@ -3314,7 +3747,7 @@ msgid "Stripe Settings"
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/Charge.php:73
-#: app/Modules/PaymentMethods/Stripe/Plan.php:122
+#: app/Modules/PaymentMethods/Stripe/Plan.php:157
 msgid "Stripe Token is required"
 msgstr ""
 
@@ -3322,7 +3755,7 @@ msgstr ""
 msgid "Stripe token/payment_method is required"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:502
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:508
 msgid ""
 "Strong Customer Authentication is required. Please complete 2 factor "
 "authentication."
@@ -3341,7 +3774,7 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: app/Services/TransStrings.php:202
+#: app/Services/TransStrings.php:203
 msgid "Submission Abandoned After"
 msgstr ""
 
@@ -3349,11 +3782,11 @@ msgstr ""
 msgid "Submission Details"
 msgstr ""
 
-#: app/Models/Form.php:633
+#: app/Models/Form.php:674
 msgid "Submission Hash ID"
 msgstr ""
 
-#: app/Models/Form.php:632
+#: app/Models/Form.php:673
 msgid "Submission ID"
 msgstr ""
 
@@ -3369,7 +3802,7 @@ msgstr ""
 msgid "Submission PDF link"
 msgstr ""
 
-#: app/Models/Form.php:637
+#: app/Models/Form.php:678
 msgid "Submission Time"
 msgstr ""
 
@@ -3377,19 +3810,19 @@ msgstr ""
 msgid "Submissions"
 msgstr ""
 
-#: app/Models/Form.php:371 app/Modules/Builder/Render.php:322
+#: app/Models/Form.php:384 app/Modules/Builder/Render.php:345
 msgid "Submit"
 msgstr ""
 
-#: app/Services/TransStrings.php:154
+#: app/Services/TransStrings.php:155
 msgid "Submit Button Position"
 msgstr ""
 
-#: app/Services/TransStrings.php:271
+#: app/Services/TransStrings.php:272
 msgid "Submit Button Settings"
 msgstr ""
 
-#: app/Services/TransStrings.php:281
+#: app/Services/TransStrings.php:282
 msgid "Submit Note"
 msgstr ""
 
@@ -3405,15 +3838,15 @@ msgstr ""
 msgid "Subscription billed for the billing count 2"
 msgstr ""
 
-#: app/Modules/Builder/PaymentReceipt.php:202
+#: app/Modules/Builder/PaymentReceipt.php:217
 msgid "Subscription Details"
 msgstr ""
 
-#: app/Models/Form.php:652
+#: app/Models/Form.php:693
 msgid "Subscription Details Table"
 msgstr ""
 
-#: app/Models/Form.php:653
+#: app/Models/Form.php:694
 msgid "Subscription ID "
 msgstr ""
 
@@ -3426,11 +3859,11 @@ msgstr ""
 msgid "Subscription Payment has been added as pending"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:152
+#: app/Modules/PaymentMethods/Stripe/StripeHandler.php:156
 msgid "Subscription status changed to : "
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:366
+#: app/Hooks/Handlers/SubmissionHandler.php:389
 msgid "Subscription status updated to active with 100% discount"
 msgstr ""
 
@@ -3454,19 +3887,19 @@ msgstr ""
 msgid "Sudan"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:480
+#: app/Modules/Builder/Render.php:503
 msgid "Sun"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:471
+#: app/Modules/Builder/Render.php:494
 msgid "Sunday"
 msgstr ""
 
-#: app/Hooks/actions.php:152
+#: app/Hooks/actions.php:189
 msgid "Support"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:150
+#: app/Hooks/Handlers/AdminMenuHandler.php:157
 msgid "Support & Debug"
 msgstr ""
 
@@ -3541,8 +3974,18 @@ msgstr ""
 msgid "Thailand"
 msgstr ""
 
-#: app/Models/Form.php:538
+#: app/Services/TransStrings.php:326
+msgid ""
+"Thank you for installing Paymattic – Simplifying WordPress Payments and "
+"Donations."
+msgstr ""
+
+#: app/Models/Form.php:576
 msgid "Thanks for your order. Here are the details of your order:"
+msgstr ""
+
+#: app/Services/TransStrings.php:154
+msgid "The asterisk marker position for the required elements"
 msgstr ""
 
 #: app/Services/Integrations/FluentCrm/Bootstrap.php:175
@@ -3551,19 +3994,29 @@ msgid ""
 "confirmation to verify each email address is a verified user."
 msgstr ""
 
-#: app/Services/TransStrings.php:176
+#: app/Services/TransStrings.php:177
 msgid "The Following JavaScrip variables are available that you can use"
 msgstr ""
 
-#: app/Services/TransStrings.php:177
+#: app/Services/TransStrings.php:178
 msgid "The Javascript DOM object of the Form"
+msgstr ""
+
+#: app/Services/TransStrings.php:361
+msgid "The name of this discount"
+msgstr ""
+
+#: app/Services/TransStrings.php:411
+msgid ""
+"The Paymattic Dashboard Page is the default, however you may change it by "
+"using [wppayform_dashboard] this Shortcode"
 msgstr ""
 
 #: app/Http/Controllers/SubmissionController.php:189
 msgid "The submission have the same status"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:707
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:724
 msgid "The subscription has been cancelled"
 msgstr ""
 
@@ -3584,7 +4037,11 @@ msgstr ""
 msgid "There was a problem connecting to the Stripe API endpoint."
 msgstr ""
 
-#: app/Services/TransStrings.php:296
+#: app/Services/TransStrings.php:337
+msgid "These currency settings apply exclusively to forms."
+msgstr ""
+
+#: app/Services/TransStrings.php:297
 msgid "they have submitted the form."
 msgstr ""
 
@@ -3596,15 +4053,21 @@ msgstr ""
 msgid "this email setup will be deleted."
 msgstr ""
 
-#: app/Views/user/dashboard.php:306
+#: app/Services/TransStrings.php:336
+msgid ""
+"This is the global currency setting, which can be overridden by individual "
+"form currencies."
+msgstr ""
+
+#: app/Views/user/dashboard.php:308
 msgid "This will also cancel the subscription at"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:484
+#: app/Modules/Builder/Render.php:507
 msgid "Thu"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:475
+#: app/Modules/Builder/Render.php:498
 msgid "Thursday"
 msgstr ""
 
@@ -3636,16 +4099,26 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: app/Services/TransStrings.php:180
+#: app/Services/TransStrings.php:181
 msgid "To a Custom URL"
 msgstr ""
 
-#: app/Services/TransStrings.php:179
+#: app/Services/TransStrings.php:180
 msgid "To a Page"
 msgstr ""
 
-#: app/Services/TransStrings.php:263
+#: app/Services/TransStrings.php:315
+msgid ""
+"To disable fundraising progress stats, turn off \"Statistic and Progress "
+"Bar\" in the Donation Progress settings."
+msgstr ""
+
+#: app/Services/TransStrings.php:264
 msgid "to get a license key from your purchase"
+msgstr ""
+
+#: app/Services/TransStrings.php:429
+msgid "To view detailed fundraising progress:"
 msgstr ""
 
 #: app/Services/CountryNames.php:246
@@ -3660,12 +4133,16 @@ msgstr ""
 msgid "Tonga"
 msgstr ""
 
-#: app/Services/TransStrings.php:224
+#: app/Services/TransStrings.php:225
 msgid "Tools"
 msgstr ""
 
-#: app/Services/TransStrings.php:253
+#: app/Services/TransStrings.php:254
 msgid "Top Customers"
+msgstr ""
+
+#: app/Services/TransStrings.php:426
+msgid "Top Donor first"
 msgstr ""
 
 #: app/Views/elements/order_items_table.php:167
@@ -3673,7 +4150,7 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: app/Services/TransStrings.php:251
+#: app/Services/TransStrings.php:252
 msgid "Total Customers"
 msgstr ""
 
@@ -3685,12 +4162,12 @@ msgstr ""
 msgid "Total Paid & Active Payment Received"
 msgstr ""
 
-#: app/Views/leaderBoard/template_2.php:86
-#: app/Views/leaderBoard/template_3.php:38
+#: app/Views/leaderBoard/template_2.php:93
+#: app/Views/leaderBoard/template_3.php:45
 msgid "Total Raised Amount"
 msgstr ""
 
-#: app/Services/TransStrings.php:249
+#: app/Services/TransStrings.php:250
 msgid "Total revenue"
 msgstr ""
 
@@ -3706,7 +4183,7 @@ msgstr ""
 msgid "Total:"
 msgstr ""
 
-#: app/Models/Form.php:646
+#: app/Models/Form.php:687
 msgid "Transaction ID"
 msgstr ""
 
@@ -3718,11 +4195,11 @@ msgstr ""
 msgid "Trinidad and Tobago"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:482
+#: app/Modules/Builder/Render.php:505
 msgid "Tue"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:473
+#: app/Modules/Builder/Render.php:496
 msgid "Tuesday"
 msgstr ""
 
@@ -3748,8 +4225,20 @@ msgid ""
 "Settings -> turnstile Settings"
 msgstr ""
 
+#: app/Services/TransStrings.php:400
+msgid "Turnstile is a free service."
+msgstr ""
+
+#: app/Services/TransStrings.php:401
+msgid "Turnstile Secret Key"
+msgstr ""
+
 #: app/Services/TransStrings.php:96
 msgid "Turnstile Settings"
+msgstr ""
+
+#: app/Services/TransStrings.php:397
+msgid "Turnstile Site Key"
 msgstr ""
 
 #: app/Services/CountryNames.php:254
@@ -3764,7 +4253,7 @@ msgstr ""
 msgid "Ukraine"
 msgstr ""
 
-#: app/Services/TransStrings.php:304
+#: app/Services/TransStrings.php:305
 msgid "uncheck this, if you want to use default theme styles!"
 msgstr ""
 
@@ -3800,19 +4289,19 @@ msgstr ""
 msgid "Until cancelled"
 msgstr ""
 
-#: app/Services/TransStrings.php:277
+#: app/Services/TransStrings.php:278
 msgid "Update"
 msgstr ""
 
-#: app/Hooks/actions.php:156 app/Views/admin/global/global_menu.php:56
+#: app/Hooks/actions.php:193 app/Views/admin/global/global_menu.php:56
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: app/Services/TransStrings.php:280
+#: app/Services/TransStrings.php:281
 msgid "Upgrade To Pro version"
 msgstr ""
 
-#: app/Services/TransStrings.php:231
+#: app/Services/TransStrings.php:232
 msgid "Upload .json file"
 msgstr ""
 
@@ -3824,8 +4313,24 @@ msgstr ""
 msgid "Uruguay"
 msgstr ""
 
-#: app/Services/TransStrings.php:204
+#: app/Services/TransStrings.php:374
+msgid "Usage limit per user (0 for unlimited)."
+msgstr ""
+
+#: app/Services/TransStrings.php:373
+msgid "Use limit"
+msgstr ""
+
+#: app/Services/TransStrings.php:416
+msgid "Use this shortcode to configure donation leaderboard"
+msgstr ""
+
+#: app/Services/TransStrings.php:205
 msgid "Use this shortcode to configure donation leaderboard."
+msgstr ""
+
+#: app/Services/TransStrings.php:410
+msgid "User Dashboard Page"
 msgstr ""
 
 #: app/Services/FormPlaceholders.php:251
@@ -3876,23 +4381,23 @@ msgstr ""
 msgid "Valid email address is required for field:"
 msgstr ""
 
-#: app/Models/Form.php:66
+#: app/Models/Form.php:79
 msgid "Validation Error, Please try again"
 msgstr ""
 
-#: app/Models/Form.php:93
+#: app/Models/Form.php:106
 msgid "Validation failed when saving the form"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:173
+#: app/Hooks/Handlers/SubmissionHandler.php:187
 msgid "Validation failed, because selected payment method could not be found"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:186
+#: app/Hooks/Handlers/SubmissionHandler.php:200
 msgid "Validation failed, Please fill up card details"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:518
+#: app/Modules/Builder/Render.php:541
 msgid "Validation failed, please fill-up required fields"
 msgstr ""
 
@@ -3916,7 +4421,7 @@ msgstr ""
 msgid "Venezuela"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:202
+#: app/Modules/PaymentMethods/Stripe/StripeInlineHandler.php:208
 msgid "Verifying your card details. Please wait..."
 msgstr ""
 
@@ -3928,11 +4433,27 @@ msgstr ""
 msgid "Vietnamese Dong"
 msgstr ""
 
-#: app/Services/TransStrings.php:270
+#: app/Services/TransStrings.php:332
+msgid "View"
+msgstr ""
+
+#: app/Services/TransStrings.php:327
+msgid "View Available Demos"
+msgstr ""
+
+#: app/Services/TransStrings.php:328
+msgid "View Available Documentation"
+msgstr ""
+
+#: app/Services/TransStrings.php:271
 msgid "View Detail"
 msgstr ""
 
-#: app/Hooks/actions.php:151
+#: app/Services/TransStrings.php:330
+msgid "View Documentations"
+msgstr ""
+
+#: app/Hooks/actions.php:188
 msgid "View Fluent Form Documentation"
 msgstr ""
 
@@ -3940,7 +4461,7 @@ msgstr ""
 msgid "View Receipt"
 msgstr ""
 
-#: app/Services/TransStrings.php:206
+#: app/Services/TransStrings.php:207
 msgid "Visibility Of Donation Leaderboard"
 msgstr ""
 
@@ -3963,21 +4484,29 @@ msgstr ""
 msgid "Webhook URL"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:483
+#: app/Modules/Builder/Render.php:506
 msgid "Wed"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:474
+#: app/Modules/Builder/Render.php:497
 msgid "Wednesday"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:120
-#: app/Modules/FormComponents/DonationComponent.php:121
+#: app/Modules/FormComponents/DonationComponent.php:122
+#: app/Modules/FormComponents/DonationComponent.php:123
 msgid "week"
 msgstr ""
 
-#: app/Services/TransStrings.php:252
+#: app/Modules/PaymentMethods/Stripe/Plan.php:103
+msgid "Weekly interval count can not be more than 156"
+msgstr ""
+
+#: app/Services/TransStrings.php:253
 msgid "Weekly Revenue"
+msgstr ""
+
+#: app/Services/TransStrings.php:325
+msgid "Welcome to Paymattic"
 msgstr ""
 
 #: app/Services/GeneralSettings.php:582
@@ -3988,11 +4517,15 @@ msgstr ""
 msgid "Western Sahara"
 msgstr ""
 
-#: app/Services/TransStrings.php:288
+#: app/Services/TransStrings.php:322
+msgid "When to send this email (Please Select when the email will be sent)"
+msgstr ""
+
+#: app/Services/TransStrings.php:289
 msgid "whether you want to hide or reset the form."
 msgstr ""
 
-#: app/Modules/Builder/Render.php:504
+#: app/Modules/Builder/Render.php:527
 msgid "Wk"
 msgstr ""
 
@@ -4029,13 +4562,17 @@ msgstr ""
 msgid "WPManageNinja LLC"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:511
+#: app/Modules/Builder/Render.php:534
 msgid "Year"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:120
-#: app/Modules/FormComponents/DonationComponent.php:121
+#: app/Modules/FormComponents/DonationComponent.php:122
+#: app/Modules/FormComponents/DonationComponent.php:123
 msgid "year"
+msgstr ""
+
+#: app/Modules/PaymentMethods/Stripe/Plan.php:107
+msgid "Yearly interval count can not be more than 3"
 msgstr ""
 
 #: app/Services/CountryNames.php:271
@@ -4048,12 +4585,16 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: app/Views/user/dashboard.php:315
+#: app/Views/user/dashboard.php:317
 msgid "Yes, Cancel this Subscription"
 msgstr ""
 
-#: app/Services/TransStrings.php:273
+#: app/Services/TransStrings.php:274
 msgid "You are deleting entry id"
+msgstr ""
+
+#: app/Services/TransStrings.php:335
+msgid "You are deleting form id"
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/Stripe.php:424
@@ -4062,13 +4603,13 @@ msgid ""
 "is any fails."
 msgstr ""
 
-#: app/Services/TransStrings.php:227
+#: app/Services/TransStrings.php:228
 msgid ""
 "You can export any form as .json format that you have and then you can "
 "import the form in Paymattic"
 msgstr ""
 
-#: app/Services/TransStrings.php:230
+#: app/Services/TransStrings.php:231
 msgid "You can import any form that is exported from paymattic"
 msgstr ""
 
@@ -4080,7 +4621,7 @@ msgid ""
 "%s. "
 msgstr ""
 
-#: app/Services/TransStrings.php:170
+#: app/Services/TransStrings.php:171
 msgid ""
 "You can write your custom CSS here for this form. This css will be applied "
 "in this current form only."
@@ -4090,18 +4631,22 @@ msgstr ""
 msgid "You don't have permission to download the PDF."
 msgstr ""
 
-#: app/Views/user/dashboard.php:349
+#: app/Views/user/dashboard.php:360
 msgid "You have not any access for read your entries from the administration"
 msgstr ""
 
-#: app/Services/TransStrings.php:262
+#: app/Services/TransStrings.php:263
 msgid ""
 "You have to activate your Paymattic Pro by providing the license key bellow. "
 "If you don't have a license key please"
 msgstr ""
 
-#: app/Services/TransStrings.php:171
+#: app/Services/TransStrings.php:172
 msgid "You may add"
+msgstr ""
+
+#: app/Services/TransStrings.php:391
+msgid "You may find the API keys from here"
 msgstr ""
 
 #: app/Services/TransStrings.php:108
@@ -4110,11 +4655,11 @@ msgid ""
 "success page content"
 msgstr ""
 
-#: app/Models/Form.php:852
+#: app/Models/Form.php:925
 msgid "You need to login to submit this form"
 msgstr ""
 
-#: app/Services/TransStrings.php:175
+#: app/Services/TransStrings.php:176
 msgid ""
 "Your additional JS code will run after this form initialized. Please provide "
 "valid javascript code. Invalid JS code may break the Form."
@@ -4132,17 +4677,21 @@ msgstr ""
 msgid "Your Card Info (Powered By Stripe)"
 msgstr ""
 
+#: app/Services/TransStrings.php:404
+msgid "Your Cloudflare Turnstile is valid"
+msgstr ""
+
 #: app/Services/Integrations/FluentSupport/Bootstrap.php:83
 #: app/Services/Integrations/Slack/Bootstrap.php:85
 #: app/Services/Integrations/FluentCrm/Bootstrap.php:103
 msgid "Your Feed Name"
 msgstr ""
 
-#: app/Services/TransStrings.php:246
+#: app/Services/TransStrings.php:247
 msgid "Your License is Active"
 msgstr ""
 
-#: app/Services/TransStrings.php:239
+#: app/Services/TransStrings.php:240
 msgid "Your license is active! Enjoy Paymattic Pro"
 msgstr ""
 
@@ -4170,7 +4719,7 @@ msgstr ""
 msgid "Your Submissions"
 msgstr ""
 
-#: app/Views/user/dashboard.php:234
+#: app/Views/user/dashboard.php:235
 msgid "Your Subscription"
 msgstr ""
 

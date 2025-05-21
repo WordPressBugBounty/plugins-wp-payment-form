@@ -3,7 +3,7 @@
         'name' => 'wpfluent/wpfluent',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'f81b6c851fed1f2116a7b88d1c5f6505db540933',
+        'reference' => '339640b9a16a5da11e1a1295849e508e6e8717e9',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -127,6 +127,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'woocommerce/action-scheduler' => array(
+            'pretty_version' => '3.9.2',
+            'version' => '3.9.2.0',
+            'reference' => 'efbb7953f72a433086335b249292f280dd43ddfe',
+            'type' => 'wordpress-plugin',
+            'install_path' => __DIR__ . '/../woocommerce/action-scheduler',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'wpfluent/framework' => array(
             'pretty_version' => '2.3.1',
             'version' => '2.3.1.0',
@@ -139,7 +148,7 @@
         'wpfluent/wpfluent' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'f81b6c851fed1f2116a7b88d1c5f6505db540933',
+            'reference' => '339640b9a16a5da11e1a1295849e508e6e8717e9',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

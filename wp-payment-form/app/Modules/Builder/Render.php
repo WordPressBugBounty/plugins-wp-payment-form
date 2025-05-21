@@ -545,7 +545,9 @@ class Render
                 ),
                 'currency_symbols' => $currencySymbols,
                 'payment_gateway_processing_fees' => GeneralSettings::getPaymentGatewayProcessingFees(),
-                'has_pro' => defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO
+                'free_version' => WPPAYFORM_VERSION,
+                'has_pro' => defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO,
+                'pro_version' => defined('WPPAYFORMPRO_VERSION') ? WPPAYFORMPRO_VERSION : false
             ));
         }
 

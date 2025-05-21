@@ -257,4 +257,29 @@ class Subscription extends Model
             return $entryIds->toArray();
         }
 
+        public function getSubscriptionsById($formId)  
+    {  
+        $columns = [  
+            'wpf_subscriptions.id as subscription_id', 
+            'wpf_subscriptions.form_id', 
+            'wpf_subscriptions.submission_id',
+            'wpf_submissions.customer_name',  
+            'wpf_submissions.customer_email',  
+            'wpf_subscriptions.recurring_amount',    
+            'wpf_subscriptions.status',
+            'wpf_subscriptions.billing_interval',
+            'wpf_subscriptions.bill_count',
+            'wpf_subscriptions.trial_days',
+            'wpf_subscriptions.created_at as subscription_date'  
+        ];  
+        $subscriptions = $this->select($columns)  
+            ->where('wpf_subscriptions.form_id', $formId)  
+            ->whereIn('wpf_subscriptions.status', ['trialing', 'active'])  
+            ->join('posts', 'posts.ID', '=', 'wpf_subscriptions.form_id')  
+            ->leftJoin('wpf_submissions', 'wpf_submissions.id', '=', 'wpf_subscriptions.submission_id')  
+            ->orderBy('wpf_subscriptions.created_at', 'desc')  
+            ->get()->toArray();  
+        return $subscriptions; 
+    }  
+
 }

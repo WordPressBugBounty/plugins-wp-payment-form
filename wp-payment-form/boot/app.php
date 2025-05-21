@@ -13,6 +13,12 @@ return function ($file) {
         (new DeactivationHandler)->handle();
     });
 
+    $actionSchedulerPath = WPPAYFORM_DIR . 'app/Modules/ActionScheduler/ActionScheduler.php';  
+    if (file_exists($actionSchedulerPath)) {  
+        $actionSchedular = require_once $actionSchedulerPath;  
+    }
+
+
     add_action('plugins_loaded', function () use ($file) {
         // check the server here
         if (substr(phpversion(), 0, 3) == '7.0') {

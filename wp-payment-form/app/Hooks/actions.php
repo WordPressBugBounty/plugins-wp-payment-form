@@ -205,7 +205,7 @@ $app->addAction('wppayform_loaded', function ($app) {
     $dependency->registerOffline();
     $dependency->registerShortCodes();
     $dependency->tinyMceBlock();
-    $dependency->dashboardWidget();
+    $dependency->dashboardWidget(); 
 
 	if (defined('FLUENT_COMMUNITY_PRO_VERSION')) {
 		(new \WPPayForm\App\Modules\FluentCommunity\FluentCommunity)->register();

@@ -22,6 +22,18 @@ class Form extends Model
             ->get();
     }
 
+    public static function getFormIds()
+    {
+        return static::where([
+            ['post_status', '=', 'publish'],
+            ])
+            ->orderByDesc('ID')
+            ->get(['ID'])
+            ->map(function ($item) {
+                return ['id' => $item->ID];
+            })
+            ->values();
+    }
 
     public function deleteForms($formIds) {
         foreach ($formIds as $formId) {
@@ -849,6 +861,18 @@ class Form extends Model
             $label = $elementId;
         }
         return $label;
+    }
+
+    public static function getInputLabels($formId)
+    {
+        $builderSettings = get_post_meta($formId, 'wppayform_paymentform_builder_settings', true);
+        $inputLabels = [];
+        foreach ($builderSettings as $element) {
+            if ($element['group'] == 'input') {
+                $inputLabels[$element['id']] = self::getLabel($element);
+            }
+        }
+        return $inputLabels;
     }
 
     public static function getDesignSettings($formId)

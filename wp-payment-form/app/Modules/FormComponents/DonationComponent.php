@@ -270,6 +270,7 @@ class DonationComponent extends BaseComponent
             'placeholder' => '',
             'value' => Arr::get($prices, $defaultValue . '.value'),
             'base-price' => Arr::get($prices, $defaultValue . '.value'),
+            'base-currency-price' => Arr::get($prices, $defaultValue . '.value'),
             'type' => 'number',
             'step' => 'any',
             'data-is_custom_price' => 'yes',

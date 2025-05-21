@@ -22,7 +22,8 @@
     ],
     "require": {
         "wpfluent/framework": "^2.3.1",
-        "symfony/expression-language": "^5.4"
+        "symfony/expression-language": "^5.4",
+        "woocommerce/action-scheduler": "^3.9"
     },
     "autoload": {
         "psr-4": {
