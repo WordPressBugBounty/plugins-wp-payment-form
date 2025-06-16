@@ -35,5 +35,17 @@ return function ($file) {
             $demoPage = new \WPPayForm\App\Modules\Exterior\ProcessDemoPage();
             $demoPage->injectAgreement();
         }
+        
+        add_action('wppayform_loading_app', function () {
+            if(function_exists('as_schedule_recurring_action') && !as_next_scheduled_action('wppayform/daily_reminder_task')) {
+                as_schedule_recurring_action(
+                    time(),
+                    60 * 60 * 12,
+                    'wppayform/daily_reminder_task',
+                    [],
+                    'wppayform-scheduler-task'
+                );
+            }
+        });
     });
 };

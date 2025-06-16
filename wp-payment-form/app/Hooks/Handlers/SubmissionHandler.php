@@ -144,6 +144,7 @@ class SubmissionHandler
         $paymentTotal = 0;
         $taxTotal = 0;
         if ($paymentItems) {
+            $recurringTaxTotal = [];
             foreach ($paymentItems as $paymentItem) {
                 if ($paymentItem['type'] == 'tax_line') {
                     $taxTotal += $paymentItem['line_total'];
@@ -153,6 +154,10 @@ class SubmissionHandler
                 $recurringParent = preg_replace('/(_\d+)$/', '', $parentHolder);
 
                 if ($paymentItem['type'] == 'tax_line' && $recurringParent === 'recurring_payment_item') {  
+                    // Initialize the array key if it doesn't exist
+                    if (!isset($recurringTaxTotal[$parentHolder])) {
+                        $recurringTaxTotal[$parentHolder] = 0;
+                    }
                     $recurringTaxTotal[$parentHolder] += $paymentItem['line_total'];  
                 }  
 
@@ -400,7 +405,7 @@ class SubmissionHandler
                 if (100 <= $discountPercent) {
                     do_action('payment_handle_after_hundred_percent_discount', $transactionId, $submissionId, $hasSubscriptions, $formId);
                 } else {
-                    do_action('wppayform/form_submission_make_payment_' . $paymentMethod, $transactionId, $submissionId, $form_data, $form, $hasSubscriptions, $totalPayable);
+                    do_action('wppayform/form_submission_make_payment_' . $paymentMethod, $transactionId, $submissionId, $form_data, $form, $hasSubscriptions, $totalPayable, $paymentItems);
                 }
             }
         } else {

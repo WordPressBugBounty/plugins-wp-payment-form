@@ -212,6 +212,8 @@ class SubmissionController extends Controller
 
         $transaction = Transaction::where('submission_id', $submissionId);
 
+        do_action('wppayform/form_submission_activity_start', $submission->form_id);
+        
         do_action('wppayform/after_payment_status_change_manually', $submissionId, $newStatus, $submission->payment_status);
 
         do_action('wppayform/after_payment_status_change', $submissionId, $newStatus);
@@ -369,4 +371,5 @@ class SubmissionController extends Controller
         do_action('wppayform/subscription_settings_cancel_' . $submission->payment_method, $formId, $submission, $subscription);
 
     }
+
 }

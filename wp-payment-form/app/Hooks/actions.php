@@ -244,20 +244,27 @@ $app->addAction('wppayform_loaded', function ($app) {
         }
     }, 10, 2);
 
-    //Fluentcrm integration
-    if (defined('FLUENTCRM')) {
-        (new \WPPayForm\App\Services\Integrations\FluentCrm\FluentCrmInit())->init();
-    };
 
-    if (defined('FLUENT_SUPPORT_VERSION')) {
-        (new \WPPayForm\App\Services\Integrations\FluentSupport\Bootstrap());
-    }
 
     $app->addAction('init', function () use ($app) {
+        //Fluentcrm integration
+        if (defined('FLUENTCRM')) {
+            (new \WPPayForm\App\Services\Integrations\FluentCrm\FluentCrmInit())->init();
+        };
+
+        if (defined('FLUENT_SUPPORT_VERSION')) {
+            (new \WPPayForm\App\Services\Integrations\FluentSupport\Bootstrap());
+        }
+
+        //register pdf hooks
+        if ( defined('FLUENT_PDF')){
+            new WPPayForm\App\Modules\PDF\Manager\WPPayFormPdfBuilder();
+        }
+
         new \WPPayForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
 
         new \WPPayForm\App\Services\Integrations\Slack\Bootstrap();
-    });
+    }, 999);
 
     //Honeypot security
     $app->addAction('wppayform/form_element_start', function ($form) use ($app) {
@@ -274,10 +281,5 @@ $app->addAction('wppayform_loaded', function ($app) {
     $asyncRequest = new \WPPayForm\App\Services\AsyncRequest();
     add_action('wp_ajax_wppayform_background_process', array($asyncRequest, 'handleBackgroundCall'));
     add_action('wp_ajax_nopriv_wppayform_background_process', array($asyncRequest, 'handleBackgroundCall'));
-
-    //register pdf hooks
-    if ( defined('FLUENT_PDF')){
-        new WPPayForm\App\Modules\PDF\Manager\WPPayFormPdfBuilder();
-    }
 
 });

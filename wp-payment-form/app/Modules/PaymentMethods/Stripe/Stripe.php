@@ -120,6 +120,14 @@ class Stripe
         if (!$subscriptionItems) {
             return $paymentItems;
         }
+        $signupFee = 0;
+        foreach($paymentItems as $paymentItem) {
+            if ($paymentItem['type'] == 'tax_line' && $paymentItem['signup_fee_tax'] === 'yes') {
+                $signupFee = $paymentItem['signup_fee'];
+                break;
+            }
+        }
+
         foreach ($subscriptionItems as $subscriptionItem) {
             if ($subscriptionItem['initial_amount']) {
                 $signupLabel = __('Signup Fee for', 'wp-payment-form');
@@ -130,8 +138,8 @@ class Stripe
                     'parent_holder' => $subscriptionItem['element_id'],
                     'item_name' => $signupLabel,
                     'quantity' => 1,
-                    'item_price' => $subscriptionItem['initial_amount'],
-                    'line_total' => $subscriptionItem['initial_amount'],
+                    'item_price' => $subscriptionItem['initial_amount'] + $signupFee,
+                    'line_total' => $subscriptionItem['initial_amount'] + $signupFee,
                     'created_at' => current_time('mysql'),
                     'updated_at' => current_time('mysql'),
                 );

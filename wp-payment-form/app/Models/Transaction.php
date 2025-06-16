@@ -14,6 +14,20 @@ class Transaction extends Model
 {
     protected $table = 'wpf_order_transactions';
 
+    protected $appends = ['refund_available'];
+
+    public function getRefundAvailableAttribute()
+    {
+        $meta = Meta::where('option_id', $this->id)
+            ->where('meta_key', 'refund_available')
+            ->first();
+        // if status is paid only then return payment_total
+        if ($this->status !== 'paid') {
+            return 0;
+        }
+        return $meta ? $meta->meta_value : $this->payment_total;
+    }
+
     public function createTransaction($item)
     {
         if (!isset($item['transaction_type'])) {
@@ -67,6 +81,15 @@ class Transaction extends Model
             ->where('status', 'intented')
             ->where('transaction_type', 'one_time')
             ->orderBy('id', 'DESC')
+            ->first();
+    }
+
+    public function getValidatedTransaction($submissionId, $transactionId, $formId)
+    {
+        return static::where('id', $transactionId)
+            ->where('submission_id', $submissionId)
+            ->where('form_id', $formId)
+            ->where('status', '!=', 'draft')
             ->first();
     }
 }

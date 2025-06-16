@@ -33,6 +33,7 @@ class StripeHostedHandler extends StripeHandler
         add_action('wppayform/frameless_body_stripe_hosted_success', array($this, 'showSuccessMessage'), 10, 1);
         add_action('wppayform/frameless_pre_render_page_stripe_hosted_cancel', array($this, 'markPaymentCancel'), 10, 1);
         add_action('wppayform/frameless_body_stripe_hosted_cancel', array($this, 'showCancelMessage'), 10, 1);
+        add_filter('wppayform/process_refund_stripe', array($this, 'processRefundTransaction'), 10, 1);
     }
 
     /*
@@ -690,7 +691,7 @@ class StripeHostedHandler extends StripeHandler
         );
     }
 
-    public function cancelSubscription($formId, $submission, $subscription)
+    public function cancelSubscription($formId, $submission, $subscription, $cancelReason = '')
     {
         $subscriptionId = Arr::get($subscription, 'vendor_subscriptipn_id');
         
@@ -724,6 +725,10 @@ class StripeHostedHandler extends StripeHandler
                 'content' => __('The subscription has been cancelled', 'wp-payment-form')
             )
         );
+
+        if($cancelReason == 'refunded'){
+            return $response;
+        }
 
         wp_send_json_success(
             array(
@@ -900,5 +905,49 @@ class StripeHostedHandler extends StripeHandler
 
         }
     }
+    
+    public function processRefundTransaction($elements)
+    {
+        $transaction = Arr::get($elements, 'transaction', []);
+        $amount = intval(Arr::get($elements, 'amount', 0) * 100);
+        $reason = Arr::get($elements, 'reason', '');
+        $chargeId = Arr::get($transaction, 'charge_id');
+        $cancelSubscription = Arr::get($elements, 'cancel_Subscription', false);
+        $subscription = Arr::get($elements, 'subscription', []);
+        $submission = Arr::get($elements, 'submission', []);
+        
+        if (!$chargeId) {
+            return new \WP_Error('missing_charge', __('Missing Stripe charge ID for refund.', 'wp-payment-form'));
+        }
 
+        $refundRequest = [
+            'charge'  => $chargeId,
+            'amount'  => $amount,
+            'metadata' => [
+                'form_id'    => Arr::get($transaction, 'form_id', ''),
+                'entry_id'   => Arr::get($transaction, 'submission_id', ''),
+                'note'       => Arr::get($transaction, 'note', ''),
+            ],
+        ];
+
+        if (!empty($reason)) {
+            $refundRequest['reason'] = $reason;
+        }
+
+        // Send the refund request to Stripe first
+        $response = ApiRequest::request($refundRequest, 'refunds', 'POST');
+
+        if (is_wp_error($response) || isset($response->error)) {
+            $message = is_wp_error($response) 
+                ? $response->get_error_message() 
+                : $response->error->message;
+
+            return new \WP_Error('stripe_refund_failed', $message);
+        }
+
+        if ($cancelSubscription) {
+            $this->cancelSubscription($transaction->form_id, $submission, $subscription, 'refunded');
+        }
+        return $response;
+    }
 }

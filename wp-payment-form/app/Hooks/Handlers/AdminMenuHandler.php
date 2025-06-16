@@ -288,6 +288,7 @@ class AdminMenuHandler
 
     public function render()
     {
+        do_action('wppayform_loading_app');
         $this->enqueueAssets();
 
         $config = App::getInstance('config');

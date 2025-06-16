@@ -14,6 +14,22 @@ class SubscriptionTransaction extends Model
 {
     protected $table = 'wpf_order_transactions';
 
+    protected $appends = ['refund_available'];
+
+    public function getRefundAvailableAttribute()
+    {
+        $meta = Meta::where('option_id', $this->id)
+            ->where('meta_key', 'refund_available')
+            ->first();
+
+        // if status is paid only then return payment_total
+        if ($this->status !== 'paid') {
+            return 0;
+        }
+        
+        return $meta ? $meta->meta_value : $this->payment_total;
+    }
+
     public function createSubsTransaction($item)
     {
         $item['transaction_type'] = 'subscription';

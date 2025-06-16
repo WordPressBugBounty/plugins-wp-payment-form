@@ -141,6 +141,7 @@ class PaymentItemComponent extends BaseComponent
                         )
                     ),
                     'prices_display_type' => 'radio',
+                    'product_title_length' => 0
                 )
             )
         );
@@ -304,6 +305,7 @@ class PaymentItemComponent extends BaseComponent
         $horizontal = Arr::get($fieldOptions, 'horizontal');
         $column_numbers = Arr::get($fieldOptions, 'column_numbers');
         $paymattic_template = Arr::get($fieldOptions, 'paymattic_template', 'no');
+        $product_title_length = Arr::get($fieldOptions, 'pricing_details.product_title_length', 0);
         if($paymattic_template == 'paymattic_inline_template') {
             $product_wrapper_class = 'wpf_payment_item_components wpf_payment_item_template';
         } else if($paymattic_template == 'paymattic_grid_template') {
@@ -319,7 +321,7 @@ class PaymentItemComponent extends BaseComponent
             'required_id' => $element['id'],
             'class' => $this->elementControlClass($element)
         );
-        $horizontalClass = ($horizontal === 'yes') ? 'wpf_payment_item_horizontal' : '';
+        $horizontalClass = ($horizontal === 'yes') ? 'wpf_payment_item_horizontal' : 'wpf_payment_item_vertical';
         $defaultValue = Arr::get($fieldOptions, 'default_value'); ?>
         <div style="display : <?php echo esc_attr($displayValue); ?>" <?php $this->printAttributes($controlAttributes); ?>>
             <?php $this->buildLabel($fieldOptions, $form, array('for' => $elementId)); ?>
@@ -374,8 +376,8 @@ class PaymentItemComponent extends BaseComponent
 
                     $product_title = Arr::get($price, 'label', '');
 
-                    if($paymattic_template === 'paymattic_inline_template' || $paymattic_template === 'paymattic_grid_template') {
-                        $product_title = (new Helper)->truncateString($product_title, 70);
+                    if($paymattic_template === 'default_template' || $paymattic_template === 'paymattic_inline_template' || $paymattic_template === 'paymattic_grid_template') {
+                        $product_title = (new Helper)->truncateString($product_title, $product_title_length);
                     }
 
                     if ( $defaultValue && $price['label'] == $defaultValue) {
@@ -426,6 +428,7 @@ class PaymentItemComponent extends BaseComponent
         $column_numbers = Arr::get($fieldOptions, 'column_numbers');
         $defaultValues = $defaultValue? explode(',', $defaultValue) : [];
         $paymattic_template = Arr::get($fieldOptions, 'paymattic_template', 'no');
+        $product_title_length = Arr::get($fieldOptions, 'pricing_details.product_title_length', 0);
         if($paymattic_template == 'paymattic_inline_template') {
             $product_wrapper_class = 'wpf_payment_item_components wpf_payment_item_template';
         } else if($paymattic_template == 'paymattic_grid_template') {
@@ -441,7 +444,7 @@ class PaymentItemComponent extends BaseComponent
             'required_id' => $element['id'],
             'data-target_element' => $element['id']
         ); 
-        $horizontalClass = ($horizontal === 'yes') ? 'wpf_payment_item_horizontal' : '';?>
+        $horizontalClass = ($horizontal === 'yes') ? 'wpf_payment_item_horizontal' : 'wpf_payment_item_vertical';?>
         <div style="display : <?php echo esc_attr($displayValue); ?>" <?php $this->printAttributes($controlAttributes); ?>>
             <?php $this->buildLabel($fieldOptions, $form, array('for' => $inputId)); ?>
 
@@ -475,8 +478,8 @@ class PaymentItemComponent extends BaseComponent
 
                     $product_title = Arr::get($option, 'label', '');
 
-                    if($paymattic_template === 'paymattic_inline_template' || $paymattic_template === 'paymattic_grid_template') {
-                        $product_title = (new Helper)->truncateString($product_title, 50);
+                    if($paymattic_template === 'default_template' || $paymattic_template === 'paymattic_inline_template' || $paymattic_template === 'paymattic_grid_template') {
+                        $product_title = (new Helper)->truncateString($product_title, $product_title_length);
                     }
              
                     if (Arr::get($option, 'value') && count($defaultValues) > 0 && in_array(Arr::get($option, 'value'), $defaultValues)) {
