@@ -30,7 +30,7 @@ class Bootstrap extends IntegrationManager
 
         $this->logo = WPPAYFORM_URL . 'assets/images/integrations/fluentcrm-logo.png';
 
-        $this->description = __('Connect FluentCRM with Paymattic and subscribe a contact when a form is submitted.', 'wp-payment-form');
+        $this->description = 'Connect FluentCRM with Paymattic and subscribe a contact when a form is submitted.';
 
         $this->registerAdminHooks();
 

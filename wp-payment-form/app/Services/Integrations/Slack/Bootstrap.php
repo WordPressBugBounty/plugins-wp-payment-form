@@ -27,7 +27,7 @@ class Bootstrap extends IntegrationManager
 
         $this->logo = WPPAYFORM_URL . 'assets/images/integrations/slack.png';
 
-        $this->description = __('Get realtime notification in slack channel when a new submission will be added.', 'wp-payment-form');
+        $this->description = 'Get realtime notification in slack channel when a new submission will be added.';
 
         $this->category = 'crm';
 

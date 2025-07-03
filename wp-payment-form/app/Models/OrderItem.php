@@ -150,4 +150,40 @@ class OrderItem extends Model
             ->get();
         return $discounts;
     }
+
+    public function submission()
+    {
+        return $this->belongsTo(Submission::class, 'submission_id', 'id');
+    }
+    
+    public static function getRecentCoupons()
+    {
+        $coupons = self::select(
+            'submission_id',
+            'type',
+            'item_name',
+            'item_price',
+            'line_total',
+            'created_at'
+        )
+            ->with('submission')
+            ->where('type', 'discount')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        $coupons = $coupons->toArray();
+        
+        $coupons = array_map(function ($coupon) {
+            $coupon['form_id'] = $coupon['submission']['form_id'];
+            $coupon['form_name'] = get_the_title($coupon['submission']['form_id']);
+            $coupon['customer_name'] = $coupon['submission']['customer_name'];
+            $coupon['customer_email'] = $coupon['submission']['customer_email'];
+            $coupon['currency'] = $coupon['submission']['currency'];
+            unset($coupon['submission']);
+            return $coupon;
+        }, $coupons);
+
+        return $coupons;
+    }
 }

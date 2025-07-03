@@ -164,7 +164,7 @@ class Submission extends Model
             $resultQuery->where('wpf_submissions.form_id', $formId);
         }
 
-        $queryType = Arr::get($wheres, 'payment_status');
+        $queryType = Arr::get($wheres, 'payment_status', false);
         
         if (isset($wheres) && $queryType === 'abandoned') {
             $wheres['payment_status'] = 'pending';
@@ -181,7 +181,7 @@ class Submission extends Model
         }
 
 
-        if($queryType !== 'subscription' && is_array($wheres)) {
+        if($queryType !== 'subscription' && $queryType !== 'coupon' && is_array($wheres)) {
             foreach ($wheres as $whereKey => $where) {
                 $resultQuery->where('wpf_submissions.' . $whereKey, '=', $where);
             }
@@ -210,6 +210,12 @@ class Submission extends Model
             //         $query->orWhere('wpf_submissions.id', $subscription);
             //     }
             // });
+        }
+
+        if ($queryType === 'coupon') {
+            $resultQuery = $resultQuery->whereHas('orderItems', function ($query) {
+                $query->where('type', 'discount');
+            });
         }
         
         $totalItems = $resultQuery->count();

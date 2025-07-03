@@ -293,8 +293,9 @@ class SubmissionHandler
             foreach ($subscriptionItems as $subscriptionItem) {
                 $quantity = isset($subscriptionItem['quantity']) ? $subscriptionItem['quantity'] : 1;
                 $elementId = $subscriptionItem['element_id']; 
-                $subscriptionItem['recurring_amount'] = $subscriptionItem['recurring_amount'] + $recurringTaxTotal[$elementId];
-                
+                $recurringTaxTotal = Arr::get($recurringTaxTotal, $elementId, 0);
+                $subscriptionItem['recurring_amount'] = $subscriptionItem['recurring_amount'] + $recurringTaxTotal;
+
                 $linePrice = $subscriptionItem['recurring_amount'] * $quantity;
                 $subsTotal += intval($linePrice);
 

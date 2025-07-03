@@ -8,6 +8,7 @@ use WPPayForm\App\Models\Submission;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\Framework\Foundation\App;
 use WPPayForm\App\Services\GeneralSettings;
+use WPPayForm\App\Models\OrderItem;
 
 
 if (!defined('ABSPATH')) {
@@ -88,13 +89,16 @@ class Reports extends Model
             $latestSubscriptions = [];
         }
 
+        $recentCoupons = OrderItem::getRecentCoupons();
+
         return array(
             'payments' => $stats,
             'latest_subscriptions' => $latestSubscriptions,
             'customer' => $customerProfiles,
             'currency_base' => $paidStats,
             'chart' => $chartData,
-            'entries_count' => Submission::count()
+            'entries_count' => Submission::count(),
+            'recent_coupons' => $recentCoupons
         );
     }
 

@@ -158,7 +158,8 @@ class MailChimpIntegration extends IntegrationManager
             'fieldEmailAddress' => '',
             'doubleOptIn' => false,
             'resubscribe' => false,
-            'note' => ''
+            'note' => '',
+            'trigger_on_payment' => false
         ];
 
         return $settings;
@@ -292,6 +293,14 @@ class MailChimpIntegration extends IntegrationManager
                     'label' => 'Status',
                     'component' => 'checkbox-single',
                     'checkbox_label' => 'Enable This feed'
+                ],
+                [
+                    'key' => 'trigger_on_payment',
+                    'require_list' => true,
+                    'label' => 'Trigger On',
+                    'checkbox_label' => 'On Payment Success',
+                    'component' => 'checkbox-single',
+                    'tips' => 'Push data to mailchimp when payment is successful, helpful for payment data tracking.'
                 ]
             ],
             'button_require_list' => true,

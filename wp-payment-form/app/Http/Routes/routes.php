@@ -125,7 +125,7 @@ $router->prefix('form/{id}')->withPolicy('AdminPolicy')->group(function ($router
             $router->post('/change-offline-subscription-payment-status', 'SubmissionController@changeOfflineSubscriptionPaymentStatus')->int('id', 'entryId');
             $router->post('/sync-offline-subscription', 'SubmissionController@syncOfflineSubscription')->int('id', 'entryId');
             $router->post('/capture-authorized-amount', 'SubmissionController@captureAuthorizedAmount')->int('id', 'entryId');
-            // $router->post('/refund', 'WPPayForm\App\Modules\Refund\RefundController@processRefund')->int('id', 'entryId');
+            $router->post('/refund', 'WPPayForm\App\Modules\Refund\RefundController@processRefund')->int('id', 'entryId');
         });
     });
 

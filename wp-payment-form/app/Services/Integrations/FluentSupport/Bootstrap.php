@@ -29,7 +29,7 @@ class Bootstrap extends IntegrationManager
 
         $this->logo = WPPAYFORM_URL . 'assets/images/integrations/fluentsupport.svg';
 
-        $this->description = __('Paymattic\'s connection with Fluent Support enables you to take payments from users in return of services.', 'wp-payment-form');
+        $this->description = 'Paymattic\'s connection with Fluent Support enables you to take payments from users in return of services.';
 
         $this->category = 'crm';
 

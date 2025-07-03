@@ -261,7 +261,7 @@ if (!function_exists('getWpfPaymentGateways')) {
                                                         $receiptHandler = new \WPPayForm\App\Modules\Builder\SubscriptionEntries();
                                                         $paymentMethod = Arr::get($donationItem, 'submission.submission.payment_method', '');
                                                         $isNotOfflinePayment = $paymentMethod != 'offline';
-                                                        $cancellableSub = $cancel_subscription == 'yes' && ($paymentMethod == 'stripe' ||  $paymentMethod == 'square');
+                                                        $cancellableSub = $cancel_subscription == 'yes' && ($paymentMethod == 'stripe' ||  $paymentMethod == 'square' ||  $paymentMethod == 'paypal');
                                                         $planName = Arr::get($donationItem, 'plan_name', '');
                                                         $submission_hash = Arr::get($donationItem, 'submission.submission.submission_hash', '');
                                                         echo $receiptHandler->render(

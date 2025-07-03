@@ -103,11 +103,11 @@ class OfflineProcessor
           $gross_payment = Arr::get($subscription, 'recurring_amount');
         
           // gap between billing intervals
-          $lastBillCreatedAt = $this->getLastBillCreationDate($subscriptionId);
+          $lastBillCreatedAt = $this->getLastBillCreationDate($subscriptionId)->getTimestamp();
    
-          $interval  = $gapDays;
+          $interval= $gapDays;
 
-          for($i = 0; $i<$expectedBillingTimes; $i++) {
+          for($i = 0; $i < $expectedBillingTimes; $i++) {
                 $vendor_data = array(
                     'custom' => $subscriptionId,
                     'payment_status' => 'pending',
@@ -116,8 +116,8 @@ class OfflineProcessor
                     'payment_gross' =>  $gross_payment,
                 );
 
-                // sync the exact billing dates
-                $createdAt = date("Y-m-d H:i:s.u O", strtotime('+'. $interval .  " days", strtotime($lastBillCreatedAt)));
+                $newTimestamp = $lastBillCreatedAt + ($interval * 24 * 60 * 60);
+                $createdAt = date('Y-m-d H:i:s', $newTimestamp);
 
                 $this->processSubscriptionPayment($vendor_data, $subscriptionId, $createdAt);
 
@@ -158,18 +158,27 @@ class OfflineProcessor
             return $expectedBillingTimes;
         }
 
-        if($billingInterval == 'daily') {
+        if($billingInterval == 'daily' || 'day' == $billingInterval) {
             $expectedBillingTimes = $days/1;
         }
-        if($billingInterval == 'weekly') {
+        if($billingInterval == 'weekly' || 'week' == $billingInterval) {
             $expectedBillingTimes = $days/7;
         }
-        if($billingInterval == 'monthly') {
+        if($billingInterval == 'monthly' || 'month' == $billingInterval) {
             $expectedBillingTimes = $days/30;
         }
-        if($billingInterval == 'yearly') {
+        if($billingInterval == 'yearly' || 'year' == $billingInterval) {
             $expectedBillingTimes = $days/365;
         }
+        if ($billingInterval == 'fortnightly' || 'fortnight' == $billingInterval) {
+            $expectedBillingTimes = $days/14;
+        }
+        if ($billingInterval == 'quarterly' || 'quarter' == $billingInterval) {
+            $expectedBillingTimes = $days/90;
+        }
+    
+
+        $expectedBillingTimes = ceil($expectedBillingTimes);
 
         return $expectedBillingTimes - $billedTimes;
     }
@@ -178,17 +187,23 @@ class OfflineProcessor
     {
         $billingInterval = Arr::get($subscription, 'billing_interval');
 
-        if($billingInterval == 'daily') {
+        if($billingInterval == 'daily' || 'day' == $billingInterval) {
             return 1;
         }
-        if($billingInterval == 'weekly') {
+        if($billingInterval == 'weekly' || 'week' == $billingInterval) {
            return 7;
         }
-        if($billingInterval == 'monthly') {
+        if($billingInterval == 'monthly' || 'month' == $billingInterval) {
             return 30;
         }
-        if($billingInterval == 'yearly') {
+        if($billingInterval == 'yearly' || 'year' == $billingInterval) {
            return 365;
+        }
+        if ($billingInterval == 'fortnightly' || 'fortnight' == $billingInterval) {
+            return 14;
+        }
+        if ($billingInterval == 'quarterly' || 'quarter' == $billingInterval) {
+            return 90;
         }
     }
 

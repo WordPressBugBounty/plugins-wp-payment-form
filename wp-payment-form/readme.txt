@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
 Tested up to: 6.8.1
-Stable tag: 4.6.11
+Stable tag: 4.6.12
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -559,26 +559,36 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.12 – July 03, 2025 =
+- Adds Refund support for Stripe, Razorpay, Paystack, and Square.
+- Adds Recently applied coupon list to reports.
+- Adds "On Payment Success" option in integrations.
+- Adds PayPal subscription cancellation from the user dashboard.
+- Fixes Payment summary render correctly when multiple forms are on the same page.
+- Fixes Zaiper integration issue.
+- Fixes Notification issue on payment success.
+- Fixes Offline payment handling.
+
 = 4.6.11 – June 16, 2025 =
-- Adds tax support for subscription signup fee
-- Adds filter to customize paymentItem title length
+- Adds Tax support for subscription signup fee
+- Adds Filter to customize paymentItem title length
 - Fixes IPN issue with payments
-- Fixes tax calculation for subscription plans
-- Fixes file upload validation issue
+- Fixes Tax calculation for subscription plans
+- Fixes File upload validation issue
 - Fixes CSS override conflict
-- Fixes issue with subscription billing interval
+- Fixes Issue with subscription billing interval
 
 = 4.6.10 – May 21, 2025 =
-- Adds automated email notifications for upcoming subscription renewals
-- adds support for multiple subscription in Stripe payments
-- Adds translation support and missing translatable strings
-- Fixes custom currency switcher value issues
-- Fixes default image loading with base URL fallback
-- Fixes image slide issue in tabular product items
+- Adds Automated email notifications for upcoming subscription renewals
+- adds Support for multiple subscription in Stripe payments
+- Adds Translation support and missing translatable strings
+- Fixes Custom currency switcher value issues
+- Fixes Default image loading with base URL fallback
+- Fixes Image slide issue in tabular product items
 - Fixes Google sheet access key verification issue
 
 = 4.6.9 April 18, 2025 =
-- Load text domain incorrectly
+- Load Text domain incorrectly
 - Fixes Authorize.Net live payment issue
 - More Bug fixes and improvements
 
@@ -688,7 +698,7 @@ You are most welcome. You can do the following:
 - Adds New Free Donation and Payment templates
 - Adds Necessary improvements to the User Dashboard
 - Adds Necessary improvements to various modules
-- Fixes minor issues
+- Fixes Minor issues
 
 = 4.5.2 April 24, 2024 =
 
