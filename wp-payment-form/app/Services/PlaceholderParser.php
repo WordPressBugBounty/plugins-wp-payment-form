@@ -133,7 +133,12 @@ class PlaceholderParser
             foreach ($values as $placeholder => $targetItem) {
                 $cacheKey = $groupKey . '_' . $targetItem;
                 if ($groupKey == 'input') {
-                    $parsedData[$placeholder] = $entry->getInput($targetItem);
+                    if ($targetItem == 'first_name' || $targetItem == 'middle_name' || $targetItem == 'last_name') {
+                        $nameValue = self::getNamePartValue($entry, $targetItem);
+                        $parsedData[$placeholder] = $nameValue;
+                    } else {
+                        $parsedData[$placeholder] = $entry->getInput($targetItem);
+                    } 
                 } elseif ($groupKey == 'quantity') {
                     $parsedData[$placeholder] = $entry->getItemQuantity($targetItem);
                 } elseif ($groupKey == 'payment_item') {
@@ -146,6 +151,8 @@ class PlaceholderParser
                             self::$cachedValues[$cacheKey] = $entry->{$targetItem};  
                         }  
                         $parsedData[$placeholder] = self::$cachedValues[$cacheKey];  
+                    } elseif ($targetItem === 'customer_full_name') {
+                        $parsedData[$placeholder] = $entry->getInput($targetItem);
                     } else {  
                         $parsedData[$placeholder] = $entry->{$targetItem};
                     }  
@@ -213,5 +220,14 @@ class PlaceholderParser
             $parsables[$matches[0]] = $matches[1];
         }, $parsableItems);
         return $parsables;
+    }
+
+    protected static function getNamePartValue($entry, $targetItem)
+    {
+        $rawInput = $entry->getRawInput('customer_full_name');
+        if ($rawInput && is_array($rawInput) && isset($rawInput[$targetItem])) {
+            return $rawInput[$targetItem];
+        }
+        return '';
     }
 }

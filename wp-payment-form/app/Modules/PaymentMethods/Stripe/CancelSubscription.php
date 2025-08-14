@@ -20,7 +20,7 @@ class cancelSubscription
 
         $validStatuses = [
             'active',
-            'trialling',
+            'trialing',
             'failing'
         ];
 

@@ -97,7 +97,7 @@ class AsyncRequest
                 $entryCache[$submission->id] = $entry;
             }
 
-            $formData = json_decode($submission->response, true);
+            $formData = json_decode($submission, true);
 
             ScheduledActions::where('id', $actionFeed->id)
                 ->update([

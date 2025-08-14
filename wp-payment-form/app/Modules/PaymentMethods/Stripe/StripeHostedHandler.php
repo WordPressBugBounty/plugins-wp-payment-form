@@ -77,8 +77,8 @@ class StripeHostedHandler extends StripeHandler
         // $allowPromotionCodes = Arr::get($formPaymentSettings, 'stripe_checkout_allow_promotion_codes', false);
    
         $checkoutArgs = [
-            'cancel_url' => $cancelUrl,
-            'success_url' => $successUrl,
+            'cancel_url' => wp_sanitize_redirect($cancelUrl),
+            'success_url' => wp_sanitize_redirect($successUrl),
             'locale' => 'auto',
             'client_reference_id' => $submissionId,
             'billing_address_collection' => 'required',

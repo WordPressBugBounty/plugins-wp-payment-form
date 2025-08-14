@@ -46,9 +46,13 @@ class SubscriptionEntries
                 </div>
                 <?php if ($can_sync_subscription_billings == 'yes' && $isNotOfflinePayment && $subscriptionStatus != 'cancelled'): ?>
                     <div class="wpf-sync-action">
-                        <span class="dashicons dashicons-update-alt"></span>
-                        <button class="wpf-sync-subscription-btn" data-form_id="<?php echo esc_attr($formId) ?>"
-                            data-submission_hash="<?php echo esc_attr($submissionHash) ?>">Sync</button>
+                        <button class="wpf-sync-subscription-btn" 
+                                data-form_id="<?php echo esc_attr($formId); ?>" 
+                                data-submission_hash="<?php echo esc_attr($submissionHash); ?>"
+                                aria-label="<?php esc_attr_e('Sync subscription billings', 'wp-payment-form'); ?>">
+                            <span class="dashicons dashicons-update-alt" aria-hidden="true"></span>
+                            <span class="sync-text"><?php esc_html_e('Sync', 'wp-payment-form'); ?></span>
+                        </button>
                     </div>
                 <?php endif ?>
             </div>

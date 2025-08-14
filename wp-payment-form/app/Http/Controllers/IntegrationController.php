@@ -72,4 +72,9 @@ class IntegrationController extends Controller
     {
         return (new GlobalIntegrationManager())->chainedData($this->request->all());
     }
+
+    public function duplicateSettings($formId)
+    {
+        return (new GlobalIntegrationManager())->duplicateIntegrationSettings($formId, $this->request->all());
+    }
 }

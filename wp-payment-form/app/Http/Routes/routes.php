@@ -140,6 +140,7 @@ $router->prefix('form/{id}')->withPolicy('AdminPolicy')->group(function ($router
             $router->post('/', 'IntegrationController@saveSettings')->int('id');
             $router->delete('/', 'IntegrationController@deleteSettings')->int('id');
             $router->post('/change-status', 'IntegrationController@status')->int('id');
+            $router->post('/duplicate', 'IntegrationController@duplicateSettings')->int('id');
         });
 
         $router->get('/lists', 'IntegrationController@lists')->int('id');

@@ -343,4 +343,33 @@ class GlobalIntegrationManager
             return $metaMigrated;
         }
     }
+
+    public function duplicateIntegrationSettings($formId, $request)
+    {
+        $integrationId = intval(Arr::get($request, 'integration_id'));
+
+        $feed = Meta::where('form_id', $formId)
+            ->where('id', $integrationId)
+            ->first();
+        $integration = json_decode($feed->meta_value, true);
+        $integration['name'] = $integration['name'] . ' (Copy)';
+        $integration['enabled'] = false;
+
+        $data = [
+            'form_id' => $formId,
+            'meta_key' => sanitize_text_field($feed->meta_key),
+            'meta_value' => \json_encode($integration),
+            'meta_group' => $feed->meta_group,
+            'option_id' => $feed->option_id,
+            'created_at' => current_time('mysql'),
+            'updated_at' => current_time('mysql')
+        ];
+        Meta::insert($data);
+        return [
+            'message' => __('Integration successfully duplicated', 'wp-payment-form'),
+            'integration_id' => $integrationId,
+            'integration_name' => $feed->meta_key,
+            'created' => true
+        ];
+    }
 }

@@ -8,6 +8,7 @@ class InitComponents
     {
         // Load and Register Form Components
         new \WPPayForm\App\Modules\FormComponents\CustomerNameComponent();
+        new \WPPayForm\App\Modules\FormComponents\CustomerFullNameComponent();
         new \WPPayForm\App\Modules\FormComponents\CustomerEmailComponent();
         new \WPPayForm\App\Modules\FormComponents\TextComponent();
         new \WPPayForm\App\Modules\FormComponents\NumberComponent();

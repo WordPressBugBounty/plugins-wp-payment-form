@@ -138,6 +138,9 @@ class SubmissionHandler
         foreach ($formattedElements['input'] as $inputName => $inputElement) {
             $value = Arr::get($form_data, $inputName);
             $inputItems[$inputName] = apply_filters('wppayform/submitted_value_' . $inputElement['type'], $this->sanitizeFormData($value, $inputElement['type']), $inputElement, $form_data);
+            if($inputElement['type'] == 'customer_full_name'){
+                $this->customerName = $inputItems[$inputName];
+            }
         }
 
         // Calculate Payment Total Now
@@ -183,11 +186,30 @@ class SubmissionHandler
             $this->customerEmail = $currentUser->user_email;
         }
         // If 100% discount then we will not process payment method and set payment method to offline
-        if ($discountPercent == 100) {
+        $hasRecurring = false;
+        if ($subscriptionItems) {
+            foreach ($subscriptionItems as $subscriptionItem) {
+                $subscriptionItem['recurring_amount'] = intval($subscriptionItem['recurring_amount']);
+                if ($subscriptionItem['recurring_amount'] > 0) {
+                    $hasRecurring = true;
+                    break;
+                }
+            }
+        }
+        $subscriptionValue = 0;
+        if ($subscriptionItems) {
+            foreach ($subscriptionItems as $subscriptionItem) {
+                $subscriptionItem['recurring_amount'] = intval($subscriptionItem['recurring_amount']);
+                $subscriptionValue += $subscriptionItem['recurring_amount'];
+            }
+        }
+        if ($discountPercent == 100 || ($paymentTotal <= 0 && $paymentMethod != 'offline' && !$hasRecurring) ||
+            ($paymentMethod != 'offline' && $hasRecurring && $subscriptionValue <= 0)
+        ) {
             $paymentMethod = 'offline';
         }
 
-        if ($formattedElements['payment_method_element'] && !$paymentMethod) {
+        if ($formattedElements['payment_method_element'] && !$paymentMethod && $paymentTotal) {
             wp_send_json_error(array(
                 'message' => __('Validation failed, because selected payment method could not be found', 'wp-payment-form'),
             ), 423);
@@ -509,7 +531,10 @@ class SubmissionHandler
 
                 if ($element['type'] == 'customer_name' && !$customerName && isset($form_data[$elementId])) {
                     $customerName = $form_data[$elementId];
-                } elseif ($element['type'] == 'customer_email' && !$customerEmail && isset($form_data[$elementId])) {
+                } elseif ($element['type'] == 'customer_full_name' && !$customerName && isset($form_data[$elementId])) {
+                    $customerName = $form_data[$elementId];
+                }
+                 elseif ($element['type'] == 'customer_email' && !$customerEmail && isset($form_data[$elementId])) {
                     $customerEmail = $form_data[$elementId];
                 }
             }

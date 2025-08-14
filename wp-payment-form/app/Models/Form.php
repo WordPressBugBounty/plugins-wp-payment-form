@@ -656,7 +656,14 @@ class Form extends Model
                     foreach ($addresses as $key => $val) {
                         $formattedShortcodes['input']['shortcodes']['{input.' . $elementId . '.' . $key . '}'] = $val['label'];
                     }
-                } else {
+                } else if ($element['type'] === 'customer_full_name') {
+                    $formattedShortcodes['input']['shortcodes']['{input.' . $elementId . '}'] = self::getLabel($element);
+                    $name_layout = Arr::get($element, 'field_options.name_layout', []);
+                    foreach ($name_layout as $name_part) {
+                        $formattedShortcodes['input']['shortcodes']['{input' . '.' . $name_part . '}'] = Arr::get($element, 'field_options.name_layout_labels.' . $name_part, ucfirst(str_replace('_', ' ', $name_part)));
+                    }
+                }
+                 else {
                     $formattedShortcodes['input']['shortcodes']['{input.' . $elementId . '}'] = self::getLabel($element);
                 }
             } elseif ($element['group'] == 'payment') {
@@ -673,6 +680,7 @@ class Form extends Model
                 '{submission.id}' => __('Submission ID', 'wp-payment-form'),
                 '{submission.submission_hash}' => __('Submission Hash ID', 'wp-payment-form'),
                 '{submission.customer_name}'   => __('Customer Name', 'wp-payment-form'),
+                '{submission.customer_full_name}'   => __('Customer Full Name', 'wp-payment-form'),
                 '{submission.customer_email}'  => __('Customer Email', 'wp-payment-form'),
                 '{submission.payment_method}'  => __('Payment Method', 'wp-payment-form'),
                 '{submission.created_at}'  => __('Submission Time', 'wp-payment-form'),

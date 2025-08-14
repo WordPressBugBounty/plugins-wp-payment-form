@@ -223,6 +223,9 @@ class SubmissionController extends Controller
         if ('paid' == $newStatus) {
             do_action('wppayform/form_payment_success', $submission, $transaction, $submission->form_id, false);
         }
+        if ('failed' == $newStatus) {
+            do_action('wppayform/form_payment_failed', $submission, $submission->form_id, $transaction, 'manual');
+        }
 
         if ($changeNote = $this->request->get('status_change_note', false)) {
             $note = wp_kses_post($changeNote);

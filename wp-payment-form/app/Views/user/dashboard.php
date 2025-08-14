@@ -44,6 +44,17 @@ if (!function_exists('getWpfPaymentGateways')) {
     }
 }
 
+if (!function_exists('getWpfMenuIcon')) {
+    function getWpfMenuIcon($icon) {
+        $assetUrl = WPPAYFORM_URL . 'assets/images/menu-icon';
+        if (!empty($icon)) {
+            return $assetUrl . '/' . strtolower($icon) . '.svg';
+        }
+    
+        return '';
+    }
+}
+
 
 ?>
 
@@ -60,13 +71,13 @@ if (!function_exists('getWpfPaymentGateways')) {
             </div>
             <div class="wpf-sub-info">
                 <div class="wpf-info-item">
-                    <span class="dashicons dashicons-email"></span>
+                    <img src="<?php echo esc_attr(WPPAYFORM_URL . "assets/images/dashboard/email.svg") ?>" />
                     <span>
                         <?php echo esc_html($user_email) ?>
                     </span>
                 </div>
                 <div class="wpf-info-item">
-                    <span class="dashicons dashicons-calendar"></span>
+                    <img src="<?php echo esc_attr(WPPAYFORM_URL . "assets/images/dashboard/register.svg") ?>" />
                     <span>
                         <?php echo esc_html__('Registered since', 'wp-payment-form') ?> - <?php echo esc_html($user_from) ?>
                     </span>
@@ -79,9 +90,11 @@ if (!function_exists('getWpfPaymentGateways')) {
             <div class="wpf-menu">
                 <?php
                 foreach ($menus as $menu) {
+                    // dd($menu);
                     ?>
+
                     <div class="wpf-menu-item" id="<?php echo esc_attr($menu['slug']); ?>">
-                        <span class="<?php echo esc_attr($menu['icon']); ?>"></span>
+                        <img src="<?php echo esc_attr(getWpfMenuIcon($menu['slug'])); ?>" />
                         <span><?php echo esc_html($menu['name']); ?></span>
                     </div>
                     <?php
@@ -323,7 +336,7 @@ if (!function_exists('getWpfPaymentGateways')) {
                                                 <?php if ($cancellableSub): ?>
                                                     <div class="wpf-cancel-subscription">
                                                         <svg
-                                                            class="wpf-cancel-subscription-btn <?php echo esc_html(Arr::get($donationItem, 'status', '') == 'active' ? 'active' : '') ?>"
+                                                            class="wpf-cancel-subscription-btn <?php echo esc_html(in_array(Arr::get($donationItem, 'status', ''), ['active', 'trialing']) ? 'active' : '') ?>"
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"
                                                             ></path>
