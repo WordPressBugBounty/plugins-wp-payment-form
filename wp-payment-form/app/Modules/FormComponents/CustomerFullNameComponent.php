@@ -206,7 +206,7 @@ class CustomerFullNameComponent extends BaseComponent
                 <?php $this->buildLabel($nameElement['field_options'], $form, ['for' => $attributes['id']]); ?>
             </div>
             <div class="wpf_input_content">
-                <input <?php $this->printAttributes(attributes: $attributes); ?> />
+                <input <?php $this->printAttributes($attributes); ?> />
             </div>
         </div>
         <?php
