@@ -12,7 +12,9 @@ use WPPayForm\Framework\Foundation\App;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\SubscriptionTransaction;
 use WPPayForm\App\Models\Subscription;
+use WPPayForm\App\Models\Transaction;
 use WPPayForm\App\Services\GeneralSettings;
+use WPPayForm\App\Models\Form;
 
 /**
  * Manage Submission
@@ -22,6 +24,21 @@ class Submission extends Model
 {
     protected $table = 'wpf_submissions';
     public $metaGroup = 'wpf_submissions';
+    
+    public function form()
+    {
+        return $this->belongsTo(Form::class, 'form_id', 'id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'submission_id', 'id');
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class, 'submission_id', 'id');
+    }
 
     public function index($formId, $request)
     {
@@ -31,16 +48,9 @@ class Submission extends Model
         $skip = ($page - 1) * $perPage;
 
         $wheres = array();
-        $startDate = Arr::get($request, 'start_date');
-        $endDate = Arr::get($request, 'end_date');
-
-        if (isset($startDate)) {
-            $startDate = sanitize_text_field($startDate);
-        }
-
-        if ((isset($endDate))) {
-            $endDate = sanitize_text_field($endDate);
-        }
+        // Get date filters
+        $startDate = $this->sanitizeDateInput(Arr::get($request, 'start_date'));
+        $endDate = $this->sanitizeDateInput(Arr::get($request, 'end_date'));
 
         $paymentStatus = Arr::get($request, 'payment_status', false);
 
@@ -60,33 +70,31 @@ class Submission extends Model
 
         $submissions = $this->getAll($formId, $wheres, $perPage, $skip, 'DESC', $searchString, $startDate, $endDate);
 
-        $currencySettings = GeneralSettings::getGlobalCurrencySettings($formId);
-
-        $subscriptionTransaction = new SubscriptionTransaction();
-
-        foreach ($submissions->items as $submission) {
-            $submissionEntry = $this->getSubmission($submission['id'], array('transactions', 'order_items', 'tax_items', 'activities', 'refunds', 'discount'));
-            $currencySettings['currency_sign'] = GeneralSettings::getCurrencySymbol($submission->currency);
-            $hasSubscription = $subscriptionTransaction->hasSubscription($submission['id']);
-            $submission->currencySettings = $currencySettings;
-            $submission->submissionEntry = $submissionEntry;
-            $submission->hasSubscription = $hasSubscription;
+        if (empty($submissions->items)) {
+            return [
+                'submissions' => [],
+                'total' => 0,
+                'hasPaymentItem' => $formId ? Form::hasPaymentFields($formId) : true,
+            ];
         }
 
-        $submissionItems = apply_filters('wppayform/form_entries', $submissions->items, $formId);
-        foreach ($submissionItems as $key => $submissionItem) {
-            $submissionItems[$key] = apply_filters('wppayform/form_entry_recurring_info', $submissionItem);
-        }
-        $hasPaymentItem = true;
-        if ($formId) {
-            $hasPaymentItem = Form::hasPaymentFields($formId);
-        }
+        // Batch process submissions for better performance
+        $processedSubmissions = $this->processSubmissionsInBatch($submissions->items, $formId);
 
-        return array(
-            'submissions' => $submissionItems->toArray(),
+        $result = [
+            'submissions' => $processedSubmissions,
             'total' => (int) $submissions->total,
-            'hasPaymentItem' => $hasPaymentItem,
-        );
+            'hasPaymentItem' => $formId ? Form::hasPaymentFields($formId) : true,
+        ];
+        return $result;
+    }
+
+    public function sanitizeDateInput($date)
+    {
+        if (!isset($date)) {
+            return;
+        }
+        return sanitize_text_field($date);
     }
 
 
@@ -137,6 +145,110 @@ class Submission extends Model
             }
         }
         return $query;
+    }
+
+    /**
+     * Batch process submissions for better performance
+     */
+    private function processSubmissionsInBatch($submissions, $formId)
+    {
+        // Get all submission IDs for batch operations
+        $submissionIds = $submissions->pluck('id')->toArray();
+
+        // Batch get currency settings once
+        $currencySettings = GeneralSettings::getGlobalCurrencySettings();
+
+        // Batch check subscriptions
+        $subscriptionStatuses = $this->checkSubscriptionsBySubmissionIds($submissionIds);
+
+        // Batch get submission entries if needed
+        $submissionEntries = $this->getSubmissionEntriesbatch($submissionIds);
+
+        // Process each submission
+        $processedSubmissions = [];
+        foreach ($submissions as $submission) {
+            $submissionId = $submission->id;
+
+            // Set currency settings
+            $currencySettings['currency_sign'] = GeneralSettings::getCurrencySymbol($submission->currency);
+            $submission->currencySettings = $currencySettings;
+
+            // Set subscription status
+            $submission->hasSubscription = $subscriptionStatuses[$submissionId] ?? false;
+
+            // Set submission entry
+            $submission->submissionEntry = $submissionEntries[$submissionId] ?? null;
+
+            $processedSubmissions[] = $submission;
+        }
+
+        // Apply filters
+        $submissionItems = apply_filters('wppayform/form_entries', $processedSubmissions, $formId);
+
+        // Apply recurring info filter in batch
+        $finalSubmissions = [];
+        foreach ($submissionItems as $submissionItem) {
+            $finalSubmissions[] = apply_filters('wppayform/form_entry_recurring_info', $submissionItem);
+        }
+
+        return $finalSubmissions;
+    }
+
+    /**
+     * Batch check subscription statuses
+     */
+    private function checkSubscriptionsBySubmissionIds($submissionIds)
+    {
+         if (empty($submissionIds)) {
+            return [];
+        }
+
+        // Get all subscriptions in one query with minimal data
+        $subscriptions = (new Subscription())
+            ->whereIn('submission_id', $submissionIds)
+            ->pluck('submission_id')
+            ->toArray();
+        
+        // Create status array
+        $statuses = array_fill_keys($submissionIds, false);
+        foreach ($subscriptions as $submissionId) {
+            $statuses[$submissionId] = true;
+        }
+        
+        return $statuses;
+    }
+
+    /**
+     * Batch get submission entries
+     */
+    private function getSubmissionEntriesbatch($submissionIds)
+    {
+        if (empty($submissionIds)) {
+            return [];
+        }
+
+        $batchSize = 20; // Optimized for performance and avoiding DB overload
+        $entries = [];
+
+        foreach (array_chunk($submissionIds, $batchSize) as $chunk) {
+            $chunkResults = $this->whereIn('id', $chunk)
+                ->with([
+                    'transactions:id,submission_id,payment_total',
+                    'orderItems:id,submission_id,type'
+                ])
+                ->get(['id', 'form_id', 'payment_total']);
+
+            foreach ($chunkResults as $entry) {
+                $entries[$entry->id] = $entry;
+            }
+
+            // Prevent DB overload on large loads
+            if (count($submissionIds) > 100) {
+                usleep(1000); // 1ms delay between chunks
+            }
+        }
+
+        return $entries;
     }
 
     public function createSubmission($submission)
@@ -232,8 +344,8 @@ class Submission extends Model
         $formattedResults = array();
 
         foreach ($results as $result) {
-            $result->form_data_raw = maybe_unserialize($result->form_data_raw);
-            $result->form_data_formatted = maybe_unserialize($result->form_data_formatted);
+            $result->form_data_raw = safeUnserialize($result->form_data_raw);
+            $result->form_data_formatted = safeUnserialize($result->form_data_formatted);
             $result->payment_total += (new Subscription())->getSubscriptionPaymentTotal($result->form_id, $result->id);
             $formattedResults[] = $result;
         }
@@ -267,7 +379,7 @@ class Submission extends Model
         ];  
         
         if ($formSettings !== null) {  
-            $unserializedData = maybe_unserialize($formSettings);  
+            $unserializedData = safeUnserialize($formSettings);  
             
             // Find the donation_item field  
             foreach ($unserializedData as $field) {  
@@ -456,8 +568,8 @@ class Submission extends Model
             ->join('posts', 'posts.ID', '=', 'wpf_submissions.form_id')
             ->where('wpf_submissions.id', $submissionId)
             ->first();
-        $result->form_data_raw = maybe_unserialize($result->form_data_raw);
-        $result->form_data_formatted = maybe_unserialize($result->form_data_formatted);
+        $result->form_data_raw = safeUnserialize($result->form_data_raw);
+        $result->form_data_formatted = safeUnserialize($result->form_data_formatted);
         if ($result->user_id) {
             $result->user_profile_url = get_edit_user_link($result->user_id);
         }
@@ -951,7 +1063,7 @@ class Submission extends Model
             ->first();
 
         if ($exist) {
-            $value = maybe_unserialize($exist->meta_value);
+            $value = safeUnserialize($exist->meta_value);
             // dd($value);
             if ($value) {
                 return $value;
@@ -985,5 +1097,17 @@ class Submission extends Model
             ->get();
 
         return $customers;
+    }
+
+    public static function getSubmissionWithRelations($submissionId, $formId = null)
+    {
+        $query = self::with(['subscriptions', 'transactions'])
+                    ->where('id', $submissionId);
+
+        if ($formId) {
+            $query->where('form_id', $formId);
+        }
+
+        return $query->first();
     }
 }

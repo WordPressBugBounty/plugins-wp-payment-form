@@ -110,7 +110,7 @@ class OrderItem extends Model
             ->whereIn('type', ['single', 'signup_fee'])
             ->get();
         foreach ($orderItems as $orderItem) {
-            $orderItem->item_meta = maybe_unserialize(Arr::get($orderItem, 'item_meta'));
+            $orderItem->item_meta = safeUnserialize(Arr::get($orderItem, 'item_meta'));
         }
         return apply_filters('wppayform/order_items', $orderItems, $submissionId);
     }
@@ -127,7 +127,7 @@ class OrderItem extends Model
     //         ->get();
     //     $formatted = array();
     //     foreach ($metas as $meta) {
-    //         $formatted[$meta->meta_key] = maybe_unserialize($meta->meta_value);
+    //         $formatted[$meta->meta_key] = safeUnserialize($meta->meta_value);
     //     }
     //     return (object) $formatted;
     // }

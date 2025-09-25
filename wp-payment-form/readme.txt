@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
 Tested up to: 6.8.2
-Stable tag: 4.6.14
+Stable tag: 4.6.15
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -22,7 +22,7 @@ From simple transactions to advanced features like **recurring donations**, **
 
 You get **13 worldwide payment gateways** with the **Stripe payment button for FREE**. 🧡
 
-[youtube https://www.youtube.com/watch?v=-en7Gs7zH8k]
+[youtube https://youtu.be/kD_fAskfNXM?si=QAZNZ0-kwyVU_ZcO]
 
 Paymattic is one of the best fundraising WordPress plugins that handles all of your donations. Paymattic manages your payments and subscriptions with groundbreaking payment features. 💪
 
@@ -559,6 +559,19 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.15 – 25 September, 2025 =
+- Adds Auto failed payment status by time interval.
+- Adds Conditional logic in FluentCRM integration for payment fields.
+- Adds Paymattic Dashboard access for multiple roles.
+- Adds Remove FluentCRM contact after refund.
+- Adds First/Last name mapping in FluentCRM feed
+- Fixes Forced media compression in HTML Markup field.
+- Fixes Missing custom metadata in Stripe payments.
+- Fixes Conditional logic with Address Country field.
+- Fixes Payment summary translation on frontend.
+- Improves Entries queries for performance.
+- Improves Role updates in User Register integration.
+
 = 4.6.14 – 15 August, 2025 =
 - Fixes PHP version conflict with 7.4
 

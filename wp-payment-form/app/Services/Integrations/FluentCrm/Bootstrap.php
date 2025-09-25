@@ -57,7 +57,15 @@ class Bootstrap extends IntegrationManager
         return [
             'name' => '',
             'full_name' => '',
+            'first_name' => '',
+            'last_name' => '',
             'email' => '',
+            'list_conditional' => [
+                'conditions' => [],
+                'status' => false,
+                'enable_default' => false,
+                'default_list' => ''
+            ],
             'other_fields' => [
                 [
                     'item_value' => '',
@@ -131,6 +139,14 @@ class Bootstrap extends IntegrationManager
                             'key' => 'full_name',
                             'label' => __('Full Name', 'wp-payment-form'),
                             'help_text' => __('If First Name & Last Name is not available full name will be used to get first name and last name', 'wp-payment-form')
+                        ],
+                        [
+                            'key' => 'first_name',
+                            'label' => __('First Name', 'wp-payment-form')
+                        ],
+                        [
+                            'key' => 'last_name',
+                            'label' => __('Last Name', 'wp-payment-form')
                         ]
                     ]
                 ],
@@ -249,14 +265,14 @@ class Bootstrap extends IntegrationManager
         }
 
         $data = $feed['processedValues'];
-        $contact = Arr::only($data, ['email']);
+        $contact = Arr::only($data, ['email', 'first_name', 'last_name']);
 
         if (!is_email(Arr::get($contact, 'email'))) {
             $contact['email'] = Arr::get($formData, 'customer_email');
         }
 
         $fullName = Arr::get($data, 'full_name');
-        if ($fullName) {
+        if ($fullName && empty($contact['first_name']) && empty($contact['last_name'])) {
             $nameArray = explode(' ', $fullName);
             if (count($nameArray) > 1) {
                 $contact['last_name'] = array_pop($nameArray);

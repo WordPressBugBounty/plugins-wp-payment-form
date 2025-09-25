@@ -211,7 +211,7 @@ class FormController extends Controller
         $key = 'currency_convertion_from_' . $baseCurrency;
         $meta = new Meta();
         $data = $meta->getCurrencyMeta($key);
-        $ratesValue = $data ? maybe_unserialize($data->meta_value) : [];
+        $ratesValue = $data ? safeUnserialize($data->meta_value) : [];
 
         if (!$data || empty($ratesValue)) {
             $rates = $this->getRatesFromApi($baseCurrency, $apiKey, $formId);

@@ -518,7 +518,7 @@ class AdminMenuHandler
         App::make('view')->render(
             'admin.global.global_menu',
             array(
-                'brand_logo' => WPPAYFORM_URL . 'assets/images/icon.png',
+                'brand_logo' => WPPAYFORM_URL . 'assets/images/icon.svg',
                 'is_paymattic_user' => AccessControl::isPaymatticUser(),
             )
         );

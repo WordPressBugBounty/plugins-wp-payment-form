@@ -75,7 +75,7 @@ class AsyncRequest
 
         foreach ($actionFeeds as $actionFeed) {
             $action = $actionFeed->action;
-            $feed = maybe_unserialize($actionFeed->data);
+            $feed = safeUnserialize($actionFeed->data);
             $feed['scheduled_action_id'] = $actionFeed->id;
             if (isset($submissionCache[$actionFeed->origin_id])) {
                 $submission = $submissionCache[$actionFeed->origin_id];

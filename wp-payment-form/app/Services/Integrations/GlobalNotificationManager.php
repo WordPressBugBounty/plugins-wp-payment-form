@@ -8,6 +8,7 @@ use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\Meta;
 use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Services\PlaceholderParser;
+use WPPayForm\App\Services\FluentcrmListConditional;
 
 class GlobalNotificationManager
 {
@@ -50,6 +51,13 @@ class GlobalNotificationManager
             $parsedValue = json_decode($feed->meta_value, true);
 
             if ($parsedValue && Arr::get($parsedValue, 'enabled')) {
+                if($feed->meta_key == 'fluentcrm_feeds' && empty($parsedValue['list_id'])) {
+                    $checkList = (new FluentcrmListConditional())->checkConditions($feed, $parsedValue, $formData, $formId);
+                    if (!$checkList['isValid']) {
+                        continue;
+                    }
+                    $parsedValue['list_id'] = $checkList['listId'];
+                }
                 // Now check if conditions matched or not
                 $isConditionMatched = $this->checkCondition($parsedValue, $formData, $insertId);
                 if ($isConditionMatched) {
@@ -67,6 +75,13 @@ class GlobalNotificationManager
         foreach ($allNotifications as $notification) {
             $parsedValue = json_decode($notification->meta_value, true);
             if ($parsedValue && Arr::get($parsedValue, 'enabled')) {
+                if($notification->meta_key == 'fluentcrm_feeds' && empty($parsedValue['list_id'])) {
+                    $checkList = (new FluentcrmListConditional())->checkConditions($notification, $parsedValue, $formData, $formId);
+                    if (!$checkList['isValid']) {
+                        continue;
+                    }
+                    $parsedValue['list_id'] = $checkList['listId'];
+                }
                 $isConditionMatched = $this->checkCondition($parsedValue, $formData, $insertId);
                 if ($isConditionMatched) {
                     $item = [

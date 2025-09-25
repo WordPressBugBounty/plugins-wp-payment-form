@@ -58,7 +58,7 @@ class CustomTemplate extends TemplateManager
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
 
-        $formData = maybe_unserialize($submission->form_data_formatted, true);
+        $formData = safeUnserialize($submission->form_data_formatted, true);
 
 
         $settings = PlaceholderParser::parse($settings, $submissionId, $formData, null, false, 'pdfFeed');

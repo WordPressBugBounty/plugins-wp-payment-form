@@ -13,6 +13,7 @@ use WPPayForm\App\Services\ConfirmationHelper;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\SubmissionActivity;
 use WPPayFormPro\Classes\PaymentsHelper;
+use WPPayForm\App\Services\PlaceholderParser;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -55,6 +56,8 @@ class StripeHostedHandler extends StripeHandler
             $formPaymentSettings = (new PaymentsHelper())->getPaymentSettings($form->ID);
         }
 
+        $stripeMetaData = $formPaymentSettings['stripe_meta_data'] ?? [];
+
         $cancelUrl = Arr::get($submission->form_data_raw, '__wpf_current_url');
         if (!wp_http_validate_url($cancelUrl)) {
             $cancelUrl = site_url('?wpf_page=frameless&wpf_action=stripe_hosted_cancel&wpf_hash=' . $submission->submission_hash);
@@ -83,7 +86,7 @@ class StripeHostedHandler extends StripeHandler
             'client_reference_id' => $submissionId,
             'billing_address_collection' => 'required',
             // 'allow_promotion_codes' => 'true',
-            'metadata' => $this->getIntentMetaData($submission)
+            'metadata' => $this->getIntentMetaData($submission, $stripeMetaData)
         ];
 
         if ($paymentMethods && is_array($paymentMethods)) {
@@ -129,15 +132,19 @@ class StripeHostedHandler extends StripeHandler
                 $checkoutArgs['payment_intent_data'] = [
                     'capture_method' => 'manual',
                     'description' => $form->post_title,
-                    'metadata' => $this->getIntentMetaData($submission)
+                    'metadata' => $this->getIntentMetaData($submission, $stripeMetaData)
                 ];
             } else {
                 $checkoutArgs['payment_intent_data'] = [
                     'capture_method' => 'automatic',
                     'description' => $form->post_title,
-                    'metadata' => $this->getIntentMetaData($submission)
+                    'metadata' => $this->getIntentMetaData($submission, $stripeMetaData)
                 ];
             }
+        }
+
+        if(!empty($checkoutArgs['subscription_data'])) {
+            $checkoutArgs['subscription_data']['metadata'] = $this->getIntentMetaData($submission, $stripeMetaData);
         }
 
         $checkoutArgs = apply_filters('wppayform/stripe_checkout_session_args', $checkoutArgs, $submission);
@@ -617,7 +624,7 @@ class StripeHostedHandler extends StripeHandler
 
     
 
-    public function getIntentMetaData($submission)
+    public function getIntentMetaData($submission, $stripeMetaData)
     {
         $metadata = [
             'Submission ID' => $submission->id,
@@ -632,7 +639,24 @@ class StripeHostedHandler extends StripeHandler
             $metadata['customer_name'] = $submission->customer_name;
         }
 
+        $metadata = array_merge($metadata, $this->getCustomMetaData($stripeMetaData, $submission));
+
         return apply_filters('wppayform/stripe_onetime_payment_metadata', $metadata, $submission);
+    }
+    public function getCustomMetaData($metaData, $submission)
+    {
+        $formattedMetaData = [];
+
+        foreach ($metaData as $meta) {
+            $value = $meta['item_value'];
+            $label = $meta['label'];
+            $value = PlaceholderParser::parse($value, $submission);
+            if ($value) {
+                $formattedMetaData[$label] = $value;
+            }
+        }
+
+        return $formattedMetaData;
     }
 
     public function syncSubscription($formId, $submissionId)

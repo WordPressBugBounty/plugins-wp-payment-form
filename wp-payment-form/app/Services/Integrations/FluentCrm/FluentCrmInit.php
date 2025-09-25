@@ -4,6 +4,7 @@ namespace WPPayForm\App\Services\Integrations\FluentCrm;
 
 use WPPayForm\Framework\Foundation\App;
 use WPPayForm\App\Models\Submission;
+use WPPayForm\App\Models\SubmissionActivity;
 use FluentCrm\App\Models\Subscriber;
 use \WPPayForm\App\Models\Meta;
 use WPPayForm\Framework\Support\Arr;
@@ -75,8 +76,16 @@ class FluentCrmInit
      
         // remove/unsubscribe from crm contacts
         $email = $entry->customer_email; 
-        Subscriber::where('email', $email)->delete();
-
+        $removeContact = Subscriber::where('email', $email)->delete();
+        if ($removeContact) {
+            SubmissionActivity::createActivity(array(
+                'form_id' => $entry->form_id,
+                'submission_id' => $entry->id,
+                'type' => 'activity',
+                'created_by' => 'Paymattic BOT',
+                'content' => "Remove contact from fluentcrm list email: {$email}.",
+            ));
+        }
         return true;
     }
 

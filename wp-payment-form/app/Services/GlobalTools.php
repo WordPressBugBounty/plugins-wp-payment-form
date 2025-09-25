@@ -59,7 +59,7 @@ class GlobalTools
             ->get();
         $formattedMeta = array();
         foreach ($metas as $meta) {
-            $formattedMeta[$meta->meta_key] = maybe_unserialize($meta->meta_value);
+            $formattedMeta[$meta->meta_key] = safeUnserialize($meta->meta_value);
         }
         $formattedMeta = apply_filters('wpf_form_export_meta', $formattedMeta, $formId);
         $form['form_meta'] = $formattedMeta;

@@ -28,7 +28,10 @@ class GlobalSettings extends Model
             'currency_separator' => sanitize_text_field(Arr::get($settings, 'currency_separator')),
             'decimal_points' => intval(Arr::get($settings, 'decimal_points')),
             'currency_conversion_api_key' => sanitize_text_field(Arr::get($settings, 'currency_conversion_api_key')),
-            'currency_rate_caching_interval' => sanitize_text_field(Arr::get($settings, 'currency_rate_caching_interval'))
+            'currency_rate_caching_interval' => sanitize_text_field(Arr::get($settings, 'currency_rate_caching_interval')),
+            'expiration_time_enabled' => (bool) (Arr::get($settings, 'expiration_time_enabled', false)),
+            'expiration_time' => absint(Arr::get($settings, 'expiration_time')),
+            'expiration_time_type' => sanitize_text_field(Arr::get($settings, 'expiration_time_type'))
         );
         update_option('wppayform_global_currency_settings', $data);
         update_option('wppayform_ip_logging_status', sanitize_text_field(Arr::get($request, 'ip_logging_status')), false);

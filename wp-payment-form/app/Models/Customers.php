@@ -107,8 +107,8 @@ class Customers extends Model
 
         foreach ($customer as $item) {
             $item->total_subscription_payment = apply_filters('wppayform/form_entry_recurring_info', $item);
-            $item->form_data_raw = maybe_unserialize($item->form_data_raw);
-            $item->form_data_formatted = maybe_unserialize($item->form_data_formatted);
+            $item->form_data_raw = safeUnserialize($item->form_data_raw);
+            $item->form_data_formatted = safeUnserialize($item->form_data_formatted);
             $formattedResults[] = $item;
 
             $subscription = $subscriptionModel->getSubscriptions($item->id);

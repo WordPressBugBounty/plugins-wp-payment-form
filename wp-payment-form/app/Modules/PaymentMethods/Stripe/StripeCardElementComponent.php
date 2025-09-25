@@ -56,7 +56,7 @@ class StripeCardElementComponent extends BaseComponent
     {
         return array(
             'type' => 'stripe_card_element',
-            'editor_title' => 'Card Elements (Stripe)',
+            'editor_title' => 'Stripe Payment',
             'editor_icon' => '',
             'group' => 'payment_method_element',
             'method_handler' => 'stripe',

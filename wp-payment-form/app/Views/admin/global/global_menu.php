@@ -10,7 +10,7 @@ if ($is_paymattic_user) {
     <div class="wpf-navbar-content">
     <div class="wpf_navbar_left">
         <img src="<?php echo esc_url($brand_logo); ?>">
-        <h2>Paymattic</h2>
+        <!-- <h2>Paymattic</h2> -->
     </div>
     <div class="wpf_navbar_menu">
         <a href="<?php echo esc_url(admin_url('admin.php?page=wppayform.php#/')); ?>" class="ninja-tab wpf-route-forms">

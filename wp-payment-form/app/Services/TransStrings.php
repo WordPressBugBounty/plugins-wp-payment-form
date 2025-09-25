@@ -428,6 +428,16 @@ class TransStrings
             'Donation Progress Bar Shortcode' => __('Donation Progress Bar Shortcode', 'wp-payment-form'),
             'To view detailed fundraising progress:' => __('To view detailed fundraising progress:', 'wp-payment-form'),
             'Enable "Statistic' => __('Enable "Statistic"', 'wp-payment-form'),
+            'Payment Expiration Time (In Minutes or Days)' => __('Payment Expiration Time (In Minutes or Days)', 'wp-payment-form'),
+            'Set a time limit for pending payments. If not completed, the payment fails. (3 to 40 minutes or 1 to 30 days)' => __('Set a time limit for pending payments. If not completed, the payment fails. (3 to 40 minutes or 1 to 30 days)', 'wp-payment-form'),
+            'Expiration Time Type' => __('Expiration Time Type', 'wp-payment-form'),
+            'Minutes' => __('Minutes', 'wp-payment-form'),
+            'Days' => __('Days', 'wp-payment-form'),
+            'Paymattic User Dashboard Permissions' => __('Paymattic User Dashboard Permissions', 'wp-payment-form'),
+            'By default, Administrators and Paymattic Users can access the Paymattic dashboard. Select roles below to grant access to others.' => __('By default, Administrators and Paymattic Users can access the Paymattic dashboard. Select roles below to grant access to others.', 'wp-payment-form'),
+            'Paymattic Admin Permissions' => __('Paymattic Admin Permissions', 'wp-payment-form'),
+            'By default, only Administrator have access to manage the paymattic. By selecting additional roles bellow, you can give access to manage your paymattic to other user roles.' => __('By default, only Administrator have access to manage the paymattic. By selecting additional roles bellow, you can give access to manage your paymattic to other user roles.', 'wp-payment-form'),
+            'Set a default user role for new registrations and update existing roles, excluding Admin and Paymattic User' => __('Set a default user role for new registrations and update existing roles, excluding Admin and Paymattic User', 'wp-payment-form'),
         ];
     }
 }

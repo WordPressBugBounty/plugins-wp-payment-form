@@ -541,6 +541,11 @@ class Render
                     'validation_failed' => __('Validation failed, please fill-up required fields', 'wp-payment-form'),
                     'stripe_checkout_error' => __('Stripe error, Check Stripe setup', 'wp-payment-form'),
                     'button_state' => $processingText,
+                    'Item' => __('Item', 'wp-payment-form'),
+                    'Price' => __('Price', 'wp-payment-form'),
+                    'Qty' => __('Qty', 'wp-payment-form'),
+                    'Line Total' => __('Line Total', 'wp-payment-form'),
+                    'Total' => __('Total', 'wp-payment-form')
 
                 ),
                 'currency_symbols' => $currencySymbols,

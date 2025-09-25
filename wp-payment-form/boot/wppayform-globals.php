@@ -144,3 +144,10 @@ function wpPayFormPrintInternal($string)
 {
     echo wp_kses_post($string); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 }
+
+function safeUnserialize($data) {
+    if (is_serialized($data)) { // Don't attempt to unserialize data that wasn't serialized going in.
+        return @unserialize(trim($data), ['allowed_classes' => false]);
+    }
+    return $data;
+}

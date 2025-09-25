@@ -318,11 +318,41 @@ class AccessControl
         );
     }
 
+    public function getAccessRolesForDashboard() 
+    {
+        if (!current_user_can('manage_options')) {
+            return ['roles' => []];
+        }
+
+        if (!function_exists('get_editable_roles')) {
+            require_once ABSPATH . 'wp-admin/includes/user.php';
+        }
+
+        $roles     = get_editable_roles();
+        $formatted = [];
+
+        foreach ($roles as $key => $role) {
+            // Skip unwanted roles
+            if (in_array($key, ['administrator', 'paymattic_user'], true)) {
+                continue;
+            }
+
+            $formatted[] = [
+                'name' => $role['name'],
+                'key'  => $key,
+            ];
+        }
+
+        return ['roles' => $formatted];
+    }
+
     public function setAccessRoles($request)
     {
         if (current_user_can('manage_options')) {
             $capability = Arr::get($request, 'capability', []);
             update_option('_wppayform_form_permission', $capability, 'no');
+            $dashboardRoles = Arr::get($request, 'dashboardRoles', []);
+            update_option('_wppayform_dashboard_permitted_roles', $dashboardRoles, 'no');
             return array(
                 'message' => __('Successfully updated the role(s).', 'wp-payment-form')
             );

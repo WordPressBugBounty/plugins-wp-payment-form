@@ -147,6 +147,7 @@ class RefundService
     {
         if ($remainingAmount <= 0 && $transactionType !== 'subscription') {
             Submission::where('id', $submissionId)->update(['payment_status' => RefundService::STATUS_REFUNDED]);
+            do_action('wppayform/after_payment_status_change', $submissionId, RefundService::STATUS_REFUNDED);
         }
     }
 }

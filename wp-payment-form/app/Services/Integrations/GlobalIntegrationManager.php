@@ -210,11 +210,15 @@ class GlobalIntegrationManager
 
         $inputs = Form::getInputShortcode($formId);
 
+        // Get all form elements as object
+        $allElements = Form::getBuilderSettings($formId);
+        
         return [
             'settings' => $settings,
             'settings_fields' => $settingsFields,
             'shortcodes' => $shortCodes,
             'inputs' => $inputs,
+            'all_elements' => $allElements,
             'merge_fields' => $mergeFields
         ];
     }

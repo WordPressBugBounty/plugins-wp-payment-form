@@ -282,4 +282,8 @@ $app->addAction('wppayform_loaded', function ($app) {
     add_action('wp_ajax_wppayform_background_process', array($asyncRequest, 'handleBackgroundCall'));
     add_action('wp_ajax_nopriv_wppayform_background_process', array($asyncRequest, 'handleBackgroundCall'));
 
+    // Pending Payment Expiration Handler
+    $pendingPaymentExpirationHandler = new \WPPayForm\App\Hooks\Scheduler\PendingPaymentExpirationHandler();
+    $pendingPaymentExpirationHandler->register();
+
 });

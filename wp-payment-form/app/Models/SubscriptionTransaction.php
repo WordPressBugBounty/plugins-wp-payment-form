@@ -83,7 +83,7 @@ class SubscriptionTransaction extends Model
         $transactions = $this->where('subscription_id', $subscriptionId)
             ->get();
         foreach ($transactions as $transaction) {
-            $transaction->payment_note = maybe_unserialize($transaction->payment_note);
+            $transaction->payment_note = safeUnserialize($transaction->payment_note);
             $transaction->items = apply_filters('wppayform/subscription_items_' . $transaction->payment_method, [], $transaction);
         }
         return apply_filters('wppayform/subscription_transactions', $transactions, $subscriptionId);

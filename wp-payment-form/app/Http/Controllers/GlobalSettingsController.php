@@ -20,13 +20,16 @@ class GlobalSettingsController extends Controller
     {
         try {
             $roles = $accessControl->getAccessRoles();
+            $dashboardRoles = $accessControl->getAccessRolesForDashboard();
+            $selectedDashboardRoles = get_option('_wppayform_dashboard_permitted_roles', []);
         } catch (\Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage()
             ], 423);
         }
 
-        return array('roles' => $roles);
+        return array('roles' => $roles, 'dashboardRoles' => $dashboardRoles, 'selectedDashboardRoles' => $selectedDashboardRoles);
+        
     }
 
     public function setRoles()

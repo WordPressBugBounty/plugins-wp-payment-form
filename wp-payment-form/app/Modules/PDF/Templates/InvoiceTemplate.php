@@ -103,7 +103,7 @@ class InvoiceTemplate extends TemplateManager
         $settings = $feed['settings'];
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
-        $formData = maybe_unserialize($submission->form_data_formatted, true);
+        $formData = safeUnserialize($submission->form_data_formatted, true);
 
         $settings['invoice_lines'] = '{submission.product_items_table_html}';
         if (false !== strpos(Arr::get($settings, 'invoice_upper_text'), '{submission.payment_receipt}')) {
