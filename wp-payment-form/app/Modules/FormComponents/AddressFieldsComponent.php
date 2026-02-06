@@ -234,14 +234,49 @@ class AddressFieldsComponent extends BaseComponent
                 'label' => Arr::get($field, 'label'),
                 'placeholder' => Arr::get($field, 'placeholder'),
                 'required' => Arr::get($field, 'required'),
-                'default_value' => Arr::get($field, 'default_value')
+                'default_value' => Arr::get($field, 'default_value'),
+                'filterMode' => Arr::get($field, 'filterMode', 'all'),
+                'countries' => Arr::get($field, 'countries', []),
+                'priorityLabel' => Arr::get($field, 'priorityLabel', ''),
             ],
             'id' => $fieldName . '[' . $field['id'] . ']',
-            'condition_id' => $field['id']
+            'condition_id' => $field['id'],
         ];
 
         if ($field['id'] == 'country') {
-            $countries = CountryNames::getAll();
+            $allCountries = CountryNames::getAll();
+            $selectedCodes = Arr::get($element, 'field_options.countries', array_keys($allCountries));
+            $filterMode = Arr::get($element, 'field_options.filterMode', 'all');
+            if ($filterMode == 'show') {
+                // Only show selected countries
+                $countries = array_intersect_key($allCountries, array_flip($selectedCodes));
+            } else if ($filterMode == 'hide') {
+                // Hide selected countries
+                $countries = array_diff_key($allCountries, array_flip($selectedCodes));
+            } else if ($filterMode == 'priority') {
+                $priorityLabel = Arr::get($element, 'field_options.priorityLabel', '');
+                $priorityCountries = array_intersect_key($allCountries, array_flip($selectedCodes));
+                $remainingCountries = array_diff_key($allCountries, $priorityCountries);                
+                $countries = [];
+                if (!empty($priorityCountries) && !empty($remainingCountries)) {
+                    $countries['__priority_separator__'] = '═══ ' . strtoupper($priorityLabel) . ' ═══';  
+                }
+                // Add priority countries first
+                foreach ($priorityCountries as $code => $name) {
+                    $countries[$code] = $name;
+                }
+                // after priority countries, add a separator
+                if (!empty($priorityCountries) && !empty($remainingCountries)) {
+                    $countries['__priority_separator__below'] = '──────────';
+                }
+
+                // Add remaining countries
+                foreach ($remainingCountries as $code => $name) {
+                    $countries[$code] = $name;
+                }
+            } else {
+                $countries = $allCountries;
+            }
             $countries = apply_filters('wppayform/address_countries', $countries, $form);
             $countriesOptions = [];
             foreach ($countries as $isoCode => $country) {

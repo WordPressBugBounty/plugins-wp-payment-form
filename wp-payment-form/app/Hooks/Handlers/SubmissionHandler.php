@@ -146,8 +146,8 @@ class SubmissionHandler
         // Calculate Payment Total Now
         $paymentTotal = 0;
         $taxTotal = 0;
+        $recurringTaxTotal = [];
         if ($paymentItems) {
-            $recurringTaxTotal = [];
             foreach ($paymentItems as $paymentItem) {
                 if ($paymentItem['type'] == 'tax_line') {
                     $taxTotal += $paymentItem['line_total'];
@@ -426,6 +426,7 @@ class SubmissionHandler
                     ), 423);
                 }
                 if (100 <= $discountPercent) {
+                    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
                     do_action('payment_handle_after_hundred_percent_discount', $transactionId, $submissionId, $hasSubscriptions, $formId);
                 } else {
                     do_action('wppayform/form_submission_make_payment_' . $paymentMethod, $transactionId, $submissionId, $form_data, $form, $hasSubscriptions, $totalPayable, $paymentItems);
@@ -794,7 +795,7 @@ class SubmissionHandler
         $payItem = array(
             'type'          => 'single',
             'parent_holder' => $paymentId,
-            'item_name'     => strip_tags($label),
+            'item_name'     => wp_strip_all_tags($label),
             'quantity'      => $quantity,
             'created_at'    => current_time('mysql'),
             'updated_at'    => current_time('mysql'),
@@ -807,7 +808,7 @@ class SubmissionHandler
                 $pricings = $priceDetailes['multiple_pricing'];
                 $price = $pricings[$formData[$paymentId]];
                 $priceLabel = !empty($price['label']) ? $price['label'] : $payment['label'];
-                $payItem['item_name'] = strip_tags($priceLabel);
+                $payItem['item_name'] = wp_strip_all_tags($priceLabel);
                 $payItem['item_price'] = wpPayFormConverToCents($price['value']);
                 $payItem['line_total'] = $payItem['item_price'] * $quantity;
             } elseif ($payType == 'choose_multiple') {
@@ -816,7 +817,7 @@ class SubmissionHandler
                 $payItems = array();
                 foreach ($selctedItems as $itemIndex => $selctedItem) {
                     $itemClone = $payItem;
-                    $itemClone['item_name'] = strip_tags($pricings[$itemIndex]['label']);
+                    $itemClone['item_name'] = wp_strip_all_tags($pricings[$itemIndex]['label']);
                     $itemClone['item_price'] = wpPayFormConverToCents($pricings[$itemIndex]['value']);
                     $itemClone['line_total'] = $itemClone['item_price'] * $quantity;
                     $payItems[] = $itemClone;
@@ -849,7 +850,7 @@ class SubmissionHandler
         $prefix = 'wpf_' . $localtime;
         $uid = uniqid($prefix);
         // now let's make a unique number from 1 to 999
-        $uid .= mt_rand(1, 999);
+        $uid .= wp_rand(1, 999);
         $uid = str_replace(array("'", '/', '?', '#', '\\'), '', $uid);
         return $uid;
     }

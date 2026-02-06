@@ -282,6 +282,7 @@ abstract class BaseComponent
         $has_pro = defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO;
         $displayValue = $has_pro === true ? $hiddenAttr : '';
         $inlineCheckboxes = Arr::get($fieldOptions, 'inline', 'no');
+        $selection_limit = Arr::get($fieldOptions, 'selection_limit', 0);
         if (!$fieldOptions || $disable) {
             return;
         }
@@ -289,6 +290,9 @@ abstract class BaseComponent
 
         if ($inlineCheckboxes == 'yes') {
             $controlClass .= ' wpf_inline_checkbox';
+        }
+        if (is_numeric($selection_limit) && $selection_limit > 0) {
+            $controlClass .= ' wpf_selection_limit';
         }
         
         $inputClass = $this->elementInputClass($element);
@@ -304,7 +308,8 @@ abstract class BaseComponent
             'data-element_type'   => $this->elementName,
             'class'               => $controlClass,
             'data-target_element' => $element['id'],
-            'required_id'         => $element['id']
+            'required_id'         => $element['id'],
+            'data-selection_limit' => $selection_limit
         );
         if (Arr::get($fieldOptions, 'required') == 'yes') {
             $controlAttributes['data-checkbox_required'] = 'yes';
@@ -382,6 +387,7 @@ abstract class BaseComponent
             if (is_array($attribute)) {
                 $attribute = json_encode($attribute);
             }
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo esc_attr($attributeKey).'="'. htmlspecialchars($attribute ?? '', ENT_QUOTES ?? '') . '" ';
         }
     }

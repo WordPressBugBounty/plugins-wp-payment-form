@@ -103,7 +103,7 @@ class InvoiceTemplate extends TemplateManager
         $settings = $feed['settings'];
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
-        $formData = safeUnserialize($submission->form_data_formatted, true);
+        $formData = wppayform_safeUnserialize($submission->form_data_formatted, true);
 
         $settings['invoice_lines'] = '{submission.product_items_table_html}';
         if (false !== strpos(Arr::get($settings, 'invoice_upper_text'), '{submission.payment_receipt}')) {
@@ -179,7 +179,7 @@ class InvoiceTemplate extends TemplateManager
                                 <?php echo esc_html($submission->id); ?>
                             </div>
                         <?php endif; ?>
-                        <div class="payment_date"><b><?php esc_html_e('Payment Date:', 'wp-payment-form'); ?></b> <?php echo esc_html(date(get_option( 'date_format' ), strtotime($submission->created_at))); ?></div>
+                        <div class="payment_date"><b><?php esc_html_e('Payment Date:', 'wp-payment-form'); ?></b> <?php echo esc_html(wp_date(get_option( 'date_format' ), strtotime($submission->created_at))); ?></div>
                         <br />
                         <div class="customer_details">
                             <?php if(Arr::get($settings, 'customer_name') || Arr::get($settings, 'customer_address') || Arr::get($settings, 'customer_email')): ?>
@@ -194,19 +194,20 @@ class InvoiceTemplate extends TemplateManager
             </tr>
         </table>
         <hr />
+        <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         <div class="receipt_upper_text"><?php echo Arr::get($settings, 'invoice_upper_text'); ?></div>
 
-        <div class="invoice_lines"><?php echo Arr::get($settings, 'invoice_lines'); ?></div>
+        <div class="invoice_lines"><?php echo wp_kses_post(Arr::get($settings, 'invoice_lines')); ?></div>
 
         <?php if (strpos(Arr::get($settings, 'payment_summary'), 'class="ffp_payment_info_table"') !== false): ?>
             <div class="invoice_summary">
                 <h3><?php esc_html_e('Payment Details', 'wp-payment-form');?></h3>
-                <?php echo Arr::get($settings, 'payment_summary'); ?>
+                <?php echo wp_kses_post(Arr::get($settings, 'payment_summary')); ?>
             </div>
         <?php endif;?>
 
         <div class="invoice_thanks">
-            <?php echo Arr::get($settings, 'invoice_thanks'); ?>
+            <?php echo wp_kses_post(Arr::get($settings, 'invoice_thanks')); ?>
         </div>
         <style>
             .business_logo {

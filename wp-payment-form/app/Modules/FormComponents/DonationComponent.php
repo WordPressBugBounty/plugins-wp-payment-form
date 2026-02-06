@@ -119,7 +119,7 @@ class DonationComponent extends BaseComponent
                     'bill_time_max' => '0',
                     'interval_label' => 'I would like to recurring donation',
                     'interval_text' => 'Bill me every',
-                    'intervals' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
+                    'intervals' => ['day', 'week', 'fortnight', 'month', 'quarter', 'half_year', 'year'],
                     'interval_options' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
                     'interval_display_type' => 'dropdown'
                 )
@@ -170,6 +170,7 @@ class DonationComponent extends BaseComponent
                 ?>
                 <div class='wpf_donation_image_container' >
                     <div class="wpf_tabular_product_photo">
+                        <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                         <?php echo $this->renderImage($item['photo']); ?>
                     </div>
                 </div>
@@ -183,6 +184,7 @@ class DonationComponent extends BaseComponent
                 'data-element_type' => $this->elementName,
                 'class' => $this->elementControlClass($element)
             ); ?>
+            <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             <div <?php echo $this->builtAttributes($controlAttributes); ?>>
                 <div class="wpf_input_label wpf_single_amount_label">
                     <?php echo esc_html($title) ?>: <span
@@ -291,6 +293,7 @@ class DonationComponent extends BaseComponent
         }
         ?>
 
+        <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         <div style = "display : <?php echo esc_attr($hiddenAttr); ?>" <?php echo $this->builtAttributes($controlAttributes); ?> >
 
         <?php
@@ -300,6 +303,7 @@ class DonationComponent extends BaseComponent
                     ?>
                     <div class='wpf_donation_image_container'>
                         <div class="wpf_donation_photo">
+                            <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                             <?php echo $this->renderImage($item['photo']); ?>
                         </div>
                     </div>
@@ -363,9 +367,11 @@ class DonationComponent extends BaseComponent
                     <div class="wpf_input-group-prepend">
                         <div class="wpf_input-group-text wpf_input-group-text-prepend"><?php echo esc_html($currencySign); ?></div>
                     </div>
+                    <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                     <input <?php echo $this->builtAttributes($attributes); ?> />
                     <?php if (Arr::get($attributes, 'disabled') == true) { ?>
                         <?php unset($attributes['disabled']) ?>
+                        <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                         <input <?php echo $this->builtAttributes($attributes); ?> style="display: none" />
                     <?php } ?>
                 </div>
@@ -397,6 +403,7 @@ class DonationComponent extends BaseComponent
                     // echo $index; echo $defaultValue; echo Arr::get($attributesRadio, 'checked');
                 ?>
                     <div class="form-check">
+                        <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                         <input <?php echo $this->builtAttributes($attributesRadio); ?>>
                         <label class="form-check-label" for="<?php echo esc_attr($optionId); ?>">
                             <span class="wpf_price_option_name"
@@ -420,13 +427,13 @@ class DonationComponent extends BaseComponent
                         id="<?php echo esc_attr($inputId) . '_recurring' ?>">
                     <label class="form-check-label" for="<?php echo esc_attr($inputId) . '_recurring' ?>"
                         style="font-style: italic; cursor:pointer;">
-	                    <?php echo esc_html__($intervalLabel, 'wp-payment-form'); ?>
+	                    <?php echo esc_html($intervalLabel); ?>
                     </label>
                 </div>
             </div>
             <div class="wpf_input_content wpf_donation_recurring_infos" style="display:none; align-items: center" data-display-type="<?php echo esc_attr(Arr::get($pricingDetails, 'interval_display_type')); ?>">
                 <label class="form-check-label">
-                    <?php echo esc_html__($intervalText, 'wp-payment-form'); ?>
+                    <?php echo esc_html($intervalText); ?>
                 </label>
 
                 <?php if(Arr::get($pricingDetails, 'interval_display_type') === 'dropdown'): ?>

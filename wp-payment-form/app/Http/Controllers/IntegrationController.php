@@ -20,36 +20,43 @@ class IntegrationController extends Controller
 
     public function getIntegrations($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->getAllFormIntegrations($formId);
     }
 
     public function settings($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->getIntegrationSettings($formId, $this->request->all());
     }
 
     public function saveSettings($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->saveIntegrationSettings($formId, $this->request->all());
     }
 
     public function verify($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->verify($formId, $this->request->all());
     }
 
     public function deleteSettings($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->deleteIntegrationFeed($formId, $this->request->all());
     }
 
     public function status($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->updateNotificationStatus($formId, $this->request->all());
     }
 
     public function lists($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->getIntegrationList($formId, $this->request->all());
     }
 
@@ -75,6 +82,7 @@ class IntegrationController extends Controller
 
     public function duplicateSettings($formId)
     {
+        $formId = intval($formId);
         return (new GlobalIntegrationManager())->duplicateIntegrationSettings($formId, $this->request->all());
     }
 }

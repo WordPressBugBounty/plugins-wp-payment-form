@@ -131,8 +131,8 @@ class GlobalIntegrationManager
 
     public function updateNotificationStatus($formId, $request)
     {
-        $notificationId = Arr::get($request, 'notification_id');
-        $status = Arr::get($request, 'status');
+        $notificationId = intval(Arr::get($request, 'notification_id'));
+        $status = sanitize_text_field(Arr::get($request, 'status'));
 
         $feed = Meta::where('form_id', intval($formId))
             ->where('id', intval($notificationId))
@@ -164,7 +164,7 @@ class GlobalIntegrationManager
 
     public function getIntegrationSettings($formId, $request)
     {
-        $integrationName = Arr::get($request, 'integration_name');
+        $integrationName = sanitize_text_field(Arr::get($request, 'integration_name'));
         $integrationId = intval(Arr::get($request, 'integration_id'));
 
         $settings = [
@@ -225,7 +225,7 @@ class GlobalIntegrationManager
 
     public function saveIntegrationSettings($formId, $request)
     {
-        $integrationName = Arr::get($request, 'integration_name');
+        $integrationName = sanitize_text_field(Arr::get($request, 'integration_name'));
         $integrationId = intval(Arr::get($request, 'integration_id'));
 
         if (Arr::get($request, 'data_type') == 'stringify') {
@@ -284,7 +284,7 @@ class GlobalIntegrationManager
 
     public function verify($formId, $request)
     {
-        $integrationName = Arr::get($request, 'integration_name');
+        $integrationName = sanitize_text_field(Arr::get($request, 'integration_name'));
         $response = apply_filters('wppayform_verify_integration_endpoint_' . $integrationName, $formId);
         if ($response['success'] == false) {
             wp_send_json_error($response);
@@ -309,8 +309,8 @@ class GlobalIntegrationManager
 
     public function getIntegrationList($formId, $request)
     {
-        $integrationName = Arr::get($request, 'integration_name');
-        $listId = Arr::get($request, 'list_id');
+        $integrationName = sanitize_text_field(Arr::get($request, 'integration_name'));
+        $listId = sanitize_text_field(Arr::get($request, 'list_id'));
 
         $merge_fields = apply_filters('wppayform_get_integration_merge_fields_' . $integrationName, false, $listId, $formId);
 
@@ -351,7 +351,7 @@ class GlobalIntegrationManager
     public function duplicateIntegrationSettings($formId, $request)
     {
         $integrationId = intval(Arr::get($request, 'integration_id'));
-
+        
         $feed = Meta::where('form_id', $formId)
             ->where('id', $integrationId)
             ->first();

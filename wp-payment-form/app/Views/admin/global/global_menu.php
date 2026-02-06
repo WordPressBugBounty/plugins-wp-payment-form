@@ -51,7 +51,7 @@ if ($is_paymattic_user) {
         <?php if (!defined('WPPAYFORMHASPRO')): ?>
         <div class="ninja-tab wpf_buy_pro_tab">
             <!-- <span class="dashicons dashicons-cart"></span> -->
-            <img src="<?= esc_url(WPPAYFORM_URL . 'assets/images/crown.svg') ?>" alt="No Found" />
+            <img src="<?php echo esc_url(WPPAYFORM_URL . 'assets/images/crown.svg') ?>" alt="No Found" />
             <a target="_blank" rel="noopener" href="<?php echo esc_url(wppayformUpgradeUrl()); ?>" class="wpf_pro_link">
                 <?php esc_html_e('Upgrade to Pro', 'wp-payment-form'); ?>
             </a>

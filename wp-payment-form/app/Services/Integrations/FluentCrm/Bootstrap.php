@@ -194,19 +194,19 @@ class Bootstrap extends IntegrationManager
                 [
                     'key' => 'trigger_on_payment',
                     'require_list' => false,
-                    'checkbox_label' => __('Add contact on Payment success only', 'wp-payment-form-pro'),
+                    'checkbox_label' => __('Add contact on Payment success only', 'wp-payment-form'),
                     'component' => 'checkbox-single'
                 ],
                 [
                     'key' => 'remove_on_refund',
                     'require_list' => false,
-                    'checkbox_label' => __('Remove contact on Payment Refund', 'wp-payment-form-pro'),
+                    'checkbox_label' => __('Remove contact on Payment Refund', 'wp-payment-form'),
                     'component' => 'checkbox-single'
                 ],
                 [
                     'key' => 'remove_on_subscription_cancel',
                     'require_list' => false,
-                    'checkbox_label' => __('Remove conatct on Subscription canceled', 'wp-payment-form-pro'),
+                    'checkbox_label' => __('Remove conatct on Subscription canceled', 'wp-payment-form'),
                     'component' => 'checkbox-single'
                 ],
                 [
@@ -361,6 +361,7 @@ class Bootstrap extends IntegrationManager
                 'success'
             );
 
+            //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
             do_action('fluentcrm_contact_added_by_wppayform', $subscriber, $entry, $formId, $feed);
         } else {
             if ($listId = Arr::get($data, 'list_id')) {
@@ -381,6 +382,7 @@ class Bootstrap extends IntegrationManager
                 $subscriber->sendDoubleOptinEmail();
             }
 
+            //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
             do_action('fluentcrm_contact_updated_by_wppayform', $subscriber, $entry, $formId, $feed);
 
             $this->addLog(

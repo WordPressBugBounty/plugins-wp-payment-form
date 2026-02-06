@@ -132,17 +132,13 @@ class PlaceholderParser
         foreach ($placeholders as $groupKey => $values) {
             foreach ($values as $placeholder => $targetItem) {
                 $cacheKey = $groupKey . '_' . $targetItem;
-                if ($groupKey == 'input') {
-                    if ($targetItem == 'first_name' || $targetItem == 'middle_name' || $targetItem == 'last_name') {
-                        $nameValue = self::getNamePartValue($entry, $targetItem);
-                        $parsedData[$placeholder] = $nameValue;
-                    } else {
-                        $parsedData[$placeholder] = $entry->getInput($targetItem);
-                    } 
+                if ($groupKey == 'input') { 
+                    $parsedData[$placeholder] = self::parseInputGroup($entry, $targetItem, $placeholder);
                 } elseif ($groupKey == 'quantity') {
                     $parsedData[$placeholder] = $entry->getItemQuantity($targetItem);
                 } elseif ($groupKey == 'payment_item') {
-                    $parsedData[$placeholder] = implode(', ', $entry->getPaymentItems($targetItem));
+                    $paymentItems = $entry->getPaymentItems($targetItem); 
+                    $parsedData[$placeholder] = !empty($paymentItems) ? implode(', ', $paymentItems) : $entry->getRawInput($targetItem);
                 } elseif ($groupKey == 'submission') {
                     // $parsedData[$placeholder] = $entry->{$targetItem};
                     // Cache the payment_total value  
@@ -220,6 +216,26 @@ class PlaceholderParser
             $parsables[$matches[0]] = $matches[1];
         }, $parsableItems);
         return $parsables;
+    }
+
+    protected static function parseInputGroup($entry, $targetItem, $placeholder)
+    {
+        // Handle name fields
+        if (in_array($targetItem, ['first_name', 'middle_name', 'last_name'], true)) {
+            return self::getNamePartValue($entry, $targetItem);
+        }
+        // Handle address fields
+        if (preg_match('/address_input_(\d+)/', $targetItem, $matches)) {
+            $addressNumber = $matches[1];
+            $rawAddress = $entry->getRawInput("address_input_{$addressNumber}");
+            if ($rawAddress) {
+                $key = str_replace("address_input_{$addressNumber}.", '', $targetItem);
+                return isset($rawAddress[$key]) ? $rawAddress[$key] : '';
+            }
+        }
+
+        // Default input handling
+        return $entry->getInput($targetItem);
     }
 
     protected static function getNamePartValue($entry, $targetItem)

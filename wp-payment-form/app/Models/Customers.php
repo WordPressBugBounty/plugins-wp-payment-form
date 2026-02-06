@@ -22,19 +22,19 @@ class Customers extends Model
     public function index($request)
     {
         $queries = $request->get('queries');
-
-        $perPage = Arr::get($queries, 'pageSize', 0);
-        $currentPage = Arr::get($queries, 'currentPage', 1);
+        $perPage = absint(Arr::get($queries, 'pageSize', 0));
+        $currentPage = absint(Arr::get($queries, 'currentPage', 1)) ;
         $offset = ($currentPage - 1) * $perPage;
 
-        $sortType = Arr::get($queries, 'sort_type', 'desc');
-        $sortBy = Arr::get($queries, 'sort_by', 'created_at');
-        $search = Arr::get($queries, 'search', '');
+        $sortType = sanitize_text_field(Arr::get($queries, 'sort_type', 'desc'));
+        $sortBy = sanitize_text_field(Arr::get($queries, 'sort_by', 'created_at'));
+        $search = sanitize_text_field(Arr::get($queries, 'search', ''));
 
         $filter_date = $request->get('filter_date');
         
-        $startDate = Arr::get($filter_date, 'startDate');
-        $endDate = Arr::get($filter_date, 'endDate');
+        $startDate = sanitize_text_field(Arr::get($filter_date, 'startDate'));
+        $endDate = sanitize_text_field(Arr::get($filter_date, 'endDate'));
+
         $endDate = $endDate ? $endDate . ' 23:59:59' : null;
 
         $DB = App::make('db');
@@ -70,8 +70,26 @@ class Customers extends Model
 
         $customers = $query->get();
         
+        $wordpressDate = current_time('Y-m-d H:i:s');
         foreach ($customers as $customer) {
             $customer->avatar = get_avatar($customer->customer_email, 128);
+            // Calculate "x hours y minutes ago"
+            $created = new DateTime($customer->created_at);
+            $now = new DateTime($wordpressDate);
+            $diff = $now->diff($created);
+            $parts = [];
+    
+            if ($diff->days > 0) {
+                $parts[] = $diff->days . ($diff->days == 1 ? ' day' : ' days');
+            }
+            if ($diff->h > 0) {
+                $parts[] = $diff->h . ($diff->h == 1 ? ' hour' : ' hours');
+            }
+            if ($diff->i > 0) {
+                $parts[] = $diff->i . ($diff->i == 1 ? ' minute' : ' minutes');
+            }
+            
+            $customer->time_ago = empty($parts) ? 'just now' : implode(' ', $parts);
         }
 
         return array(
@@ -88,6 +106,7 @@ class Customers extends Model
      */
     public function customer($customerEmail, $apiCall = 'no')
     {
+        $customerEmail = sanitize_email($customerEmail);
         $subscriptionTransactionModel = new SubscriptionTransaction();
         $query = Submission::where('customer_email', $customerEmail)
             ->orderBy('id', 'desc');
@@ -107,8 +126,8 @@ class Customers extends Model
 
         foreach ($customer as $item) {
             $item->total_subscription_payment = apply_filters('wppayform/form_entry_recurring_info', $item);
-            $item->form_data_raw = safeUnserialize($item->form_data_raw);
-            $item->form_data_formatted = safeUnserialize($item->form_data_formatted);
+            $item->form_data_raw = wppayform_safeUnserialize($item->form_data_raw);
+            $item->form_data_formatted = wppayform_safeUnserialize($item->form_data_formatted);
             $formattedResults[] = $item;
 
             $subscription = $subscriptionModel->getSubscriptions($item->id);
@@ -125,7 +144,13 @@ class Customers extends Model
                     $sub['currency_settings'] = $currencySettings;
                     $sub['submission'] = $submission->getSubmission($sub['submission_id']);
                     $sub['related_payments'] = $subscriptionTransactionModel->getSubscriptionTransactions($sub->id);
-                    // $sub['subscription_payment_total'] = $sub['related_payments']->SUM('payment_total');
+                    $subscriptionData = $subscriptionTransactionModel->getSubscriptionTransactionsBySubmissionId($sub->id);
+                    $transactionData = array_merge($subscriptionData[0] ?? [], [
+                        'currency_settings' => $sub['currency_settings']
+                    ]);
+                    $sub['subscription_payments'] = [
+                        'transactions' =>  $transactionData
+                    ];
                     if ($apiCall == 'yes') {
                         $subscriptions[] = $sub->toArray();
                     } else {

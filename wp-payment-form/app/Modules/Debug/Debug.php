@@ -197,8 +197,8 @@ class Debug
         $host = self::getHost();
         $mysql = '';
 
-        if ($wpdb->use_mysqli) {
-            $mysql = @mysqli_get_server_info($wpdb->dbh);
+        if ($wpdb->dbh) {
+            $mysql = $wpdb->db_version();
         } else {
             $mysql = __('Cannot connect to MySQL database.', 'wp-payment-form');
         }
@@ -324,7 +324,8 @@ class Debug
 
     private static function getHost()
     {
-        $host = sanitize_text_field($_SERVER['SERVER_SOFTWARE']);
+        $host = isset($_SERVER['SERVER_SOFTWARE']) ? sanitize_text_field($_SERVER['SERVER_SOFTWARE']) : '';
+
         if (defined('WPE_APIKEY')) {
             $host .= ' (WP Engine)';
         } elseif (defined('PAGELYBIN')) {

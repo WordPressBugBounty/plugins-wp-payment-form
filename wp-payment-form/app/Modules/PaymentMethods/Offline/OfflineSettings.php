@@ -82,7 +82,7 @@ class OfflineSettings
 
     public function savePaymentMethodSettings($request, $method)
     {
-        $settings = $request->settings;
+        $settings = $this->sanitizeOfflineSettings($request->settings);
         $settings = apply_filters('wppayform_payment_method_settings_mapper_' . $method, $settings);
         $validationErrors = apply_filters('wppayform_payment_method_settings_validation_' . $method, [], $settings);
 
@@ -102,6 +102,19 @@ class OfflineSettings
         return array(
             'message' => __('Settings successfully updated', 'wp-payment-form')
         );
+    }
+
+    public function sanitizeOfflineSettings($settings) {
+        foreach ($settings as $key => $value) {
+            if (is_array($value)) {
+                $settings[$key] = $this->sanitizeOfflineSettings($value);
+                continue;
+            }
+            if (is_string($value)) {
+                $settings[$key] = sanitize_text_field($value);
+            }
+        }
+        return $settings;
     }
 
      /**

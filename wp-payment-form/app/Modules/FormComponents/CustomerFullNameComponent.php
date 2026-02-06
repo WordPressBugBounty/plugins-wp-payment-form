@@ -181,7 +181,7 @@ class CustomerFullNameComponent extends BaseComponent
             data-element_type="<?php echo esc_attr($this->elementName); ?>"
             condition_id="<?php echo esc_attr($baseElementId); ?>"
             class="<?php echo esc_attr($controlClass . ' ' . $conditionalClass); ?>">
-            <div class="wpf_names_row" style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <div class="wpf_names_row" style="display: flex; gap: 20px; flex-wrap: wrap;">
                 <?php
                 foreach ($nameLayout as $namePart) {
                     $nameElement = $element;

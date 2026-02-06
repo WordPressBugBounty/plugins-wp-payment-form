@@ -40,7 +40,13 @@ class MailChimp
 
         if ($api_endpoint === null) {
             if (strpos($this->api_key, '-') === false) {
-                throw new \Exception(esc_html__("Invalid MailChimp API key `{$api_key}` supplied."));
+                throw new \Exception(
+                    sprintf(
+                        // translators: %s: The invalid API key.
+                        esc_html__('Invalid MailChimp API key %s supplied.', 'wp-payment-form'),
+                        esc_html($api_key)
+                    )
+                );
             }
             list(, $data_center) = explode('-', $this->api_key);
             $this->api_endpoint  = str_replace('<dc>', $data_center, $this->api_endpoint);
@@ -177,71 +183,87 @@ class MailChimp
      * @return array|false Assoc array of decoded result
      * @throws \Exception
      */
+
     private function makeRequest($http_verb, $method, $args = array(), $timeout = self::TIMEOUT)
     {
-        if (!function_exists('curl_init') || !function_exists('curl_setopt')) {
-            throw new \Exception("cURL support is required, but can't be found.");
-        }
-
         $url = $this->api_endpoint . '/' . $method;
 
         $response = $this->prepareStateForRequest($http_verb, $method, $url, $timeout);
 
-        $httpHeader = array(
-            'Accept: application/vnd.api+json',
-            'Content-Type: application/vnd.api+json',
-            'Authorization: apikey ' . $this->api_key
-        );
+        // Headers
+        $headers = [
+            'Accept'        => 'application/vnd.api+json',
+            'Content-Type'  => 'application/vnd.api+json',
+            'Authorization' => 'apikey ' . $this->api_key,
+        ];
 
-        if (isset($args["language"])) {
-            $httpHeader[] = "Accept-Language: " . $args["language"];
+        if (isset($args['language'])) {
+            $headers['Accept-Language'] = $args['language'];
         }
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $httpHeader);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'DrewM/MailChimp-API/3.0 (github.com/drewm/mailchimp-api)');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-        curl_setopt($ch, CURLOPT_ENCODING, '');
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        // Arguments for wp_remote_* functions
+        $request_args = [
+            'headers'   => $headers,
+            'timeout'   => $timeout,
+            'sslverify' => $this->verify_ssl,
+            'httpversion' => '1.0',
+            'user-agent'  => 'DrewM/MailChimp-API/3.0 (github.com/drewm/mailchimp-api)',
+        ];
 
-        switch ($http_verb) {
+        // Attach body for post/put/patch
+        if (in_array(strtolower($http_verb), ['post', 'put', 'patch'])) {
+            $request_args['body'] = wp_json_encode($args);
+        }
+
+        // GET request: attach query string
+        if (strtolower($http_verb) === 'get' && !empty($args)) {
+            $url = add_query_arg($args, $url);
+        }
+
+        // Make the request
+        switch (strtolower($http_verb)) {
             case 'post':
-                curl_setopt($ch, CURLOPT_POST, true);
-                $this->attachRequestPayload($ch, $args);
+                $wp_response = wp_remote_post($url, $request_args);
                 break;
 
             case 'get':
-                $query = http_build_query($args, '', '&');
-                curl_setopt($ch, CURLOPT_URL, $url . '?' . $query);
+                $wp_response = wp_remote_get($url, $request_args);
                 break;
 
             case 'delete':
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                $request_args['method'] = 'DELETE';
+                $wp_response = wp_remote_request($url, $request_args);
                 break;
 
             case 'patch':
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-                $this->attachRequestPayload($ch, $args);
+            case 'put':
+                $request_args['method'] = strtoupper($http_verb);
+                $wp_response = wp_remote_request($url, $request_args);
                 break;
 
-            case 'put':
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-                $this->attachRequestPayload($ch, $args);
-                break;
+            default:
+            throw new \Exception(sprintf(
+                // translators: %s: The unsupported HTTP verb.
+                esc_html(__('Unsupported HTTP verb: %s', 'wp-payment-form')),
+                esc_html($http_verb)
+            ));
         }
 
-        $responseContent     = curl_exec($ch);
-        $response['headers'] = curl_getinfo($ch);
-        $response            = $this->setResponseState($response, $responseContent, $ch);
-        $formattedResponse   = $this->formatResponse($response);
+        // Check for errors
+        if (is_wp_error($wp_response)) {
+            throw new \Exception(sprintf(
+                // translators: %s: The error message. 
+                esc_html(__('Request failed: %s', 'wp-payment-form')),
+                esc_html($wp_response->get_error_message())
+            ));
+        }
 
-        curl_close($ch);
+        // Extract response info
+        $response['headers'] = wp_remote_retrieve_headers($wp_response);
+        $response_content   = wp_remote_retrieve_body($wp_response);
+
+        $response = $this->setResponseState($response, $response_content, null);
+        $formattedResponse = $this->formatResponse($response);
 
         $this->determineSuccess($response, $formattedResponse, $timeout);
 
@@ -349,6 +371,7 @@ class MailChimp
     {
         $encoded = json_encode($data);
         $this->last_request['body'] = $encoded;
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt 
         curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
     }
 
@@ -377,6 +400,7 @@ class MailChimp
     private function setResponseState($response, $responseContent, $ch)
     {
         if ($responseContent === false) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error 
             $this->last_error = curl_error($ch);
         } else {
             $headerSize = $response['headers']['header_size'];

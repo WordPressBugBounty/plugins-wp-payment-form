@@ -2,8 +2,8 @@
 if (!$submission->subscriptions) {
     return '';
 }
-$currencySetting = \WPPayForm\App\Services\GeneralSettings::getGlobalCurrencySettings($submission->form_id);
-$currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::getCurrencySymbol($submission->currency);
+$wppayform_currency_setting = \WPPayForm\App\Services\GeneralSettings::getGlobalCurrencySettings($submission->form_id);
+$wppayform_currency_setting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::getCurrencySymbol($submission->currency);
 ?>
 <table class="table wpf_subscriptions_items_table wpf_table table_bordered">
     <thead>
@@ -13,21 +13,21 @@ $currencySetting['currency_sign'] = \WPPayForm\App\Services\GeneralSettings::get
     <th><?php esc_html_e('Status', 'wp-payment-form'); ?></th>
     </thead>
     <tbody>
-    <?php $subTotal = 0; ?>
-    <?php foreach ($submission->subscriptions as $subscription) : ?>
+    <?php $wppayform_sub_total = 0; ?>
+    <?php foreach ($submission->subscriptions as $wppayform_subscription) : ?>
         <tr>
             <td>
-                <?php echo esc_html($subscription->item_name) . ' (' . esc_html($subscription->plan_name) . ')'; ?>
+                <?php echo esc_html($wppayform_subscription->item_name) . ' (' . esc_html($wppayform_subscription->plan_name) . ')'; ?>
                 <p style="margin: 0; padding: 5px 0 0; font-size: 12px;">
-                    <?php echo esc_html(wpPayFormFormattedMoney($subscription->recurring_amount * $subscription->quantity, $currencySetting)); ?> / <?php echo esc_html($subscription->billing_interval); ?>
+                    <?php echo esc_html(wpPayFormFormattedMoney($wppayform_subscription->recurring_amount * $wppayform_subscription->quantity, $wppayform_currency_setting)); ?> / <?php echo esc_html($wppayform_subscription->billing_interval); ?>
                 </p>
             </td>
             <td>
-                <?php echo esc_html(wpPayFormFormattedMoney($subscription->initial_amount, $currencySetting)); ?>
+                <?php echo esc_html(wpPayFormFormattedMoney($wppayform_subscription->initial_amount, $wppayform_currency_setting)); ?>
             </td>
-            <td><?php echo esc_html($subscription->bill_count); ?>
-                / <?php echo ($subscription->bill_times) ? esc_html($subscription->bill_times) : esc_html__('Until cancelled', 'wp-payment-form'); ?> </td>
-            <td><?php echo esc_html($subscription->status); ?></td>
+            <td><?php echo esc_html($wppayform_subscription->bill_count); ?>
+                / <?php echo ($wppayform_subscription->bill_times) ? esc_html($wppayform_subscription->bill_times) : esc_html__('Until cancelled', 'wp-payment-form'); ?> </td>
+            <td><?php echo esc_html($wppayform_subscription->status); ?></td>
         </tr>
     <?php
     endforeach; ?>

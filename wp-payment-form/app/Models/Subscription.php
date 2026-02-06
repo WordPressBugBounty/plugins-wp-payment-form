@@ -29,8 +29,8 @@ class Subscription extends Model
         $subscriptions = $this->where('submission_id', $submissionId)
             ->get();
         foreach ($subscriptions as $subscription) {
-            $subscription->original_plan = safeUnserialize($subscription->original_plan);
-            $subscription->vendor_response = safeUnserialize($subscription->vendor_response);
+            $subscription->original_plan = wppayform_safeUnserialize($subscription->original_plan);
+            $subscription->vendor_response = wppayform_safeUnserialize($subscription->vendor_response);
         }
         return $subscriptions;
     }
@@ -46,7 +46,7 @@ class Subscription extends Model
         $subscription = $this->where($key, $id)
             ->first();
         if ($subscription) {
-            $subscription->original_plan = safeUnserialize($subscription->original_plan);
+            $subscription->original_plan = wppayform_safeUnserialize($subscription->original_plan);
         }
 
         return $subscription;
@@ -204,7 +204,7 @@ class Subscription extends Model
             ->get();
         $formatted = array();
         foreach ($metas as $meta) {
-            $formatted[$meta->meta_key] = safeUnserialize($meta->meta_value);
+            $formatted[$meta->meta_key] = wppayform_safeUnserialize($meta->meta_value);
         }
         return (object) $formatted;
     }
@@ -215,8 +215,8 @@ class Subscription extends Model
             ->where('status', 'intented')
             ->get();
         foreach ($subscriptions as $subscription) {
-            $subscription->original_plan = safeUnserialize($subscription->original_plan);
-            $subscription->vendor_response = safeUnserialize($subscription->vendor_response);
+            $subscription->original_plan = wppayform_safeUnserialize($subscription->original_plan);
+            $subscription->vendor_response = wppayform_safeUnserialize($subscription->vendor_response);
         }
         return $subscriptions;
     }

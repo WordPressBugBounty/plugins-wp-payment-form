@@ -25,7 +25,7 @@ class FileHandler
                     $ruleValue[] = '.mpga';
                 }
                 if (!in_array('.' . $fileExtension, $ruleValue)) {
-                    $errors[$ruleName] = __('Invalid File Extension');
+                    $errors[$ruleName] = __('Invalid File Extension', 'wp-payment-form');
                 }
             } else if ($ruleName == 'max_file_size' && $ruleValue) {
                 $valueInBytes = $ruleValue * 1024 * 1024;
@@ -69,20 +69,45 @@ class FileHandler
      * @param  array $param
      * @return array $param
      */
+
     public function setCustomUploadDir($param)
-    {
-        $param['url'] = $param['baseurl'] . WPPAYFORM_UPLOAD_DIR;
-        $param['path'] = $param['basedir'] . WPPAYFORM_UPLOAD_DIR;
-        if (!is_dir($param['path'])) {
-            mkdir($param['path'], 0755);
-            file_put_contents(
-                wp_upload_dir()['basedir'] . WPPAYFORM_UPLOAD_DIR . '/.htaccess',
-                file_get_contents(__DIR__ . '/Stubs/htaccess.stub')
-            );
+{
+    if (!function_exists('WP_Filesystem')) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
+
+    global $wp_filesystem;
+
+    if (empty($wp_filesystem)) {
+        if (!WP_Filesystem()) {
+            wp_send_json_error(['message' => 'Unable to initialize filesystem'], 500);
+            return $param;
+        }
+    }
+
+    $param['path'] = trailingslashit($param['basedir']) . trim(WPPAYFORM_UPLOAD_DIR, '/');
+    $param['url']  = trailingslashit($param['baseurl']) . trim(WPPAYFORM_UPLOAD_DIR, '/');
+
+    if (!$wp_filesystem->is_dir($param['path'])) {
+        if (!$wp_filesystem->mkdir($param['path'], FS_CHMOD_DIR)) {
+            wp_send_json_error(['message' => 'Failed to create upload directory'], 500);
+            return $param;
         }
 
-        return $param;
+        $source_htaccess = __DIR__ . '/Stubs/htaccess.stub';
+        $destination_htaccess = trailingslashit($param['path']) . '.htaccess';
+
+        if ($wp_filesystem->exists($source_htaccess)) {
+            $contents = $wp_filesystem->get_contents($source_htaccess);
+            if ($contents !== false) {
+                $wp_filesystem->put_contents($destination_htaccess, $contents, FS_CHMOD_FILE);
+            }
+        }
     }
+
+    return $param;
+}
+
 
 
     /**
@@ -92,7 +117,7 @@ class FileHandler
      */
     public function renameFileName($file)
     {
-        $prefix = 'wpf-' . md5(uniqid(rand())) . '-wpf-';
+        $prefix = 'wpf-' . md5(uniqid(wp_rand())) . '-wpf-';
         $file['name'] = $prefix . $file['name'];
         return $file;
     }

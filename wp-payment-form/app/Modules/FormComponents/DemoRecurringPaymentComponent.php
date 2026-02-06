@@ -50,7 +50,7 @@ class DemoRecurringPaymentComponent extends BaseComponent
                     'type' => 'recurring_payment_options',
                     'group' => 'general',
                     'label' => 'Configure Subscription Payment Plans',
-                    'choice_label' => __('Choose Your Pricing Plan'),
+                    'choice_label' => __('Choose Your Pricing Plan', 'wp-payment-form'),
                     'choice_types' => array(
                         'simple' => __('Simple Subscription Plan (Single)', 'wp-payment-form'),
                         'choose_single' => __('Chose One From Multiple Pricing Plans', 'wp-payment-form'),

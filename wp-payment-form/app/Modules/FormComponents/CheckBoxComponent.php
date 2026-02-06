@@ -63,6 +63,12 @@ class CheckBoxComponent extends BaseComponent
                     'type' => 'text',
                     'group' => 'advanced'
                 ),
+                'selection_limit' => array(
+                    'label' => 'Selection Limit',
+                    'type' => 'choice_limit',
+                    'info' => 'Set 0 for unlimited selection',
+                    'group' => 'advanced'
+                ),
                 'conditional_render' => array(
                     'type' => 'conditional_render',
                     'group' => 'advanced',
@@ -83,6 +89,7 @@ class CheckBoxComponent extends BaseComponent
                 'required' => 'no',
                 'default_value' => '',
                 'inline' => 'no',
+                'selection_limit' => 0,
                 'conditional_logic_option' => array(
                     'conditional_logic' => 'no',
                     'conditional_type'  => 'any',

@@ -123,8 +123,8 @@ class Render
                             if (sizeof($isStepForm['editor_elements']['form_steps']) == $key + 1) {
 
                             ?>
-                                <button class="wpf_step_button" id="wpf_step_prev">&larr; <?php echo esc_html__($previousButton, 'wp-payment-form') ?></button>
-                                <button class="wpf_step_button" id="wpf_step_next"><?php echo esc_html__($nextButton, 'wp-payment-form') ?> &rarr;</button>
+                                <button class="wpf_step_button" id="wpf_step_prev">&larr; <?php echo esc_html($previousButton) ?></button>
+                                <button class="wpf_step_button" id="wpf_step_next"><?php echo esc_html($nextButton) ?> &rarr;</button>
                                 <div style="display: none" class="wpf_form_notices"></div> <?php
                                                                                         }
                                                                                             ?>
@@ -410,15 +410,24 @@ class Render
 
                     add_action('wp_footer', function () use ($src) {
         ?>
+                    <?php //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
                     <script src="<?php echo esc_url($src); ?>" async defer></script>
                 <?php
                     }, 11);
-                    do_action('wpf_added_recaptcha_script');
+                    // do_action('wpf_added_recaptcha_script');
+                    do_action_deprecated(
+                        'wpf_added_recaptcha_script',
+                        [],
+                        '1.0.0',
+                        'wppayform/added_recaptcha_script',
+                        'Use wppayform/added_recaptcha_script instead of wpf_added_recaptcha_script.'
+                    );
                 }
             }
 
 
             if ($form->turnstile_status) {
+                //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
                 if (!did_action('wpf_added_turnstile_script')) {
                     $key = $form->turnstile_site_key;
                     $src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
@@ -428,10 +437,17 @@ class Render
 
                 add_action('wp_footer', function () use ($src) {
                 ?>
+                <?php //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
                 <script src="<?php echo esc_url($src); ?>" async defer></script>
             <?php
                 }, 12);
-                do_action('wpf_added_turnstile_script');
+                do_action_deprecated(
+                    'wpf_added_turnstile_script',
+                    [],
+                    '1.0.0',
+                    'wppayform/added_turnstile_script',
+                    'Use wppayform/added_turnstile_script instead of wpf_added_turnstile_script.'
+                );
             }
         }
 
@@ -645,6 +661,7 @@ class Render
                 if (is_array($attribute)) {
                     $attribute = json_encode($attribute);
                 }
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo esc_attr($attributeKey) . "='" . htmlspecialchars($attribute, ENT_QUOTES) . "' ";
             }
         }

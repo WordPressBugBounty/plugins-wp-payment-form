@@ -14,6 +14,7 @@ if (!function_exists('wpf_action_scheduler_register') && function_exists('add_ac
     /**
      * Registers this version of Action Scheduler.
      */
+    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
     function wpf_action_scheduler_register()
     { // WRCS: DEFINED_VERSION.
         $versions = ActionScheduler_Versions::instance();
@@ -24,6 +25,7 @@ if (!function_exists('wpf_action_scheduler_register') && function_exists('add_ac
     /**
      * Initializes this version of Action Scheduler.
      */
+    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
     function wpf_action_scheduler_initialize()
     { // WRCS: DEFINED_VERSION.
         // A final safety check is required even here, because historic versions of Action Scheduler
@@ -36,8 +38,10 @@ if (!function_exists('wpf_action_scheduler_register') && function_exists('add_ac
     }
 
     // Support usage in themes - load this version if no plugin has loaded a version yet.
+    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
     if (did_action('plugins_loaded') && !doing_action('plugins_loaded') && !class_exists('ActionScheduler', false)) {
         wpf_action_scheduler_initialize(); // WRCS: DEFINED_VERSION.
+        //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
         do_action('action_scheduler_pre_theme_init');
         ActionScheduler_Versions::initialize_latest_version();
     }

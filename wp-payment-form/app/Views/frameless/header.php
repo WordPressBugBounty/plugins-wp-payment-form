@@ -8,12 +8,16 @@
     <?php if ($site_logo): ?>
         <link rel="icon" type="image/png" href="<?php echo esc_url($site_logo); ?>">
     <?php endif; ?>
-    <?php foreach ($css_files as $file): ?>
-        <link rel='stylesheet' href='<?php echo esc_url($file); ?>' type='text/css' media='all'/>
+    <?php foreach ($css_files as $wppayform_file): 
+        // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+        echo "<link rel='stylesheet' href='" . esc_url($wppayform_file) . "' type='text/css' media='all'/>";    
+    ?>
     <?php endforeach; ?>
 
-    <?php foreach ($js_files as $file): ?>
-        <script type='text/javascript' src='<?php echo esc_url($file); ?>'></script>
+    <?php foreach ($js_files as $wppayform_file): 
+        // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+        echo "<script type='text/javascript' src='" . esc_url($wppayform_file) . "'></script>";
+        ?>
     <?php endforeach; ?>
 
     <?php do_action('wppayform/frameless_header', $action); ?>

@@ -272,8 +272,16 @@ class CountryNames
             'ZM' => __('Zambia', 'wp-payment-form'),
             'ZW' => __('Zimbabwe', 'wp-payment-form'),
         );
-
-        return apply_filters('payform_editor_countries', $country_names);
+        $country_names = apply_filters_deprecated(
+            'payform_editor_countries',
+            [
+                $country_names
+            ],
+            '1.0.0',
+            'wppayform/editor_countries',
+            'Use wppayform/editor_countries instead of payform_editor_countries.'
+        );
+        return apply_filters('wppayform/editor_countries', $country_names);
     }
 
     public static function languageCodes()

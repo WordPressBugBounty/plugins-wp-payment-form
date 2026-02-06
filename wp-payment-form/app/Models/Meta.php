@@ -85,10 +85,11 @@ class Meta extends Model
            }
         }
 
-        $tableName = $wpdb->prefix . 'wpf_meta';
-        $sql = "ALTER TABLE $tableName
-            ADD form_id int(11) NULL";
-            
+        $tableName = esc_sql($wpdb->prefix . 'wpf_meta');
+        
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name is escaped and derived from $wpdb->prefix
+        $sql = "ALTER TABLE {$tableName} ADD form_id int(11) NULL";
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $upgrade = $wpdb->query($sql);
 
         if (!$upgrade && $wpdb->last_error !== '') {

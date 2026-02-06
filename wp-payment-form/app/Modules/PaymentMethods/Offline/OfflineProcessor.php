@@ -117,7 +117,7 @@ class OfflineProcessor
                 );
 
                 $newTimestamp = $lastBillCreatedAt + ($interval * 24 * 60 * 60);
-                $createdAt = date('Y-m-d H:i:s', $newTimestamp);
+                $createdAt = wp_date('Y-m-d H:i:s', $newTimestamp);
 
                 $this->processSubscriptionPayment($vendor_data, $subscriptionId, $createdAt);
 
@@ -266,7 +266,7 @@ class OfflineProcessor
         do_action('wppayform/offline_subscription_status_changed_to_' . $status, $submission->form_id, $submission, $subscription);
 
         wp_send_json_success(array( 
-            'message' => __("Offline Subscription status changes successfully!"),
+            'message' => __("Offline Subscription status changes successfully!", 'wp-payment-form'),
         ), 200);
     }
 
@@ -327,7 +327,11 @@ class OfflineProcessor
         }
 
         wp_send_json_success(array(
-            'message' => __('Subscription payment status successfully changed to ' . $newStatus, 'wp-payment-form')
+            'message' => printf(
+                // translators: %s: The new subscription payment status.
+                esc_html__('Subscription payment status successfully changed to %s', 'wp-payment-form'),
+                esc_html($newStatus)
+            )
         ), 200);
     }
 

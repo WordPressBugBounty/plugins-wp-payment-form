@@ -478,7 +478,11 @@ class StripeHostedHandler extends StripeHandler
                 'submission_id' => $submission->id,
                 'type' => 'activity',
                 'created_by' => 'Paymattic BOT',
-                'content' => __('Payment is authorized. need to capture it before the expiration, payment status changes from pending to authorized and customer made transaction with: ' . $customerPaymentMethod, 'wp-payment-form')
+                'content' => printf(
+                    // translators: %s: The customer payment method.
+                    esc_html__('Payment is authorized. need to capture it before the expiration, payment status changes from pending to authorized and customer made transaction with %s', 'wp-payment-form'),
+                    esc_html($customerPaymentMethod)
+                )
             ));
 
             return;
@@ -502,11 +506,15 @@ class StripeHostedHandler extends StripeHandler
             }
         }
 
+        $formDataRaw = $submission->form_data_raw;
+        $formDataRaw['stripe_ipn_data'] = $session;
+
         // Fire Action Hooks to make the payment
         $submissionModel->updateSubmission($submission->id, [
             'payment_status' => 'paid',
             'payment_method' => 'stripe',
-            'payment_mode' => $this->getMode($submission->form_id)
+            'payment_mode' => $this->getMode($submission->form_id),
+            'form_data_raw' => maybe_serialize($formDataRaw)
         ]);
 
         $submission = $submissionModel->getSubmission($submission->id);
@@ -515,6 +523,7 @@ class StripeHostedHandler extends StripeHandler
 
         $paymentSuccessFired = false;
         if ($intentedOneTimeTransaction) {
+            
             $transaction = $transactionModel->getTransaction($intentedOneTimeTransaction->id);
             do_action('wppayform/form_payment_success_stripe', $submission, $transaction, $submission->form_id, $session);
             do_action('wppayform/form_payment_success', $submission, $transaction, $submission->form_id, $session);
@@ -919,7 +928,12 @@ class StripeHostedHandler extends StripeHandler
                     'submission_id' => $transaction->submission_id,
                     'type' => 'info',
                     'created_by' => 'Payform Bot',
-                    'content' => sprintf(__('Payment Refunded by Admin. Refunded: %s %s', 'wp-payment-form'),  $currencySymbol, $refundedMoney)
+                    'content' => printf(
+                        // translators: 1: Currency symbol, 2: Refunded amount.
+                        esc_html__('Payment Refunded by Admin. Refunded: %1$s %2$s', 'wp-payment-form'),
+                        esc_html($currencySymbol),
+                        esc_html($refundedMoney)
+                    )
                 ));
                 $refund = $refundModel->getRefund($refund->id);
                 do_action('wppayform/payment_refunded_stripe', $refund, $refund->form_id, $charge);

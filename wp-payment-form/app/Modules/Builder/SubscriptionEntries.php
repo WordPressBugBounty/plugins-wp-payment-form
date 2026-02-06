@@ -5,25 +5,25 @@ use WPPayForm\Framework\Support\Arr;
 
 use WPPayForm\App\Services\GlobalTools;
 
-if (!function_exists('getWpfPaymentStatus')) {
-    function getWpfPaymentStatus($status) {
+if (!function_exists('wppayform_get_payment_status')) {
+    function wppayform_get_payment_status($status) {
         $assetUrl = WPPAYFORM_URL . 'assets/images/payment-status';
-    
+
         if(!empty($status)){
             return $assetUrl . '/' . strtolower($status) . '.svg';
         }
         return '';
-    }    
+    }
 }
 
-if (!function_exists('getWpfPaymentGateways')) {
-    function getWpfPaymentGateways($gateways) {
+if (!function_exists('wppayform_get_payment_gateways')) {
+    function wppayform_get_payment_gateways($gateways) {
         $assetUrl = WPPAYFORM_URL . 'assets/images/gateways';
-    
+
         if (!empty($gateways)) {
             return $assetUrl . '/' . strtolower($gateways) . '.svg';
         }
-    
+
         return '';
     }
 }
@@ -41,13 +41,13 @@ class SubscriptionEntries
             <div class="wpf-user-table-title">
                 <div>
                     <p style="margin: 0;font-size: 22px;font-weight: 500;color: #423b3b;">
-                        <?php echo esc_html($planName) ?> - Billings.
+                        <?php echo esc_html($planName) ?> - <?php esc_html_e('Billings', 'wp-payment-form') ?>.
                     </p>
                 </div>
                 <?php if ($can_sync_subscription_billings == 'yes' && $isNotOfflinePayment && $subscriptionStatus != 'cancelled'): ?>
                     <div class="wpf-sync-action">
-                        <button class="wpf-sync-subscription-btn" 
-                                data-form_id="<?php echo esc_attr($formId); ?>" 
+                        <button class="wpf-sync-subscription-btn"
+                                data-form_id="<?php echo esc_attr($formId); ?>"
                                 data-submission_hash="<?php echo esc_attr($submissionHash); ?>"
                                 aria-label="<?php esc_attr_e('Sync subscription billings', 'wp-payment-form'); ?>">
                             <span class="dashicons dashicons-update-alt" aria-hidden="true"></span>
@@ -58,11 +58,11 @@ class SubscriptionEntries
             </div>
             <div class="wpf-table-container">
                 <div class='wpf-user-dashboard-table__header'>
-                    <div class='wpf-user-dashboard-table__column'>ID</div>
-                    <div class='wpf-user-dashboard-table__column'>Amount</div>
-                    <div class='wpf-user-dashboard-table__column'>Date</div>
-                    <div class='wpf-user-dashboard-table__column'>Status</div>
-                    <div class='wpf-user-dashboard-table__column'>Payment Method</div>
+                    <div class='wpf-user-dashboard-table__column'><?php esc_html_e('ID', 'wp-payment-form') ?></div>
+                    <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Amount', 'wp-payment-form') ?></div>
+                    <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Date', 'wp-payment-form') ?></div>
+                    <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Status', 'wp-payment-form') ?></div>
+                    <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Payment Method test', 'wp-payment-form') ?></div>
                 </div>
                 <div class='wpf-user-dashboard-table__rows'>
                     <?php
@@ -71,7 +71,7 @@ class SubscriptionEntries
                         <div class='wpf-user-dashboard-table__row'>
                             <div class='wpf-user-dashboard-table__column'>
                                 <span class='wpf-sub-id wpf_toal_amount_btn' style="color: black">
-                                    <?php echo esc_html(Arr::get($donationItem, 'id', '')) ?> 
+                                    <?php echo esc_html(Arr::get($donationItem, 'id', '')) ?>
                                 </span>
                             </div>
                             <div class='wpf-user-dashboard-table__column'>
@@ -83,13 +83,13 @@ class SubscriptionEntries
                             </div>
                             <div class='wpf-user-dashboard-table__column'>
                                 <span class='wpf-payment-status <?php echo esc_attr(Arr::get($donationItem, 'status', ''))?>'>
-                                    <img src="<?php echo esc_url(getWpfPaymentStatus(Arr::get($donationItem, 'status', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'status', '')); ?>">
+                                    <img src="<?php echo esc_url(wppayform_get_payment_status(Arr::get($donationItem, 'status', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'status', '')); ?>">
                                     <?php echo esc_html(Arr::get($donationItem, 'status', '')) ?>
                                 </span>
                             </div>
                             <div class='wpf-user-dashboard-table__column'>
                                 <!-- <?php echo esc_html(ucfirst(Arr::get($donationItem, 'payment_method', ''))) ?> -->
-                                <img src="<?php echo esc_html(getWpfPaymentGateways(Arr::get($donationItem, 'payment_method', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'payment_method', '')); ?>">
+                                <img src="<?php echo esc_url(wppayform_get_payment_gateways(Arr::get($donationItem, 'payment_method', ''))); ?>" alt="<?php echo esc_attr(Arr::get($donationItem, 'payment_method', '')); ?>">
                             </div>
                         </div>
                     <?php endforeach ?>

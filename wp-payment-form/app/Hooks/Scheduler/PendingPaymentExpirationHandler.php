@@ -21,7 +21,7 @@ class PendingPaymentExpirationHandler
         $formId = $transaction['form_id'];
 
         $expirationSettings = get_option('wppayform_global_currency_settings');
-        $expirationSettings = safeUnserialize($expirationSettings);
+        $expirationSettings = wppayform_safeUnserialize($expirationSettings);
         $expiration_time_enabled = !empty($expirationSettings['expiration_time_enabled']) ? (bool) $expirationSettings['expiration_time_enabled'] : false;
         $expirationTimeType = !empty($expirationSettings['expiration_time_type']) ? sanitize_text_field($expirationSettings['expiration_time_type']) : null;
         $expirationTime = !empty($expirationSettings['expiration_time']) ? absint($expirationSettings['expiration_time']) : null;
@@ -91,6 +91,11 @@ class PendingPaymentExpirationHandler
         if ((!$updateSubmission && !$updateTransaction) || (!$updateSubmission && !$updateSubscription)) {
             return false;
         }
+
+        do_action('wppayform/form_submission_activity_start', $form_id);
+        do_action('wppayform/after_payment_status_change', $submission_id, 'failed');
+        do_action('wppayform/form_payment_failed', $submission, $form_id, $transaction, 'timeout');
+
         SubmissionActivity::create([
             'submission_id' => $submission_id,
             'form_id'       => $form_id,

@@ -59,9 +59,19 @@ class GlobalTools
             ->get();
         $formattedMeta = array();
         foreach ($metas as $meta) {
-            $formattedMeta[$meta->meta_key] = safeUnserialize($meta->meta_value);
+            $formattedMeta[$meta->meta_key] = wppayform_safeUnserialize($meta->meta_value);
         }
-        $formattedMeta = apply_filters('wpf_form_export_meta', $formattedMeta, $formId);
+        $formattedMeta = apply_filters_deprecated(
+            'wpf_form_export_meta',
+            [
+                $formattedMeta,
+                $formId
+            ],
+            '1.0.0',
+            'wppayform/export_form_meta',
+            'Use wppayform/export_form_meta instead of wpf_form_export_meta.'
+        );
+        $formattedMeta = apply_filters('wppayform/export_form_meta', $formattedMeta, $formId);
         $form['form_meta'] = $formattedMeta;
         return $form;
     }
@@ -73,7 +83,7 @@ class GlobalTools
         }
 
         $importFile = Arr::get($_FILES, 'file');
-        $tmpName = Arr::get($importFile, 'tmp_name');
+        $tmpName = sanitize_text_field( Arr::get($importFile, 'tmp_name') );
 
         $form = json_decode(file_get_contents($tmpName), true);
         $form = apply_filters('wppayform/import_form_json_data', $form);

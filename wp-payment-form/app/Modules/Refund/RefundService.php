@@ -85,6 +85,7 @@ class RefundService
 
         if (is_wp_error($refundResult)) {
             $errorMessages = $refundResult->get_error_messages();
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new RefundException($errorMessages[0] ?? 'Unknown refund error', 400);
         }
 

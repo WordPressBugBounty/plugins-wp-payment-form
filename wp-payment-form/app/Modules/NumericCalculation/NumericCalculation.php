@@ -17,7 +17,6 @@ class NumericCalculation
     public static function processNumericCalculations($expressions, $calculation, $formattedElements, $formData)
     {
         $processedCalculations = [];
-        // dd($formattedElements, $formData);
         foreach ($formattedElements as $group => $elements) {
             foreach ($elements as $elementId => $element) {
 
@@ -35,6 +34,10 @@ class NumericCalculation
                 if ($element['type'] === 'recurring_payment_item') {
                     $formData[$elementId] = self::calculateRecurringPaymnet($element, $formData[$elementId], $elementId, $formData);
                 }
+                // Calculate Donation Item Pricing  
+                if ($element['type'] === 'donation_item') {
+                    $formData[$elementId] = self::calculateDonationItem($element, $formData[$elementId], $elementId, $formData);
+                }
 
                 // Process Numeric Calculations  
                 if (isset($element['options'])) {
@@ -42,16 +45,24 @@ class NumericCalculation
                         && $element['options']['numeric_calculation'] === 'yes';
                     $hasCalculationExpression = Arr::get($element, 'options.calculation_expression', '');
                     $numericServersideValidation = Arr::get($element, 'options.numeric_serverside_validation', '');
-                    
-                    if ($isNumericCalculation && !empty($hasCalculationExpression)) {
+                    $isAvailableFormData = isset($formData[$elementId]) && !empty($formData[$elementId]);
+                    if ($isNumericCalculation && !empty($hasCalculationExpression) && $isAvailableFormData) {
                         try {
                             $processedExpression = self::replaceInputPlaceholders($hasCalculationExpression, $formData);
-                            $result = floatval(self::evaluateExpression($processedExpression));
-                            $resultFormatted = number_format((float)$result, 2, '.', 0.0);
+                            $result = (float)self::evaluateExpression($processedExpression);
+                            $formValue = (float)($formData[$elementId] ?? 0);
+
+                            // Round first, then format
+                            $resultFormatted = number_format(round($result, 2), 2, '.', '');
+                            $formDataValue = number_format(round($formValue, 2), 2, '.', '');
+
                             $processedCalculations[$elementId] = $resultFormatted;
-                            $formDataValue = number_format((float)$formData[$elementId], 2, '.', 0.0) ?? null;
-                            if ($resultFormatted !== $formDataValue && $numericServersideValidation === 'yes' ) {
-                                self::errorHandler($result, 'Please verify numeric calculation, the value is not valid.', ['calculated_value' => $result, 'form_data_value' => $formDataValue]);
+                            
+                            if ($resultFormatted !== $formDataValue && $numericServersideValidation === 'yes') {
+                                self::errorHandler($result, 'Please verify numeric calculation, the value is not valid.', [
+                                    'calculated_value' => $resultFormatted, 
+                                    'form_data_value' => $formDataValue
+                                ]);
                             }
                         } catch (\Exception $e) {
                             $processedCalculations[$elementId] = $e->getMessage();
@@ -66,6 +77,7 @@ class NumericCalculation
     private static function errorHandler($code, $message, $data = array())
     {
         $error = new \WP_Error($code, $message, $data);
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         wp_die($error);
     }
     private static function replaceInputPlaceholders(string $expression, array $form_data): string
@@ -219,5 +231,11 @@ class NumericCalculation
         }  
         return null;
     }  
+
+    private static function calculateDonationItem($element, $selectedItem, $elementId, $formData) {  
+        $formDataKey = $elementId . '_custom';  
+        $donationAmount = Arr::get($formData, $formDataKey, 0);  
+        return $donationAmount;
+    }
 }
 ?>

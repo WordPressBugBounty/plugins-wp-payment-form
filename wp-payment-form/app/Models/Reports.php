@@ -28,16 +28,16 @@ class Reports extends Model
         $beforeTwoTimeDate = '';
         switch ($duration) {
             case 'last_7_days':
-                $beforeDate = date('Y-m-d', strtotime('-7 days'));
-                $beforeTwoTimeDate = date('Y-m-d', strtotime('-14 days'));
+                $beforeDate = wp_date('Y-m-d', strtotime('-7 days'));
+                $beforeTwoTimeDate = wp_date('Y-m-d', strtotime('-14 days'));
                 break;
             case 'last_30_days':
-                $beforeDate = date('Y-m-d', strtotime('-30 days'));
-                $beforeTwoTimeDate = date('Y-m-d', strtotime('-60 days'));
+                $beforeDate = wp_date('Y-m-d', strtotime('-30 days'));
+                $beforeTwoTimeDate = wp_date('Y-m-d', strtotime('-60 days'));
                 break;
             case 'this_year':
-                $beforeDate = date('Y-m-d', strtotime('-365 days'));
-                $beforeTwoTimeDate = date('Y-m-d', strtotime('-730 days'));
+                $beforeDate = wp_date('Y-m-d', strtotime('-365 days'));
+                $beforeTwoTimeDate = wp_date('Y-m-d', strtotime('-730 days'));
                 break;
             default:
                 $beforeDate = '';

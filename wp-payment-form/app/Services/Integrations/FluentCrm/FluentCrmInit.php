@@ -50,7 +50,7 @@ class FluentCrmInit
         }
 
         $widgets['fluent_crm'] = [
-            'title' => __('FluentCRM Profile', 'fluent-crm'),
+            'title' => __('FluentCRM Profile', 'wp-payment-form'),
             'content' => $profileHtml
         ];
         return $widgets;

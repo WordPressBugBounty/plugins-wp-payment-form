@@ -8,8 +8,6 @@ use WPPayForm\App\Modules\Builder\RenderDemoForm;
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="Imagetoolbar" content="No" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/css/lightgallery.min.css" integrity="sha512-F2E+YYE1gkt0T5TVajAslgDfTEUQKtlu4ralVq78ViNxhKXQLrgQLLie8u1tVdG2vWnB3ute4hcdbiBtvJQh0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/css/lightgallery-bundle.min.css" integrity="sha512-nUqPe0+ak577sKSMThGcKJauRI7ENhKC2FQAOOmdyCYSrUh0GnwLsZNYqwilpMmplN+3nO3zso8CWUgu33BDag==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <title><?php esc_html_e('Preview Form', 'wp-payment-form') ?></title>
     <?php
@@ -142,7 +140,7 @@ use WPPayForm\App\Modules\Builder\RenderDemoForm;
                 font-size: 15px;
             }
         }
-/* Step form css start */
+        /* Step form css start */
         #wpf_svg_form_time {
             height: 15px;
             max-width: 80%;
@@ -276,14 +274,15 @@ use WPPayForm\App\Modules\Builder\RenderDemoForm;
         <div class="wpf_preview_body">
             <div class="wpf_form_preview_wrapper">
                 <?php
-                    $render = (new RenderDemoForm())->renderForm($form_id);
-                    echo $render;
+                    $wppayform_render = (new RenderDemoForm())->renderForm($form_id);
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    echo $wppayform_render;
                 ?>
             </div>
         </div>
         <div class="wpf_preview_footer">
-            <p>You are seeing preview version of Paymattic. This form is only accessible for Admin users. Other users
-                may not access this page. To use this for in a page please use the following shortcode: [wppayform
+            <p><?php echo esc_html__('You are seeing preview version of Paymattic. This form is only accessible for Admin users. Other users
+                may not access this page. To use this for in a page please use the following shortcode ', 'wp-payment-form') ?> : [wppayform
                 id='<?php echo intval($form_id); ?>']</p>
         </div>
     </div>
@@ -315,9 +314,6 @@ use WPPayForm\App\Modules\Builder\RenderDemoForm;
             });
         });
     </script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/lightgallery.min.js" integrity="sha512-pG+XpUdyBtp28FzjpaIaj72KYvZ87ZbmB3iytDK5+WFVyun8r5LJ2x1/Jy/KHdtzUXA0CUVhEnG+Isy1jVJAbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/plugins/thumbnail/lg-thumbnail.umd.min.js" integrity="sha512-hdzLQVAURjMzysJVkWaKWA2nD+V6CcBx6wH0aWytFnlmgIdTx/n5rDWoruSvK6ghnPaeIgwKuUESlpUhat2X+Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/plugins/zoom/lg-zoom.umd.min.js" integrity="sha512-++PKcAnn9Qf7G3Eu1WUmSR44yHOIH77vnAdLA70w9/PoECvbVzcW6lrrKR2xyfe4iYMbknCx5NSVQEBPl7pYPg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             lightGallery(document.getElementById('lightgallery'), {
                 plugins: [lgZoom, lgThumbnail],

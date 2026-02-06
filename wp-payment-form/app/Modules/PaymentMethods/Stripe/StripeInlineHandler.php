@@ -11,6 +11,7 @@ use WPPayForm\App\Models\Subscription;
 use WPPayForm\App\Models\Transaction;
 use WPPayForm\App\Services\GeneralSettings;
 use WPPayForm\Framework\Support\Arr;
+use WPPayFormPro\Classes\PaymentsHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -65,6 +66,11 @@ class StripeInlineHandler extends StripeHandler
 
         $lineItems = (new StripeHostedHandler())->getLineItems($submission, $totalPayable);
 
+        if (defined('WPPAYFORMHASPRO')) {
+            $formPaymentSettings = (new PaymentsHelper())->getPaymentSettings($form->ID);
+        }
+
+        $stripeMetaData = $formPaymentSettings['stripe_meta_data'] ?? [];
         $hasTransaction = $transaction && $transaction->payment_total;
 
         if (!$hasTransaction && !$hasSubscriptions) {
@@ -78,11 +84,9 @@ class StripeInlineHandler extends StripeHandler
             }
             $finalAmounts && $transaction->payment_total = $finalAmounts;
         }
-
         if ($hasSubscriptions) {
-            $this->handleSetupIntent($submission, $form_data, $totalPayable);
+            $this->handleSetupIntent($submission, $form_data, $totalPayable, $stripeMetaData);
         }
-
         $paymentMethodId = Arr::get($form_data, '__stripe_payment_method_id');
 
         /*
@@ -102,7 +106,7 @@ class StripeInlineHandler extends StripeHandler
             'confirmation_method' => 'manual',
             'confirm' => 'true',
             'description' => $form->post_title,
-            'metadata' => $this->getIntentMetaData($submission),
+            'metadata' => $this->getIntentMetaData($submission, $stripeMetaData),
             'customer' => $customer->id
         ];
 
@@ -116,7 +120,7 @@ class StripeInlineHandler extends StripeHandler
         return true;
     }
 
-    public function handleSetupIntent($submission, $formData, $totalPayable)
+    public function handleSetupIntent($submission, $formData, $totalPayable, $stripeMetaData)
     {
         $paymentMethodId = Arr::get($formData, '__stripe_payment_method_id');
 
@@ -164,7 +168,7 @@ class StripeInlineHandler extends StripeHandler
         $subscriptionArgs = [
             'customer' => $customer->id,
             'items' => $items,
-            'metadata' => (new StripeHostedHandler())->getIntentMetaData($submission)
+            'metadata' => (new StripeHostedHandler())->getIntentMetaData($submission, $stripeMetaData)
         ];
 
         if (count($subscriptionPlans) == 1) {
@@ -191,7 +195,14 @@ class StripeInlineHandler extends StripeHandler
         if (is_wp_error($invoice)) {
             $this->handlePaymentChargeError($invoice->get_error_message(), $submission, $transaction, $form, false, 'invoice');
         }
+        
+        $formDataRaw = $submission->form_data_raw;
+        $formDataRaw['paypal_ipn_data'] = $invoice;
+        $submissionModel = new Submission();
 
+        $submissionModel->updateSubmission($submission->id, [
+            'form_data_raw' => maybe_serialize($formDataRaw)
+        ]);
 
         if ($invoice->payment_intent && $invoice->payment_intent->status == 'requires_action' &&
             $invoice->payment_intent->next_action->type == 'use_stripe_sdk') {
@@ -222,7 +233,7 @@ class StripeInlineHandler extends StripeHandler
             'metadata' => [
                 'payform_id' => $submission->form_id,
                 'submission_id' => $submission->id,
-                'form_name' => strip_tags($form->post_title)
+                'form_name' => wp_strip_all_tags($form->post_title)
             ]
         ];
         if ($submission->customer_email) {
@@ -242,6 +253,7 @@ class StripeInlineHandler extends StripeHandler
      * */
     public function confirmScaSetupIntentsPayment()
     {
+    
         if(isset($_REQUEST['submission_id'])){
             $submissionId = intval(sanitize_text_field(wp_unslash($_REQUEST['submission_id'])));
         }
@@ -266,10 +278,10 @@ class StripeInlineHandler extends StripeHandler
         }
 
         $invoice = $intent->invoice;
-        $this->handlePaidSubscriptionInvoice($invoice, $submission);
+        $this->handlePaidSubscriptionInvoice($invoice, $submission, $intent);
     }
 
-    public function handlePaidSubscriptionInvoice($invoice, $submission)
+    public function handlePaidSubscriptionInvoice($invoice, $submission, $intent = null)
     {
         if ($invoice->status != 'paid') {
             wp_send_json_error([
@@ -279,6 +291,7 @@ class StripeInlineHandler extends StripeHandler
 
         // Submission status as paid
         $submissionModel = new Submission();
+        
         $submissionModel->updateSubmission($submission->id, [
             'payment_status' => 'paid',
             'payment_mode' => ($invoice->livemode) ? 'live' : 'test',
@@ -426,7 +439,6 @@ class StripeInlineHandler extends StripeHandler
             $form = Form::getForm($submission->form_id);
             $this->handlePaymentChargeError($intent->get_error_message(), $submission, $transaction, $form, false, 'payment_intent');
         }
-
         if ($intent->status =='requires_capture') {
             $transactionModel = new Transaction();
             
@@ -542,10 +554,14 @@ class StripeInlineHandler extends StripeHandler
             'payment_mode' => $paymentMode,
         ));
 
+        $formDataRaw = $submission->form_data_raw;
+        $formDataRaw['stripe_ipn_data'] = $intend;
+
         $submissionUpdateData = array(
             'payment_status' => 'paid',
             'payment_method' => 'stripe',
             'payment_mode' => $paymentMode,
+            'form_data_raw' => maybe_serialize($formDataRaw)
         );
         $submissionModel = new Submission();
         $submissionModel->updateSubmission($submission->id, $submissionUpdateData);
@@ -573,7 +589,7 @@ class StripeInlineHandler extends StripeHandler
     }
 
 
-    private function getIntentMetaData($submission)
+    private function getIntentMetaData($submission, $stripeMetaData)
     {
         $metadata = [
             'Submission ID' => $submission->id,
@@ -585,6 +601,8 @@ class StripeInlineHandler extends StripeHandler
         if ($submission->customer_name) {
             $metadata['customer_name'] = $submission->customer_name;
         }
+
+        $metadata = array_merge($metadata, (new StripeHostedHandler())->getCustomMetaData($stripeMetaData, $submission));
 
         return apply_filters('wppayform/stripe_onetime_payment_metadata', $metadata, $submission);
     }

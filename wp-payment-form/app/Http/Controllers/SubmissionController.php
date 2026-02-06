@@ -14,29 +14,20 @@ class SubmissionController extends Controller
 {
     public function index($formId = false)
     {
+        $formId = absint($formId);
         return (new Submission())->index($formId, $this->request->all());
     }
 
     public static function reports($formId)
     {
+        $formId = absint($formId);
         $paymentStatuses = GeneralSettings::getPaymentStatuses();
         $submission = new Submission();
 
-        $searchString = Arr::get($_REQUEST, 'search_string');
-        if(isset($searchString)){
-            $searchString = sanitize_text_field($searchString);
-        }
+        $searchString = sanitize_text_field(Arr::get($_REQUEST, 'search_string', ''));
         
-        $startDate = Arr::get($_REQUEST, 'start_date');
-        $endDate = Arr::get($_REQUEST, 'end_date');
-
-        if (isset($startDate)) {
-            $startDate = sanitize_text_field($startDate);
-        }
-
-        if ((isset($endDate))) {
-            $endDate = sanitize_text_field($endDate);
-        }
+        $startDate = sanitize_text_field(Arr::get($_REQUEST, 'start_date', ''));
+        $endDate = sanitize_text_field(Arr::get($_REQUEST, 'end_date', ''));
         
         $reports = [];
         $reports['total'] = [
@@ -53,6 +44,7 @@ class SubmissionController extends Controller
                 'payment_total' => $submission->paymentTotal($formId, $status,  $searchString, $startDate, $endDate)
             ];
         }
+
         wp_send_json_success([
             'reports' => $reports,
             'currencySettings' => Form::getCurrencyAndLocale($formId),
@@ -62,6 +54,8 @@ class SubmissionController extends Controller
 
     public function getSubmissionPrepared($formId, $submissionId = false)
     {
+        $formId = absint($formId);
+        $submissionId = $submissionId ? absint($submissionId) : $submissionId;
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId, array('transactions', 'order_items', 'tax_items', 'activities', 'refunds', 'discount'));
         if ($submission->status == 'new') {
@@ -99,12 +93,17 @@ class SubmissionController extends Controller
     }
     public function getSubmission($formId, $submissionId = false)
     {
+        $formId = absint($formId);
+        $submissionId = $submissionId ? absint($submissionId) : $submissionId;
         $submission = $this->getSubmissionPrepared($formId, $submissionId);
         wp_send_json_success($submission, 200);
     }
 
     public function addSubmissionNote($formId, $submissionId)
     {
+        $formId = absint($formId);
+        $submissionId = absint($submissionId);
+
         $content = esc_html($this->request->note);
         $userId = get_current_user_id();
         $user = get_user_by('ID', $userId);
@@ -131,12 +130,18 @@ class SubmissionController extends Controller
 
     public function deleteNote($formId, $entryId, $noteId)
     {
+        $formId = absint($formId);
+        $entryId = absint($entryId);
+        $noteId = absint($noteId);
+
         return SubmissionActivity::deleteActivity($formId, $entryId, $noteId);
         do_action('wppayform/after_delete_note_by_user', $entryId, $noteId);
     }
 
     public function changeEntryStatus($formId, $entryId)
     {
+        $formId = absint($formId);
+        $entryId = absint($entryId);
         $newStatus = sanitize_text_field($this->request->status);
         $submissionModel = new Submission();
         $newStatus = $submissionModel->changeEntryStatus($formId, $entryId, $newStatus);
@@ -148,6 +153,8 @@ class SubmissionController extends Controller
 
     public function getNextPrevSubmission($formId = false, $currentSubmissionId = null)
     {
+        $formId = absint($formId);
+        $currentSubmissionId = absint($currentSubmissionId);
         $queryType = sanitize_text_field($this->request->type);
 
         $whereOperator = '<';
@@ -180,6 +187,7 @@ class SubmissionController extends Controller
 
     public function paymentStatus($submissionId)
     {
+        $submissionId = absint($submissionId);
         $newStatus = sanitize_text_field($this->request->new_payment_status);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
@@ -253,7 +261,9 @@ class SubmissionController extends Controller
     public function remove()
     {
         $submissionId = $this->request->get('submission_id', []);
+        $submissionId = array_map('absint', $submissionId);
         $formId = $this->request->get('form_id', '');
+        $formId = absint($formId);
         do_action('wppayform/before_delete_submission', $submissionId, $formId);
         $submissionModel = new Submission();
         $submissionModel->deleteSubmission($submissionId);
@@ -265,8 +275,10 @@ class SubmissionController extends Controller
 
     public function captureAuthorizedAmount($formId, $submissionId)
     {
-        $paymentMethod = $this->request->payment_method;
-        $amountToCapture = $this->request->amount_to_be_captured;
+        $formId = absint($formId);
+        $submissionId = absint($submissionId);
+        $paymentMethod = sanitize_text_field($this->request->payment_method);
+        $amountToCapture = floatval($this->request->amount_to_be_captured);
         if ('stripe' === $paymentMethod) {
             // $this->captureStripeAuthorizedAmount($formId, $submissionId);
             do_action('wppayform/capture_authorized_amount_' . $paymentMethod, $formId, $submissionId, $amountToCapture);
@@ -282,6 +294,8 @@ class SubmissionController extends Controller
 
     public function syncSubscription($formId, $submissionId)
     {
+        $formId = absint($formId);
+        $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $entry = $submissionModel->getSubmission($submissionId);
         if (empty($entry->payment_method)) {
@@ -292,6 +306,8 @@ class SubmissionController extends Controller
 
     public function syncOfflineSubscription($formId, $submissionId)
     {
+        $formId = absint($formId);
+        $submissionId = absint($submissionId);
         $subscriptions = $this->request->subscriptions;
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
@@ -310,11 +326,13 @@ class SubmissionController extends Controller
 
     public function changeOfflineSubscriptionStatus($formId, $submissionId)
     {
+        $formId = absint($formId);
+        $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
         $subscription = $this->request->subscription;
-        $newStatus = $this->request->newStatus;
-
+        $newStatus = sanitize_text_field($this->request->newStatus);
+ 
         if ('offline' != $submission->payment_method) {
             wp_send_json_error(
                 array(
@@ -333,6 +351,8 @@ class SubmissionController extends Controller
 
     public function changeOfflineSubscriptionPaymentStatus($formId, $submissionId)
     {
+        $formId = absint($formId);
+        $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
         $subscription_payment = $this->request->subscription_payment;
@@ -358,6 +378,8 @@ class SubmissionController extends Controller
 
     public function cancelSubscription($formId, $submissionId)
     {
+        $formId = absint($formId);
+        $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
         $subscription = $this->request->subscription;

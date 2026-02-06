@@ -4,8 +4,8 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
-Tested up to: 6.8.2
-Stable tag: 4.6.15
+Tested up to: 6.9
+Stable tag: 4.6.17
 Requires PHP: 7.1
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -22,7 +22,7 @@ From simple transactions to advanced features like **recurring donations**, **
 
 You get **13 worldwide payment gateways** with the **Stripe payment button for FREE**. 🧡
 
-[youtube https://youtu.be/kD_fAskfNXM?si=QAZNZ0-kwyVU_ZcO]
+[youtube https://www.youtube.com/watch?v=-en7Gs7zH8k]
 
 Paymattic is one of the best fundraising WordPress plugins that handles all of your donations. Paymattic manages your payments and subscriptions with groundbreaking payment features. 💪
 
@@ -559,6 +559,27 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+
+= 4.6.17 – 04 December, 2025 =
+
+- Fixes security issues like sanitization and escaping.
+- Add IPN data in form data raw for Stripe payments.
+
+= 4.6.16 – 18 November, 2025 =
+- Adds Conditional logic for Donation item in email.
+- Adds Selection limit for checkbox field in advanced settings.
+- Fixes Shortcode handling for address and payment fields.
+- Fixes Condition rendering for radio field
+- Fixes Currency switcher field issue in container.
+- Fixes Payment total mismatch for the subscription payment.
+- Fixes Backend validation issue for dynamic payment fields.
+- Fixes Webhook Not Triggering from pending to failed payment status.
+- Fixes Recurring payments not showing in FCRM “Purchase History”.
+- Fixes Custom amount issue in recurring payments for payment summary and total.
+- Fixes Custom metadata issue in Stripe embedded payments.
+- Improves Address field customization.
+- Improves Country field behavior in address fields.
+
 = 4.6.15 – 25 September, 2025 =
 - Adds Auto failed payment status by time interval.
 - Adds Conditional logic in FluentCRM integration for payment fields.

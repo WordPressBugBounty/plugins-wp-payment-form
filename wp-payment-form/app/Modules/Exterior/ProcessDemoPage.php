@@ -38,12 +38,17 @@ class ProcessDemoPage
     {
         $form = Form::getForm($formId);
         if ($onlyPreviewPage == "yes") {
+            // Enqueue light-gallery assets
+            $this->enqueueLightGalleryAssets();
+
             App::make('view')->render('admin.template_preview', [
                 'form_id' => $formId,
             ]);
             exit();
         }
         else if ($form) {
+            // Enqueue light-gallery assets
+            $this->enqueueLightGalleryAssets();
             App::make('view')->render('admin.show_review', [
                 'form_id' => $formId,
                 'form' => $form,
@@ -51,6 +56,51 @@ class ProcessDemoPage
             ]);
             exit();
         }
+    }
+
+    private function enqueueLightGalleryAssets()
+    {
+        // Enqueue light-gallery CSS styles
+        wp_enqueue_style(
+            'lightgallery-css',
+            WPPAYFORM_URL . 'assets/libs/lightgallery/css/lightgallery.min.css',
+            [],
+            '2.7.0',
+            'all'
+        );
+
+        wp_enqueue_style(
+            'lightgallery-bundle-css',
+            WPPAYFORM_URL . 'assets/libs/lightgallery/css/lightgallery-bundle.min.css',
+            [],
+            '2.7.0',
+            'all'
+        );
+
+        // Enqueue light-gallery JS scripts
+        wp_enqueue_script(
+            'lightgallery-js',
+            WPPAYFORM_URL . 'assets/libs/lightgallery/lightgallery.min.js',
+            [],
+            '2.7.0',
+            true
+        );
+
+        wp_enqueue_script(
+            'lightgallery-thumbnail-plugin',
+            WPPAYFORM_URL . 'assets/libs/lightgallery/plugins/thumbnail/lg-thumbnail.umd.min.js',
+            ['lightgallery-js'],
+            '2.7.0',
+            true
+        );
+
+        wp_enqueue_script(
+            'lightgallery-zoom-plugin',
+            WPPAYFORM_URL . 'assets/libs/lightgallery/plugins/zoom/lg-zoom.umd.min.js',
+            ['lightgallery-js'],
+            '2.7.0',
+            true
+        );
     }
 
     private function loadDefaultPageTemplate()

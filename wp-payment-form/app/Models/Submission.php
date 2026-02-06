@@ -127,7 +127,7 @@ class Submission extends Model
     public function dateFilter($query, $startDate, $endDate)
     {
         if (isset($startDate) && isset($endDate)) {
-            $endOfDay = date('Y-m-d', strtotime($endDate)) . ' 23:59:59';
+            $endOfDay = wp_date('Y-m-d', strtotime($endDate)) . ' 23:59:59';
             $query->whereBetween('created_at', [$startDate, $endOfDay]);
         }
         return $query;
@@ -344,8 +344,8 @@ class Submission extends Model
         $formattedResults = array();
 
         foreach ($results as $result) {
-            $result->form_data_raw = safeUnserialize($result->form_data_raw);
-            $result->form_data_formatted = safeUnserialize($result->form_data_formatted);
+            $result->form_data_raw = wppayform_safeUnserialize($result->form_data_raw);
+            $result->form_data_formatted = wppayform_safeUnserialize($result->form_data_formatted);
             $result->payment_total += (new Subscription())->getSubscriptionPaymentTotal($result->form_id, $result->id);
             $formattedResults[] = $result;
         }
@@ -358,18 +358,23 @@ class Submission extends Model
 
     public static function findMetaValueById($form_id) {
         global $wpdb;
-        $postTable = $wpdb->prefix . 'posts';
-        $metaTable = $wpdb->prefix . 'postmeta';
+        
+        $postTable = esc_sql($wpdb->prefix . 'posts');
+        $metaTable = esc_sql($wpdb->prefix . 'postmeta');
         $key = 'wppayform_paymentform_builder_settings';
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table names are escaped and safe
         $formSettings = $wpdb->get_var(
             $wpdb->prepare(
-                '
+                "
                 SELECT pm.meta_value
-                FROM ' . $postTable. ' p
-                JOIN ' . $metaTable . ' pm ON p.ID = pm.post_id
+                FROM {$postTable} p
+                JOIN {$metaTable} pm ON p.ID = pm.post_id
                 WHERE p.ID = %d AND pm.meta_key = %s
-                ', $form_id, $key)
+                ",
+                $form_id,
+                $key
+            )
         );
 
         $result = [  
@@ -379,7 +384,7 @@ class Submission extends Model
         ];  
         
         if ($formSettings !== null) {  
-            $unserializedData = safeUnserialize($formSettings);  
+            $unserializedData = wppayform_safeUnserialize($formSettings);  
             
             // Find the donation_item field  
             foreach ($unserializedData as $field) {  
@@ -568,8 +573,8 @@ class Submission extends Model
             ->join('posts', 'posts.ID', '=', 'wpf_submissions.form_id')
             ->where('wpf_submissions.id', $submissionId)
             ->first();
-        $result->form_data_raw = safeUnserialize($result->form_data_raw);
-        $result->form_data_formatted = safeUnserialize($result->form_data_formatted);
+        $result->form_data_raw = wppayform_safeUnserialize($result->form_data_raw);
+        $result->form_data_formatted = wppayform_safeUnserialize($result->form_data_formatted);
         if ($result->user_id) {
             $result->user_profile_url = get_edit_user_link($result->user_id);
         }
@@ -666,7 +671,7 @@ class Submission extends Model
 
         $beforeHour = intval($hour) * 3600;
         $now = current_time('mysql');
-        $formatted_date = date('Y-m-d H:i:s', strtotime($now) - $beforeHour);
+        $formatted_date = wp_date('Y-m-d H:i:s', strtotime($now) - $beforeHour);
 
         $query->where('wpf_submissions.created_at', $condition, $formatted_date);
         if ($payOnly) {
@@ -1063,7 +1068,7 @@ class Submission extends Model
             ->first();
 
         if ($exist) {
-            $value = safeUnserialize($exist->meta_value);
+            $value = wppayform_safeUnserialize($exist->meta_value);
             // dd($value);
             if ($value) {
                 return $value;

@@ -217,6 +217,7 @@ class Bootstrap extends IntegrationManager
                         $entry->id,
                         'success'
                     );
+                    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
                     do_action('fluentsupport_tickets_created_by_wppayform', $ticket->id, $entry, $formId, $feed);
                 } else {
                     $this->addLog(

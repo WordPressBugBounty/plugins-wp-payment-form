@@ -41,6 +41,7 @@ class GeneralTemplate extends TemplateManager
                 'type'  => 'wp-editor',
                 'inline_tip' => defined('FLUENTFORMPRO') ?
                     sprintf(
+                        // translators: %s: Documentation link for Conditional Content in PDF body.
                         __(
                             'You can use Conditional Content in PDF body, for details please check this %s. ',
                             'wp-payment-form'
@@ -69,7 +70,7 @@ class GeneralTemplate extends TemplateManager
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
 
-        $formData = safeUnserialize($submission->form_data_formatted, true);
+        $formData = wppayform_safeUnserialize($submission->form_data_formatted, true);
         $settings = PlaceholderParser::parse($settings, $submission);
         if (!empty($settings['header'])) {
             $this->headerHtml = $settings['header'];

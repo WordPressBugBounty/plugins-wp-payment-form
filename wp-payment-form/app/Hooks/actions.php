@@ -94,10 +94,12 @@ add_action('plugins_loaded', function () {
 
 add_filter('login_redirect', function($redirect_to, $request, $user) {
      $force_redirect = get_option('_wppayform_paymattic_user_force_redirect', 'yes');
+     $hasPaymatticPro = defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO;
+     if($force_redirect !== 'yes' || $hasPaymatticPro) {
+        return apply_filters('wppayform_login_redirect', $redirect_to, $request, $user);
+    }
     if (is_a($user, 'WP_User') && $user->ID != 0) {
-        if ( in_array( 'administrator', (array) $user->roles ) ) {
-            return admin_url(); // Redirect admins to the dashboard
-        } else if (in_array('paymattic_user', (array) $user->roles) && count($user->roles) == 1 && 'yes' === $force_redirect) {
+        if (in_array('paymattic_user', (array) $user->roles) && count($user->roles) == 1 && 'yes' === $force_redirect) {
             // Replace 'custom_url' with your custom URL
             $custom_page = get_option( '_wppayform_user_dashboard_page', home_url() );
             if (intval($custom_page) > 0) {
@@ -119,7 +121,8 @@ add_filter('login_redirect', function($redirect_to, $request, $user) {
             }
         }
     }
-    return $redirect_to;
+
+    return apply_filters('wppayform_login_redirect', $redirect_to, $request, $user);
 } , 10, 3);
 
 
@@ -132,17 +135,12 @@ add_filter('wppayform/print_styles', function ($styles) {
 
 
 // Form Submission Handler
-$submissionHandler = new \WPPayForm\App\Hooks\Handlers\SubmissionHandler();
-add_action('wp_ajax_wpf_submit_form', array($submissionHandler, 'handleSubmission'));
-add_action('wp_ajax_nopriv_wpf_submit_form', array($submissionHandler, 'handleSubmission'));
+add_action('wp_ajax_wpf_submit_form', array(new \WPPayForm\App\Hooks\Handlers\SubmissionHandler(), 'handleSubmission'));
+add_action('wp_ajax_nopriv_wpf_submit_form', array(new \WPPayForm\App\Hooks\Handlers\SubmissionHandler(), 'handleSubmission'));
 
 // Leaderboard render Handler
-$leaderBoardRender = new WPPayForm\App\Modules\LeaderBoard\Render();
-add_action('wp_ajax_wpf_leader_board_render', array($leaderBoardRender, 'leaderBoardRender'));
-add_action('wp_ajax_nopriv_wpf_leader_board_render', array($leaderBoardRender, 'leaderBoardRender'));
-
-// Numeric Calculation Handler
-$numericCalculationRender = new WPPayForm\App\Modules\NumericCalculation\NumericCalculation();
+add_action('wp_ajax_wpf_leader_board_render', array(new \WPPayForm\App\Modules\LeaderBoard\Render(), 'leaderBoardRender'));
+add_action('wp_ajax_nopriv_wpf_leader_board_render', array(new \WPPayForm\App\Modules\LeaderBoard\Render(), 'leaderBoardRender'));
 
 //integration
 $app->addAction('wppayform/after_submission_data_insert', function ($submissionId, $formId, $formData, $formattedElements) {
@@ -180,7 +178,7 @@ $app->addAction('wp', function () {
 });
 
 add_filter('plugin_row_meta', 'paymatticPluginRowMeta', 10, 2);
-    
+    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
     function paymatticPluginRowMeta($links, $file)
     {
         if ('wp-payment-form/wp-payment-form.php' == $file) {

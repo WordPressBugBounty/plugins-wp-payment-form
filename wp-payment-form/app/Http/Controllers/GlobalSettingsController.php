@@ -140,8 +140,7 @@ class GlobalSettingsController extends Controller
             $wp_roles = new WP_Roles();
         }
         foreach ($paymatticUserPermissions as $key => $value) {
-            $wp_roles->remove_role($key);
-            $wp_roles->add_role($key, __($value['name']), $value['capabilities']);
+            $wp_roles->remove_role($key);$wp_roles->add_role($key, $value['name'], $value['capabilities']);
         }
     }
     //Api endpoint: enable-paymattic-user-dashboard
@@ -176,6 +175,7 @@ class GlobalSettingsController extends Controller
     public function updateOrInsertPaymatticUserPermission($paymatticUserPermissions, $message = 'Paymattic User Permissions Updated Successfully')
     {
         try {
+            $paymatticUserPermissions = $this->sanitizePaymatticUserPermissions($paymatticUserPermissions);
             if (current_user_can('manage_options')) {
                 update_option('_wppayform_global_cancel_subsription_email_settings', Arr::get($paymatticUserPermissions, 'notifications', null), null);
                 $this->addPaymatticCustomUser($paymatticUserPermissions['paymatticUserPermissions']);
@@ -197,6 +197,36 @@ class GlobalSettingsController extends Controller
             ], 423);
 
         }
+    }
+
+    public function sanitizePaymatticUserPermissions($data)
+    {
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                // Recursively sanitize nested arrays
+                $data[$key] = $this->sanitizePaymatticUserPermissions($value);
+            } elseif (is_string($value)) {
+                // Detect type by key or pattern
+                if ($key === 'email_to' || $key === 'reply_to') {
+                    $data[$key] = sanitize_email($value);
+                } elseif (strpos($key, 'url') !== false) {
+                    $data[$key] = esc_url_raw($value);
+                } elseif ($key === 'email_body' || $key === 'email_footer') {
+                    // Contains HTML
+                    $data[$key] = wp_kses_post($value);
+                } elseif (preg_match('/^{wp:[a-z_]+}$/', $value)) {
+                    // Placeholder / shortcode-like text
+                    $data[$key] = sanitize_text_field($value);
+                } else {
+                    $data[$key] = sanitize_text_field($value);
+                }
+            } elseif (is_int($value)) {
+                $data[$key] = absint($value);
+            } elseif (is_bool($value)) {
+                $data[$key] = (bool) $value;
+            }
+        }
+        return $data;
     }
     // End of Customer dashboard user rule settings
     public function dashboardNotice(DashboardNotices $notices)
@@ -247,7 +277,7 @@ class GlobalSettingsController extends Controller
 
     public function donorLeaderboardSettings()
     {
-        $form_id = Arr::get($this->request->all(), 'form_id', 0);
+        $form_id = (int) intval(Arr::get($this->request->all(), 'form_id', 0));
         $option_key = 'wppayform_donation_leaderboard_settings';
         
         if ($form_id != 0) {
@@ -390,7 +420,7 @@ class GlobalSettingsController extends Controller
             update_option('wppayform_turnstile_validation_status', false, 'no');
 
             wp_send_json_success([
-                'message' => __('Your Turnstile settings are deleted.', 'wppayform'),
+                'message' => __('Your Turnstile settings are deleted.', 'wp-payment-form'),
                 'status' => false
             ], 200);
         }
@@ -426,28 +456,28 @@ class GlobalSettingsController extends Controller
                 // Send success response letting the user know that
                 // that the turnstile is valid and saved properly.
                 wp_send_json_success([
-                    'message' => __('Your Turnstile is valid and saved.', 'wppayform'),
+                    'message' => __('Your Turnstile is valid and saved.', 'wp-payment-form'),
                     'status' => $status
                 ], 200);
             } else {
                 // turnstile is not valid.
-                $message = __('Sorry, Your Turnstile is not valid or token timed out. Please try again', 'wppayform');
+                $message = __('Sorry, Your Turnstile is not valid or token timed out. Please try again', 'wp-payment-form');
 
                 // if already validated
                 $isalreadyValied = get_option('wppayform_turnstile_settings');
                 if (Arr::get($isalreadyValied, 'siteKey')) {
-                    $message = __('Your Turnstile is already valid! Clear your turnstile settings to renew.', 'wppayform');
+                    $message = __('Your Turnstile is already valid! Clear your turnstile settings to renew.', 'wp-payment-form');
                 }
             }
         } else {
             // The token is empty, so the user didn't verify their turnstile.
-            $message = __('Please validate your Turnstile siteKey first and then hit save.', 'wppayform');
+            $message = __('Please validate your Turnstile siteKey first and then hit save.', 'wp-payment-form');
 
             // Get the already stored turnstile status.
             $status = get_option('wppayform_turnstile_validation_status');
 
             if ($status) {
-                $message = __('Your Turnstile details are already valid. So no need to save again.', 'wppayform');
+                $message = __('Your Turnstile details are already valid. So no need to save again.', 'wp-payment-form');
             }
         }
 

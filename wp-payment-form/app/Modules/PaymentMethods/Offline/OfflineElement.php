@@ -83,7 +83,10 @@ class OfflineElement extends BaseComponent
         );
         $fieldOptions = Arr::get($element, 'field_options'); ?>
         <?php unset($fieldOptions['label']); ?>
-        <div <?php echo $this->builtAttributes($controlAttributes); ?>>
+        <div <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo $this->builtAttributes($controlAttributes);
+        ?>
             <?php $this->buildLabel($fieldOptions, $form); ?><?php echo wp_kses(Arr::get($element, 'field_options.description'), wp_kses_allowed_html('post')); ?>
             
         </div>

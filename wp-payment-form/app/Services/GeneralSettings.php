@@ -565,7 +565,7 @@ class GeneralSettings
 
     public static function zeroDecimalCurrencies()
     {
-        return apply_filters('swppayform/zero_decimal_currencies', array(
+        return apply_filters('wppayform/zero_decimal_currencies', array(
             'BIF' => esc_html__('Burundian Franc', 'wp-payment-form'),
             'CLP' => esc_html__('Chilean Peso', 'wp-payment-form'),
             'DJF' => esc_html__('Djiboutian Franc', 'wp-payment-form'),

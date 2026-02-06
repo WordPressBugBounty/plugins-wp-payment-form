@@ -438,6 +438,17 @@ class TransStrings
             'Paymattic Admin Permissions' => __('Paymattic Admin Permissions', 'wp-payment-form'),
             'By default, only Administrator have access to manage the paymattic. By selecting additional roles bellow, you can give access to manage your paymattic to other user roles.' => __('By default, only Administrator have access to manage the paymattic. By selecting additional roles bellow, you can give access to manage your paymattic to other user roles.', 'wp-payment-form'),
             'Set a default user role for new registrations and update existing roles, excluding Admin and Paymattic User' => __('Set a default user role for new registrations and update existing roles, excluding Admin and Paymattic User', 'wp-payment-form'),
+            'My Spaces' => __('My Spaces', 'wp-payment-form'),
+            'Private' => __('Private', 'wp-payment-form'),
+            'Public' => __('Public', 'wp-payment-form'),
+            'View Space' => __('View Space', 'wp-payment-form'),
+            'My Courses' => __('My Courses', 'wp-payment-form'),
+            'Completed' => __('Completed', 'wp-payment-form'),
+            'Loading...' => __('Loading...', 'wp-payment-form'),
+            'Available courses' => __('Available courses', 'wp-payment-form'),
+            'Other Spaces' => __('Other Spaces', 'wp-payment-form'),
+            'Join Space' => __('Join Space', 'wp-payment-form'),
+            'Enroll in course' => __('Enroll in course', 'wp-payment-form'),
         ];
     }
 }

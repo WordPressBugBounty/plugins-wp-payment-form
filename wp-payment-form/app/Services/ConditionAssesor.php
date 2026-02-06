@@ -42,6 +42,7 @@ class ConditionAssesor
     {
         if ($conditional['field']) {
             $inputValue = Arr::get($inputs, $conditional['field'], '');
+            $isDonaitonRecurring = Arr::get($inputs, 'donation_is_recurring', '');
 
             switch ($conditional['operator']) {
                 case '=':
@@ -100,6 +101,13 @@ class ConditionAssesor
                     }
                     $inputValue = strval($inputValue);
                     return strlen($inputValue) > $conditional['value'];
+                    break;
+                case 'donation_payment_type':
+                    if($isDonaitonRecurring == 'on'){
+                        return $conditional['value'] == 1 ? true : false;
+                    }else{
+                        return $conditional['value'] == 0 ? true : false;
+                    }
                     break;
             }
         }

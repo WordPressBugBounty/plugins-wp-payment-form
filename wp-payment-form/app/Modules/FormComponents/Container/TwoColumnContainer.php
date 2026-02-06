@@ -83,7 +83,7 @@ class TwoColumnContainer extends BaseComponent
         $columns = Arr::get($element, 'field_options.columns', []);
         ?>
             <div class="wpf-container">
-                <div class="wpf-row" style="display: flex; gap: 24px;">
+                <div class="wpf-row" style="display: flex; gap: 20px;">
                     <?php
                     foreach ($columns as $column) {
                         ?>

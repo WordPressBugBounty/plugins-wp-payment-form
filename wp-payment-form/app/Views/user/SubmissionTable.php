@@ -12,29 +12,29 @@ use WPPayForm\Framework\Support\Arr;
     </div>
     <div class="wpf-user-dashboard-table__rows">
         <?php
-        $i = 0;
-        foreach (Arr::get($donationItems, 'orders', []) as $donationKey => $donationItem):
+        $wppayform_i = 0;
+        foreach (Arr::get($donationItems, 'orders', []) as $wppayform_donation_key => $wppayform_donation_item):
             ?>
             <div class="wpf-user-dashboard-table__row">
                 <div class="wpf-user-dashboard-table__column">
-                    <span class="wpf-sub-id wpf_toal_amount_btn" data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $i) ?>">
-                        <?php echo esc_html(Arr::get($donationItem, 'id', '')) ?> <span class="dashicons dashicons-visibility"></span>
+                    <span class="wpf-sub-id wpf_toal_amount_btn" data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $wppayform_i) ?>">
+                        <?php echo esc_html(Arr::get($wppayform_donation_item, 'id', '')) ?> <span class="dashicons dashicons-visibility"></span>
                     </span>
                 </div>
                 <div class="wpf-user-dashboard-table__column">
-                    <?php echo esc_html(Arr::get($donationItem, 'payment_total', '')) ?>
-                    <?php echo esc_html(Arr::get($donationItem, 'currency', '')) ?>
+                    <?php echo esc_html(Arr::get($wppayform_donation_item, 'payment_total', '')) ?>
+                    <?php echo esc_html(Arr::get($wppayform_donation_item, 'currency', '')) ?>
                 </div>
                 <div class="wpf-user-dashboard-table__column">
-                    <?php echo esc_html(Arr::get($donationItem, 'created_at', '')) ?>
+                    <?php echo esc_html(Arr::get($wppayform_donation_item, 'created_at', '')) ?>
                 </div>
                 <div class="wpf-user-dashboard-table__column">
-                    <span class="wpf-payment-status <?php echo esc_attr(Arr::get($donationItem, 'payment_status', '')) ?>">
-                        <?php echo esc_html(Arr::get($donationItem, 'payment_status', '')) ?>
+                    <span class="wpf-payment-status <?php echo esc_attr(Arr::get($wppayform_donation_item, 'payment_status', '')) ?>">
+                        <?php echo esc_html(Arr::get($wppayform_donation_item, 'payment_status', '')) ?>
                     </span>
                 </div>
                 <div class="wpf-user-dashboard-table__column">
-                    <?php echo esc_html(Arr::get($donationItem, 'payment_method', '')) ?>
+                    <?php echo esc_html(Arr::get($wppayform_donation_item, 'payment_method', '')) ?>
                 </div>
             </div>
         <?php endforeach ?>

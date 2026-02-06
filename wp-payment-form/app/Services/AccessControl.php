@@ -350,9 +350,13 @@ class AccessControl
     {
         if (current_user_can('manage_options')) {
             $capability = Arr::get($request, 'capability', []);
+            $capability = array_map('sanitize_text_field', $capability);
             update_option('_wppayform_form_permission', $capability, 'no');
+
             $dashboardRoles = Arr::get($request, 'dashboardRoles', []);
+            $dashboardRoles = array_map('sanitize_text_field', $dashboardRoles);
             update_option('_wppayform_dashboard_permitted_roles', $dashboardRoles, 'no');
+            
             return array(
                 'message' => __('Successfully updated the role(s).', 'wp-payment-form')
             );

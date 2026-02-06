@@ -8,11 +8,13 @@ use WPPayForm\App\Services\FormPlaceholders;
 use WPPayForm\App\Services\GeneralSettings;
 use WPPayForm\App\Services\GlobalTools;
 use WPPayForm\App\Models\Meta;
+use WPPayForm\App\Modules\Builder\Render;
 
 class FormController extends Controller
 {
     public function index(Form $form, $formId)
     {
+        $formId = intval($formId);
         try {
             return $form->getFormInfo($formId);
         } catch (Exception $e) {
@@ -24,6 +26,7 @@ class FormController extends Controller
 
     public function store(Form $form, $formId)
     {
+        $formId = intval($formId);
         try {
             $builderSettings = $this->request->get('builder_settings');
             $form->saveForm($formId, $builderSettings, $this->request->get('submit_button_settings'));
@@ -40,6 +43,7 @@ class FormController extends Controller
 
     public function remove($formId)
     {
+        $formId = intval($formId);
         try {
             Form::deleteForm($formId);
             return array(
@@ -54,7 +58,7 @@ class FormController extends Controller
 
     public function editors($formId)
     {
-
+        $formId = intval($formId);
         $builderSettings = Form::getBuilderSettings($formId);
         $allComponents = GeneralSettings::getComponents();
 
@@ -69,6 +73,7 @@ class FormController extends Controller
 
     public function saveIntegration(Meta $meta, $formId)
     {
+        $formId = intval($formId);
         try {
             $insertId = $meta->saveIntegration($this->request->all(), $formId);
         } catch (\Exception $e) {
@@ -86,6 +91,7 @@ class FormController extends Controller
 
     public function getIntegration(Meta $meta, $formId)
     {
+        $formId = intval($formId);
         try {
             dd($meta->getIntegration($formId));
         } catch (\Exception $e) {
@@ -97,8 +103,8 @@ class FormController extends Controller
 
     public function update(Form $form, $formId)
     {
+        $formId = intval($formId);
         $request_data = $this->request->all();
-
         try {
             $form->updateForm($formId, $request_data);
         } catch (\Exception $e) {
@@ -114,6 +120,7 @@ class FormController extends Controller
 
     public function designSettings($formId)
     {
+        $formId = intval($formId);
         return array(
             'layout_settings' => Form::getDesignSettings($formId)
         );
@@ -121,6 +128,7 @@ class FormController extends Controller
 
     public function updateDesignSettings($formId)
     {
+        $formId = intval($formId);
         $layoutSettings = wp_unslash($this->request->layout_settings);
         update_post_meta($formId, 'wppayform_form_design_settings', $layoutSettings);
         return array(
@@ -130,6 +138,7 @@ class FormController extends Controller
 
     public function settings(Form $form, $formId)
     {
+        $formId = intval($formId);
         $allPages = $form->getAllPages();
         $allPosts = $form->getAllPosts();
 
@@ -151,6 +160,7 @@ class FormController extends Controller
 
     public function saveSettings(Form $form, $formId)
     {
+        $formId = intval($formId);
         $request_data = $this->request->all();
         try {
             return $form->saveSettings($request_data, $formId);
@@ -164,6 +174,7 @@ class FormController extends Controller
 
     public function duplicateForm(GlobalTools $globalTools, $formId)
     {
+        $formId = intval($formId);
         $oldForm = '';
         $oldForm = $globalTools->getForm($formId);
         $oldForm['post_title'] = '(Duplicate) ' . $oldForm['post_title'];
@@ -184,6 +195,7 @@ class FormController extends Controller
 
     public function export($formId)
     {
+        $formId = intval($formId);
         $globalTools = new GlobalTools();
         $globalTools->exportFormJson($formId);
     }
@@ -191,7 +203,13 @@ class FormController extends Controller
     // get currency rates
     public function getCurrencyRates($baseCurrency, $apiKey, $cachingInterVal, $formId)
     {
+        $formId = intval($formId);
+        $baseCurrency = sanitize_text_field($baseCurrency);
+        $apiKey = sanitize_text_field($apiKey);
+        $cachingInterVal = sanitize_text_field($cachingInterVal);
         $builderSettings = Form::getBuilderSettings($formId);
+        $container_elements = (new Render)->getContainerElements($builderSettings);
+        $builderSettings = array_merge($builderSettings, $container_elements);
         $ratesRequire = false;
         foreach ($builderSettings as $key => $value) {
             if ('donation_item' === $value['type'] ||  'currency_switcher' === $value['type']) {
@@ -211,7 +229,7 @@ class FormController extends Controller
         $key = 'currency_convertion_from_' . $baseCurrency;
         $meta = new Meta();
         $data = $meta->getCurrencyMeta($key);
-        $ratesValue = $data ? safeUnserialize($data->meta_value) : [];
+        $ratesValue = $data ? wppayform_safeUnserialize($data->meta_value) : [];
 
         if (!$data || empty($ratesValue)) {
             $rates = $this->getRatesFromApi($baseCurrency, $apiKey, $formId);

@@ -10,7 +10,6 @@ class GlobalSettings extends Model
     public static function updateSettings($request)
     {
         $settings = Arr::get($request, 'settings');
-        // dd($request);
         // Validate the data
         if (empty($settings['currency'])) {
             wp_send_json_error(

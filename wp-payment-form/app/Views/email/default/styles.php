@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 
-$settings = apply_filters('wppayform/email_template_colors', array(
+$wppayform_settings = apply_filters('wppayform/email_template_colors', array(
     'background_color' => '#f6f6f6',
     'body_background_color' => '#ffffff',
     'base_color' => '#444444',
@@ -15,18 +15,18 @@ $settings = apply_filters('wppayform/email_template_colors', array(
 ));
 
 // Load colours
-$bg = $settings['background_color'];
-$body = $settings['body_background_color'];
-$base = $settings['base_color'];
-$base_text = '#202020';
-$text = $settings['text_color'];
+$wppayform_bg = $wppayform_settings['background_color'];
+$wppayform_body = $wppayform_settings['body_background_color'];
+$wppayform_base = $wppayform_settings['base_color'];
+$wppayform_base_text = '#202020';
+$wppayform_text = $wppayform_settings['text_color'];
 
-$text_lighter_20 = '#555555';
+$wppayform_text_lighter_20 = '#555555';
 
 // !important; is a gmail hack to prevent styles being stripped if it doesn't like something.
 ?>
 body {
-background-color: <?php echo esc_attr($bg); ?>;
+background-color: <?php echo esc_attr($wppayform_bg); ?>;
 font-family: sans-serif;
 -webkit-font-smoothing: antialiased;
 font-size: 14px;
@@ -39,7 +39,7 @@ width: 100%;
 }
 #wrapper {
 margin: 0;
-background-color: <?php echo esc_attr($bg); ?>;
+background-color: <?php echo esc_attr($wppayform_bg); ?>;
 padding: 40px 0 0 0;
 -webkit-text-size-adjust: none !important;
 width: 100%;
@@ -77,7 +77,7 @@ background-color: #2196F3;
 }
 
 #template_container {
-background-color: <?php echo esc_attr($body); ?>;
+background-color: <?php echo esc_attr($wppayform_body); ?>;
 border: 1px solid #eee;
 margin-bottom: 25px;
 }
@@ -106,7 +106,7 @@ padding: 0 48px 48px 48px;
 }
 
 #body_content {
-background-color: <?php echo esc_attr($body); ?>;
+background-color: <?php echo esc_attr($wppayform_body); ?>;
 }
 
 #body_content table td {
@@ -126,7 +126,7 @@ margin: 0 0 20px;
 }
 
 #body_content_inner {
-color: <?php echo esc_attr($text_lighter_20); ?>;
+color: <?php echo esc_attr($wppayform_text_lighter_20); ?>;
 font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 font-size: 14px;
 line-height: 170%;
@@ -134,12 +134,12 @@ text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
 }
 
 .td {
-color: <?php echo esc_attr($text_lighter_20); ?>;
+color: <?php echo esc_attr($wppayform_text_lighter_20); ?>;
 border: none;
 }
 
 .text {
-color: <?php echo esc_attr($text); ?>;
+color: <?php echo esc_attr($wppayform_text); ?>;
 font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
 
@@ -153,7 +153,7 @@ padding: 6px 12px 12px 12px;
 }
 
 .link {
-color: <?php echo esc_attr($base); ?>;
+color: <?php echo esc_attr($wppayform_base); ?>;
 }
 
 #header_wrapper {
@@ -172,7 +172,7 @@ text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
 }
 
 h2 {
-color: <?php echo esc_attr($base); ?>;
+color: <?php echo esc_attr($wppayform_base); ?>;
 display: block;
 font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 font-size: 18px;
@@ -183,7 +183,7 @@ text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
 }
 
 h3 {
-color: <?php echo esc_attr($base); ?>;
+color: <?php echo esc_attr($wppayform_base); ?>;
 display: block;
 font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 font-size: 16px;
@@ -205,7 +205,7 @@ margin-top: 2em;
 }
 
 a {
-color: <?php echo esc_attr($base); ?>;
+color: <?php echo esc_attr($wppayform_base); ?>;
 font-weight: normal;
 text-decoration: underline;
 }

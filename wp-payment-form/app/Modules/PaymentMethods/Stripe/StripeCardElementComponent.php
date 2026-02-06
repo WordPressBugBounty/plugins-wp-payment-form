@@ -136,6 +136,7 @@ class StripeCardElementComponent extends BaseComponent
                 'data-require_billing_info' => Arr::get($fieldOptions, 'checkout_display_style.require_billing_info'),
                 'data-require_shipping_info' => Arr::get($fieldOptions, 'checkout_display_style.require_shipping_info')
             );
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo '<div style="display:none !important; visibility: hidden !important;" ' . $this->builtAttributes($atrributes) . ' class="wpf_stripe_checkout"></div>';
             return;
         }

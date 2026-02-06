@@ -138,11 +138,20 @@ class AdminMenuHandler
 
             // in case you want to embed the link directly to any of your custom button in your theme or any other button you can directly use the below block
             $upgradeLink = 'https://paymattic.com/#pricing';
-            $urlArgs = apply_filters('paymattic_pro_buy_link', array(
-                'utm_source'   => 'plugin',
-                'utm_medium'   => 'menu',
-                'utm_campaign' => 'upgrade',
-            ));
+            $urlArgs =  apply_filters_deprecated(
+                'paymattic_pro_buy_link',
+                array(
+                            array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'menu',
+                                'utm_campaign' => 'upgrade',
+                            )
+                        ),
+                '1.0.0',
+                'wppayform/pro_buy_link',
+                'Use wppayform/pro_buy_link instead of paymattic_pro_buy_link.'
+            );
+            $urlArgs = apply_filters('wppayform/pro_buy_link', $urlArgs);
             $upgradeLink = add_query_arg($urlArgs, $upgradeLink);
 
             if (!defined('WPPAYFORMHASPRO')) {
@@ -325,11 +334,20 @@ class AdminMenuHandler
             if (!apply_filters($slug . '/disable_admin_footer_alter', false)) {
                 add_filter('admin_footer_text', function ($text) {
                     $url = 'https://paymattic.com/';
-                    $urlArgs = apply_filters('paymattic_pro_buy_link', array(
-                        'utm_source'   => 'plugin',
-                        'utm_medium'   => 'footer',
-                        'utm_campaign' => 'thankyou',
-                    ));
+                    $urlArgs = apply_filters_deprecated(
+                        'paymattic_pro_buy_link',
+                        [
+                            array(
+                                'utm_source'   => 'plugin',
+                                'utm_medium'   => 'footer',
+                                'utm_campaign' => 'thankyou',
+                            ),
+                        ],
+                        '1.0.0',
+                        'wppayform/pro_buy_link',
+                        'Use wppayform/pro_buy_link instead of paymattic_pro_buy_link.'
+                    );
+                    $urlArgs = apply_filters('wppayform/pro_buy_link', $urlArgs);
                     $link =  add_query_arg($urlArgs, $url);
                     return 'Thank you for using <a target="_blank" href="' . $link . '">Paymattic</a>';
                 });

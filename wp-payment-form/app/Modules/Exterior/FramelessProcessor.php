@@ -35,6 +35,7 @@ class FramelessProcessor
         $body = ob_get_clean();
 
         $this->loadHeader($action);
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo wppayform_sanitize_html($body);
         $this->loadFooter($action);
         exit(200);

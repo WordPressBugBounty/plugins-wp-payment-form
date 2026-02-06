@@ -7,8 +7,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$email_heading = apply_filters('wppayform/email_template_email_heading', false, $submission, $notification);
-$headerImage = apply_filters('wppayform/email_template_header_image', false, $submission, $notification);
+$wppayform_email_heading = apply_filters('wppayform/email_template_email_heading', false, $wppayform_submission, $wppayform_notification);
+$wppayform_header_image = apply_filters('wppayform/email_template_header_image', false, $wppayform_submission, $wppayform_notification);
 
 ?>
 <!DOCTYPE html>
@@ -25,18 +25,18 @@ $headerImage = apply_filters('wppayform/email_template_header_image', false, $su
             <td align="center" valign="top">
                 <div id="template_header_image">
                     <?php
-                    if ($headerImage) {
-                        echo '<p style="margin-top:0;"><img src="' . esc_url($headerImage) . '" alt="' . esc_attr(get_bloginfo('name', 'display')) . '" /></p>';
+                    if ($wppayform_header_image) {
+                        echo '<p style="margin-top:0;"><img src="' . esc_url($wppayform_header_image) . '" alt="' . esc_attr(get_bloginfo('name', 'display')) . '" /></p>';
                     }
                     ?>
                 </div>
                 <table border="0" cellpadding="0" cellspacing="0" width="600" id="template_container">
-                    <?php if ($email_heading) { ?>
+                    <?php if ($wppayform_email_heading) { ?>
                         <tr>
                             <td align="center" valign="top">
                                 <table border="0" cellpadding="0" cellspacing="0" width="600" id="template_header">
                                     <tr>
-                                        <td id="header_wrapper"><h1><?php echo wp_kses_post($email_heading); ?></h1></td>
+                                        <td id="header_wrapper"><h1><?php echo wp_kses_post($wppayform_email_heading); ?></h1></td>
                                     </tr>
                                 </table>
                             </td>

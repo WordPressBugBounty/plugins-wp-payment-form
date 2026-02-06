@@ -9,11 +9,11 @@ class AddonsController extends Controller
 {
     public function installAndActivate()
     {
-        $addonSlug = $this->request->get("slug") ? $this->request->get("slug") : '';
-        $name = $this->request->get("name") ? $this->request->get("name") : '';
-        $title = $this->request->get("title") ? $this->request->get("title") : '';
-        $source = $this->request->get("source") ? $this->request->get("source") : '';
-        $url = $this->request->get("url") ? $this->request->get("url") : '';
+        $addonSlug = $this->request->getSafe("slug", 'sanitize_text_field') ?: '';
+        $name = $this->request->getSafe("name", 'sanitize_text_field') ?: '';
+        $title = $this->request->getSafe("title", 'sanitize_text_field') ?: '';
+        $source = $this->request->getSafe("source", 'sanitize_text_field') ?: '';
+        $url = $this->request->getSafe("url", 'esc_url_raw') ?: '';
 
         if ('wordpress' === $source) {
             $this->installFromWordpress($name, $addonSlug, $title);
@@ -24,9 +24,10 @@ class AddonsController extends Controller
 
     public function updateFromGithub()
     {
-        $addonSlug = $this->request->get("slug") ? $this->request->get("slug") : '';
-        $name = $this->request->get("name") ? $this->request->get("name") : '';
-        $url = $this->request->get("url") ? $this->request->get("url") : '';
+        $addonSlug = $this->request->getSafe("slug", 'sanitize_text_field') ?: '';
+        $name = $this->request->getSafe("name", 'sanitize_text_field') ?: '';
+        $url = $this->request->getSafe("url", 'esc_url_raw') ?: '';
+        
         if(!$addonSlug || !$url) {
             wp_send_json_error([
                 'message' => __('Invalid request. Please try again', 'wp-payment-form'),
@@ -258,67 +259,70 @@ class AddonsController extends Controller
 
     public static function renameAndActivatePlugin($slug, $tempFile, $name)
     {
-        // Extract the plugin ZIP file
+        // Initialize WP_Filesystem
+        if (!function_exists('request_filesystem_credentials')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            WP_Filesystem();
+        }
+
         $zip = new \ZipArchive();
         $extracted_path = WP_CONTENT_DIR . '/plugins/';
 
         if ($zip->open($tempFile) === true) {
             $zip->extractTo($extracted_path);
-            // get folder name
-            $first_index = 0; // Assuming the first index contains the folder
+
+            // Get folder name (first index in the ZIP)
+            $first_index = 0;
             $extracted_file_name = $zip->getNameIndex($first_index);
             $extracted_folder_name = basename($extracted_file_name);
             $zip->close();
-            // rename to actuall addonSlug
-            $new_folder_path = $extracted_path . $slug;
 
-            rename($extracted_path . $extracted_folder_name, $new_folder_path);
-            // flushing the wp_cache to recognize the newly added plugin
+            // Rename using WP_Filesystem
+            $old_folder_path = trailingslashit($extracted_path) . $extracted_folder_name;
+            $new_folder_path = trailingslashit($extracted_path) . $slug;
+
+            if (!$wp_filesystem->move($old_folder_path, $new_folder_path, true)) {
+                wp_send_json_error(['message' => 'Error renaming plugin folder.'], 423);
+            }
+
+            // Flush cache to recognize the newly added plugin
             wp_cache_flush();
         } else {
-            // Handle the error
-            echo 'Error extracting plugin ZIP file';
+            wp_send_json_error(['message' => 'Error extracting plugin ZIP file.'], 423);
             return;
         }
 
         if (!function_exists('get_plugins')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
-        // safe activation
+
         $plugins = get_plugins();
         $plugin_slug = $slug;
-        // Check if the plugin is present
+
         foreach ($plugins as $plugin_file => $plugin_data) {
-            // Check if the plugin slug or name matches
             if ($plugin_slug === $plugin_data['TextDomain'] || $plugin_slug === $plugin_data['Name']) {
                 if (!function_exists('activate_plugin')) {
-                    require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+                    require_once ABSPATH . 'wp-admin/includes/plugin.php';
                 }
-                // Activate the plugin
+
                 $plugin_activation = activate_plugin($plugin_file);
                 if (is_wp_error($plugin_activation)) {
-                    // Handle the error
                     $error_message = $plugin_activation->get_error_message();
                     wp_send_json_error($error_message, 423);
-                    // ...
                 }
-                wp_send_json_success(
-                    [
-                        'message'  => 'Successfully installed ' . $name,
-                        'redirect_url' => self_admin_url('admin.php?page=wppayform.php#/gateways/' . $name)
-                    ],
-                    200
-                );
+
+                wp_send_json_success([
+                    'message' => 'Successfully installed ' . $name,
+                    'redirect_url' => self_admin_url('admin.php?page=wppayform.php#/gateways/' . $name)
+                ], 200);
             }
         }
 
-        // Plugin activation failed
-        wp_send_json_error(
-            [
-                'message' => 'Error activating plugin: Plugin not found.'
-            ],
-            423
-        );
+        wp_send_json_error(['message' => 'Error activating plugin: Plugin not found.'], 423);
     }
 
 }

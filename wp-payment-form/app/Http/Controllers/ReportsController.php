@@ -15,7 +15,7 @@ class ReportsController extends Controller
 
 	public function getCustomerAndSubmissionReports()
 	{
-        return (new Reports())->getCustomerAndSubmissionReports();
+        return Reports::getCustomerAndSubmissionReports();
 	}
 
 	public function getStatistics()
@@ -42,16 +42,19 @@ class ReportsController extends Controller
 
 	public function customer($customerEmail)
 	{
+        $customerEmail = sanitize_email($customerEmail);
 		return (new Customers())->customer($customerEmail, 'yes');
 	}
 
 	public function customerProfile($customerEmail)
 	{
+        $customerEmail = sanitize_email($customerEmail);
 		return (new Customers())->customerProfile($customerEmail);
 	}
 
 	public function customerEngagements($customerEmail)
 	{
+        $customerEmail = sanitize_email($customerEmail);
 		return (new Customers())->customerEngagements($customerEmail);
 	}
 }

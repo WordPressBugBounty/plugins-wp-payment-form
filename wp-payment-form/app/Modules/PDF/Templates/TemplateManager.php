@@ -235,7 +235,7 @@ abstract class TemplateManager
         }
         <?php
         $css = ob_get_clean();
-
+        //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
         return apply_filters('fluentform/pdf_generator_css', $css, $appearance);
     }
 

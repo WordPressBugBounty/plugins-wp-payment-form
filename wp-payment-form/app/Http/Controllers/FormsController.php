@@ -44,7 +44,9 @@ class FormsController extends Controller
 
     public function remove()
     {
-        $formIds = $this->request->get('forms_ids', []);
+        $formIds = (array) $this->request->get('forms_ids', []);
+        $formIds = array_map('absint', $formIds);  
+        
         do_action('wppayform/before_delete_forms', $formIds);
         $formModel = new Form();
         $formModel->deleteForms($formIds);

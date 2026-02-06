@@ -189,11 +189,11 @@ class Form extends Model
 
     public static function storeData($request)
     {
-        $postTitle = Arr::get($request, 'post_title');
+        $postTitle = sanitize_text_field(Arr::get($request, 'post_title'));
         if (!$postTitle) {
             $postTitle = 'Blank Form';
         }
-        $template = Arr::get($request, 'template');
+        $template = sanitize_text_field(Arr::get($request, 'template'));
 
         $data = array(
             'post_title' => sanitize_text_field($postTitle),
@@ -301,9 +301,9 @@ class Form extends Model
     public function updateForm($formId, $request_data)
     {
         // validate first
-        $title = Arr::get($request_data, 'post_title');
-        $description = Arr::get($request_data, 'show_title_description');
-        $post_status = Arr::get($request_data, 'post_status', 'publish');
+        $title = sanitize_text_field(Arr::get($request_data, 'post_title'));
+        $description = sanitize_text_field(Arr::get($request_data, 'show_title_description'));
+        $post_status = sanitize_text_field(Arr::get($request_data, 'post_status', 'publish'));
 
         if (!$formId || !$title) {
             throw new Exception(esc_html(__('Please provide form title', 'wp-payment-form')));
@@ -762,9 +762,32 @@ class Form extends Model
                     }
                 }
                 // dd($columns);
+            } else if ($element['type'] == 'donation_item') {
+                $label = self::getLabel($element);
+                $formattedShortcodes[$elementId] = array(
+                    "element" => $elementId,
+                    "admin_label" => Arr::get($element, 'field_options.admin_label'),
+                    "options" => self::getDonationOptions($element),
+                    "attributes" => [
+                        "name" => $label,
+                        "code" => "{input." . $elementId . "}",
+                        "type" => $element['type']
+                    ]
+                );
             }
         }
         return $formattedShortcodes;
+    }
+    public static function getDonationOptions($element)
+    {
+        $options = Arr::get($element, 'field_options.pricing_details.multiple_pricing', []);
+        $donationOptions = [];
+        foreach ($options as $key => $option) {
+            $label = Arr::get($option, 'label', '');
+            $donationOptions[$key] = $label ? $label : $option['value'];
+        }
+
+        return $donationOptions;
     }
 
     public static function getBuilderSettings($formId)
@@ -920,7 +943,7 @@ class Form extends Model
                 'start_date' => current_time('mysql'),
                 'end_date' => '',
                 'before_start_message' => __('Form submission time schedule is not started yet. Please check back later', 'wp-payment-form'),
-                'expire_message' => __('Form submission time has been expired.')
+                'expire_message' => __('Form submission time has been expired.', 'wp-payment-form')
             ),
             'limitByPayments' => array(
                 'status' => 'no',

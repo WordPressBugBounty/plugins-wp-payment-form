@@ -13,18 +13,18 @@
     </thead>
     <tbody>
 
-    <?php foreach ($submissions as $submission) : ?>
+    <?php foreach ($submissions as $wppayform_submission) : ?>
         <tr>
-            <td class="wpf_highlight"><?php echo esc_html($submission->id); ?></td>
-            <td><?php echo esc_html(date('d M, Y', strtotime($submission->created_at))); ?></td>
-            <td><?php echo esc_html($submission->post_title); ?></td>
+            <td class="wpf_highlight"><?php echo esc_html($wppayform_submission->id); ?></td>
+            <td><?php echo esc_html(wp_date('d M, Y', strtotime($wppayform_submission->created_at))); ?></td>
+            <td><?php echo esc_html($wppayform_submission->post_title); ?></td>
             <?php if ($show_payments) : ?>
-                <td><?php echo esc_html(wpPayFormFormatMoney($submission->payment_total, $submission->form_id)); ?></td>
-                <td><?php echo esc_attr($submission->payment_status); ?></td>
+                <td><?php echo esc_html(wpPayFormFormatMoney($wppayform_submission->payment_total, $wppayform_submission->form_id)); ?></td>
+                <td><?php echo esc_attr($wppayform_submission->payment_status); ?></td>
             <?php endif; ?>
             <?php if ($show_url) : ?>
                 <td><a class="wpf_view_url"
-                       href="<?php echo esc_url(add_query_arg('wpf_submission', $submission->submission_hash, $permalink)); ?>">View</a>
+                       href="<?php echo esc_url(add_query_arg('wpf_submission', $wppayform_submission->submission_hash, $permalink)); ?>">View</a>
                 </td>
             <?php endif; ?>
         </tr>

@@ -56,10 +56,11 @@ class OrderItem extends Model
             }
         }
 
-        $tableName = $wpdb->prefix . 'wpf_order_items';
-        $sql = "ALTER TABLE $tableName
-            ADD item_meta text";
+        $tableName = esc_sql($wpdb->prefix . 'wpf_order_items');
+        $sql = "ALTER TABLE {$tableName}
+            ADD item_meta TEXT";
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table names are escaped and safe
         $upgrade = $wpdb->query($sql);
 
         if ($upgrade && $wpdb->last_error === '') {
@@ -110,7 +111,7 @@ class OrderItem extends Model
             ->whereIn('type', ['single', 'signup_fee'])
             ->get();
         foreach ($orderItems as $orderItem) {
-            $orderItem->item_meta = safeUnserialize(Arr::get($orderItem, 'item_meta'));
+            $orderItem->item_meta = wppayform_safeUnserialize(Arr::get($orderItem, 'item_meta'));
         }
         return apply_filters('wppayform/order_items', $orderItems, $submissionId);
     }
@@ -127,7 +128,7 @@ class OrderItem extends Model
     //         ->get();
     //     $formatted = array();
     //     foreach ($metas as $meta) {
-    //         $formatted[$meta->meta_key] = safeUnserialize($meta->meta_value);
+    //         $formatted[$meta->meta_key] = wppayform_safeUnserialize($meta->meta_value);
     //     }
     //     return (object) $formatted;
     // }

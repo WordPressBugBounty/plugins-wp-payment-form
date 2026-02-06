@@ -110,7 +110,7 @@ class MetaData
     {
         if ($this->queryVars == null) {
             $submissionUrl = $this->entry->getRawInput('__wpf_current_url');
-            $parts = parse_url($submissionUrl);
+            $parts = wp_parse_url($submissionUrl);
             if (isset($parts['query'])) {
                 parse_str($parts['query'], $query);
                 $this->queryVars = $query;

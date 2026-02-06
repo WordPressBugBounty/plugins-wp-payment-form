@@ -5,8 +5,6 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="Imagetoolbar" content="No" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/css/lightgallery.min.css" integrity="sha512-F2E+YYE1gkt0T5TVajAslgDfTEUQKtlu4ralVq78ViNxhKXQLrgQLLie8u1tVdG2vWnB3ute4hcdbiBtvJQh0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/css/lightgallery-bundle.min.css" integrity="sha512-nUqPe0+ak577sKSMThGcKJauRI7ENhKC2FQAOOmdyCYSrUh0GnwLsZNYqwilpMmplN+3nO3zso8CWUgu33BDag==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <title><?php esc_html_e('Preview Form', 'wp-payment-form') ?></title>
     <?php
@@ -196,7 +194,7 @@
                 font-size: 15px;
             }
         }
-/* Step form css start */
+        /* Step form css start */
         #wpf_svg_form_time {
             height: 15px;
             max-width: 80%;
@@ -342,21 +340,21 @@
             </div>
             <div class="wpf_preview_action_block">
                 <div class="wpf_preview_action">
-                    <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/copy-icon.svg' ?>" alt="">
+                    <img src="<?php echo esc_url(WPPAYFORM_URL . 'assets/'.'images/copy-icon.svg') ?>" alt="">
                     [wppayform id="<?php echo intval($form_id); ?>"]
                 </div>
                 <div class="wpf_preview_container_action">
                     <span class=" wpf_hide wpf-preview-expand">
-                        <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/preview-max-min.svg' ?>" alt="">
+                        <img src="<?php echo esc_url(WPPAYFORM_URL . 'assets/'.'images/preview-max-min.svg') ?>" alt="">
                     </span>
                     <span class="wpf-preview-contrast">
-                        <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/preview-max-min.svg' ?>" alt="">
+                        <img src="<?php echo esc_url(WPPAYFORM_URL . 'assets/'.'images/preview-max-min.svg') ?>" alt="">
                     </span>
                 </div>
             </div>
             <!-- Notification div -->
             <div id="wpf_copy_notification" class="wpf_copy_notification">
-                <img src="<?php echo WPPAYFORM_URL . 'assets/'.'images/payment-status/active.svg' ?>" alt="">
+                <img src="<?php echo esc_url(WPPAYFORM_URL . 'assets/'.'images/payment-status/active.svg') ?>" alt="">
                 [wppayform id="<?php echo intval($form_id); ?>"] copied successfully!
             </div>
 
@@ -400,9 +398,6 @@
             });
         });
     </script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/lightgallery.min.js" integrity="sha512-pG+XpUdyBtp28FzjpaIaj72KYvZ87ZbmB3iytDK5+WFVyun8r5LJ2x1/Jy/KHdtzUXA0CUVhEnG+Isy1jVJAbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/plugins/thumbnail/lg-thumbnail.umd.min.js" integrity="sha512-hdzLQVAURjMzysJVkWaKWA2nD+V6CcBx6wH0aWytFnlmgIdTx/n5rDWoruSvK6ghnPaeIgwKuUESlpUhat2X+Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.0/plugins/zoom/lg-zoom.umd.min.js" integrity="sha512-++PKcAnn9Qf7G3Eu1WUmSR44yHOIH77vnAdLA70w9/PoECvbVzcW6lrrKR2xyfe4iYMbknCx5NSVQEBPl7pYPg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             lightGallery(document.getElementById('lightgallery'), {
                 plugins: [lgZoom, lgThumbnail],
