@@ -327,7 +327,7 @@ class OfflineProcessor
         }
 
         wp_send_json_success(array(
-            'message' => printf(
+            'message' => sprintf(
                 // translators: %s: The new subscription payment status.
                 esc_html__('Subscription payment status successfully changed to %s', 'wp-payment-form'),
                 esc_html($newStatus)

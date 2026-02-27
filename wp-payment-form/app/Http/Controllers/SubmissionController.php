@@ -96,6 +96,8 @@ class SubmissionController extends Controller
         $formId = absint($formId);
         $submissionId = $submissionId ? absint($submissionId) : $submissionId;
         $submission = $this->getSubmissionPrepared($formId, $submissionId);
+        // HIGH-01: Enforce ownership for non-admin dashboard users
+        $this->assertOwnsSubmission($submission['submission']);
         wp_send_json_success($submission, 200);
     }
 
@@ -134,8 +136,9 @@ class SubmissionController extends Controller
         $entryId = absint($entryId);
         $noteId = absint($noteId);
 
-        return SubmissionActivity::deleteActivity($formId, $entryId, $noteId);
+        $result = SubmissionActivity::deleteActivity($formId, $entryId, $noteId);
         do_action('wppayform/after_delete_note_by_user', $entryId, $noteId);
+        return $result;
     }
 
     public function changeEntryStatus($formId, $entryId)
@@ -384,6 +387,9 @@ class SubmissionController extends Controller
         $submission = $submissionModel->getSubmission($submissionId);
         $subscription = $this->request->subscription;
 
+        // HIGH-01: Enforce ownership for non-admin dashboard users
+        $this->assertOwnsSubmission($submission);
+
         if (empty($submission->payment_method)) {
             wp_send_json_error(
                 array(
@@ -395,6 +401,29 @@ class SubmissionController extends Controller
 
         do_action('wppayform/subscription_settings_cancel_' . $submission->payment_method, $formId, $submission, $subscription);
 
+    }
+
+    /**
+     * HIGH-01: Reject horizontal access — non-admin users may only access their own submissions.
+     *
+     * @param object|array $submission Submission object or array with user_id field.
+     */
+    private function assertOwnsSubmission($submission)
+    {
+        if (current_user_can('manage_options')) {
+            return;
+        }
+
+        $userId = is_object($submission)
+            ? intval(isset($submission->user_id) ? $submission->user_id : 0)
+            : intval(isset($submission['user_id']) ? $submission['user_id'] : 0);
+
+        if ($userId === 0 || $userId !== get_current_user_id()) {
+            wp_send_json_error(
+                ['message' => __('You do not have permission to access this submission.', 'wp-payment-form')],
+                403
+            );
+        }
     }
 
 }

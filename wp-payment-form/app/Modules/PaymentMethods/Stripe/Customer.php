@@ -85,6 +85,28 @@ class Customer
     }
 
 
+    public static function createCustomerForHostedCheckout($customerArgs, $formId = false)
+    {
+        $stripe = new Stripe();
+        ApiRequest::set_secret_key($stripe->getSecretKey($formId));
+        $response = ApiRequest::request($customerArgs, 'customers');
+        if (!empty($response->error)) {
+            $errotType = 'general';
+            if (!empty($response->error->type)) {
+                $errotType = $response->error->type;
+            }
+            $errorCode = '';
+            if (!empty($response->error->code)) {
+                $errorCode = $response->error->code . ' : ';
+            }
+            return self::errorHandler($errotType, $errorCode . $response->error->message);
+        }
+        if ($response && !empty($response->id)) {
+            return $response;
+        }
+        return null;
+    }
+
     public static function createInvoice($args)
     {
         $response = ApiRequest::request($args, 'invoices', 'POST');

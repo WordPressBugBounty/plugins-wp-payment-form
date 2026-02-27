@@ -374,7 +374,7 @@ class Reports extends Model
 
     public function getRecentRevenue($email = '')
     {
-        $filter_data = $this->sanitizedGetReports($_REQUEST['filter']);
+        $filter_data = $this->sanitizedGetReports(isset($_REQUEST['filter']) ? $_REQUEST['filter'] : []);
         $startDate = Arr::get($filter_data, 'start_date');
         $endDate = Arr::get($filter_data, 'end_date');
         $endDate = $endDate ? $endDate . ' 23:59:59' : $endDate;

@@ -7,6 +7,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$wppayform_submission = isset($wppayform_submission) ? $wppayform_submission : null;
+$wppayform_notification = isset($wppayform_notification) ? $wppayform_notification : null;
+
 $wppayform_email_heading = apply_filters('wppayform/email_template_email_heading', false, $wppayform_submission, $wppayform_notification);
 $wppayform_header_image = apply_filters('wppayform/email_template_header_image', false, $wppayform_submission, $wppayform_notification);
 

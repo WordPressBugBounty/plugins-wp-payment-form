@@ -50,8 +50,7 @@ class SubmissionHandler
         $this->formID = $formId;
 
         // Get Original Form Elements Now
-        $totalPayableAmount = isset($_REQUEST['main_total']);
-        $totalPayableAmount = intval(wp_unslash($_REQUEST['main_total']));
+        $totalPayableAmount = intval(wp_unslash($_REQUEST['main_total'] ?? 0));
         do_action('wppayform/form_submission_activity_start', $formId);
 
         $form = Form::getForm($formId);
@@ -189,6 +188,7 @@ class SubmissionHandler
         $hasRecurring = false;
         if ($subscriptionItems) {
             foreach ($subscriptionItems as $subscriptionItem) {
+                $this->enforceStripeForTrialWithSignupFee($subscriptionItem, $paymentMethod);
                 $subscriptionItem['recurring_amount'] = intval($subscriptionItem['recurring_amount']);
                 if ($subscriptionItem['recurring_amount'] > 0) {
                     $hasRecurring = true;
@@ -888,5 +888,32 @@ class SubmissionHandler
             'created_by'    => 'Paymattic Bot',
             'content'       => __('Offline Payment recorded and change the status to pending', 'wp-payment-form'),
         ));
+    }
+
+    private function enforceStripeForTrialWithSignupFee($subscriptionItem, $paymentMethod)
+    {
+        $originalPlan = wppayform_safeUnserialize(Arr::get($subscriptionItem, 'original_plan'));
+        if (!is_array($originalPlan)) {
+            return;
+        }
+
+        $hasSignupFee = (Arr::get($originalPlan, 'has_signup_fee') === 'yes');
+        $signupFee = (float) Arr::get($originalPlan, 'signup_fee', 0);
+        $hasTrialDays = (Arr::get($originalPlan, 'has_trial_days') === 'yes');
+        $trialDays = (int) Arr::get($originalPlan, 'trial_days', 0);
+
+        if (!$hasSignupFee || $signupFee <= 0 || !$hasTrialDays || $trialDays <= 0) {
+            return;
+        }
+
+        if ($paymentMethod === 'stripe') {
+            return;
+        }
+
+        wp_send_json_error(array(
+            'message' => __('Signup fee and trial days together are only supported with Stripe payment method. Please select Stripe as your payment method or remove either signup fee or trial days.', 'wp-payment-form'),
+            'error' => 'signup_fee_and_trial_days_not_supported',
+        ), 423);
+        exit;
     }
 }

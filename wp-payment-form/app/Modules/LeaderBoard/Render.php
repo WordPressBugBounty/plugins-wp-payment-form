@@ -71,12 +71,13 @@ class Render
         $currency_settings = GeneralSettings::getGlobalCurrencySettings();
         $currency_sign = GeneralSettings::getCurrencySymbol($currency_settings['currency']);
         $currency_settings['currency_sign'] = $currency_sign;
+        $currency_sign_position = Arr::get($currency_settings, 'currency_sign_position', 'left');
         $total_raised_amount = wpPayFormFormattedMoney(wpPayFormConverToCents(Arr::get($donationItems, 'total_raised_amount', 0)), $currency_settings);
         $donationGoal = wpPayFormFormattedMoney(wpPayFormConverToCents(Arr::get($donationItems, 'donation_goal', 0)), $currency_settings);
         $percent = Arr::get($donationItems, 'percent', 0);
         $total_donations = Arr::get($donationItems, 'total_donations', 0);
         $show_statistic = Arr::get($donationItems, 'show_statistic', '');
-        $progress_bar = Arr::get($donationItems, 'progress_bar','');
+        $progress_bar = Arr::get($donationItems, 'progress_bar', '');
 
         ob_start();
         App::make('view')->render($template_src, [
@@ -96,23 +97,21 @@ class Render
             'percent' => $percent,
             'total_donations' => $total_donations,
             'progress_bar' => $progress_bar,
-            'show_statistic' => $show_statistic
+            'show_statistic' => $show_statistic,
+            'currency_sign_position' => $currency_sign_position
         ]);
         $view = ob_get_clean();
         return $view;
     }
     public function leaderBoardRender()
     {
-        $form_id = isset($_POST['form_id']);
-        $form_id = sanitize_text_field(wp_unslash($_POST['form_id']));
-        $searchText = isset($_REQUEST['searchText']);
-        $searchText = sanitize_text_field(wp_unslash($_REQUEST['searchText']));
-        $sortKey = isset($_REQUEST['sortKey']);
-        $sortKey = sanitize_text_field(wp_unslash($_REQUEST['sortKey']));
-        $sortType = isset($_REQUEST['sortType']);
-        $sortType = sanitize_text_field(wp_unslash($_REQUEST['sortType']));
-        $per_page = isset($_REQUEST['perPage']);
-        $per_page = sanitize_text_field(wp_unslash($_REQUEST['perPage']));
+        check_ajax_referer('wp_payform_nonce', 'nonce');
+
+        $form_id = absint(isset($_POST['form_id']) ? wp_unslash($_POST['form_id']) : 0);
+        $searchText = sanitize_text_field(wp_unslash($_REQUEST['searchText'] ?? ''));
+        $sortKey = sanitize_text_field(wp_unslash($_REQUEST['sortKey'] ?? ''));
+        $sortType = sanitize_text_field(wp_unslash($_REQUEST['sortType'] ?? ''));
+        $per_page = sanitize_text_field(wp_unslash($_REQUEST['perPage'] ?? ''));
 
         $donationItems = $this->getDonarList($form_id, $searchText, $sortKey, $sortType, $per_page);
 

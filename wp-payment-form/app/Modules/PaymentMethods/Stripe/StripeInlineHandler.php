@@ -375,8 +375,8 @@ class StripeInlineHandler extends StripeHandler
      */
     public function confirmScaPayment()
     {
-        if(isset($_REQUEST['submission_id'])){
-            $submissionId = intval($_REQUEST['submission_id']);    
+        if (isset($_REQUEST['submission_id'])) {
+            $submissionId = absint(wp_unslash($_REQUEST['submission_id']));
         }
         if(isset($_REQUEST['payment_method'])){
             $paymentMethod = sanitize_text_field(wp_unslash($_REQUEST['payment_method']));
@@ -400,7 +400,7 @@ class StripeInlineHandler extends StripeHandler
         } else {
             $form = Form::getForm($submission->form_id);
             $message = 'Payment has been failed. ' . $confirmation->error->message;
-            $this->handlePaymentChargeError($message, $submission, $form, $confirmation, 'payment_error');
+            $this->handlePaymentChargeError($message, $submission, $transaction, $form, $confirmation, 'payment_error');
             return;
         }
 
@@ -428,7 +428,7 @@ class StripeInlineHandler extends StripeHandler
     private function handlePaymentIntentCharge($transaction, $submission, $intentArgs)
     {
         if ($submission->customer_email && apply_filters('wppayform/send_receipt_email', true, $submission)) {
-            $intendArgs['receipt_email'] = $submission->customer_email;
+            $intentArgs['receipt_email'] = $submission->customer_email;
         }
 
         $intent = SCA::createPaymentIntent($intentArgs, $submission->form_id);

@@ -7,6 +7,7 @@ use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Models\SubmissionActivity;
 use WPPayForm\App\Models\Transaction;
 use WPPayForm\App\Modules\Refund\Exceptions\RefundException;
+use WPPayForm\App\Services\AccessControl;
 use WPPayForm\Framework\Support\Arr;
 
 class RefundService
@@ -38,7 +39,12 @@ class RefundService
 	 */
 	public function validateUserAccess(Submission $submission, int $currentUserId): void
     {
-        if ( ( $submission->user_id != $currentUserId && !current_user_can('manage_options')) ) {
+        // Allow: submission owner, WordPress admin, or users with Paymattic Admin Permission
+        $isOwner = (int) $submission->user_id === $currentUserId;
+        $isAdmin = current_user_can('manage_options');
+        $hasPaymatticAccess = AccessControl::hasGrandAccess() || (AccessControl::giveCustomAccess()['has_access'] ?? false);
+
+        if ( ! $isOwner && ! $isAdmin && ! $hasPaymatticAccess ) {
             throw new RefundException('Unauthorized', 403);
         }
     }
@@ -146,9 +152,16 @@ class RefundService
 
     public function updateSubmissionPaymentStatus($submissionId, $remainingAmount, $transactionType)
     {
-        if ($remainingAmount <= 0 && $transactionType !== 'subscription') {
+        if ($transactionType === 'subscription') {
+            return;
+        }
+
+        if ($remainingAmount <= 0) {
             Submission::where('id', $submissionId)->update(['payment_status' => RefundService::STATUS_REFUNDED]);
             do_action('wppayform/after_payment_status_change', $submissionId, RefundService::STATUS_REFUNDED);
+        } else {
+            Submission::where('id', $submissionId)->update(['payment_status' => RefundService::STATUS_PARTIALLY_REFUNDED]);
+            do_action('wppayform/after_payment_status_change', $submissionId, RefundService::STATUS_PARTIALLY_REFUNDED);
         }
     }
 }

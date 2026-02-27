@@ -331,6 +331,7 @@ class Form extends Model
             $confirmationSettings = wp_unslash($confirm);
             $confirmationSettings = $this->sanitizationRules($confirmationSettings);
             update_post_meta($formId, 'wppapyform_paymentform_confirmation_settings', $confirmationSettings);
+            update_post_meta($formId, 'wppapyform_receipt_settings', $confirmationSettings);
         }
         if ($currency = Arr::get($request_data, 'currency_settings')) {
             $currency_settings = wp_unslash($currency);

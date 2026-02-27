@@ -23,7 +23,7 @@ class ProcessDemoPage
             }
 
             if ($hasDemoAccess) {
-                $formId = intval(sanitize_text_field(wp_unslash($_GET['wp_paymentform_preview'])));
+                $formId = absint(wp_unslash($_GET['wp_paymentform_preview']));
                 if ($onlyPreviewPage == "yes") {
                     $formId = sanitize_text_field(wp_unslash($_GET['wp_paymentform_preview']));
                 }

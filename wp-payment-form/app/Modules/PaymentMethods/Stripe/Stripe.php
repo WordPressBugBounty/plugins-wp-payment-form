@@ -248,6 +248,10 @@ class Stripe
 
     public function savePaymentSettings($request)
     {
+        // HIGH-02: The wp_ajax_ endpoint has no REST nonce protection — verify a dedicated nonce.
+        if (wp_doing_ajax()) {
+            check_ajax_referer('wpf_stripe_settings_nonce', 'nonce');
+        }
         AccessControl::checkAndPresponseError('set_payment_settings', 'global');
         $defaults = array(
             'payment_mode' => 'test',
@@ -280,22 +284,47 @@ class Stripe
             }
         }
 
+        // CRITICAL-01: if the admin didn't change a secret key, the UI sends back
+        // the masked placeholder — preserve the existing stored (encrypted) value instead.
+        $maskedPlaceholder  = '••••••••';
+        $existingSettings   = get_option('wppayform_stripe_payment_settings', array());
+        $submittedLiveSecret = sanitize_text_field(Arr::get($settings, 'live_secret_key'));
+        $submittedTestSecret = sanitize_text_field(Arr::get($settings, 'test_secret_key'));
+
         // Validation Passed now let's make the data
         $data = array(
             'payment_mode' => sanitize_text_field($mode),
             'live_pub_key' => sanitize_text_field(Arr::get($settings, 'live_pub_key')),
-            'live_secret_key' => sanitize_text_field(Arr::get($settings, 'live_secret_key')),
+            'live_secret_key' => ($submittedLiveSecret === $maskedPlaceholder)
+                ? Arr::get($existingSettings, 'live_secret_key', '')
+                : $submittedLiveSecret,
             'test_pub_key' => sanitize_text_field(Arr::get($settings, 'test_pub_key')),
-            'test_secret_key' => sanitize_text_field(Arr::get($settings, 'test_secret_key')),
+            'test_secret_key' => ($submittedTestSecret === $maskedPlaceholder)
+                ? Arr::get($existingSettings, 'test_secret_key', '')
+                : $submittedTestSecret,
             'company_name' => wp_unslash(Arr::get($settings, 'company_name')),
             'checkout_logo' => sanitize_text_field(Arr::get($settings, 'checkout_logo')),
         );
+
+        // If we preserved an already-encrypted key, mark it so encryptKeys() doesn't double-encrypt
+        if ($submittedLiveSecret === $maskedPlaceholder || $submittedTestSecret === $maskedPlaceholder) {
+            $data['is_encrypted'] = Arr::get($existingSettings, 'is_encrypted', 'no');
+        }
 
         if (isset($settings['send_meta_data'])) {
             $data['send_meta_data'] = sanitize_text_field(Arr::get($settings, 'send_meta_data'));
         }
         do_action('wppayform/before_save_stripe_settings', $data);
-        $data = self::encryptKeys($data);
+
+        // CRITICAL-01: only encrypt keys that were actually submitted (not preserved placeholders)
+        if ($submittedLiveSecret !== $maskedPlaceholder) {
+            $data['live_secret_key'] = PaymentHelper::encryptKey($data['live_secret_key']);
+        }
+        if ($submittedTestSecret !== $maskedPlaceholder) {
+            $data['test_secret_key'] = PaymentHelper::encryptKey($data['test_secret_key']);
+        }
+        $data['is_encrypted'] = 'yes';
+
         update_option('wppayform_stripe_payment_settings', $data, false);
         do_action('wppayform/after_save_stripe_settings', $data);
 
@@ -306,6 +335,9 @@ class Stripe
 
     public function getPaymentSettings()
     {
+        // CRITICAL-01: gate with the same capability as savePaymentSettings()
+        AccessControl::checkAndPresponseError('set_payment_settings', 'global');
+
         return array(
             'settings' => $this->getDynamicStripeSettings(),
             'webhook_url' => site_url('?wpf_stripe_listener=1'),
@@ -378,9 +410,22 @@ class Stripe
         return $settings;
     }
 
-    private function getDynamicStripeSettings () {
+    private function getDynamicStripeSettings()
+    {
         $settings = $this->getStripeSettings();
-        return $this->mapSettings($settings);
+        $mapped   = $this->mapSettings($settings);
+
+        // CRITICAL-01: never expose decrypted secret keys to the client.
+        // Replace the value with a masked placeholder if a key is stored,
+        // so the UI can show "key is set" without revealing the actual secret.
+        $maskedPlaceholder = '••••••••';
+        foreach (['live_secret_key', 'test_secret_key'] as $field) {
+            if (isset($mapped[$field]['value']) && !empty($mapped[$field]['value'])) {
+                $mapped[$field]['value'] = $maskedPlaceholder;
+            }
+        }
+
+        return $mapped;
     }
 
     private function mapSettings($settings) 

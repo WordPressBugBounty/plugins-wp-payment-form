@@ -76,6 +76,9 @@ class WPPayFormPdfBuilder extends PdfBuilder
         add_action('wp_ajax_wppayform_pdf_download', [$this, 'download']);
         add_action('wp_ajax_wppayform_pdf_download_public', [$this, 'downloadPublic']);
         add_action('wp_ajax_nopriv_wppayform_pdf_download_public', [$this, 'downloadPublic']);
+        add_action('wp_ajax_wppayform_pdf_download_dashboard', [$this, 'downloadDashboard']);
+
+        add_filter('wppayform_dashboard_entry_invoice_url', [$this, 'getDashboardInvoiceUrl'], 10, 2);
     }
 
     public function globalSettingMenu($setting)
@@ -124,10 +127,15 @@ class WPPayFormPdfBuilder extends PdfBuilder
             'downloadFonts' => 'downloadFonts'
         ];
 
-        $route = isset($_REQUEST['route']);
+        if (!isset($_REQUEST['route'])) {
+            wp_send_json_error(['message' => 'Invalid route'], 400);
+        }
         $route = sanitize_text_field(wp_unslash($_REQUEST['route']));
 
-        AccessControl::hasTopLevelMenuPermission();
+        // CRITICAL-02: Hard-fail when caller lacks admin permission
+        if (!AccessControl::hasTopLevelMenuPermission()) {
+            wp_send_json_error(['message' => __('You do not have permission to perform this action.', 'wp-payment-form')], 403);
+        }
 
         if (isset($maps[$route])) {
             $this->{$maps[$route]}();
@@ -157,7 +165,10 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function saveGlobalSettings()
     {
-        $settings = wp_unslash($_REQUEST['settings']);
+        $allowed_keys = ['paper_size', 'orientation', 'font', 'font_size', 'font_color', 'accent_color', 'heading_color', 'language_direction'];
+        $raw_settings = isset($_REQUEST['settings']) && is_array($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
+        $settings = array_intersect_key($raw_settings, array_flip($allowed_keys));
+        $settings = array_map('sanitize_text_field', $settings);
         update_option($this->optionKey, $settings);
         wp_send_json_success([
             'message' => __('Settings successfully updated', 'wp-payment-form')
@@ -637,6 +648,9 @@ class WPPayFormPdfBuilder extends PdfBuilder
             ->where('meta_key', '_pdf_feeds')
             ->first();
 
+        if (!$feed) {
+            wp_send_json_error(['message' => 'PDF feed not found'], 404);
+        }
 
         $settings = json_decode($feed->meta_value, true);
 
@@ -911,7 +925,7 @@ class WPPayFormPdfBuilder extends PdfBuilder
                     ->first();
 
         if ($feed) {
-            $feedSettings = json_decode($feed->value, true);
+            $feedSettings = json_decode($feed->meta_value, true);
 
             if (Arr::get($feedSettings, 'settings.allow_download')) {
 
@@ -937,17 +951,23 @@ class WPPayFormPdfBuilder extends PdfBuilder
         $hasPermission = AccessControl::hasTopLevelMenuPermission();
 
         if (!$hasPermission) {
-            $submissionId = isset($_REQUEST['submission_id']);
-            $submissionId = intval(sanitize_text_field(wp_unslash($_REQUEST['submission_id'])));
+            $submissionId = intval(sanitize_text_field(wp_unslash(isset($_REQUEST['submission_id']) ? $_REQUEST['submission_id'] : 0)));
             $submissionModel = new Submission();
             $submission = $submissionModel->getSubmission($submissionId);
 
             if (!$submission) {
-                $message = __("You don't have permission to download the PDF.", 'wp-payment-form');
-
                 wp_send_json_error([
-                    'message' => $message
-                ], 422);
+                    'message' => __("You don't have permission to download the PDF.", 'wp-payment-form')
+                ], 403);
+            }
+
+            // CRITICAL-02: Verify the current user owns this submission
+            $currentUserId = get_current_user_id();
+            $ownerUserId   = intval(isset($submission->user_id) ? $submission->user_id : 0);
+            if ($ownerUserId === 0 || $ownerUserId !== $currentUserId) {
+                wp_send_json_error([
+                    'message' => __("You don't have permission to download the PDF.", 'wp-payment-form')
+                ], 403);
             }
         }
 
@@ -983,5 +1003,88 @@ class WPPayFormPdfBuilder extends PdfBuilder
         $_REQUEST['submission_id'] = $submissionId;
 
         return $this->getPdf();
+    }
+
+    /**
+     * Dashboard invoice download: requires login and verifies the current user owns the submission.
+     */
+    public function downloadDashboard()
+    {
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => __('You must be logged in to download the invoice.', 'wp-payment-form')], 403);
+        }
+
+        $submissionId = isset($_REQUEST['submission_id']) ? absint($_REQUEST['submission_id']) : 0;
+        $feedId = isset($_REQUEST['feed_id']) ? absint($_REQUEST['feed_id']) : 0;
+        $nonce = isset($_REQUEST['nonce']) ? sanitize_text_field(wp_unslash($_REQUEST['nonce'])) : '';
+
+        if (!$submissionId || !$feedId || !wp_verify_nonce($nonce, 'wppayform_dashboard_invoice')) {
+            wp_send_json_error(['message' => __('Invalid request.', 'wp-payment-form')], 403);
+        }
+
+        $submissionModel = new Submission();
+        $submission = $submissionModel->getSubmission($submissionId);
+        if ($submission === null) {
+            wp_send_json_error(['message' => __('Submission not found.', 'wp-payment-form')], 404);
+        }
+
+        $currentUser = wp_get_current_user();
+        $allowed = (
+            (int) $submission->user_id === (int) $currentUser->ID
+            || (is_string($submission->customer_email) && strtolower($submission->customer_email) === strtolower($currentUser->user_email))
+        );
+        if (!$allowed) {
+            wp_send_json_error(['message' => __('You do not have permission to download this invoice.', 'wp-payment-form')], 403);
+        }
+
+        $feed = Meta::where('id', $feedId)->where('meta_key', '_pdf_feeds')->where('form_id', $submission->form_id)->first();
+        if (!$feed) {
+            wp_send_json_error(['message' => __('Invoice template not found.', 'wp-payment-form')], 404);
+        }
+
+        $_REQUEST['id'] = $feedId;
+        $_REQUEST['submission_id'] = $submissionId;
+        return $this->getPdf();
+    }
+
+    /**
+     * Provides the dashboard invoice download URL for an entry or subscription item.
+     * Used by the user dashboard view. $item must have 'id' (submission id) and 'form_id'.
+     *
+     * @param string $url  Default empty.
+     * @param array  $item Entry or subscription item with 'id' and 'form_id'.
+     * @return string URL or empty if no downloadable feed.
+     */
+    public function getDashboardInvoiceUrl($url, $item)
+    {
+        $submissionId = isset($item['id']) ? absint($item['id']) : 0;
+        $formId = isset($item['form_id']) ? absint($item['form_id']) : 0;
+        if (!$submissionId || !$formId) {
+            return '';
+        }
+
+        $feed = Meta::where('form_id', $formId)
+            ->where('meta_key', '_pdf_feeds')
+            ->first();
+
+        if (!$feed || !isset($feed->meta_value)) {
+            return '';
+        }
+
+        $feedSettings = is_string($feed->meta_value) ? json_decode($feed->meta_value, true) : $feed->meta_value;
+        if (!is_array($feedSettings)) {
+            return '';
+        }
+        // Only hide invoice URL when allow_download is explicitly disabled (default to true when not set)
+        if (Arr::get($feedSettings, 'settings.allow_download') === false) {
+            return '';
+        }
+
+        return admin_url(
+            'admin-ajax.php?action=wppayform_pdf_download_dashboard'
+            . '&submission_id=' . $submissionId
+            . '&feed_id=' . (int) $feed->id
+            . '&nonce=' . wp_create_nonce('wppayform_dashboard_invoice')
+        );
     }
 }

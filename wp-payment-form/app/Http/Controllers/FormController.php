@@ -93,7 +93,7 @@ class FormController extends Controller
     {
         $formId = intval($formId);
         try {
-            dd($meta->getIntegration($formId));
+            return $this->sendSuccess($meta->getIntegration($formId));
         } catch (\Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage()

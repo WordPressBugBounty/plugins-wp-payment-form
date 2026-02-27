@@ -444,11 +444,24 @@ class TransStrings
             'View Space' => __('View Space', 'wp-payment-form'),
             'My Courses' => __('My Courses', 'wp-payment-form'),
             'Completed' => __('Completed', 'wp-payment-form'),
-            'Loading...' => __('Loading...', 'wp-payment-form'),
             'Available courses' => __('Available courses', 'wp-payment-form'),
             'Other Spaces' => __('Other Spaces', 'wp-payment-form'),
             'Join Space' => __('Join Space', 'wp-payment-form'),
             'Enroll in course' => __('Enroll in course', 'wp-payment-form'),
+            'Dashboard' => __('Dashboard', 'wp-payment-form'),
+            'Manage Subscription' => __('Manage Subscription', 'wp-payment-form'),
+            'logout' => __('Logout', 'wp-payment-form'),
+            'Members' => __('Members', 'wp-payment-form'),
+            'Lessons' => __('Lessons', 'wp-payment-form'),
+            'Sections' => __('Sections', 'wp-payment-form'),
+            'Students' => __('Students', 'wp-payment-form'),
+            'Member' => __('Member', 'wp-payment-form'),
+            'Lesson' => __('Lesson', 'wp-payment-form'),
+            'Section' => __('Section', 'wp-payment-form'),
+            'Student' => __('Student', 'wp-payment-form'),
+            'Community' => __('Community', 'wp-payment-form'),
+            'Courses' => __('Courses', 'wp-payment-form'),
+            'Loading...' => __('Loading...', 'wp-payment-form')
         ];
     }
 }

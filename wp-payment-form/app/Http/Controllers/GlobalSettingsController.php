@@ -87,13 +87,18 @@ class GlobalSettingsController extends Controller
         try {
             if (current_user_can('manage_options')) {
                 $capability = get_option('_wppayform_enable_paymattic_user_dashboard', 'no');
+                $submissionStatusFilter = get_option('_wppayform_dashboard_submission_status_filter', 'all');
+                if (!is_array($submissionStatusFilter)) {
+                    $submissionStatusFilter = $submissionStatusFilter === 'all' ? 'all' : (array) $submissionStatusFilter;
+                }
                 return array(
                     'status' => $capability == 'no' ? false : true,
                     'data' => $capability,
                     'pages' => $pages,
                     'activePage' => $activePage,
                     'forceUserRedirect' => $forceUserRedirect,
-                    'emailSettings' => $cancel_subscription_email_settings
+                    'emailSettings' => $cancel_subscription_email_settings,
+                    'submissionStatusFilter' => $submissionStatusFilter
                 );
             } else {
                 throw new \Exception(__('Sorry, You can not update permissions. Only administrators can update permissions', 'wp-payment-form'));
@@ -182,6 +187,13 @@ class GlobalSettingsController extends Controller
                 update_option('_wppayform_enable_paymattic_user_dashboard', $paymatticUserPermissions, 'no');
                 update_option('_wppayform_user_dashboard_page', Arr::get($paymatticUserPermissions, 'activePage'));
                 update_option('_wppayform_paymattic_user_force_redirect', Arr::get($paymatticUserPermissions, 'force_user_redirect', 'yes'));
+                $submissionStatusFilter = Arr::get($paymatticUserPermissions, 'submission_status_filter', 'all');
+                if (is_array($submissionStatusFilter)) {
+                    $submissionStatusFilter = array_map('sanitize_text_field', $submissionStatusFilter);
+                } else {
+                    $submissionStatusFilter = $submissionStatusFilter === 'all' ? 'all' : array(sanitize_text_field($submissionStatusFilter));
+                }
+                update_option('_wppayform_dashboard_submission_status_filter', $submissionStatusFilter, 'no');
 
                 return array(
                     'message' => $message

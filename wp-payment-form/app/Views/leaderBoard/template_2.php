@@ -40,8 +40,27 @@ $wppayform_top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg
                                     <div class="wpf-user-amount">
                                         <p class="wpf-user-amount-text"><?php esc_html_e('Amount Donated', 'wp-payment-form') ?></p>
                                         <div>
-                                            <span class="wpf-text-currency"><?php echo esc_html($wppayform_top_three_donar['currency'])  ?></span>
-                                            <span class="wpf-text-amount"><?php echo esc_html($wppayform_top_three_donar['grand_total']) ?></span>
+                                            <?php
+                                            $wppayform_amount_html = sprintf(
+                                                '<span class="wpf-text-amount" data-currency-sign-position="%s">%s</span>',
+                                                esc_attr($currency_sign_position),
+                                                esc_html($wppayform_top_three_donar['grand_total'])
+                                            );
+                                            
+                                            $wppayform_currency_html = sprintf(
+                                                '<span class="wpf-text-currency">%s</span>',
+                                                esc_html($wppayform_top_three_donar['currency'])
+                                            );
+                                            
+                                            $wppayform_has_space = strpos($currency_sign_position, 'space') !== false;
+                                            $wppayform_is_left = strpos($currency_sign_position, 'left') !== false;
+                                            
+                                            if ($wppayform_is_left) {
+                                                echo wp_kses_post( $wppayform_currency_html . ($wppayform_has_space ? ' ' : '') . $wppayform_amount_html );
+                                            } else {
+                                                echo wp_kses_post( $wppayform_amount_html . ($wppayform_has_space ? ' ' : '') . $wppayform_currency_html );
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -181,8 +200,26 @@ $wppayform_top_donor_badge = WPPAYFORM_URL . 'assets/images/global/serial-bg.svg
                             <?php if ($show_total == 'true') : ?>
                                 <div class="wpf-user-amount">
                                     <span class="wpf-user-amount">
-                                        <span class="wpf-text-currency"><?php echo esc_html($wppayform_donor['currency'])  ?></span>
-                                        <span class="wpf-text-amount"><?php echo esc_html($wppayform_donor['grand_total']) ?></span>
+                                        <?php 
+                                        $wppayform_amount_html = sprintf(
+                                            '<span class="wpf-text-amount" data-currency-sign-position="%s">%s</span>',
+                                            esc_attr($currency_sign_position),
+                                            esc_html($wppayform_donor['grand_total'])
+                                        );
+
+                                        $wppayform_currency_html = sprintf(
+                                            '<span class="wpf-text-currency">%s</span>',
+                                            esc_html($wppayform_donor['currency'])
+                                        );
+
+                                        $wppayform_has_space = strpos($currency_sign_position, 'space') !== false;
+                                        $wppayform_is_left = strpos($currency_sign_position, 'left') !== false;
+                                        if ($wppayform_is_left) {
+                                            echo wp_kses_post( $wppayform_currency_html . ($wppayform_has_space ? ' ' : '') . $wppayform_amount_html );
+                                        } else {
+                                            echo wp_kses_post( $wppayform_amount_html . ($wppayform_has_space ? ' ' : '') . $wppayform_currency_html );
+                                        }
+                                        ?>
                                     </span>
                                 </div>
                             <?php endif; ?>

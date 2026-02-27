@@ -46,6 +46,8 @@ class AsyncRequest
 
     public function handleBackgroundCall()
     {
+        check_ajax_referer($this->action, 'nonce');
+
         $originId = false;
         if (isset($_REQUEST['origin_id'])) {
             $originId = intval($_REQUEST['origin_id']);

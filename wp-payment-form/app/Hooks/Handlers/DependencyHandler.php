@@ -5,6 +5,7 @@ namespace WPPayForm\App\Hooks\Handlers;
 use WPPayForm\App\Modules\PaymentMethods\Stripe\Stripe;
 use WPPayForm\App\Modules\PaymentMethods\Stripe\StripeInlineHandler;
 use WPPayForm\App\Modules\PaymentMethods\Stripe\StripeHostedHandler;
+use WPPayForm\App\Modules\PaymentMethods\Stripe\StripeListener;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Modules\Integrations\TinyMceBlock;
@@ -33,6 +34,12 @@ class DependencyHandler
         // Stripe Hosted Checkout Handler
         $stripeHostedHandler = new StripeHostedHandler();
         $stripeHostedHandler->registerHooks();
+
+        // register stripe listener
+        if (defined('WPPAYFORM_VERSION') && class_exists('\WPPayForm\App\Modules\PaymentMethods\Stripe\StripeListener')) {
+            $stripeListener = new StripeListener();
+            $stripeListener->init();
+        }
     }
 
     public function tinyMceBlock()

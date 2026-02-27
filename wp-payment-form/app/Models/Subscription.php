@@ -70,7 +70,7 @@ class Subscription extends Model
         return $this->belongsTo(Submission::class);
     }
 
-    public function getSubscriptionPaymentTotal($formId, $submissionId = false)
+    public function getSubscriptionPaymentTotal($formId, $submissionId = false, $searchString = false, $startDate = null, $endDate = null)
     {
         $paymentTotal = 0;
 
@@ -85,6 +85,11 @@ class Subscription extends Model
 
         if ($submissionId) {
             $query = $query->where('submission_id', $submissionId);
+        }
+
+        if ($startDate && $endDate) {
+            $query = $query->where('created_at', '>=', $startDate)
+                           ->where('created_at', '<=', $endDate);
         }
 
         $result = $query->first();
@@ -170,7 +175,7 @@ class Subscription extends Model
     public function updateMeta($optionId, $key, $value)
     {
         $value = maybe_serialize($value);
-        $exists = (new Meta())->where('meta_group', 'wpf_subscriptions')
+        $exists = (new Meta())->where('meta_group', $this->table)
             ->where('meta_key', $key)
             ->where('option_id', $optionId)
             ->first();
@@ -178,7 +183,7 @@ class Subscription extends Model
         if ($exists) {
             (new Meta())->where('id', $exists->id)
                 ->update([
-                    'meta_group' => $this->dbName,
+                    'meta_group' => $this->table,
                     'option_id' => $optionId,
                     'meta_key' => $key,
                     'meta_value' => $value,
@@ -188,7 +193,7 @@ class Subscription extends Model
         }
 
         return (new Meta())->insert([
-            'meta_group' => $this->dbName,
+            'meta_group' => $this->table,
             'option_id' => $optionId,
             'meta_key' => $key,
             'meta_value' => $value,
@@ -199,7 +204,7 @@ class Subscription extends Model
 
     public function getMetas($optionId)
     {
-        $metas = (new Meta())->where('meta_group', $this->dbName)
+        $metas = (new Meta())->where('meta_group', $this->table)
             ->where('option_id', $optionId)
             ->get();
         $formatted = array();

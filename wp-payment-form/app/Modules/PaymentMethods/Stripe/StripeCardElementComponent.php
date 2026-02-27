@@ -17,7 +17,7 @@ class StripeCardElementComponent extends BaseComponent
         // add_action('wppayform/validate_gateway_api_stripe', array($this, 'validateApi'));
         add_filter('wppayform/validate_gateway_api_stripe', function ($data, $form) {
             return $this->validateApi($form);
-        }, 2, 10);
+        }, 10, 2);
 
         add_action('wppayform/payment_method_choose_element_render_stripe', array($this, 'renderForMultiple'), 10, 3);
         add_filter('wppayform/available_payment_methods', array($this, 'pushPaymentMethod'), 1, 1);

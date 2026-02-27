@@ -90,10 +90,11 @@ $router->prefix('dashboard')->withPolicy('FrontendUserPolicy')->group(function (
     $router->prefix('/form/{id}/entries')->group(function ($router) {
         $router->prefix('/{entryId}')->group(function ($router) {
             $router->get('/', 'SubmissionController@getSubmission')->int('id', 'entryId');
+            // HIGH-01: cancel route moved inside FrontendUserPolicy so unauthenticated requests are rejected
+            $router->post('/cancel-subscription', 'SubmissionController@cancelSubscription')->int('id', 'entryId');
         });
     });
 });
-$router->post('/dashboard/{id}/entries/{entryId}/cancel-subscription', 'SubmissionController@cancelSubscription')->int('id', 'entryId');
 $router->prefix('form/{id}')->withPolicy('AdminPolicy')->group(function ($router) {
     $router->get('/', 'FormController@index')->int('id');
     $router->post('/', 'FormController@store')->int('id');
@@ -146,14 +147,6 @@ $router->prefix('form/{id}')->withPolicy('AdminPolicy')->group(function ($router
         $router->get('/lists', 'IntegrationController@lists')->int('id');
     });
 });
-
-//route for installing paymattic addons
-$router->prefix('paymattic/addons')->withPolicy('AdminPolicy')->group(function ($router) {
-    $router->post('/install', 'AddonsController@installAndActivate');
-    $router->post('/update-from-github', 'AddonsController@updateFromGithub');
-});
-
-
 
 // pdf routes
 $router->prefix('wppayform-pdf')->withPolicy('WPPayForm\App\Http\Policies\AdminPolicy')->group(function ($router) {

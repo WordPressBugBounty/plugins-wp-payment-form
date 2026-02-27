@@ -60,13 +60,13 @@ class FluentcrmListConditional
             switch ($conditional['operator']) {
                 case 'equal':
                     if(is_array($inputValue)) {
-                        return array_key_exists($conditional['value'], $inputValue);
+                        return array_key_exists($conditional['value'], $inputValue) || in_array($conditional['value'], $inputValue, false);
                     }
                     return $inputValue == $conditional['value'];
                     break;
                 case 'not_equal':
                     if(is_array($inputValue)) {
-                        return !array_key_exists($conditional['value'], $inputValue);
+                        return !array_key_exists($conditional['value'], $inputValue) || !in_array($conditional['value'], $inputValue, false);
                     }
                     return $inputValue != $conditional['value'];
                     break;
@@ -109,6 +109,10 @@ class FluentcrmListConditional
 
         if ($elementType === 'address_subfield') {
             return Arr::get($inputs, $elementId, '');
+        }
+        if ($elementType === 'checkbox') {
+            $value = Arr::get($inputs, $elementId, []);
+            return $value;
         }
 
         if ($elementType === 'tabular_products' && isset($elements['payment'][$elementId])) {

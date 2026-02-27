@@ -26,7 +26,8 @@ class DonationComponent extends BaseComponent
             'editor_title' => 'Donation Progress Item',
             'group' => 'payment',
             'postion_group' => 'payment',
-            'conditional_hide' => true,
+            'conditional_hide' => false,
+            'isNumberic' => 'yes',
             'editor_elements' => array(
                 'label' => array(
                     'label' => 'Field Label',
@@ -279,7 +280,7 @@ class DonationComponent extends BaseComponent
             'min' => 0,
             'data-price' => 0,
             'id' => $inputId,
-            'class' => 'wpf_custom_amount wpf_money_amount input-prepend wpf_donation_item',
+            'class' => 'wpf_donation_custom_amount wpf_money_amount input-prepend wpf_donation_item',
             'customname' => $element['editor_title']
         );
 

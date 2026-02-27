@@ -642,8 +642,10 @@ class Submission extends Model
 
     public function getTotalCount($formId = false, $paymentStatus = false, $searchString = false, $startDate = null, $endDate = null)
     {
+        $query = $this->newQuery();
+
         if ($formId) {
-            $query = $this->where('form_id', $formId);
+            $query = $query->where('form_id', $formId);
         }
 
         if (!empty($paymentStatus)) {

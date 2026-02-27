@@ -78,7 +78,10 @@ class StripeHostedHandler extends StripeHandler
         $paymentMethods = Arr::get($formPaymentSettings, 'stripe_checkout_methods', false);
 
         // $allowPromotionCodes = Arr::get($formPaymentSettings, 'stripe_checkout_allow_promotion_codes', false);
-   
+        
+        // Get or create Stripe customer for bank transfer support
+        $stripeCustomerId = $this->getOrCreateStripeCustomer($submission, $form->ID);
+
         $checkoutArgs = [
             'cancel_url' => wp_sanitize_redirect($cancelUrl),
             'success_url' => wp_sanitize_redirect($successUrl),
@@ -89,7 +92,13 @@ class StripeHostedHandler extends StripeHandler
             'metadata' => $this->getIntentMetaData($submission, $stripeMetaData)
         ];
 
-        if ($paymentMethods && is_array($paymentMethods)) {
+        if ($stripeCustomerId) {
+            $checkoutArgs['customer'] = $stripeCustomerId;
+        } elseif ($submission->customer_email) {
+            $checkoutArgs['customer_email'] = $submission->customer_email;
+        }
+
+        if (!$stripeCustomerId && $paymentMethods && is_array($paymentMethods)) {
             $checkoutArgs['payment_method_types'] = $paymentMethods;
         }
 
@@ -97,10 +106,6 @@ class StripeHostedHandler extends StripeHandler
             $checkoutArgs['billing_address_collection'] = 'required';
         } else {
             $checkoutArgs['billing_address_collection'] = 'auto';
-        }
-
-        if ($submission->customer_email) {
-            $checkoutArgs['customer_email'] = $submission->customer_email;
         }
         if ($lineItems = $this->getLineItems($submission, $totalPayable)) {
             $checkoutArgs['line_items'] = $lineItems;
@@ -249,6 +254,15 @@ class StripeHostedHandler extends StripeHandler
 
         if (!$subscriptions) {
             return [];
+        }
+
+        // Stripe hosted checkout doesn't support multiple plans with different billing intervals
+        $billingIntervals = $subscriptions->map(function ($subscription) {
+            return $subscription->billing_interval;
+        })->unique();
+        
+        if (count($billingIntervals) > 1) {
+            return new \WP_Error('multiple_billing_intervals', __('Stripe hosted checkout doesn\'t support multiple plans with different billing intervals', 'wp-payment-form'));
         }
 
         $subscriptionItems = [];
@@ -478,7 +492,7 @@ class StripeHostedHandler extends StripeHandler
                 'submission_id' => $submission->id,
                 'type' => 'activity',
                 'created_by' => 'Paymattic BOT',
-                'content' => printf(
+                'content' => sprintf(
                     // translators: %s: The customer payment method.
                     esc_html__('Payment is authorized. need to capture it before the expiration, payment status changes from pending to authorized and customer made transaction with %s', 'wp-payment-form'),
                     esc_html($customerPaymentMethod)
@@ -666,6 +680,46 @@ class StripeHostedHandler extends StripeHandler
         }
 
         return $formattedMetaData;
+    }
+
+    public function getOrCreateStripeCustomer($submission, $formId)
+    {
+        $customerReferenceId = '';
+        if ($submission->customer_email) {
+            $customerReferenceId = 'wppayform_stripe_customer_id_' . $submission->customer_email;
+            $customerReferenceId = str_replace('.', '_', $customerReferenceId);
+            $existingCustomerId = get_option($customerReferenceId);
+            if ($existingCustomerId) {
+                return $existingCustomerId;
+            }
+        }
+
+        $customerArgs = [
+            'email' => $submission->customer_email,
+            'name' => $submission->customer_name ?? '',
+            'phone' => $submission->customer_phone ?? '',
+            'description' => $submission->customer_name ?? '',
+            'metadata' => [
+                'payform_id' => $submission->form_id,
+                'submission_id' => $submission->id,
+            ],
+            'address' => [
+                'city' => $submission->customer_city ?? '',
+                'country' => $submission->customer_country ?? '',
+                'postal_code' => $submission->customer_postcode ?? '',
+                'state' => $submission->customer_state ?? '',
+                'line1' => $submission->customer_address ?? '',
+            ]
+        ];
+
+        $customer = Customer::createCustomerForHostedCheckout($customerArgs, $formId);
+        if (is_wp_error($customer) || empty($customer->id)) {
+            return null;
+        }
+
+        update_option($customerReferenceId, $customer->id);
+        do_action('wppayform/stripe_customer_created', $customer, $customerArgs);
+        return $customer->id;
     }
 
     public function syncSubscription($formId, $submissionId)
@@ -928,7 +982,7 @@ class StripeHostedHandler extends StripeHandler
                     'submission_id' => $transaction->submission_id,
                     'type' => 'info',
                     'created_by' => 'Payform Bot',
-                    'content' => printf(
+                    'content' => sprintf(
                         // translators: 1: Currency symbol, 2: Refunded amount.
                         esc_html__('Payment Refunded by Admin. Refunded: %1$s %2$s', 'wp-payment-form'),
                         esc_html($currencySymbol),

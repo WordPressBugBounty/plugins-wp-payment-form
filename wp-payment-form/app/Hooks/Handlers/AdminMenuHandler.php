@@ -432,6 +432,7 @@ class AdminMenuHandler
                     'value_placeholders' => [],
                     'slug' => $slug,
                     'nonce' => wp_create_nonce('wppayform'),
+                    'stripe_settings_nonce' => wp_create_nonce('wpf_stripe_settings_nonce'),
                     'rest' => $this->getRestInfo($app),
                     'brand_logo' => $this->getMenuIcon(),
                     'asset_url' => $assets,

@@ -39,7 +39,7 @@
             <?php endif; ?>
         </div>
     <?php endif; ?>
-    <?php if ($submission->payment_status && $submission->order_items) : 
+    <?php if ($submission->payment_status) : 
         $wppayform_payment_status = lcfirst(strtolower(esc_attr($submission->payment_status))); 
         $wppayform_image_url = WPPAYFORM_URL . 'assets/images/payment-status/' . $wppayform_payment_status .'.svg';
         ?>

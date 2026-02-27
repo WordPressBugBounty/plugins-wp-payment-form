@@ -62,7 +62,7 @@ class SubscriptionEntries
                     <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Amount', 'wp-payment-form') ?></div>
                     <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Date', 'wp-payment-form') ?></div>
                     <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Status', 'wp-payment-form') ?></div>
-                    <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Payment Method test', 'wp-payment-form') ?></div>
+                    <div class='wpf-user-dashboard-table__column'><?php esc_html_e('Payment Method', 'wp-payment-form') ?></div>
                 </div>
                 <div class='wpf-user-dashboard-table__rows'>
                     <?php

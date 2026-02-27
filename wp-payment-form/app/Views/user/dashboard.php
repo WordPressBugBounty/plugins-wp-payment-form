@@ -95,7 +95,7 @@ if (!function_exists('wppayform_get_menu_icon')) {
 
                     <div class="wpf-menu-item" id="<?php echo esc_attr($menu['slug']); ?>">
                         <img src="<?php echo esc_attr(wppayform_get_menu_icon($menu['slug'])); ?>" />
-                        <span><?php echo esc_html($menu['name']); ?></span>
+                        <span class="wpf-menu-name" data-translate="<?php echo esc_attr($menu['name']); ?>"><?php echo esc_html($menu['name']); ?></span>
                     </div>
                     <?php
                 }
@@ -183,6 +183,7 @@ if (!function_exists('wppayform_get_menu_icon')) {
                             <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Date', 'wp-payment-form') ?></div>
                             <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Status', 'wp-payment-form') ?></div>
                             <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Gateway', 'wp-payment-form') ?></div>
+                            <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Invoice', 'wp-payment-form') ?></div>
                             <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Action', 'wp-payment-form') ?></div>
                         </div>
                         <div class="wpf-user-dashboard-table__rows">
@@ -228,10 +229,43 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                     <img src="<?php echo esc_url(wppayform_get_payment_gateways(Arr::get($wppayform_donation_item, 'payment_method', ''))); ?>" alt="<?php echo esc_attr(Arr::get($wppayform_donation_item, 'payment_method', '')); ?>">
                                         <!-- <?php echo esc_html(Arr::get($wppayform_donation_item, 'payment_method', '')) ?> -->
                                     </div>
+                                    <div class="wpf-user-dashboard-table__column">
+                                    <?php
+                                        // Ensure we have the correct data structure for the filter
+                                        $invoice_item = is_array($wppayform_donation_item) ? $wppayform_donation_item : (array) $wppayform_donation_item;
+                                        // Ensure id and form_id are present
+                                        if (!isset($invoice_item['id']) && isset($invoice_item['ID'])) {
+                                            $invoice_item['id'] = $invoice_item['ID'];
+                                        }
+                                        if (!isset($invoice_item['form_id']) && isset($invoice_item['formId'])) {
+                                            $invoice_item['form_id'] = $invoice_item['formId'];
+                                        }
+                                        
+                                        $wppayform_invoice_url = apply_filters('wppayform_dashboard_entry_invoice_url', '', $invoice_item);
+                                        if ( ! empty($wppayform_invoice_url) ):
+                                            ?>
+                                        <a href="<?php echo esc_url($wppayform_invoice_url); ?>" 
+                                           class="wpf-dashboard-download-invoice wpf-icon-button" 
+                                           target="_blank" 
+                                           rel="noopener"
+                                           title="<?php echo esc_attr__('Download Invoice', 'wp-payment-form'); ?>"
+                                           aria-label="<?php echo esc_attr__('Download Invoice', 'wp-payment-form'); ?>">
+                                            <span class="wpf-icon-svg wpf-icon-download" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'; ?></span>
+                                        </a>
+                                        <?php else: ?>
+                                        <span class="wpf-icon-button wpf-icon-disabled" 
+                                              title="<?php echo esc_attr__('Invoice not available', 'wp-payment-form'); ?>"
+                                              aria-label="<?php echo esc_attr__('Invoice not available', 'wp-payment-form'); ?>">
+                                            <span class="wpf-icon-svg wpf-icon-document" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'; ?></span>
+                                        </span>
+                                        <?php endif; ?>
+                                    </div>
                                     <div class="wpf-user-dashboard-table__column wpf-user-dashboard-last_column">
-                                        <span class="wpf-sub-id wpf_toal_amount_btn"
-                                            data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $wppayform_i) ?>">
-                                            <?php echo esc_html__('View Receipt', 'wp-payment-form') ?> <span class="dashicons dashicons-arrow-right-alt"></span>
+                                        <span class="wpf-sub-id wpf_toal_amount_btn wpf-icon-button"
+                                            data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $wppayform_i) ?>"
+                                            title="<?php echo esc_attr__('View Receipt', 'wp-payment-form'); ?>"
+                                            aria-label="<?php echo esc_attr__('View Receipt', 'wp-payment-form'); ?>">
+                                            <span class="wpf-icon-svg wpf-icon-receipt" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32"><circle cx="22" cy="24" r="2" fill="currentColor"/><path fill="currentColor" d="M29.777 23.479A8.64 8.64 0 0 0 22 18a8.64 8.64 0 0 0-7.777 5.479L14 24l.223.522A8.64 8.64 0 0 0 22 30a8.64 8.64 0 0 0 7.777-5.478L30 24ZM22 28a4 4 0 1 1 4-4a4.005 4.005 0 0 1-4 4M7 17h5v2H7zm0-5h12v2H7zm0-5h12v2H7z"/><path fill="currentColor" d="M22 2H4a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h8v-2H4V4h18v11h2V4a2.006 2.006 0 0 0-2-2"/></svg>'; ?></span>
                                         </span>
                                     </div>
                                 </div>
@@ -256,6 +290,7 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                 <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Billing Time', 'wp-payment-form') ?></div>
                                 <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Status', 'wp-payment-form') ?></div>
                                 <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Interval', 'wp-payment-form') ?></div>
+                                <div class="wpf-user-dashboard-table__column"><?php echo esc_html__('Invoice', 'wp-payment-form') ?></div>
                                 <div class="wpf-user-dashboard-table__column" style="text-align: right;" ><?php echo esc_html__('Action', 'wp-payment-form') ?></div>
                             </div>
                             <div class="wpf-user-dashboard-table__rows">
@@ -275,7 +310,7 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                                         $wppayform_receipt_handler = new \WPPayForm\App\Modules\Builder\SubscriptionEntries();
                                                         $wppayform_payment_method = Arr::get($wppayform_donation_item, 'submission.submission.payment_method', '');
                                                         $wppayform_is_not_offline_payment = $wppayform_payment_method != 'offline';
-                                                        $wppayform_cancellable_sub = $wppayform_cancel_subscription == 'yes' && ($wppayform_payment_method == 'stripe' ||  $wppayform_payment_method == 'square' ||  $wppayform_payment_method == 'paypal');
+                                                        $wppayform_cancellable_sub = $wppayform_cancel_subscription == 'yes' && in_array($wppayform_payment_method, array('stripe', 'square', 'paypal', 'authorizedotnet', 'xendit'), true);
                                                         $wppayform_plan_name = Arr::get($wppayform_donation_item, 'plan_name', '');
                                                         $wppayform_submission_hash = Arr::get($wppayform_donation_item, 'submission.submission.submission_hash', '');
                                                         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -316,48 +351,89 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                             <?php echo esc_html(Arr::get($wppayform_donation_item, 'billing_interval', '')) ?>
                                         </div>
                                         <div class="wpf-user-dashboard-table__column">
+                                        <?php
+                                            $wppayform_sub_invoice_item = [
+                                                'id' => Arr::get($wppayform_donation_item, 'submission_id'),
+                                                'form_id' => Arr::get($wppayform_donation_item, 'form_id'),
+                                            ];
+                                            $wppayform_sub_invoice_url = apply_filters('wppayform_dashboard_entry_invoice_url', '', $wppayform_sub_invoice_item);
+                                            if ( ! empty($wppayform_sub_invoice_url) ):
+                                                ?>
+                                            <a href="<?php echo esc_url($wppayform_sub_invoice_url); ?>" 
+                                                class="wpf-dashboard-download-invoice wpf-icon-button" 
+                                                target="_blank" 
+                                                rel="noopener"
+                                                title="<?php echo esc_attr__('Download Invoice', 'wp-payment-form'); ?>"
+                                                aria-label="<?php echo esc_attr__('Download Invoice', 'wp-payment-form'); ?>">
+                                                <span class="wpf-icon-svg wpf-icon-download" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'; ?></span>
+                                            </a>
+                                            <?php else: ?>
+                                            <span class="wpf-icon-button wpf-icon-disabled" 
+                                                  title="<?php echo esc_attr__('Invoice not available', 'wp-payment-form'); ?>"
+                                                  aria-label="<?php echo esc_attr__('Invoice not available', 'wp-payment-form'); ?>">
+                                                <span class="wpf-icon-svg wpf-icon-document" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>'; ?></span>
+                                            </span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="wpf-user-dashboard-table__column">
                                             <div id="<?php echo esc_attr('wpf_toal_amount_cancel_modal' . $wppayform_i) ?>"
                                                 class="wpf-dashboard-modal wpf-confirmation-modal">
                                                 <!-- Modal content -->
                                                 <div class="modal-content">
                                                     <div class="modal-title">
-                                                        <p class="title"><?php echo esc_html__('Confirm subscription cancellation', 'wp-payment-form') ?></p>
-                                                        <span class="wpf-close">&times;</span>
+                                                        <p class="title">
+                                                            <?php echo esc_html__('Confirm subscription cancellation', 'wp-payment-form'); ?>
+                                                        </p>
+                                                        <span class="wpf-close" aria-label="<?php echo esc_attr__('Close', 'wp-payment-form'); ?>">&times;</span>
                                                     </div>
+
                                                     <div class="modal-body">
-                                                        <span class="dashicons dashicons-info-outline wpf-info-icon"></span>
-                                                        <h4><?php echo esc_html__('Are you sure to cancel this subscription ?', 'wp-payment-form') ?></h4>
-                                                        <p><?php echo esc_html__('This will also cancel the subscription at', 'wp-payment-form') ?> <?php echo  esc_html(Arr::get($wppayform_donation_item, 'submission.submission.payment_method', '')) ?> <?php echo esc_html__('dashboard', 'wp-payment-form') ?>.
-                                                        <?php echo esc_html__('So no further payment will be processed.', 'wp-payment-form') ?></p>
+                                                        <span class="dashicons dashicons-info-outline wpf-info-icon" aria-hidden="true"></span>
+                                                        <h4>
+                                                            <?php echo esc_html__('Are you sure you want to cancel this subscription?', 'wp-payment-form'); ?>
+                                                        </h4>
+                                                        <p>
+                                                            <?php echo esc_html__('This will also cancel the subscription in your', 'wp-payment-form'); ?>
+                                                            <?php echo esc_html(Arr::get($wppayform_donation_item, 'submission.submission.payment_method', '')); ?>
+                                                            <?php echo esc_html__('account, so no further automatic payments will be processed.', 'wp-payment-form'); ?>
+                                                        </p>
                                                     </div>
+
                                                     <div class="modal-footer">
-                                                        <button class="modal-btn wpf-cancel"><?php echo esc_html__('Dismiss', 'wp-payment-form') ?></button>
+                                                        <button type="button" class="modal-btn wpf-cancel">
+                                                            <?php echo esc_html__('Keep Subscription', 'wp-payment-form'); ?>
+                                                        </button>
                                                         <button
+                                                            type="button"
                                                             class="modal-btn wpf-success wpf-confirm-subscription-cancel"
-                                                            data-form_id="<?php echo esc_attr($wppayform_donation_item['form_id']) ?>"
-                                                            data-submission_hash="<?php echo  esc_attr(Arr::get($wppayform_donation_item, 'submission.submission.submission_hash', '')) ?>"
-                                                            data-subscription_id="<?php echo esc_attr($wppayform_donation_item['id']) ?>"><?php echo esc_html__('Yes, Cancel this Subscription', 'wp-payment-form') ?>
+                                                            data-form_id="<?php echo esc_attr($wppayform_donation_item['form_id']); ?>"
+                                                            data-submission_hash="<?php echo esc_attr(Arr::get($wppayform_donation_item, 'submission.submission.submission_hash', '')); ?>"
+                                                            data-subscription_id="<?php echo esc_attr($wppayform_donation_item['id']); ?>">
+                                                            <?php echo esc_html__('Yes, cancel this subscription', 'wp-payment-form'); ?>
                                                         </button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="wpf-subscription-action-btn">
-                                                <?php if ($wppayform_cancellable_sub): ?>
-                                                    <div class="wpf-cancel-subscription">
-                                                        <svg
-                                                            class="wpf-cancel-subscription-btn <?php echo esc_html(in_array(Arr::get($wppayform_donation_item, 'status', ''), ['active', 'trialing']) ? 'active' : '') ?>"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"
-                                                            ></path>
-                                                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
-                                                            </path>
-                                                        </svg>
-                                                        <button data-modal_id="<?php echo esc_attr('wpf_toal_amount_cancel_modal' . $wppayform_i) ?>" class="wpf-cancel-confirm-button"><?php echo esc_html__('Cancel', 'wp-payment-form') ?></button>
-                                                    </div>
+                                                <?php
+                                                $wppayform_sub_status = strtolower((string) Arr::get($wppayform_donation_item, 'status', ''));
+                                                $wppayform_cancel_btn_enabled = $wppayform_cancellable_sub && in_array($wppayform_sub_status, array('active', 'trialing'), true);
+                                                if ($wppayform_cancellable_sub): ?>
+                                                    <button type="button"
+                                                            class="wpf-icon-button wpf-cancel-confirm-button wpf-cancel-subscription-dots<?php echo $wppayform_cancel_btn_enabled ? '' : ' wpf-cancel-disabled'; ?>"
+                                                            data-modal_id="<?php echo esc_attr('wpf_toal_amount_cancel_modal' . $wppayform_i) ?>"
+                                                            title="<?php echo $wppayform_cancel_btn_enabled ? esc_attr__('Cancel Subscription', 'wp-payment-form') : esc_attr__('Only active or trialing subscriptions can be cancelled', 'wp-payment-form'); ?>"
+                                                            aria-label="<?php echo esc_attr__('Cancel Subscription', 'wp-payment-form'); ?>"
+                                                            <?php echo $wppayform_cancel_btn_enabled ? '' : ' disabled'; ?>>
+                                                        <span class="wpf-cancel-label" aria-hidden="true"><?php echo esc_html__('Cancel Subscription', 'wp-payment-form'); ?></span>
+                                                        <span class="wpf-icon-svg wpf-icon-dots" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>'; ?></span>
+                                                    </button>
                                                 <?php endif ?>
-                                                <span class="wpf-sub-id wpf_toal_amount_btn"
-                                                    data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $wppayform_i) ?>">
-                                                    <span>View</span>
+                                                <span class="wpf-sub-id wpf_toal_amount_btn wpf-icon-button"
+                                                    data-modal_id="<?php echo esc_attr('wpf_toal_amount_modal' . $wppayform_i) ?>"
+                                                    title="<?php echo esc_attr__('View Subscription Details', 'wp-payment-form'); ?>"
+                                                    aria-label="<?php echo esc_attr__('View Subscription Details', 'wp-payment-form'); ?>">
+                                                    <span class="wpf-icon-svg wpf-icon-receipt" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32"><circle cx="22" cy="24" r="2" fill="currentColor"/><path fill="currentColor" d="M29.777 23.479A8.64 8.64 0 0 0 22 18a8.64 8.64 0 0 0-7.777 5.479L14 24l.223.522A8.64 8.64 0 0 0 22 30a8.64 8.64 0 0 0 7.777-5.478L30 24ZM22 28a4 4 0 1 1 4-4a4.005 4.005 0 0 1-4 4M7 17h5v2H7zm0-5h12v2H7zm0-5h12v2H7z"/><path fill="currentColor" d="M22 2H4a2.006 2.006 0 0 0-2 2v24a2.006 2.006 0 0 0 2 2h8v-2H4V4h18v11h2V4a2.006 2.006 0 0 0-2-2"/></svg>'; ?></span>
                                                 </span>
                                             </div>
                                         </div>
