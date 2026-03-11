@@ -75,8 +75,8 @@
 
     .wpf_payment_info {
         display: flex;
-        justify-content: flex-start;
-        align-items: center;
+        /* justify-content: flex-start;
+        align-items: center; */
         width: 100%;
         -webkit-box-shadow: 0px -2px #e3e8ee;
         box-shadow: 0px -2px #e3e8ee;

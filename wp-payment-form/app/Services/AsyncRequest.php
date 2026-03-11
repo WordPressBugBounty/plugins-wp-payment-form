@@ -1,6 +1,6 @@
 <?php
 
-namespace WPPayForm\app\Services;
+namespace WPPayForm\App\Services;
 
 use WPPayForm\App\Models\ScheduledActions;
 use WPPayForm\App\Models\Submission;

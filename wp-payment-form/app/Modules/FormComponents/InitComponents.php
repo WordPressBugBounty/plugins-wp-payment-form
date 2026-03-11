@@ -64,7 +64,7 @@ class InitComponents
             new \WPPayForm\App\Modules\FormComponents\DemoRazorpayComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoSquareComponent();
             // new \WPPayForm\App\Modules\FormComponents\DemoOfflineComponent();
-            new \WPPayForm\App\Modules\FormComponents\DemoPaystackComponent();
+            new \WPPayForm\App\Modules\FormComponents\DemoPayStackComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoPayrexxComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoSSLCommerzComponent();
             new \WPPayForm\App\Modules\FormComponents\DemoBillplzComponent();

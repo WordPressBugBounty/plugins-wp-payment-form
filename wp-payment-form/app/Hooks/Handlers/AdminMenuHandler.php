@@ -450,6 +450,7 @@ class AdminMenuHandler
                     'user_capabilities' => $capabilities,
                     'payment_addons' => $paymentAddons,
                     'currencies' => GeneralSettings::getCurrencies(),
+                    'default_currency' => GeneralSettings::getGlobalCurrencySettings()['currency'],
                     'i18n' => TransStrings::getStrings(),
                     'wppayformUpgradeUrl' => wppayformUpgradeUrl(),
                 )

@@ -10,5 +10,5 @@ return array(
     'hook_prefix' => 'wppayform',
     'rest_namespace' => 'wppayform',
     'rest_version' => 'v2',
-    'env' => 'dev',
+    'env' => 'production',
 );

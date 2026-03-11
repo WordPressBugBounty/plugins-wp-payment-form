@@ -76,7 +76,15 @@ class PendingPaymentExpirationHandler
         $subscription = $submission->subscriptions->first();
         $SubscriptionStatus = $subscription ? $subscription->status : null;
 
-        if ($submissionStatus !== 'pending' || ($submissionStatus !== 'pending' && $TransactionStatus !== 'intented') || ($submissionStatus !== 'pending' && $SubscriptionStatus !== 'intented') ) {
+        if ($submissionStatus !== 'pending') {
+            return false;
+        }
+
+        if (!in_array($TransactionStatus, ['pending', 'intented'])) {
+            return false;
+        }
+
+        if ($subscription && !in_array($SubscriptionStatus, ['pending', 'intented'])) {
             return false;
         }
 

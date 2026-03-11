@@ -460,7 +460,8 @@ class Render
         private function addAssets($form, $instanceCssClass)
         {
             $submitButton = Form::getButtonSettings($form->ID);
-            $isQuickCheckoutForm  = DemoForms::checkFormCategory($form->post_name, 'Quick checkout');
+            $formCategory = get_post_meta($form->ID, 'wpf_form_category', true);
+            $isQuickCheckoutForm = $formCategory === 'quick_form';
             $processingText = $submitButton['processing_text'];
             $currencySymbols = GeneralSettings::getCurrencySymbols();
             wp_enqueue_script('wppayform_public', WPPAYFORM_URL . 'assets/js/payforms-publicv2.js', array('jquery'), WPPAYFORM_VERSION, true);
