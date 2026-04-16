@@ -1,4 +1,4 @@
-
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wpf_leaderboard_stats">
     <div class="wpf_leaderboard_stats_content">
         <div class="wpf_leaderboard_stats_raised">

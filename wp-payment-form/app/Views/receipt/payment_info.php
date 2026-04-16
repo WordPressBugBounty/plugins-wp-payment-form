@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wpf_payment_info">
     <div class="wpf_payment_info_item wpf_payment_info_item_order_id">
         <?php if ($submission->order_items) : ?>

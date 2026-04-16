@@ -54,7 +54,7 @@ class MailChimp
             $this->api_endpoint  = $api_endpoint;
         }
 
-        $this->last_response = array('headers' => null, 'body' => null);
+        $this->last_response = array('httpHeaders' => null, 'http_code' => null, 'body' => null);
     }
 
     /**
@@ -259,10 +259,10 @@ class MailChimp
         }
 
         // Extract response info
-        $response['headers'] = wp_remote_retrieve_headers($wp_response);
-        $response_content   = wp_remote_retrieve_body($wp_response);
+        $response['httpHeaders'] = wp_remote_retrieve_headers($wp_response);
+        $response['http_code']   = wp_remote_retrieve_response_code($wp_response);
+        $response['body']        = wp_remote_retrieve_body($wp_response);
 
-        $response = $this->setResponseState($response, $response_content, null);
         $formattedResponse = $this->formatResponse($response);
 
         $this->determineSuccess($response, $formattedResponse, $timeout);
@@ -283,9 +283,9 @@ class MailChimp
         $this->request_successful = false;
 
         $this->last_response = array(
-            'headers'     => null, // array of details from curl_getinfo()
-            'httpHeaders' => null, // array of HTTP headers
-            'body'        => null // content of the response
+            'httpHeaders' => null,
+            'http_code'   => null,
+            'body'        => null,
         );
 
         $this->last_request = array(
@@ -300,84 +300,8 @@ class MailChimp
     }
 
     /**
-     * Get the HTTP headers as an array of header-name => header-value pairs.
-     *
-     * The "Link" header is parsed into an associative array based on the
-     * rel names it contains. The original value is available under
-     * the "_raw" key.
-     *
-     * @param string $headersAsString
-     * @return array
-     */
-    private function getHeadersAsArray($headersAsString)
-    {
-        $headers = array();
-
-        foreach (explode("\r\n", $headersAsString) as $i => $line) {
-            if ($i === 0) { // HTTP code
-                continue;
-            }
-
-            $line = trim($line);
-            if (empty($line)) {
-                continue;
-            }
-
-            list($key, $value) = explode(': ', $line);
-
-            if ($key == 'Link') {
-                $value = array_merge(
-                    array('_raw' => $value),
-                    $this->getLinkHeaderAsArray($value)
-                );
-            }
-
-            $headers[$key] = $value;
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Extract all rel => URL pairs from the provided Link header value
-     *
-     * Mailchimp only implements the URI reference and relation type from
-     * RFC 5988, so the value of the header is something like this:
-     *
-     * 'https://us13.api.mailchimp.com/schema/3.0/Lists/Instance.json; rel="describedBy", <https://us13.admin.mailchimp.com/lists/members/?id=XXXX>; rel="dashboard"'
-     *
-     * @param string $linkHeaderAsString
-     * @return array
-     */
-    private function getLinkHeaderAsArray($linkHeaderAsString)
-    {
-        $urls = array();
-
-        if (preg_match_all('/<(.*?)>\s*;\s*rel="(.*?)"\s*/', $linkHeaderAsString, $matches)) {
-            foreach ($matches[2] as $i => $relName) {
-                $urls[$relName] = $matches[1][$i];
-            }
-        }
-
-        return $urls;
-    }
-
-    /**
-     * Encode the data and attach it to the request
-     * @param   resource $ch cURL session handle, used by reference
-     * @param   array $data Assoc array of data to attach
-     */
-    private function attachRequestPayload(&$ch, $data)
-    {
-        $encoded = json_encode($data);
-        $this->last_request['body'] = $encoded;
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
-    }
-
-    /**
      * Decode the response and format any error messages for debugging
-     * @param array $response The response from the curl request
+     * @param array $response The response array with 'body' key
      * @return array|false    The JSON decoded into an array
      */
     private function formatResponse($response)
@@ -392,35 +316,10 @@ class MailChimp
     }
 
     /**
-     * Do post-request formatting and setting state from the response
-     * @param array $response The response from the curl request
-     * @param string $responseContent The body of the response from the curl request
-     * * @return array    The modified response
-     */
-    private function setResponseState($response, $responseContent, $ch)
-    {
-        if ($responseContent === false) {
-            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error 
-            $this->last_error = curl_error($ch);
-        } else {
-            $headerSize = $response['headers']['header_size'];
-
-            $response['httpHeaders'] = $this->getHeadersAsArray(substr($responseContent, 0, $headerSize));
-            $response['body'] = substr($responseContent, $headerSize);
-
-            if (isset($response['headers']['request_header'])) {
-                $this->last_request['headers'] = $response['headers']['request_header'];
-            }
-        }
-
-        return $response;
-    }
-
-    /**
      * Check if the response was successful or a failure. If it failed, store the error.
-     * @param array $response The response from the curl request
-     * @param array|false $formattedResponse The response body payload from the curl request
-     * @param int $timeout The timeout supplied to the curl request.
+     * @param array $response The response array with 'http_code' and 'body' keys
+     * @param array|false $formattedResponse The decoded JSON response body
+     * @param int $timeout The timeout supplied to the request.
      * @return bool     If the request was successful
      */
     private function determineSuccess($response, $formattedResponse, $timeout)
@@ -437,25 +336,20 @@ class MailChimp
             return false;
         }
 
-        if ($timeout > 0 && $response['headers'] && $response['headers']['total_time'] >= $timeout) {
-            $this->last_error = sprintf('Request timed out after %f seconds.', $response['headers']['total_time']);
-            return false;
-        }
-
         $this->last_error = 'Unknown error, call getLastResponse() to find out what happened.';
         return false;
     }
 
     /**
-     * Find the HTTP status code from the headers or API response body
-     * @param array $response The response from the curl request
-     * @param array|false $formattedResponse The response body payload from the curl request
+     * Find the HTTP status code from the response or API response body
+     * @param array $response The response array with 'http_code' key
+     * @param array|false $formattedResponse The decoded JSON response body
      * @return int  HTTP status code
      */
     private function findHTTPStatus($response, $formattedResponse)
     {
-        if (!empty($response['headers']) && isset($response['headers']['http_code'])) {
-            return (int) $response['headers']['http_code'];
+        if (!empty($response['http_code'])) {
+            return (int) $response['http_code'];
         }
 
         if (!empty($response['body']) && isset($formattedResponse['status'])) {

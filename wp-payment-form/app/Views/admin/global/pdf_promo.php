@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="add_on_modules">
     <div style="margin-bottom: 0px" class="modules_header">
         <div class="module_title">

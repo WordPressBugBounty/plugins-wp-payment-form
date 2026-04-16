@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Hooks\Handlers\ActivationHandler;
 use WPPayForm\App\Hooks\Handlers\DeactivationHandler;
 use WPPayForm\Framework\Foundation\Application;

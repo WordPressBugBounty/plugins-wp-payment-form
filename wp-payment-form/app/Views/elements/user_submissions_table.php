@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <table class="table wpf_submissions_table wpf_striped_table wpf_table table_bordered">
     <thead>
     <th style="min-width: 60px"><?php esc_html_e('#', 'wp-payment-form'); ?></th>

@@ -2,6 +2,10 @@
 
 namespace WPPayForm\App\Modules\PaymentMethods\Offline;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use DateTime;
 use WPPayForm\App\Models\SubmissionActivity;
 use WPPayForm\App\Models\Transaction;

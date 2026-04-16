@@ -1,5 +1,10 @@
 <?php
+
 namespace WPPayForm\App\Modules\NumericCalculation;
+
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use WPPayForm\Framework\Support\Arr;

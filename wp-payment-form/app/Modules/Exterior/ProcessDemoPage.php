@@ -2,6 +2,10 @@
 
 namespace WPPayForm\App\Modules\Exterior;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use WPPayForm\App\App;
 use WPPayForm\App\Models\Form;
 use WPPayForm\App\Services\AccessControl;
@@ -14,8 +18,9 @@ class ProcessDemoPage
             $hasDemoAccess = AccessControl::hasTopLevelMenuPermission();
             $hasDemoAccess = apply_filters('wppayform/can_see_demo_form', $hasDemoAccess);
             $onlyPreviewPage = "no";
-            if (isset($_GET['template']) && sanitize_text_field(wp_unslash($_GET['template']))) {
-                $onlyPreviewPage = $_GET['template'] == "yes" ? "yes" : "no";
+            if (isset($_GET['template'])) {
+                $template = sanitize_text_field(wp_unslash($_GET['template']));
+                $onlyPreviewPage = $template === 'yes' ? 'yes' : 'no';
             }
             if (!current_user_can($hasDemoAccess)) {
                 $accessStatus = AccessControl::giveCustomAccess();

@@ -2,6 +2,10 @@
 
 namespace WPPayForm\App\Services\Integrations\FluentCrm;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use WPPayForm\Framework\Foundation\App;
 use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Models\SubmissionActivity;

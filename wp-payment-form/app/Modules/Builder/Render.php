@@ -569,7 +569,8 @@ class Render
                 'payment_gateway_processing_fees' => GeneralSettings::getPaymentGatewayProcessingFees(),
                 'free_version' => WPPAYFORM_VERSION,
                 'has_pro' => defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO,
-                'pro_version' => defined('WPPAYFORMPRO_VERSION') ? WPPAYFORMPRO_VERSION : false
+                'pro_version' => defined('WPPAYFORMPRO_VERSION') ? WPPAYFORMPRO_VERSION : false,
+                'wpf_nonce' => wp_create_nonce('wpf_form_submission')
             ));
         }
 

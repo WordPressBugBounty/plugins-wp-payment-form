@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <?php do_action('wppayform_before_global_settings_option_render'); ?>
 
 <div class="wppayform_global_settings_option" id="wppayform_global_settings_option_app">

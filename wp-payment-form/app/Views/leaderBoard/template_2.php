@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Modules\LeaderBoard\Render;
 $wppayform_asset_url = WPPAYFORM_URL . 'assets/images/global';
 $wppayform_nodonor_data = WPPAYFORM_URL . 'assets/images/empty-cart.svg';

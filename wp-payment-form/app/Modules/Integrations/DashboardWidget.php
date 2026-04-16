@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Modules\Integrations;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Models\Form;
 use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Models\Subscription;

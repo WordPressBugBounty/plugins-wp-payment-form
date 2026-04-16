@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wpf-leaderboard-temp-one wpf-template-wrapper"
     data-show-total="<?php echo $show_total == 'true' ? 'true' : 'false'; ?>"
     data-show-name="<?php echo $show_name == 'true' ? 'true' : 'false'; ?>"

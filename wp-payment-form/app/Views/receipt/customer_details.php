@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wpf_customer_details">
     <h4><?php esc_html_e('Submission Details', 'wp-payment-form'); ?></h4>
     <div class="wpf_submission_details">

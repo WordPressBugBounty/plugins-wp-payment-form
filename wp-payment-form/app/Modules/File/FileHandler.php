@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Modules\File;
 
+if ( !defined( 'ABSPATH' ) ) exit;
+
 class FileHandler
 {
     private $originalFile;

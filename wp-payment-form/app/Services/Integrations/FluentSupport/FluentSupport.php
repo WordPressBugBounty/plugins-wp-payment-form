@@ -2,10 +2,12 @@
 
 namespace WPPayForm\App\Services\Integrations\FluentSupport;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\Framework\Foundation\App;
 use WPPayForm\Framework\Support\Arr;
 
-class FluentSupportInit
+class FluentSupport
 {
     public function init()
     {

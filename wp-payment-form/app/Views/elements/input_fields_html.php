@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <?php if ($items) : ?>
     <table class="table wpf_table input_items_table table_bordered">
         <tbody>

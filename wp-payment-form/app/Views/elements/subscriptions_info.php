@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 if (!$submission->subscriptions) {
     return '';
 }

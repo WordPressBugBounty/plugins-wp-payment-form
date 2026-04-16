@@ -40,17 +40,20 @@ class SubmissionHandler
         if (!isset($_REQUEST['form_data'])) {
             return;
         }
-   
+
+        if (!isset($_REQUEST['wpf_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['wpf_nonce'])), 'wpf_form_submission')) {
+            wp_send_json_error(array(
+                'message' => __('Security verification failed. Please refresh and try again.', 'wp-payment-form'),
+            ), 403);
+        }
+
         parse_str($_REQUEST['form_data'], $form_data);
-        $form_localize = Arr::get($_REQUEST['form_localize'], 'conditional_logic');
         // Now Validate the form please
         if(isset($_REQUEST['form_id'])){
             $formId = absint(sanitize_text_field(wp_unslash($_REQUEST['form_id'])));
         }
         $this->formID = $formId;
 
-        // Get Original Form Elements Now
-        $totalPayableAmount = intval(wp_unslash($_REQUEST['main_total'] ?? 0));
         do_action('wppayform/form_submission_activity_start', $formId);
 
         $form = Form::getForm($formId);
@@ -60,13 +63,11 @@ class SubmissionHandler
                 'message' => __('Invalid request. Please try again', 'wp-payment-form'),
             ), 423);
         }
-
         $formattedElements = Form::getFormattedElements($formId);
 
         $numericCalculation = [];
         $submittedNumericCalculation = apply_filters('wppayform/dynamic_payment_calculation', '', $numericCalculation, $formattedElements, $form_data);
-
-        $this->validate($form_data, $formattedElements, $form, $form_localize);
+        $this->validate($form_data, $formattedElements, $form);
 
         $paymentMethod = apply_filters('wppayform/choose_payment_method_for_submission', '', $formattedElements['payment_method_element'], $formId, $form_data);
 
@@ -86,35 +87,45 @@ class SubmissionHandler
                 if (!empty($subscription['type']) && $subscription['type'] == 'single') {
                     // We converted this as one time payment
                     $paymentItems[] = $subscription;
-                } else {
-                    $subscriptionItems = array_merge($subscriptionItems, $subscription);
+                } else if ($subscription) {
+                    array_push($subscriptionItems, ...$subscription);
                 }
             } elseif ($payment['type'] == 'coupon' && isset($form_data['__wpf_all_applied_coupons'])) {
                 $this->appliedCoupons = json_decode($form_data['__wpf_all_applied_coupons']);
             } elseif ($payment['type'] == 'donation_item') {
                 if (isset($form_data['donation_is_recurring']) && $form_data['donation_is_recurring'] == 'on') {
                     $subscription = $this->getSubDonationLine($payment, $paymentId, $quantity, $form_data, $formId);
-                    $subscriptionItems = array_merge($subscriptionItems, $subscription);
+                    if ($subscription) {
+                        array_push($subscriptionItems, ...$subscription);
+                    }
                 } else {
                     $lineItems = $this->getPaymentLine($payment, $paymentId, $quantity, $form_data);
                     if ($lineItems) {
-                        $paymentItems = array_merge($paymentItems, $lineItems);
+                        array_push($paymentItems, ...$lineItems);
                     }
-                };
+                }
             } else {
                 $lineItems = $this->getPaymentLine($payment, $paymentId, $quantity, $form_data);
 
                 if ($lineItems) {
-                    $paymentItems = array_merge($paymentItems, $lineItems);
+                    array_push($paymentItems, ...$lineItems);
                 }
             }
         }
 
         $subscriptionItems = apply_filters('wppayform/submitted_subscription_items', $subscriptionItems, $formattedElements, $form_data);
 
+        // Calculate server-side total from payment items to prevent client-side price manipulation
+        $serverCalculatedTotal = 0;
+        foreach ($paymentItems as $paymentItem) {
+            if (isset($paymentItem['line_total'])) {
+                $serverCalculatedTotal += $paymentItem['line_total'];
+            }
+        }
+
         $discountPercent = 0;
-        if (!empty($this->appliedCoupons)) {
-            $amountToPay = $totalPayableAmount;
+        if (!empty($this->appliedCoupons) && $serverCalculatedTotal > 0) {
+            $amountToPay = $serverCalculatedTotal;
             $couponModel = new \WPPayFormPro\Classes\Coupons\CouponModel();
             $coupons = $couponModel->getCouponsByCodes($this->appliedCoupons, true);
             $validCouponItems = $couponModel->getValidCoupons($coupons, $this->formID, $amountToPay);
@@ -175,14 +186,16 @@ class SubmissionHandler
         }
 
         $currentUserId = get_current_user_id();
-        if (!$this->customerName && $currentUserId) {
+        if ((!$this->customerName || !$this->customerEmail) && $currentUserId) {
             $currentUser = get_user_by('ID', $currentUserId);
-            $this->customerName = $currentUser->display_name;
-        }
-
-        if (!$this->customerEmail && $currentUserId) {
-            $currentUser = get_user_by('ID', $currentUserId);
-            $this->customerEmail = $currentUser->user_email;
+            if ($currentUser) {
+                if (!$this->customerName) {
+                    $this->customerName = $currentUser->display_name;
+                }
+                if (!$this->customerEmail) {
+                    $this->customerEmail = $currentUser->user_email;
+                }
+            }
         }
         // If 100% discount then we will not process payment method and set payment method to offline
         $hasRecurring = false;
@@ -288,8 +301,6 @@ class SubmissionHandler
         $submission = $submissionModel->getSubmission($submissionId);
         //populating order items to submission only for 'after submission' email notification
         $submission->order_items = $paymentItems;
-
-        // do_action('wppayform/after_form_submission_complete', $submission, $formId);
 
         if ($paymentItems || $subscriptionItems) {
             // Insert Payment Items
@@ -422,7 +433,7 @@ class SubmissionHandler
             if ($paymentMethod) {
                 if (apply_filters('wppayform/validate_gateway_api_' . $paymentMethod, false, $form) === false && $paymentMethod != 'offline') {
                     wp_send_json_error(array(
-                        'message' => "Validation failed, Credentials not setup yet for $paymentMethod !",
+                        'message' => __('Payment processing is currently unavailable. Please try again later.', 'wp-payment-form'),
                     ), 423);
                 }
                 if (100 <= $discountPercent) {
@@ -509,7 +520,7 @@ class SubmissionHandler
         return $allSubscriptions;
     }
 
-    private function validate($form_data, $formattedElements, $form, $form_localize)
+    private function validate($form_data, $formattedElements, $form)
     {
         $errors = array();
         $formId = $form->ID;
@@ -519,9 +530,8 @@ class SubmissionHandler
         foreach ($formattedElements['input'] as $elementId => $element) {
             // Skip hidden fields
             $error = false;
-            $isRequired = Arr::get($form_localize[$element['type']], 'required');
-
-            if (Arr::get($element, 'options.conditional_logic_option.conditional_logic') === 'no' || $isRequired === 'yes') {
+            $isConditional = Arr::get($element, 'options.conditional_logic_option.conditional_logic') !== 'no';
+            if (!$isConditional || isset($form_data[$elementId])) {
                 if (Arr::get($element, 'options.required') == 'yes' && empty($form_data[$elementId]) && !Arr::get($element, 'options.disable', false)) {
                     $error = $this->getErrorLabel($element, $formId);
                 }
@@ -542,8 +552,8 @@ class SubmissionHandler
         }
         // Validate Payment Fields
         foreach ($formattedElements['payment'] as $elementId => $element) {
-            $isRequired = Arr::get($form_localize[$element['type']], 'required');
-            if (Arr::get($element, 'options.conditional_logic_option.conditional_logic') === 'no' || $isRequired === 'yes') {
+            $isConditional = Arr::get($element, 'options.conditional_logic_option.conditional_logic') !== 'no';
+            if (!$isConditional || isset($form_data[$elementId])) {
                 if (Arr::get($element, 'options.required') == 'yes' && !isset($form_data[$elementId]) && !Arr::get($element, 'options.disable', false)) {
                     $errors[$elementId] = $this->getErrorLabel($element, $formId);
                 }
@@ -666,7 +676,6 @@ class SubmissionHandler
         elseif (isset($_SERVER['REMOTE_ADDR'])) {
             return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
         }
-        // return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
         return null;
     }
 
@@ -828,13 +837,38 @@ class SubmissionHandler
                 $payItem['line_total'] = $payItem['item_price'] * $quantity;
             }
         } elseif ($payment['type'] == 'custom_payment_input') {
-            $payItem['item_price'] = wpPayFormConverToCents(floatval($formData[$paymentId]));
+            $rawValue = floatval($formData[$paymentId]);
+            $minValue = floatval(Arr::get($payment, 'options.min_value', 0));
+            if ($rawValue < 0) {
+                wp_send_json_error(array(
+                    'message' => __('Custom payment amount cannot be negative', 'wp-payment-form'),
+                ), 423);
+            }
+            if ($minValue > 0 && $rawValue < $minValue) {
+                wp_send_json_error(array(
+                    /* translators: %s: minimum allowed payment amount */
+                    'message' => sprintf(__('Custom amount must be at least %s', 'wp-payment-form'), $minValue),
+                ), 423);
+            }
+            $payItem['item_price'] = wpPayFormConverToCents($rawValue);
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } elseif ($payment['type'] == 'donation_item') {
-            $payItem['item_price'] = wpPayFormConverToCents(floatval($formData[$paymentId . '_custom']));
+            $rawValue = floatval($formData[$paymentId . '_custom']);
+            if ($rawValue < 0) {
+                wp_send_json_error(array(
+                    'message' => __('Donation amount cannot be negative', 'wp-payment-form'),
+                ), 423);
+            }
+            $payItem['item_price'] = wpPayFormConverToCents($rawValue);
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } elseif($payment['type'] === 'dynamic_payment_item'){
-            $payItem['item_price'] = wpPayFormConverToCents(floatval($formData[$paymentId]));
+            $rawValue = floatval($formData[$paymentId]);
+            if ($rawValue < 0) {
+                wp_send_json_error(array(
+                    'message' => __('Dynamic Payment amount cannot be negative', 'wp-payment-form'),
+                ), 423);
+            }
+            $payItem['item_price'] = wpPayFormConverToCents($rawValue);
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } else {
             return array();

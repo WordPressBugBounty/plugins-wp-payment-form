@@ -253,7 +253,12 @@ class StripeInlineHandler extends StripeHandler
      * */
     public function confirmScaSetupIntentsPayment()
     {
-    
+        if (!isset($_REQUEST['wpf_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['wpf_nonce'])), 'wpf_form_submission')) {
+            wp_send_json_error(array(
+                'message' => __('Security verification failed. Please refresh and try again.', 'wp-payment-form'),
+            ), 403);
+        }
+
         if(isset($_REQUEST['submission_id'])){
             $submissionId = intval(sanitize_text_field(wp_unslash($_REQUEST['submission_id'])));
         }
@@ -375,6 +380,12 @@ class StripeInlineHandler extends StripeHandler
      */
     public function confirmScaPayment()
     {
+        if (!isset($_REQUEST['wpf_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['wpf_nonce'])), 'wpf_form_submission')) {
+            wp_send_json_error(array(
+                'message' => __('Security verification failed. Please refresh and try again.', 'wp-payment-form'),
+            ), 403);
+        }
+
         if (isset($_REQUEST['submission_id'])) {
             $submissionId = absint(wp_unslash($_REQUEST['submission_id']));
         }
@@ -581,7 +592,11 @@ class StripeInlineHandler extends StripeHandler
             'created_by' => 'Paymattic BOT',
             'content' => __('Payment status changed from pending to paid', 'wp-payment-form')
         ));
-        
+
+        // Refresh submission and transaction from DB so hooks receive updated payment_status
+        $submission = $submissionModel->getSubmission($submission->id);
+        $transaction = $transactionModel->getTransaction($transaction->id);
+
         do_action('wppayform/form_payment_success', $submission, $transaction, $submission->form_id, false);
         do_action('wppayform/form_payment_success_stripe', $submission, $transaction, $submission->form_id, false);
         

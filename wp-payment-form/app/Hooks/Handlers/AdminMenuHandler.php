@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Hooks\Handlers;
 
+if (!defined('ABSPATH')) exit;
+
 use WPPayForm\App\App;
 use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Models\Form;
@@ -89,7 +91,7 @@ class AdminMenuHandler
                 // Check if the table exists
                 if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name)) === $table_name) {
                     // Table exists, count entries
-                    $entriesCount = $wpdb->get_var("SELECT COUNT(*) FROM {$table_name}");
+                    $entriesCount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name));
                 } 
                 if ($entriesCount) {
                     $entriesTitle .= ' <span class="wpf_unread_count" style="background: #e89d2d;color: white;border-radius: 8px;padding: 1px 8px;">' . $entriesCount . '</span>';

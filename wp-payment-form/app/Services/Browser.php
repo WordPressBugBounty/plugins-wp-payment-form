@@ -2,6 +2,10 @@
 
 namespace WPPayForm\App\Services;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 /**
  * File: Browser.php
  * Author: Chris Schuld (http://chrisschuld.com/)

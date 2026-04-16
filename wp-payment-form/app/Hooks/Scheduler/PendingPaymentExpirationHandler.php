@@ -2,6 +2,10 @@
 
 namespace WPPayForm\App\Hooks\Scheduler;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Models\SubmissionActivity;
 use WPPayForm\App\Models\Subscription;
@@ -80,7 +84,7 @@ class PendingPaymentExpirationHandler
             return false;
         }
 
-        if (!in_array($TransactionStatus, ['pending', 'intented'])) {
+        if ($TransactionStatus && !in_array($TransactionStatus, ['pending', 'intented'])) {
             return false;
         }
 

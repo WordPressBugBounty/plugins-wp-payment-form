@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class cancelSubscription
+class CancelSubscription
 {
     public static function Cancel($formId, $subscription, $submission)
     {

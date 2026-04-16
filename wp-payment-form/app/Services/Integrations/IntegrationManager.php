@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Services\Integrations;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\Framework\Support\Arr;
 
 abstract class IntegrationManager

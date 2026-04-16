@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Services\Integrations\MailChimp;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Services\Integrations\MailChimp\MailChimpSubscriber as Subscriber;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Services\ConditionAssesor;
@@ -114,7 +116,7 @@ class MailChimpIntegration extends IntegrationManager
         ];
 
         // Update the reCaptcha details with siteKey & secretKey.
-        update_option($this->optionKey, $mailChimpSettings, 'no`');
+        update_option($this->optionKey, $mailChimpSettings, 'no');
 
         wp_send_json_success([
             'message' => __('Your mailchimp api key has been verified and successfully set', 'wp-payment-form'),

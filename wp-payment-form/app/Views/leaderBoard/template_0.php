@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wpf-donor-template-not-found">
     <div class="wpf-donor-template-not-found__content">
         <div class="wpf-donor-template-not-found__content__text">

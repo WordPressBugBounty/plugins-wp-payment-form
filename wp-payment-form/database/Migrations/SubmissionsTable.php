@@ -33,7 +33,14 @@ class SubmissionsTable
 			country varchar(45),
 			created_at timestamp NULL,
 			updated_at timestamp NULL,
-			PRIMARY  KEY  (id)
+			PRIMARY  KEY  (id),
+			KEY idx_form_id (form_id),
+			KEY idx_customer_email (customer_email),
+			KEY idx_payment_status (payment_status),
+			KEY idx_status (status),
+			KEY idx_created_at (created_at),
+			KEY idx_submission_hash (submission_hash),
+			KEY idx_form_payment_status (form_id, payment_status)
 		) $charset_collate;";
 
         dbDelta($sql);

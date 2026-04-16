@@ -1,5 +1,10 @@
 <?php
+
 namespace WPPayForm\App\Modules\Builder;
+
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 use WPPayForm\Framework\Support\Arr;
 

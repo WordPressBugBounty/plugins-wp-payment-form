@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Modules\Builder\Helper;
 use WPPayForm\Framework\Support\Arr;
 

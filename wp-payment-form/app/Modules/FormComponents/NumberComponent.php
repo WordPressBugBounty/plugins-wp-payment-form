@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Modules\FormComponents;
 
+use WPPayForm\Framework\Support\Arr;
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -11,6 +13,39 @@ class NumberComponent extends BaseComponent
     public function __construct()
     {
         parent::__construct('number', 15);
+        add_filter('wppayform/validate_data_on_submission_number', array($this, 'validateOnSubmission'), 1, 4);
+    }
+
+    public function validateOnSubmission($error, $elementId, $element, $form_data)
+    {
+        if ($error) {
+            return $error;
+        }
+
+        $itemValue = Arr::get($form_data, $elementId);
+
+        if ($itemValue === '' || $itemValue === null) {
+            return $error;
+        }
+
+        $itemValue = floatval($itemValue);
+        $minValue = Arr::get($element, 'options.min_value');
+        $maxValue = Arr::get($element, 'options.max_value');
+        $formId = Arr::get($form_data, '__wpf_form_id');
+
+        if ($minValue !== null && $minValue !== '' && $itemValue < floatval($minValue)) {
+            /* translators: %s: minimum allowed field value */
+            $minMessage = sprintf(__('must be at least %s', 'wp-payment-form'), $minValue);
+            return $this->getErrorLabel($element, $formId, $minMessage);
+        }
+
+        if ($maxValue !== null && $maxValue !== '' && $itemValue > floatval($maxValue)) {
+            /* translators: %s: maximum allowed field value */
+            $maxMessage = sprintf(__('must be at most %s', 'wp-payment-form'), $maxValue);
+            return $this->getErrorLabel($element, $formId, $maxMessage);
+        }
+
+        return $error;
     }
 
     public function component()

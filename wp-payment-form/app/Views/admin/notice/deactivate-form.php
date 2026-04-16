@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div id="wpf-feedback" class="wpf-feedback-container" style="display: none;">
     <div class="wpf-feedback-form">
         <div class="header">

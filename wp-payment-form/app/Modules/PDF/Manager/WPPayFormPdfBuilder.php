@@ -2,6 +2,10 @@
 
 namespace WPPayForm\App\Modules\PDF\Manager;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use WPPayForm\App\Services\Protector;
 use WPPayForm\App\Services\AccessControl;
 use WPPayForm\App\Services\PlaceholderParser;

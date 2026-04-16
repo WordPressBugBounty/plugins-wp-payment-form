@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Services\Integrations\Slack;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Services\ConditionAssesor;
 use WPPayForm\App\Services\Integrations\IntegrationManager;
 use WPPayForm\Framework\Support\Arr;

@@ -2,6 +2,8 @@
 
 namespace WPPayForm\App\Modules\FluentCommunity;
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 class FluentCommunity {
 
 	public function register()

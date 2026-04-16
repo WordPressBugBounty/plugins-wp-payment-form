@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 if(isset($_GET['page'])) {
     $page = sanitize_text_field(wp_unslash($_GET['page']));
 }

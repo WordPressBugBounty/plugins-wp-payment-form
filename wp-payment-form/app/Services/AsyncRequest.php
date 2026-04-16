@@ -46,7 +46,14 @@ class AsyncRequest
 
     public function handleBackgroundCall()
     {
-        check_ajax_referer($this->action, 'nonce');
+        // This is a server-to-server loopback request fired by dispatchAjax().
+        // Nonce verification is unreliable here because wp_remote_post arrives
+        // as a separate HTTP request without the original user's session/cookies,
+        // causing check_ajax_referer() to fail for guest (nopriv) submissions
+        // and triggering a fatal wp_die() → 500 error on the frontend.
+        if (!wp_doing_ajax()) {
+            wp_die('Invalid request', 403);
+        }
 
         $originId = false;
         if (isset($_REQUEST['origin_id'])) {

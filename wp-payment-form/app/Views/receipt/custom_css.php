@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <style type="text/css">
     .wpf_payment_receipt{
         display: block !important;

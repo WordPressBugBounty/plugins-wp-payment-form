@@ -75,10 +75,6 @@ class ApiRequest
             $user_agent['lang_version'] = phpversion();
         }
 
-        if (function_exists('php_uname')) {
-            $user_agent['uname'] = php_uname();
-        }
-
         return $user_agent;
 
     }

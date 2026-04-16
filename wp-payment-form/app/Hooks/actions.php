@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Modules\Notices\PluginUninstallFeedback;
 use WPPayForm\App\Services\Browser;
 

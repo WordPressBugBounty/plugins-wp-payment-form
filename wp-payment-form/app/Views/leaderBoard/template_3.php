@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 use WPPayForm\App\Modules\LeaderBoard\Render;
 $wppayform_donor_info_class = $show_avatar == 'true' ? "wpf-donor-info temp-three" : "wpf-donor-info temp-three wpf-info-flex";
 $wppayform_asset_url = WPPAYFORM_URL . 'assets/images/global';

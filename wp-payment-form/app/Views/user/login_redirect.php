@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wpf-dashboard-auth-box">
     <div class="wpf-dashboard-auth-box-header">
         Login to access your dashboard
