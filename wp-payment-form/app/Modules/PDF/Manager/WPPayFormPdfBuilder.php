@@ -148,20 +148,9 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function getGlobalSettings()
     {
-        $defaults = [
-            'paper_size' => 'A4',
-            'orientation' => 'P',
-            'font' => 'default',
-            'font_size' => '14',
-            'font_color' => '#323232',
-            'accent_color' => '#989797',
-            'heading_color' => '#000000',
-            'language_direction' => 'ltr'
-        ];
-
         $option = get_option($this->optionKey);
         wp_send_json_success([
-            'settings' => wp_parse_args($option, $defaults),
+            'settings' => wp_parse_args($option, $this->defaultGlobalSettings()),
             'fields' => $this->getGlobalFields()
         ]);
     }
@@ -169,7 +158,7 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function saveGlobalSettings()
     {
-        $allowed_keys = ['paper_size', 'orientation', 'font', 'font_size', 'font_color', 'accent_color', 'heading_color', 'language_direction'];
+        $allowed_keys = ['paper_size', 'orientation', 'font_family', 'font_size', 'font_color', 'accent_color', 'heading_color', 'language_direction'];
         $raw_settings = isset($_REQUEST['settings']) && is_array($_REQUEST['settings']) ? wp_unslash($_REQUEST['settings']) : [];
         $settings = array_intersect_key($raw_settings, array_flip($allowed_keys));
         $settings = array_map('sanitize_text_field', $settings);
@@ -177,6 +166,20 @@ class WPPayFormPdfBuilder extends PdfBuilder
         wp_send_json_success([
             'message' => __('Settings successfully updated', 'wp-payment-form')
         ], 200);
+    }
+
+    private function defaultGlobalSettings()
+    {
+        return [
+            'paper_size' => 'A4',
+            'orientation' => 'P',
+            'font_family' => 'dejavusans',
+            'font_size' => '14',
+            'font_color' => '#323232',
+            'accent_color' => '#989797',
+            'heading_color' => '#000000',
+            'language_direction' => 'ltr'
+        ];
     }
 
     public function getFeedsAjax($request)
@@ -218,24 +221,12 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     private function globalSettings()
     {
-        $defaults = [
-            'paper_size' => 'A4',
-            'orientation' => 'P',
-            'font' => 'default',
-            'font_size' => '14',
-            'font_color' => '#323232',
-            'accent_color' => '#989797',
-            'heading_color' => '#000000',
-            'language_direction' => 'ltr'
-        ];
-
         $option = get_option($this->optionKey);
         if (!$option || !is_array($option)) {
-            return $defaults;
+            return $this->defaultGlobalSettings();
         }
 
-        return wp_parse_args($option, $defaults);
-
+        return wp_parse_args($option, $this->defaultGlobalSettings());
     }
 
     public function createFeed($request)
@@ -490,7 +481,7 @@ class WPPayFormPdfBuilder extends PdfBuilder
                 'label' => 'Font Family',
                 'type' => 'dropdown-group',
                 'placeholder' => 'Select Font',
-                'options' => AvailableOptions::getInstalledFonts()
+                'options' => $this->getFontPickerOptions()
             ],
             [
                 'key' => 'font_size',
@@ -551,7 +542,7 @@ class WPPayFormPdfBuilder extends PdfBuilder
                     'label' => 'Font Family',
                     'type' => 'dropdown-group',
                     'placeholder' => 'Select Font',
-                    'options' => AvailableOptions::getInstalledFonts()
+                    'options' => $this->getFontPickerOptions()
                 ],
                 [
                     'key' => 'font_size',
@@ -599,9 +590,7 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
     public function pushPdfButtons($widgets, $data)
     {
-        $fontManager = new FontDownloader();
-        $downloadableFiles = $fontManager->getDownloadableFonts();
-        if ($downloadableFiles) {
+        if ($this->isPdfBaselineMissing()) {
             return $widgets;
         }
 
@@ -626,6 +615,37 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
         $widgets['pdf_feeds'] = $widgetData;
         return $widgets;
+    }
+
+    private function isPdfBaselineMissing()
+    {
+        $fontManager = new FontDownloader();
+        if (method_exists($fontManager, 'isBaselineMissing')) {
+            return $fontManager->isBaselineMissing();
+        }
+
+        $dirStructure = AvailableOptions::getDirStructure();
+        $fontDir = rtrim(Arr::get($dirStructure, 'fontDir', ''), '/') . '/';
+        if ($fontDir === '/') {
+            return true;
+        }
+
+        foreach (['DejaVuSans.ttf', 'DejaVuSans-Bold.ttf'] as $font) {
+            if (!file_exists($fontDir . $font)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getFontPickerOptions()
+    {
+        if (method_exists('\FluentPdf\Classes\Controller\AvailableOptions', 'getAvailableFontFamilies')) {
+            return AvailableOptions::getAvailableFontFamilies();
+        }
+
+        return AvailableOptions::getInstalledFonts();
     }
 
     public function getPdfConfig($settings, $default)
@@ -677,14 +697,22 @@ class WPPayFormPdfBuilder extends PdfBuilder
 
         $instance = new $class();
 
-        $instance->viewPDF($submissionId, $settings);
+        try {
+            $instance->viewPDF($submissionId, $settings);
+        } catch (\Throwable $e) {
+            wp_send_json_error([
+                'message' => sprintf(
+                    /* translators: %s: underlying error message */
+                    __('PDF could not be generated: %s', 'wp-payment-form'),
+                    $e->getMessage()
+                ),
+            ], 500);
+        }
     }
 
     public function maybePushToEmail($emailAttachments, $notification, $submission, $formId, $entry)
     {
-        $fontManager = new FontDownloader();
-        $downloadableFiles = $fontManager->getDownloadableFonts();
-        if ($downloadableFiles) {
+        if ($this->isPdfBaselineMissing()) {
             return $emailAttachments;
         }
 

@@ -91,7 +91,7 @@
         margin-right: 0px;
         -webkit-box-shadow: inset -1px 0 #e3e8ee;
         box-shadow: inset -1px 0 #e3e8ee;
-        padding: 7px 14px;
+        padding: 10px 14px;
         font-family: 'Roboto', 'Inter', sans-serif;
         font-size: 15px;
     }
@@ -103,7 +103,7 @@
     .wpf_payment_info_item .wpf_item_heading {
         /* font-size: 14px; */
         font-weight: bold;
-        padding: 5px 0;
+        padding: 0px 0 10px 0;
     }
 
     .wpf_payment_info_item .wpf_item_value {

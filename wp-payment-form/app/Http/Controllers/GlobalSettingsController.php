@@ -142,7 +142,7 @@ class GlobalSettingsController extends Controller
     {
         global $wp_roles;
         if (!isset($wp_roles)) {
-            $wp_roles = new WP_Roles();
+            $wp_roles = new \WP_Roles();
         }
         foreach ($paymatticUserPermissions as $key => $value) {
             $wp_roles->remove_role($key);$wp_roles->add_role($key, $value['name'], $value['capabilities']);

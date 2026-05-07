@@ -1,6 +1,6 @@
 <?php
 
-namespace WPPayForm\app\Services;
+namespace WPPayForm\App\Services;
 
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\Framework\Support\Str;

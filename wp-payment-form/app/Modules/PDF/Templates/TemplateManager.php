@@ -29,6 +29,48 @@ abstract class TemplateManager
 
     abstract public function generatePdf($submissionId, $settings, $outPut, $fileName = '');
 
+    protected function convertPaymentInfoBlocks($html)
+    {
+        if (!is_string($html) || strpos($html, 'wpf_payment_info') === false) {
+            return $html;
+        }
+
+        $blockPattern = '#<div class="wpf_payment_info">(?<body>(?:[^<]++|<(?!/?div\b)|<div[^>]*+>(?:[^<]++|<(?!/?div\b)|(?P>body))*+</div>)*+)</div>#s';
+        $itemPattern  = '#<div class="wpf_payment_info_item[^"]*+">(?<inner>(?:[^<]++|<(?!/?div\b)|<div[^>]*+>(?:[^<]++|<(?!/?div\b)|(?P>inner))*+</div>)*+)</div>#s';
+
+        return preg_replace_callback($blockPattern, function ($block) use ($itemPattern) {
+            $itemsHtml = '';
+            preg_match_all($itemPattern, $block['body'], $items);
+
+            if (empty($items[0])) {
+                return $block[0];
+            }
+
+            foreach ($items['inner'] as $idx => $itemInner) {
+                $itemInner = preg_replace(
+                    '#</div>(\s*<div class="wpf_item_value">)#',
+                    '</div><br/>$1',
+                    $itemInner,
+                    1
+                );
+                $itemInner = preg_replace(
+                    '#</div>(\s*<div class="wpf_item_content)#',
+                    '</div><br/>$1',
+                    $itemInner,
+                    1
+                );
+
+                $cellBorder = $idx === 0 ? '' : 'border-left:1px solid #D6DAE1;';
+
+                $itemsHtml .= '<td style="vertical-align:top; padding:12px 16px; ' . $cellBorder . '">' . $itemInner . '</td>';
+            }
+
+            return '<table class="wpf_payment_info" style="width:100%; border-collapse:collapse; border:1px solid #cbcbcb; margin-bottom:15px;"><tr>'
+                . $itemsHtml
+                . '</tr></table>';
+        }, $html);
+    }
+
     public function viewPDF($submissionId, $settings)
     {
         $this->generatePdf($submissionId, $settings, 'I');
@@ -68,8 +110,8 @@ abstract class TemplateManager
             'curlCaCertificate' => ABSPATH . WPINC . '/certificates/ca-bundle.crt',
             'curlFollowLocation' => true,
             'allow_output_buffering' => true,
-            'autoLangToFont' => true,
-            'autoScriptToLang' => true,
+            'autoLangToFont' => false,
+            'autoScriptToLang' => false,
             'useSubstitutions' => true,
             'ignore_invalid_utf8' => true,
             'setAutoTopMargin' => 'stretch',
@@ -82,11 +124,70 @@ abstract class TemplateManager
             'showWatermarkImage' => true,
         ];
 
+        $defaults['backupSubsFont'] = ['dejavusans'];
+        $defaults['sans_fonts']     = ['dejavusans', 'sans', 'sans-serif'];
+        $defaults['serif_fonts']    = ['dejavusans', 'serif'];
+        $defaults['mono_fonts']     = ['dejavusans', 'monospace'];
+
         $mpdfConfig = wp_parse_args($mpdfConfig, $defaults);
 
         $mpdfConfig = apply_filters('wppayform/pdf_templates/mpdf_config', $mpdfConfig);
 
-        return new \Mpdf\Mpdf($mpdfConfig);
+        $mpdfClass = static::resolveMpdfClass('Mpdf');
+
+        if (!$mpdfClass) {
+            throw new \RuntimeException(
+                esc_html__('mPDF library is not available. Please ensure Fluent PDF is installed and activated.', 'wp-payment-form')
+            );
+        }
+
+        return new $mpdfClass($mpdfConfig);
+    }
+
+    protected static function resolveMpdfClass($className)
+    {
+        // Prime Fluent PDF's autoloader so the prefixed mPDF classmap is
+        // registered before we probe for it. Safe to require_once repeatedly.
+        if (defined('FLUENT_PDF_PATH')) {
+            $autoload = FLUENT_PDF_PATH . 'vendor/autoload.php';
+            if (is_file($autoload)) {
+                require_once $autoload;
+            }
+        }
+
+        $prefixed = '\\FluentPdf\\Vendor\\Mpdf\\' . $className;
+        if (class_exists($prefixed)) {
+            return $prefixed;
+        }
+
+        $unprefixed = '\\Mpdf\\' . $className;
+        if (class_exists($unprefixed)) {
+            return $unprefixed;
+        }
+
+        return null;
+    }
+
+    private function resolveSafeFontFamily($fontFamily)
+    {
+        $fallback = 'dejavusans';
+
+        if (!is_string($fontFamily) || $fontFamily === '') {
+            return $fallback;
+        }
+
+        if (!method_exists('\FluentPdf\Classes\Controller\AvailableOptions', 'getAvailableFontFamilies')) {
+            return $fontFamily;
+        }
+
+        $available = AvailableOptions::getAvailableFontFamilies();
+        foreach ($available as $group) {
+            if (is_array($group) && array_key_exists($fontFamily, $group)) {
+                return $fontFamily;
+            }
+        }
+
+        return $fallback;
     }
 
     public function pdfBuilder($fileName, $feed, $body = '', $footer = '', $outPut = 'I')
@@ -102,9 +203,9 @@ abstract class TemplateManager
             'orientation' => Arr::get($appearance, 'orientation'),
         );
 
-        if ($fontFamily = Arr::get($appearance, 'font_family')) {
-            $mpdfConfig['default_font'] = $fontFamily;
-        }
+        $mpdfConfig['default_font'] = $this->resolveSafeFontFamily(
+            Arr::get($appearance, 'font_family')
+        );
 
         $pdfGenerator = $this->getGenerator($mpdfConfig);
         if (Arr::get($appearance, 'security_pass')) {
@@ -149,7 +250,9 @@ abstract class TemplateManager
         $footer = $this->applyInlineCssStyles($footer, $appearance);
 
         $pdfGenerator->SetHTMLFooter($footer);
-        $pdfGenerator->WriteHTML('<div class="wpf_pdf_wrapper">' . $body . '</div>', \Mpdf\HTMLParserMode::HTML_BODY);
+
+        $htmlParserModeClass = static::resolveMpdfClass('HTMLParserMode');
+        $pdfGenerator->WriteHTML('<div class="wpf_pdf_wrapper">' . $body . '</div>', $htmlParserModeClass::HTML_BODY);
 
         if ($outPut == 'S') {
             return $pdfGenerator->Output($fileName . '.pdf', $outPut);

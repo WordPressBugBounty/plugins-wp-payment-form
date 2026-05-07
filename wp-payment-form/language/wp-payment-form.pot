@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Paymattic - Payments made simple\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-16 06:28+0000\n"
+"POT-Creation-Date: 2026-05-07 05:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Loco-Version: 2.6.6; wp-6.5.3\n"
 "X-Domain: wp-payment-form"
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:917
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:921
 #: app/Modules/PaymentMethods/Stripe/StripeListener.php:270
 msgid " Captured, and released the remaining "
 msgstr ""
@@ -25,7 +25,7 @@ msgstr ""
 msgid " does not match"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:665
+#: app/Hooks/Handlers/SubmissionHandler.php:677
 msgid " is required"
 msgstr ""
 
@@ -43,7 +43,7 @@ msgstr ""
 msgid " to "
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:917
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:921
 #: app/Modules/PaymentMethods/Stripe/StripeListener.php:270
 msgid " to the customer"
 msgstr ""
@@ -54,6 +54,12 @@ msgstr ""
 
 #: app/Modules/FormComponents/DemoRecurringPaymentComponent.php:117
 msgid "$9.99 / Month"
+msgstr ""
+
+#. %s: add-on plugin name
+#: app/Modules/AddOnModules/AddOnModule.php:223
+#, php-format
+msgid "%s is already active."
 msgstr ""
 
 #: app/Services/Integrations/GlobalNotificationManager.php:183
@@ -681,7 +687,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:624
+#: app/Hooks/Handlers/SubmissionHandler.php:636
 msgid "Cloud flare turnstile validation failed. Please try again."
 msgstr ""
 
@@ -916,12 +922,12 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:290
+#: app/Modules/FormComponents/DonationComponent.php:318
 msgid "Custom Amount"
 msgstr ""
 
 #. %s: minimum allowed payment amount
-#: app/Hooks/Handlers/SubmissionHandler.php:850
+#: app/Hooks/Handlers/SubmissionHandler.php:862
 #, php-format
 msgid "Custom amount must be at least %s"
 msgstr ""
@@ -938,7 +944,7 @@ msgstr ""
 msgid "Custom Javascript"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:844
+#: app/Hooks/Handlers/SubmissionHandler.php:856
 msgid "Custom payment amount cannot be negative"
 msgstr ""
 
@@ -958,7 +964,7 @@ msgstr ""
 msgid "Custom URL"
 msgstr ""
 
-#: app/Modules/PDF/Templates/InvoiceTemplate.php:186
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:200
 msgid "Customer Details"
 msgstr ""
 
@@ -978,7 +984,7 @@ msgstr ""
 msgid "Customer Name"
 msgstr ""
 
-#: app/Services/TransStrings.php:65 app/Hooks/Handlers/AdminMenuHandler.php:114
+#: app/Services/TransStrings.php:65 app/Hooks/Handlers/AdminMenuHandler.php:113
 msgid "Customers"
 msgstr ""
 
@@ -1013,6 +1019,11 @@ msgstr ""
 
 #: app/Views/receipt/payment_info.php:12
 msgid "Date:"
+msgstr ""
+
+#: app/Services/TransStrings.php:467
+#: app/Modules/FormComponents/DonationComponent.php:269
+msgid "Day"
 msgstr ""
 
 #: app/Modules/FormComponents/DonationComponent.php:124
@@ -1147,7 +1158,7 @@ msgstr ""
 msgid "Donation Amount"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:859
+#: app/Hooks/Handlers/SubmissionHandler.php:871
 msgid "Donation amount cannot be negative"
 msgstr ""
 
@@ -1160,7 +1171,7 @@ msgid "Donation Progress Bar Shortcode"
 msgstr ""
 
 #: app/Services/TransStrings.php:132
-#: app/Modules/FormComponents/DonationComponent.php:336
+#: app/Modules/FormComponents/DonationComponent.php:364
 #: app/Views/leaderBoard/template_2.php:158
 #: app/Views/leaderBoard/template_2.php:201
 msgid "Donations"
@@ -1187,11 +1198,15 @@ msgstr ""
 msgid "Download Invoice"
 msgstr ""
 
+#: app/Services/TransStrings.php:474
+msgid "Dropdown order:"
+msgstr ""
+
 #: app/Services/TransStrings.php:31
 msgid "Duplicate Form"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:868
+#: app/Hooks/Handlers/SubmissionHandler.php:880
 msgid "Dynamic Payment amount cannot be negative"
 msgstr ""
 
@@ -1445,7 +1460,7 @@ msgstr ""
 msgid "February"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:279
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:270
 msgid "Feed has been created, edit the feed now"
 msgstr ""
 
@@ -1455,11 +1470,11 @@ msgstr ""
 msgid "Feed Name"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:406
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:397
 msgid "Feed name is required"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:428
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:419
 msgid "Feed successfully deleted"
 msgstr ""
 
@@ -1588,7 +1603,7 @@ msgstr ""
 msgid "Form has been successfully submitted"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:897
+#: app/Hooks/Handlers/SubmissionHandler.php:909
 msgid "Form is successfully submitted"
 msgstr ""
 
@@ -1620,11 +1635,11 @@ msgstr ""
 msgid "Form Step"
 msgstr ""
 
-#: app/Models/Form.php:947
+#: app/Models/Form.php:985
 msgid "Form submission time has been expired."
 msgstr ""
 
-#: app/Models/Form.php:946
+#: app/Models/Form.php:984
 msgid ""
 "Form submission time schedule is not started yet. Please check back later"
 msgstr ""
@@ -1645,9 +1660,14 @@ msgstr ""
 msgid "Form Title"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:632
-#: app/Hooks/Handlers/SubmissionHandler.php:649
+#: app/Hooks/Handlers/SubmissionHandler.php:644
+#: app/Hooks/Handlers/SubmissionHandler.php:661
 msgid "Form Validation failed"
+msgstr ""
+
+#: app/Services/TransStrings.php:469
+#: app/Modules/FormComponents/DonationComponent.php:271
+msgid "Fortnight"
 msgstr ""
 
 #: app/Modules/FormComponents/DonationComponent.php:124
@@ -1749,7 +1769,7 @@ msgstr ""
 msgid "Go to Donation Progress Item settings"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:342
+#: app/Modules/FormComponents/DonationComponent.php:370
 msgid "Goal"
 msgstr ""
 
@@ -1803,6 +1823,11 @@ msgstr ""
 
 #: app/Services/CountryNames.php:121
 msgid "Haiti"
+msgstr ""
+
+#: app/Services/TransStrings.php:472
+#: app/Modules/FormComponents/DonationComponent.php:274
+msgid "Half Year"
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/Plan.php:113
@@ -1967,6 +1992,12 @@ msgstr ""
 msgid "Insert Shortcode"
 msgstr ""
 
+#: app/Modules/AddOnModules/AddOnModule.php:248
+msgid ""
+"Installation failed. Please install Fluent Forms PDF manually from wordpress."
+"org."
+msgstr ""
+
 #: app/Services/TransStrings.php:126
 msgid "Integration"
 msgstr ""
@@ -1983,12 +2014,12 @@ msgstr ""
 msgid "Integration successfully updated"
 msgstr ""
 
-#: app/Services/TransStrings.php:19 app/Hooks/Handlers/AdminMenuHandler.php:121
+#: app/Services/TransStrings.php:19 app/Hooks/Handlers/AdminMenuHandler.php:120
 #: app/Views/admin/global/global_menu.php:27
 msgid "Integrations"
 msgstr ""
 
-#: app/Views/user/dashboard.php:363
+#: app/Services/TransStrings.php:475 app/Views/user/dashboard.php:363
 msgid "Interval"
 msgstr ""
 
@@ -2007,7 +2038,7 @@ msgstr ""
 msgid "Invalid MailChimp API key %s supplied."
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1026
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1054
 msgid "Invalid request."
 msgstr ""
 
@@ -2032,7 +2063,7 @@ msgstr ""
 msgid "Invoice not available"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1046
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1074
 msgid "Invoice template not found."
 msgstr ""
 
@@ -2451,7 +2482,7 @@ msgstr ""
 msgid "Minutes"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:1012
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:1016
 msgid "Missing Stripe charge ID for refund."
 msgstr ""
 
@@ -2479,6 +2510,11 @@ msgstr ""
 msgid "Montenegro"
 msgstr ""
 
+#: app/Services/TransStrings.php:470
+#: app/Modules/FormComponents/DonationComponent.php:272
+msgid "Month"
+msgstr ""
+
 #: app/Modules/FormComponents/DonationComponent.php:124
 msgid "month"
 msgstr ""
@@ -2497,6 +2533,12 @@ msgstr ""
 
 #: app/Services/CountryNames.php:175
 msgid "Mozambique"
+msgstr ""
+
+#: app/Modules/PDF/Templates/TemplateManager.php:140
+msgid ""
+"mPDF library is not available. Please ensure Fluent PDF is installed and "
+"activated."
 msgstr ""
 
 #: app/Modules/Debug/Debug.php:240
@@ -2704,7 +2746,7 @@ msgstr ""
 msgid "November"
 msgstr ""
 
-#: app/Models/Form.php:940
+#: app/Models/Form.php:978
 msgid "Number of entry has been exceeds, Please check back later"
 msgstr ""
 
@@ -2716,7 +2758,7 @@ msgstr ""
 msgid "October"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:923
+#: app/Hooks/Handlers/SubmissionHandler.php:935
 #: app/Modules/PaymentMethods/Offline/OfflineProcessor.php:78
 msgid "Offline Payment recorded and change the status to pending"
 msgstr ""
@@ -2751,7 +2793,7 @@ msgstr ""
 msgid "on how to get Api Key from"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:930
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:934
 msgid "One time Payment Successfully handled by admin. Charge ID: "
 msgstr ""
 
@@ -2775,8 +2817,8 @@ msgstr ""
 msgid "Order Items Table"
 msgstr ""
 
-#: app/Modules/PDF/Templates/InvoiceTemplate.php:173
-#: app/Modules/PDF/Templates/InvoiceTemplate.php:178
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:187
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:192
 msgid "Order Number:"
 msgstr ""
 
@@ -2914,7 +2956,7 @@ msgid "Payment Amount can not be 0"
 msgstr ""
 
 #: app/Modules/FormComponents/PaymentItemComponent.php:156
-#: app/Modules/FormComponents/DonationComponent.php:137
+#: app/Modules/FormComponents/DonationComponent.php:146
 msgid "Payment amount is required for item:"
 msgstr ""
 
@@ -2931,11 +2973,11 @@ msgstr ""
 msgid "Payment data validation failed"
 msgstr ""
 
-#: app/Modules/PDF/Templates/InvoiceTemplate.php:182
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:196
 msgid "Payment Date:"
 msgstr ""
 
-#: app/Modules/PDF/Templates/InvoiceTemplate.php:204
+#: app/Modules/PDF/Templates/InvoiceTemplate.php:225
 msgid "Payment Details"
 msgstr ""
 
@@ -2970,7 +3012,7 @@ msgid "Payment Gateway"
 msgstr ""
 
 #: app/Services/TransStrings.php:190
-#: app/Hooks/Handlers/AdminMenuHandler.php:127
+#: app/Hooks/Handlers/AdminMenuHandler.php:126
 msgid "Payment Gateways"
 msgstr ""
 
@@ -3029,7 +3071,7 @@ msgstr ""
 msgid "Payment Mode"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:436
+#: app/Hooks/Handlers/SubmissionHandler.php:448
 msgid "Payment processing is currently unavailable. Please try again later."
 msgstr ""
 
@@ -3038,7 +3080,7 @@ msgid "Payment Receipt"
 msgstr ""
 
 #. 1: Currency symbol, 2: Refunded amount.
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:987
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:991
 #, php-format
 msgid "Payment Refunded by Admin. Refunded: %1$s %2$s"
 msgstr ""
@@ -3063,14 +3105,14 @@ msgstr ""
 msgid "Payment Status"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:917
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:919
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:921
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:923
 #: app/Modules/PaymentMethods/Stripe/StripeListener.php:270
 #: app/Modules/PaymentMethods/Stripe/StripeListener.php:272
 msgid "Payment status changed from authorized to paid"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:921
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:925
 #: app/Modules/PaymentMethods/Stripe/StripeListener.php:274
 msgid "Payment status changed from authorized to refunded"
 msgstr ""
@@ -3091,7 +3133,7 @@ msgstr ""
 msgid "Payment Success"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:418
+#: app/Hooks/Handlers/SubmissionHandler.php:430
 msgid "Payment success with 100% discount and the status updated Paid"
 msgstr ""
 
@@ -3099,7 +3141,7 @@ msgstr ""
 msgid "Payment Summary"
 msgstr ""
 
-#: app/Models/Form.php:953
+#: app/Models/Form.php:991
 msgid "Payment target amount reached, Please check back later."
 msgstr ""
 
@@ -3123,16 +3165,22 @@ msgstr ""
 msgid "PayPal Settings"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:870
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:908
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:898
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:936
 msgid "PDF"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:614
+#. %s: underlying error message
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:706
+#, php-format
+msgid "PDF could not be generated: %s"
+msgstr ""
+
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:603
 msgid "PDF Downloads"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:279
+#: app/Hooks/Handlers/AdminMenuHandler.php:278
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:93
 msgid "PDF Settings"
 msgstr ""
@@ -3397,6 +3445,11 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
+#: app/Services/TransStrings.php:471
+#: app/Modules/FormComponents/DonationComponent.php:273
+msgid "Quarter"
+msgstr ""
+
 #: app/Modules/FormComponents/DonationComponent.php:124
 msgid "quarter"
 msgstr ""
@@ -3413,7 +3466,7 @@ msgstr ""
 msgid "Radio Input Field"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:329
+#: app/Modules/FormComponents/DonationComponent.php:357
 msgid "Raised"
 msgstr ""
 
@@ -3459,7 +3512,7 @@ msgstr ""
 msgid "reCAPTCHA Site Key"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:610
+#: app/Hooks/Handlers/SubmissionHandler.php:622
 msgid "reCAPTCHA validation failed. Please try again."
 msgstr ""
 
@@ -3503,7 +3556,7 @@ msgstr ""
 msgid "Reply To"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:109
+#: app/Hooks/Handlers/AdminMenuHandler.php:108
 #: app/Views/admin/global/global_menu.php:31
 msgid "Reports"
 msgstr ""
@@ -3882,8 +3935,8 @@ msgstr ""
 msgid "Setting up a Form in a minute and accept payments"
 msgstr ""
 
-#: app/Services/TransStrings.php:17 app/Hooks/Handlers/AdminMenuHandler.php:134
-#: app/Hooks/Handlers/AdminMenuHandler.php:135
+#: app/Services/TransStrings.php:17 app/Hooks/Handlers/AdminMenuHandler.php:133
+#: app/Hooks/Handlers/AdminMenuHandler.php:134
 #: app/Views/admin/global/global_menu.php:41
 msgid "Settings"
 msgstr ""
@@ -3895,8 +3948,8 @@ msgstr ""
 #: app/Models/Form.php:354 app/Http/Controllers/FormController.php:34
 #: app/Http/Controllers/FormController.php:135
 #: app/Http/Controllers/GlobalSettingsController.php:286
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:178
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:416
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:167
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:407
 #: app/Modules/PaymentMethods/Offline/OfflineSettings.php:103
 #: app/Modules/PaymentMethods/Stripe/Stripe.php:332
 msgid "Settings successfully updated"
@@ -3922,7 +3975,7 @@ msgstr ""
 msgid "Sierra Leone"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:948
+#: app/Hooks/Handlers/SubmissionHandler.php:960
 msgid ""
 "Signup fee and trial days together are only supported with Stripe payment "
 "method. Please select Stripe as your payment method or remove either signup "
@@ -4024,20 +4077,20 @@ msgstr ""
 msgid "Sorry! No integration failed found with: "
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:327
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:318
 msgid "Sorry! No template Class found!"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:258
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:249
 msgid "Sorry! No template Class found!!"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:249
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:318
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:240
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:309
 msgid "Sorry! No template found!"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:948
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:976
 msgid "Sorry! You have to login first."
 msgstr ""
 
@@ -4166,7 +4219,7 @@ msgstr ""
 msgid "Stripe One time payment has marked as paid."
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:764
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:768
 msgid "Stripe recurring payments synced from upstream"
 msgstr ""
 
@@ -4239,11 +4292,11 @@ msgstr ""
 msgid "Submission Info"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1032
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1060
 msgid "Submission not found."
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:887
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:915
 msgid "Submission PDF link"
 msgstr ""
 
@@ -4314,7 +4367,7 @@ msgstr ""
 msgid "Subscription status changed to : "
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:428
+#: app/Hooks/Handlers/SubmissionHandler.php:440
 msgid "Subscription status updated to active with 100% discount"
 msgstr ""
 
@@ -4328,6 +4381,12 @@ msgstr ""
 
 #: app/Http/Controllers/GlobalSettingsController.php:157
 msgid "Successfully enable customer/donor dashboard module"
+msgstr ""
+
+#. %s: add-on plugin name
+#: app/Modules/AddOnModules/AddOnModule.php:272
+#, php-format
+msgid "Successfully installed %s"
 msgstr ""
 
 #: app/Services/AccessControl.php:361
@@ -4350,7 +4409,7 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:168
+#: app/Hooks/Handlers/AdminMenuHandler.php:167
 msgid "Support & Debug"
 msgstr ""
 
@@ -4483,7 +4542,7 @@ msgstr ""
 msgid "The Subscription Has been cancelled"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:812
+#: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:816
 msgid "The subscription has been cancelled"
 msgstr ""
 
@@ -4881,11 +4940,11 @@ msgstr ""
 msgid "Validation failed when saving the form"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:227
+#: app/Hooks/Handlers/SubmissionHandler.php:239
 msgid "Validation failed, because selected payment method could not be found"
 msgstr ""
 
-#: app/Hooks/Handlers/SubmissionHandler.php:240
+#: app/Hooks/Handlers/SubmissionHandler.php:252
 msgid "Validation failed, Please fill up card details"
 msgstr ""
 
@@ -4992,6 +5051,11 @@ msgstr ""
 msgid "Wednesday"
 msgstr ""
 
+#: app/Services/TransStrings.php:468
+#: app/Modules/FormComponents/DonationComponent.php:270
+msgid "Week"
+msgstr ""
+
 #: app/Modules/FormComponents/DonationComponent.php:124
 msgid "week"
 msgstr ""
@@ -5073,6 +5137,8 @@ msgstr ""
 msgid "WPManageNinja LLC"
 msgstr ""
 
+#: app/Services/TransStrings.php:473
+#: app/Modules/FormComponents/DonationComponent.php:275
 #: app/Modules/Builder/Render.php:551
 msgid "Year"
 msgstr ""
@@ -5150,16 +5216,20 @@ msgstr ""
 msgid "You do not have permission to access this submission."
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1041
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1069
 msgid "You do not have permission to download this invoice."
+msgstr ""
+
+#: app/Modules/AddOnModules/AddOnModule.php:205
+msgid "You do not have permission to install plugins."
 msgstr ""
 
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:141
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:964
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:973
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:992
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1001
 msgid "You don't have permission to download the PDF."
 msgstr ""
 
@@ -5195,11 +5265,11 @@ msgid ""
 "success page content"
 msgstr ""
 
-#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1018
+#: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:1046
 msgid "You must be logged in to download the invoice."
 msgstr ""
 
-#: app/Models/Form.php:957
+#: app/Models/Form.php:995
 msgid "You need to login to submit this form"
 msgstr ""
 

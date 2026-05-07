@@ -104,14 +104,12 @@ class InvoiceTemplate extends TemplateManager
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
         $formData = wppayform_safeUnserialize($submission->form_data_formatted, true);
+        $settings['invoice_lines']   = '';
+        $settings['payment_summary'] = '';
 
-        $settings['invoice_lines'] = '{submission.product_items_table_html}';
-        if (false !== strpos(Arr::get($settings, 'invoice_upper_text'), '{submission.payment_receipt}')) {
-            $settings['invoice_lines'] = '';
-        }
-        $settings['payment_summary'] = '{submission.payment_receipt}';
         $settings = PlaceholderParser::parse($settings, $submission);
 
+        $settings = $this->forcePaymentInfoHorizontal($settings);
 
         $htmlBody = $this->generateInvoiceHTML($submission, $settings, $feed);
 
@@ -125,6 +123,22 @@ class InvoiceTemplate extends TemplateManager
         }
 
         return $this->pdfBuilder($fileName, $feed, $htmlBody, '', $outPut);
+    }
+
+    private function forcePaymentInfoHorizontal($settings)
+    {
+        if (!is_array($settings)) {
+            return $settings;
+        }
+
+        foreach ($settings as $key => $value) {
+            if (!is_string($value) || strpos($value, 'wpf_payment_info') === false) {
+                continue;
+            }
+            $settings[$key] = $this->convertPaymentInfoBlocks($value);
+        }
+
+        return $settings;
     }
 
     private function generateInvoiceHTML($submission, $settings, $feed)
@@ -199,14 +213,21 @@ class InvoiceTemplate extends TemplateManager
 
         <div class="invoice_lines"><?php echo wp_kses_post(Arr::get($settings, 'invoice_lines')); ?></div>
 
-        <?php if (strpos(Arr::get($settings, 'payment_summary'), 'class="ffp_payment_info_table"') !== false): ?>
+        <?php
+        $paymentSummaryHtml = (string) Arr::get($settings, 'payment_summary');
+
+        $paymentSummaryHtml = preg_replace('#<style\b[^>]*>.*?</style>#is', '', $paymentSummaryHtml);
+
+        $hasLegacyMarker    = strpos($paymentSummaryHtml, 'class="ffp_payment_info_table"') !== false;
+        $hasConvertedMarker = strpos($paymentSummaryHtml, 'wpf_payment_info') !== false;
+        if ($hasLegacyMarker || $hasConvertedMarker): ?>
             <div class="invoice_summary">
                 <h3><?php esc_html_e('Payment Details', 'wp-payment-form');?></h3>
-                <?php echo wp_kses_post(Arr::get($settings, 'payment_summary')); ?>
+                <?php echo wp_kses_post($paymentSummaryHtml); ?>
             </div>
         <?php endif;?>
 
-        <div class="invoice_thanks">
+        <div class="invoice_thanks" style="margin-top: 20px;">
             <?php echo wp_kses_post(Arr::get($settings, 'invoice_thanks')); ?>
         </div>
         <style>
@@ -231,6 +252,25 @@ class InvoiceTemplate extends TemplateManager
             }
             td.customer_row ul li {
                 padding-bottom: 7px;
+            }
+            .wpf_payment_info {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+                margin-bottom: 10px;
+            }
+            .wpf_payment_info_item {
+                display: table-cell;
+                vertical-align: top;
+                padding: 8px 12px 8px 0;
+            }
+            .wpf_payment_info_item .wpf_item_heading {
+                font-weight: bold;
+                margin-bottom: 4px;
+            }
+            .wpf_payment_info_item .wpf_item_value {
+                word-wrap: break-word;
             }
         </style>
         <?php

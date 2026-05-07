@@ -1,7 +1,7 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <div class="wpf_customer_details">
     <h4><?php esc_html_e('Submission Details', 'wp-payment-form'); ?></h4>
-    <div class="wpf_submission_details">
+    <div class="wpf_submission_details" style="border:none; border-radius:0; overflow:visible;">
         <?php echo wp_kses_post($submission_details); ?>
     </div>
 </div>

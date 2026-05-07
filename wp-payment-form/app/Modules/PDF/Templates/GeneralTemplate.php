@@ -79,8 +79,14 @@ class GeneralTemplate extends TemplateManager
         $htmlBody = $settings['body'];  // Inserts HTML line breaks before all newlines in a string
 
         $htmlBody = PlaceholderParser::parse($htmlBody, $submissionId, $formData);
+        $htmlBody = $this->convertPaymentInfoBlocks($htmlBody);
+
+        if (!empty($this->headerHtml)) {
+            $this->headerHtml = $this->convertPaymentInfoBlocks($this->headerHtml);
+        }
 
         $footer = $settings['footer'];
+        $footer = $this->convertPaymentInfoBlocks($footer);
 
         if (!$fileName) {
             $fileName = PlaceholderParser::parse($feed['name'], $submissionId, $formData);

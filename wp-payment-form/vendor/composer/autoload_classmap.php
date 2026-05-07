@@ -276,8 +276,10 @@ return array(
     'WPPayForm\\App\\Services\\AutomaticUpgrader' => $baseDir . '/app/Services/AutomaticUpgrader.php',
     'WPPayForm\\App\\Services\\BackgroundInstaller' => $baseDir . '/app/Services/BackgroundInstaller.php',
     'WPPayForm\\App\\Services\\Browser' => $baseDir . '/app/Services/Browser.php',
+    'WPPayForm\\App\\Services\\ConditionAssesor' => $baseDir . '/app/Services/ConditionAssesor.php',
     'WPPayForm\\App\\Services\\ConfirmationHelper' => $baseDir . '/app/Services/ConfirmationHelper.php',
     'WPPayForm\\App\\Services\\CountryNames' => $baseDir . '/app/Services/CountryNames.php',
+    'WPPayForm\\App\\Services\\FluentcrmListConditional' => $baseDir . '/app/Services/FluentcrmListConditional.php',
     'WPPayForm\\App\\Services\\FormPlaceholders' => $baseDir . '/app/Services/FormPlaceholders.php',
     'WPPayForm\\App\\Services\\GeneralSettings' => $baseDir . '/app/Services/GeneralSettings.php',
     'WPPayForm\\App\\Services\\GlobalTools' => $baseDir . '/app/Services/GlobalTools.php',
@@ -490,6 +492,4 @@ return array(
     'WPPayForm\\Framework\\Validator\\ValidationRuleParser' => $vendorDir . '/wpfluent/framework/src/WPFluent/Validator/ValidationRuleParser.php',
     'WPPayForm\\Framework\\Validator\\Validator' => $vendorDir . '/wpfluent/framework/src/WPFluent/Validator/Validator.php',
     'WPPayForm\\Framework\\View\\View' => $vendorDir . '/wpfluent/framework/src/WPFluent/View/View.php',
-    'WPPayForm\\app\\Services\\ConditionAssesor' => $baseDir . '/app/Services/ConditionAssesor.php',
-    'WPPayForm\\app\\Services\\FluentcrmListConditional' => $baseDir . '/app/Services/FluentcrmListConditional.php',
 );

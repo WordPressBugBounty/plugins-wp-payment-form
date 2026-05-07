@@ -461,7 +461,18 @@ class TransStrings
             'Student' => __('Student', 'wp-payment-form'),
             'Community' => __('Community', 'wp-payment-form'),
             'Courses' => __('Courses', 'wp-payment-form'),
-            'Loading...' => __('Loading...', 'wp-payment-form')
+            'Loading...' => __('Loading...', 'wp-payment-form'),
+
+            // ======================== Donation interval labels =========
+            'Day' => __('Day', 'wp-payment-form'),
+            'Week' => __('Week', 'wp-payment-form'),
+            'Fortnight' => __('Fortnight', 'wp-payment-form'),
+            'Month' => __('Month', 'wp-payment-form'),
+            'Quarter' => __('Quarter', 'wp-payment-form'),
+            'Half Year' => __('Half Year', 'wp-payment-form'),
+            'Year' => __('Year', 'wp-payment-form'),
+            'Dropdown order:' => __('Dropdown order:', 'wp-payment-form'),
+            'Interval' => __('Interval', 'wp-payment-form'),
         ];
     }
 }

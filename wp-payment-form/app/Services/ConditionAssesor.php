@@ -1,7 +1,7 @@
 <?php
 
 
-namespace WPPayForm\app\Services;
+namespace WPPayForm\App\Services;
 
 
 use WPPayForm\Framework\Support\Arr;
@@ -41,7 +41,11 @@ class ConditionAssesor
     public static function assess(&$conditional, &$inputs)
     {
         if ($conditional['field']) {
-            $inputValue = Arr::get($inputs, $conditional['field'], '');
+            $fieldKey = $conditional['field'];
+            if ($fieldKey === 'choose_payment_method') {
+                $fieldKey = '__wpf_selected_payment_method';
+            }
+            $inputValue = Arr::get($inputs, $fieldKey, '');
             $isDonaitonRecurring = Arr::get($inputs, 'donation_is_recurring', '');
 
             switch ($conditional['operator']) {

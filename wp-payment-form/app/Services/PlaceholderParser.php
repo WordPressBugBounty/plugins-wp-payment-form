@@ -137,8 +137,12 @@ class PlaceholderParser
                 } elseif ($groupKey == 'quantity') {
                     $parsedData[$placeholder] = $entry->getItemQuantity($targetItem);
                 } elseif ($groupKey == 'payment_item') {
-                    $paymentItems = $entry->getPaymentItems($targetItem); 
-                    $parsedData[$placeholder] = !empty($paymentItems) ? implode(', ', $paymentItems) : $entry->getRawInput($targetItem);
+                    if ($targetItem === 'payment_summary' || $targetItem === 'payment_receipt') {
+                        $parsedData[$placeholder] = $entry->payment_receipt;
+                    } else {
+                        $paymentItems = $entry->getPaymentItems($targetItem);
+                        $parsedData[$placeholder] = !empty($paymentItems) ? implode(', ', $paymentItems) : $entry->getRawInput($targetItem);
+                    }
                 } elseif ($groupKey == 'submission') {
                     // $parsedData[$placeholder] = $entry->{$targetItem};
                     // Cache the payment_total value  

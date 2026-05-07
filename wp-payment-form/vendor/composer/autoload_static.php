@@ -364,8 +364,10 @@ class ComposerStaticInit687dacb664000f15663d4268232058ea
         'WPPayForm\\App\\Services\\AutomaticUpgrader' => __DIR__ . '/../..' . '/app/Services/AutomaticUpgrader.php',
         'WPPayForm\\App\\Services\\BackgroundInstaller' => __DIR__ . '/../..' . '/app/Services/BackgroundInstaller.php',
         'WPPayForm\\App\\Services\\Browser' => __DIR__ . '/../..' . '/app/Services/Browser.php',
+        'WPPayForm\\App\\Services\\ConditionAssesor' => __DIR__ . '/../..' . '/app/Services/ConditionAssesor.php',
         'WPPayForm\\App\\Services\\ConfirmationHelper' => __DIR__ . '/../..' . '/app/Services/ConfirmationHelper.php',
         'WPPayForm\\App\\Services\\CountryNames' => __DIR__ . '/../..' . '/app/Services/CountryNames.php',
+        'WPPayForm\\App\\Services\\FluentcrmListConditional' => __DIR__ . '/../..' . '/app/Services/FluentcrmListConditional.php',
         'WPPayForm\\App\\Services\\FormPlaceholders' => __DIR__ . '/../..' . '/app/Services/FormPlaceholders.php',
         'WPPayForm\\App\\Services\\GeneralSettings' => __DIR__ . '/../..' . '/app/Services/GeneralSettings.php',
         'WPPayForm\\App\\Services\\GlobalTools' => __DIR__ . '/../..' . '/app/Services/GlobalTools.php',
@@ -578,8 +580,6 @@ class ComposerStaticInit687dacb664000f15663d4268232058ea
         'WPPayForm\\Framework\\Validator\\ValidationRuleParser' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Validator/ValidationRuleParser.php',
         'WPPayForm\\Framework\\Validator\\Validator' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/Validator/Validator.php',
         'WPPayForm\\Framework\\View\\View' => __DIR__ . '/..' . '/wpfluent/framework/src/WPFluent/View/View.php',
-        'WPPayForm\\app\\Services\\ConditionAssesor' => __DIR__ . '/../..' . '/app/Services/ConditionAssesor.php',
-        'WPPayForm\\app\\Services\\FluentcrmListConditional' => __DIR__ . '/../..' . '/app/Services/FluentcrmListConditional.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

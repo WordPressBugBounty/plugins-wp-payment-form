@@ -690,7 +690,11 @@ class StripeHostedHandler extends StripeHandler
             $customerReferenceId = str_replace('.', '_', $customerReferenceId);
             $existingCustomerId = get_option($customerReferenceId);
             if ($existingCustomerId) {
-                return $existingCustomerId;
+                $existingCustomer = Customer::getCustomer($existingCustomerId);
+                if (!is_wp_error($existingCustomer) && !empty($existingCustomer->id) && empty($existingCustomer->deleted)) {
+                    return $existingCustomerId;
+                }
+                delete_option($customerReferenceId);
             }
         }
 

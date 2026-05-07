@@ -90,9 +90,8 @@ class AdminMenuHandler
                 
                 // Check if the table exists
                 if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name)) === $table_name) {
-                    // Table exists, count entries
-                    $entriesCount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name));
-                } 
+                    $entriesCount = $wpdb->get_var("SELECT COUNT(*) FROM `{$table_name}`");
+                }
                 if ($entriesCount) {
                     $entriesTitle .= ' <span class="wpf_unread_count" style="background: #e89d2d;color: white;border-radius: 8px;padding: 1px 8px;">' . $entriesCount . '</span>';
                 }
@@ -446,7 +445,8 @@ class AdminMenuHandler
                     'fluent_pdf' => true,
                     'fluent_pdf_active' => $fluentPdfActive,
                     'downloadable_font_files' => $downloadable_font_files,
-                    'fluent_pdf_dashboard_url' => admin_url('admin.php?page=fluent_pdf.php'),
+                    'fluent_pdf_fonts_ready' => AddOnModule::hasUsableFonts() ? 'yes' : 'no',
+                    'fluent_pdf_dashboard_url' => AddOnModule::getFluentPdfDashboardUrl(),
                     'is_paymattic_user' => AccessControl::isPaymatticUser(),
                     'user_email' => wp_get_current_user()->get('user_email'),
                     'user_capabilities' => $capabilities,

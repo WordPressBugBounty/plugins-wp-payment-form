@@ -115,12 +115,24 @@ class SubmissionHandler
 
         $subscriptionItems = apply_filters('wppayform/submitted_subscription_items', $subscriptionItems, $formattedElements, $form_data);
 
-        // Calculate server-side total from payment items to prevent client-side price manipulation
+        $discountBaseItems = apply_filters('wppayform/submitted_payment_items', $paymentItems, $formattedElements, $form_data, 0);
         $serverCalculatedTotal = 0;
-        foreach ($paymentItems as $paymentItem) {
+        foreach ($discountBaseItems as $paymentItem) {
+            // Skip recurring_tax marker rows — subscriptions are summed explicitly below.
+            if (Arr::get($paymentItem, 'recurring_tax') === 'yes') {
+                continue;
+            }
+            if (Arr::get($paymentItem, 'type') === 'tax_line') {
+                continue;
+            }
             if (isset($paymentItem['line_total'])) {
                 $serverCalculatedTotal += $paymentItem['line_total'];
             }
+        }
+        foreach ($subscriptionItems as $subscriptionItem) {
+            $recurringAmount = intval(Arr::get($subscriptionItem, 'recurring_amount', 0));
+            $subQuantity = intval(Arr::get($subscriptionItem, 'quantity', 1)) ?: 1;
+            $serverCalculatedTotal += $recurringAmount * $subQuantity;
         }
 
         $discountPercent = 0;

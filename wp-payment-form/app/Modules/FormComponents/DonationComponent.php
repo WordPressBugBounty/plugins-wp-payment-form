@@ -122,6 +122,15 @@ class DonationComponent extends BaseComponent
                     'interval_text' => 'Bill me every',
                     'intervals' => ['day', 'week', 'fortnight', 'month', 'quarter', 'half_year', 'year'],
                     'interval_options' => [__('day', 'wp-payment-form'), __('week', 'wp-payment-form'), __('fortnight', 'wp-payment-form'), __('month', 'wp-payment-form'), __('quarter', 'wp-payment-form'), __('half_year', 'wp-payment-form'), __('year', 'wp-payment-form')],
+                    'interval_custom_labels' => [
+                        'day'       => '',
+                        'week'      => '',
+                        'fortnight' => '',
+                        'month'     => '',
+                        'quarter'   => '',
+                        'half_year' => '',
+                        'year'      => '',
+                    ],
                     'interval_display_type' => 'dropdown'
                 )
             )
@@ -256,6 +265,25 @@ class DonationComponent extends BaseComponent
         $total_prices = count($prices) - 1;
         $defaultValue = Arr::get($fieldOptions, 'default_value', $total_prices);
         $defaultValue = $defaultValue === null ? $total_prices : $defaultValue;
+        $wppayform_interval_labels = [
+            'day'       => __('Day', 'wp-payment-form'),
+            'week'      => __('Week', 'wp-payment-form'),
+            'fortnight' => __('Fortnight', 'wp-payment-form'),
+            'month'     => __('Month', 'wp-payment-form'),
+            'quarter'   => __('Quarter', 'wp-payment-form'),
+            'half_year' => __('Half Year', 'wp-payment-form'),
+            'year'      => __('Year', 'wp-payment-form'),
+        ];
+
+        $intervalCustomLabels = Arr::get($pricingDetails, 'interval_custom_labels', []);
+        if (is_array($intervalCustomLabels)) {
+            foreach ($intervalCustomLabels as $intervalKey => $customLabel) {
+                $customLabel = is_string($customLabel) ? trim($customLabel) : '';
+                if ($customLabel !== '' && isset($wppayform_interval_labels[$intervalKey])) {
+                    $wppayform_interval_labels[$intervalKey] = $customLabel;
+                }
+            }
+        }
 
         $inputId = 'wpf_input_' . $form->ID . '_' . $element['id'];
         $controlAttributes = array(
@@ -442,14 +470,14 @@ class DonationComponent extends BaseComponent
                 style="outline: none;cursor:pointer;"  customname= <?php echo esc_attr($element['editor_title']) ?>>
                     <?php
                     foreach ($pricingDetails['intervals'] as $index => $plan): ?>
-                        <option><?php echo esc_attr($plan); ?></option>
+                        <option value="<?php echo esc_attr($plan); ?>"><?php echo esc_html(isset($wppayform_interval_labels[$plan]) ? $wppayform_interval_labels[$plan] : $plan); ?></option>
                     <?php endforeach; ?>
                 </select>
                 <?php else: ?>
                     <?php foreach ($pricingDetails['intervals'] as $plan): ?>
                     <div class="wpf_donation_interval_button" data-donation_interval_button="">
                         <input type="radio" class="donation_recurring_interval" name="donation_recurring_interval" value="<?php echo esc_attr($plan); ?>" customname="<?php echo esc_attr($element['editor_title']); ?>">
-                        <label for="<?php echo esc_attr($plan); ?>"><?php echo esc_attr($plan); ?></label>
+                        <label for="<?php echo esc_attr($plan); ?>"><?php echo esc_html(isset($wppayform_interval_labels[$plan]) ? $wppayform_interval_labels[$plan] : $plan); ?></label>
                     </div>
                     <?php endforeach; ?>
                 <?php endif; ?>

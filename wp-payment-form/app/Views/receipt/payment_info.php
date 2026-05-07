@@ -33,9 +33,9 @@
                  $wppayform_transaction = $submission->transactions[0];
                  if (!empty($wppayform_transaction->card_last_4)):
                 ?>
-                <span class="wpf_transactions_card_number">
+                <div class="wpf_transactions_card_number" style="margin-top:5px;">
                     <?php echo  '***'. esc_html($wppayform_transaction->card_last_4); ?>
-                </span>
+                </div>
                 <?php endif; ?>
             <?php endif; ?>
         </div>

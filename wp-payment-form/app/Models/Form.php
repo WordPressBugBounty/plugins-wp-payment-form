@@ -750,13 +750,25 @@ class Form extends Model
                     foreach ($fields as $field) {
                         $elementId = Arr::get($field, 'id');
                         $label = self::getLabel($field);
+
+                        if ($field['type'] == 'donation_item') {
+                            $options = self::getDonationOptions($field);
+                            $code = "{input." . $elementId . "}";
+                        } elseif ($field['type'] == 'choose_payment_method') {
+                            $options = self::getPaymentMethodOptions($field);
+                            $code = "{payment_method." . $elementId . "}";
+                        } else {
+                            $options = [];
+                            $code = "{input." . $elementId . "}";
+                        }
+
                         $formattedShortcodes[$elementId] = array(
                             "element" => $elementId,
                             "admin_label" => Arr::get($field, 'field_options.admin_label'),
-                            "options" => [],
+                            "options" => $options,
                             "attributes" => [
                                 "name" => $label,
-                                "code" => "{input." . $elementId . "}",
+                                "code" => $code,
                                 "type" => $field['type']
                             ]
                         );
@@ -775,6 +787,18 @@ class Form extends Model
                         "type" => $element['type']
                     ]
                 );
+            } elseif ($element['type'] == 'choose_payment_method') {
+                $label = self::getLabel($element);
+                $formattedShortcodes[$elementId] = array(
+                    "element" => $elementId,
+                    "admin_label" => Arr::get($element, 'field_options.admin_label'),
+                    "options" => self::getPaymentMethodOptions($element),
+                    "attributes" => [
+                        "name" => $label,
+                        "code" => "{payment_method." . $elementId . "}",
+                        "type" => $element['type']
+                    ]
+                );
             }
         }
         return $formattedShortcodes;
@@ -789,6 +813,20 @@ class Form extends Model
         }
 
         return $donationOptions;
+    }
+
+    public static function getPaymentMethodOptions($element)
+    {
+        $methods = Arr::get($element, 'field_options.method_settings.payment_settings', []);
+        $paymentOptions = [];
+        foreach ($methods as $methodName => $method) {
+            if (Arr::get($method, 'enabled') !== 'yes') {
+                continue;
+            }
+            $label = Arr::get($method, 'label', '');
+            $paymentOptions[$methodName] = $label ? $label : $methodName;
+        }
+        return $paymentOptions;
     }
 
     public static function getBuilderSettings($formId)

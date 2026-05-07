@@ -198,38 +198,175 @@ class AddOnModule
     }
 
 
-    // this is not right place to put this function, but for now we are keeping it here, we will move it to a better place later
-    public function getFluentPdfInfo()
+    public function installFluentPdf()
     {
-       
-        $downloadableFontFiles = [];
-        $fluentPdfUpdateAvailable = 'no';
-        $fluentPdfActive = 'no';
-        $fluentPdfUrl = 'https://api.github.com/repos/WPManageNinja/fluent-pdf/zipball/1.0.2'; // initial version, upon install request, it will fetch the latest version
+        if (!current_user_can('install_plugins')) {
+            wp_send_json_error(
+                ['message' => __('You do not have permission to install plugins.', 'wp-payment-form')],
+                403
+            );
+        }
 
-        if (defined('FLUENT_PDF')) {
-            $fluentPdfActive = 'yes';
-            $downloadableFontFiles = (new \FluentPdf\Classes\Controller\FontDownloader())->getDownloadableFonts();
-            $result = (new \FluentPdf\Classes\Controller\GlobalPdfConfig())->checkForUpdate('fluent-pdf');
-            $fluentPdfUpdateAvailable = $result['available'];
-            $fluentPdfUrl = $result['url'] ? $result['url'] : $fluentPdfUrl;
+        $slug        = 'fluentforms-pdf';
+        $title       = 'Fluent Forms PDF';
+        $pluginFile  = $slug . '/' . $slug . '.php';
+        $redirectUrl = self::getFluentPdfDashboardUrl();
 
+        if (!function_exists('get_plugins')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        if (is_plugin_active($pluginFile)) {
             wp_send_json_success([
-                'fluent_pdf_update_available' => $fluentPdfUpdateAvailable,
-                'fluent_pdf_active' => $fluentPdfActive,
-                'fluent_pdf_url' => $fluentPdfUrl,
-                'downloadable_font_files' => $downloadableFontFiles,
-                'fluent_pdf_dashboard_url' => admin_url('admin.php?page=fluent_pdf.php')
+                'message'      => sprintf(
+                    /* translators: %s: add-on plugin name */
+                    __('%s is already active.', 'wp-payment-form'),
+                    $title
+                ),
+                'redirect_url' => $redirectUrl,
+            ], 200);
+            return;
+        }
+
+        $plugins = get_plugins();
+
+        if (!function_exists('activate_plugin')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        if (!isset($plugins[$pluginFile])) {
+            (new \WPPayForm\App\Services\BackgroundInstaller())->install([
+                'name'      => $title,
+                'repo-slug' => $slug,
+                'file'      => $slug . '.php',
             ]);
+
+            wp_clean_plugins_cache();
+
+            if (!file_exists(WP_PLUGIN_DIR . '/' . $pluginFile)) {
+                wp_send_json_error([
+                    'message' => __(
+                        'Installation failed. Please install Fluent Forms PDF manually from wordpress.org.',
+                        'wp-payment-form'
+                    ),
+                ], 423);
+            }
+
+            if (!is_plugin_active($pluginFile)) {
+                $result = activate_plugin($pluginFile);
+                if (is_wp_error($result)) {
+                    wp_send_json_error(['message' => $result->get_error_message()], 423);
+                }
+            }
+        } else {
+            $result = activate_plugin($pluginFile);
+
+            if (is_wp_error($result)) {
+                wp_send_json_error(['message' => $result->get_error_message()], 423);
+            }
         }
 
         wp_send_json_success([
-            'fluent_pdf_update_available' => $fluentPdfUpdateAvailable,
-            'fluent_pdf_active' => $fluentPdfActive,
-            'fluent_pdf_url' => $fluentPdfUrl,
-            'downloadable_font_files' => $downloadableFontFiles,
-            'fluent_pdf_dashboard_url' => admin_url('admin.php?page=fluent_pdf.php')
-        ]);
+            'message'      => sprintf(
+                /* translators: %s: add-on plugin name */
+                __('Successfully installed %s', 'wp-payment-form'),
+                $title
+            ),
+            'redirect_url' => $redirectUrl,
+        ], 200);
+    }
 
+    // this is not right place to put this function, but for now we are keeping it here, we will move it to a better place later
+    public function getFluentPdfInfo()
+    {
+        $downloadableFontFiles = [];
+        $fluentPdfUpdateAvailable = 'no';
+        $fluentPdfActive = 'no';
+        $fluentPdfUrl = 'https://wordpress.org/plugins/fluentforms-pdf/';
+        $fluentPdfLatestUrl = $fluentPdfUrl;
+        $fluentPdfDashboardUrl = self::getFluentPdfDashboardUrl();
+        $fluentPdfVersion = '';
+        $fluentPdfBelowMinSupported = false;
+        $minSupportedFluentPdfVersion = '2.0.0';
+
+        if (defined('FLUENT_PDF')) {
+            $fluentPdfActive = 'yes';
+            $fluentPdfVersion = defined('FLUENT_PDF_VERSION') ? FLUENT_PDF_VERSION : '';
+            if ($fluentPdfVersion && version_compare($fluentPdfVersion, $minSupportedFluentPdfVersion, '<')) {
+                $fluentPdfBelowMinSupported = true;
+            }
+            $downloadableFontFiles = (new \FluentPdf\Classes\Controller\FontDownloader())->getDownloadableFonts();
+            $pdfConfig = new \FluentPdf\Classes\Controller\GlobalPdfConfig();
+            if (method_exists($pdfConfig, 'checkForUpdate')) {
+                $result = $pdfConfig->checkForUpdate('fluent-pdf');
+                $fluentPdfUpdateAvailable = $result['available'];
+                $fluentPdfLatestUrl = $result['url'] ? $result['url'] : $fluentPdfUrl;
+            }
+        }
+
+        wp_send_json_success([
+            'fluent_pdf_update_available'     => $fluentPdfUpdateAvailable,
+            'fluent_pdf_active'               => $fluentPdfActive,
+            'fluent_pdf_url'                  => $fluentPdfLatestUrl,
+            'downloadable_font_files'         => $downloadableFontFiles,
+            'fluent_pdf_fonts_ready'          => self::hasUsableFonts() ? 'yes' : 'no',
+            'fluent_pdf_dashboard_url'        => $fluentPdfDashboardUrl,
+            'fluent_pdf_version'              => $fluentPdfVersion,
+            'fluent_pdf_below_min_supported'  => $fluentPdfBelowMinSupported,
+            'fluent_pdf_min_supported'        => $minSupportedFluentPdfVersion,
+            'fluent_pdf_plugins_url'          => admin_url('plugins.php'),
+        ]);
+    }
+
+    public static function hasUsableFonts()
+    {
+        if (!defined('FLUENT_PDF')) {
+            return false;
+        }
+
+        if (!class_exists('\FluentPdf\Classes\Controller\FontDownloader')) {
+            return false;
+        }
+
+        $fontDownloader = new \FluentPdf\Classes\Controller\FontDownloader();
+
+        if (method_exists($fontDownloader, 'isBaselineMissing')) {
+            return !$fontDownloader->isBaselineMissing();
+        }
+
+        if (!class_exists('\FluentPdf\Classes\Controller\AvailableOptions')) {
+            return false;
+        }
+
+        $dirs = \FluentPdf\Classes\Controller\AvailableOptions::getDirStructure();
+        $fontDir = isset($dirs['fontDir']) ? rtrim($dirs['fontDir'], '/') . '/' : '';
+        if ($fontDir === '') {
+            return false;
+        }
+
+        foreach (['DejaVuSans.ttf', 'DejaVuSans-Bold.ttf'] as $font) {
+            if (!file_exists($fontDir . $font)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static function isLegacyFluentPdf()
+    {
+        return defined('FLUENT_PDF_VERSION')
+            && version_compare(FLUENT_PDF_VERSION, '2.0.0', '<');
+    }
+
+    public static function getFluentPdfDashboardUrl()
+    {
+        $default = admin_url('options-general.php?page=fluent_pdf_settings');
+
+        if (self::isLegacyFluentPdf()) {
+            $default = admin_url('admin.php?page=fluent_pdf.php');
+        }
+
+        return apply_filters('fluent_pdf/global_settings_url', $default);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace WPPayForm\App\Services\Integrations;
 
-use WPPayForm\app\Services\AsyncRequest;
+use WPPayForm\App\Services\AsyncRequest;
 use WPPayForm\App\Services\ConditionAssesor;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\Meta;

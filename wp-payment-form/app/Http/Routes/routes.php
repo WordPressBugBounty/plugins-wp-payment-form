@@ -155,6 +155,9 @@ $router->prefix('wppayform-pdf')->withPolicy('WPPayForm\App\Http\Policies\AdminP
     $router->get('/check_fluent_pdf_info', function () {
         return (new WPPayForm\App\Modules\AddOnModules\AddOnModule())->getFluentPdfInfo();
     });
+    $router->post('/install_fluent_pdf', function () {
+        return (new WPPayForm\App\Modules\AddOnModules\AddOnModule())->installFluentPdf();
+    });
     $router->get('/get_global_settings', function () {
         return (new WPPayForm\App\Modules\PDF\Manager\WPPayFormPdfBuilder())->getGlobalSettings();
     });
