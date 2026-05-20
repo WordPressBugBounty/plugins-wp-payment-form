@@ -234,7 +234,7 @@ class DonationComponent extends BaseComponent
         $enableImage = Arr::get($element, 'field_options.enable_image') == 'yes';
         $hiddenAttr = Arr::get($element, 'field_options.conditional_logic_option.conditional_logic')  === 'yes' ? 'none' : '';
         $pricingDetails = Arr::get($element, 'field_options.pricing_details', array());
-        $initialRaisingAmount = intval(Arr::get($element, 'field_options.intial_raising_amount', 0));
+        $initialRaisingAmount = absint(Arr::get($element, 'field_options.intial_raising_amount', 0));
 
         $showProgress = Arr::get($pricingDetails, 'progress_bar') == 'yes';
         $showStatistic = Arr::get($pricingDetails, 'show_statistic') == 'yes';
@@ -243,14 +243,19 @@ class DonationComponent extends BaseComponent
         $isRecurring = Arr::get($pricingDetails, 'allow_recurring') == 'yes';
 
 
+        $raised     = 0;
+        $donations  = 0;
+        $percentage = 0;
+        $style      = 'width: 0%;';
+
         $submission = new Submission();
-        if ($showStatistic && isset($goal) && intval($goal) > 0) {
-            $raised = $submission->donationTotal($form->ID, 'paid') / 100;
-            $donations = $submission->getTotalCount($form->ID, 'paid');
-            $raised = $raised + $initialRaisingAmount;
-            $percentage = round(($raised / intval($goal)) * 100);
+        if ($showStatistic && isset($goal) && absint($goal) > 0) {
+            $raised     = $submission->donationTotal($form->ID, 'paid') / 100;
+            $donations  = $submission->getTotalCount($form->ID, 'paid');
+            $raised     = $raised + $initialRaisingAmount;
+            $percentage = round(($raised / absint($goal)) * 100);
             $percentage = $percentage > 100 ? 100 : $percentage;
-            $style = 'width: ' . $percentage . '%;';
+            $style      = 'width: ' . $percentage . '%;';
         }
         $imageUrl = Arr::get($element, 'field_options.pricing_details.image_url');
         ?>
@@ -409,6 +414,7 @@ class DonationComponent extends BaseComponent
             <div class="wpf_input_content wpf_donation_controls_radio">
                 <?php
                 foreach ($prices as $index => $price) :
+                    if (empty($price) || !isset($price['value'])) { continue; }
                     $optionId = $element['id'] . '_' . $index . '_' . $form->ID;
                     $attributesRadio = array(
                         'class' => 'form-check-input wpf_payment_item' . ' wpf_donation_item_' . $index,

@@ -69,16 +69,25 @@ class Customers extends Model
         }
 
         $customers = $query->get();
-        
+
+        $pageEmails = [];
+        foreach ($customers as $c) {
+            if (!empty($c->customer_email)) {
+                $pageEmails[] = $c->customer_email;
+            }
+        }
+        $migratedEmails = $this->getGiveWPMigratedEmails($pageEmails);
+
         $wordpressDate = current_time('Y-m-d H:i:s');
         foreach ($customers as $customer) {
             $customer->avatar = get_avatar($customer->customer_email, 128);
+            $customer->is_givewp_migrated = isset($migratedEmails[$customer->customer_email]);
             // Calculate "x hours y minutes ago"
             $created = new DateTime($customer->created_at);
             $now = new DateTime($wordpressDate);
             $diff = $now->diff($created);
             $parts = [];
-    
+
             if ($diff->days > 0) {
                 $parts[] = $diff->days . ($diff->days == 1 ? ' day' : ' days');
             }
@@ -88,7 +97,7 @@ class Customers extends Model
             if ($diff->i > 0) {
                 $parts[] = $diff->i . ($diff->i == 1 ? ' minute' : ' minutes');
             }
-            
+
             $customer->time_ago = empty($parts) ? 'just now' : implode(' ', $parts);
         }
 
@@ -96,6 +105,32 @@ class Customers extends Model
             'customers' => $customers,
             'total' => $totalCustomers
         );
+    }
+
+    private function getGiveWPMigratedEmails(array $emails): array
+    {
+        if (empty($emails)) {
+            return [];
+        }
+
+        global $wpdb;
+
+        $placeholders = implode(',', array_fill(0, count($emails), '%s'));
+
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $rows = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT DISTINCT s.customer_email
+                 FROM {$wpdb->prefix}wpf_submissions s
+                 INNER JOIN {$wpdb->prefix}wpf_meta wm ON wm.option_id = s.id
+                 WHERE s.customer_email IN ($placeholders)
+                   AND wm.meta_key = %s
+                   AND wm.meta_group = %s",
+                array_merge($emails, ['give_source_donation_id', 'wpf_submissions'])
+            )
+        );
+
+        return array_fill_keys((array) $rows, true);
     }
 
     /**

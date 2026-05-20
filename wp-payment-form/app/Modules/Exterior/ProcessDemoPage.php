@@ -54,6 +54,7 @@ class ProcessDemoPage
         else if ($form) {
             // Enqueue light-gallery assets
             $this->enqueueLightGalleryAssets();
+            add_filter('wppayform/allow_draft_preview', '__return_true');
             App::make('view')->render('admin.show_review', [
                 'form_id' => $formId,
                 'form' => $form,

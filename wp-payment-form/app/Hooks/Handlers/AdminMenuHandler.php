@@ -90,6 +90,7 @@ class AdminMenuHandler
                 
                 // Check if the table exists
                 if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name)) === $table_name) {
+                    //write a query to delete all entries
                     $entriesCount = $wpdb->get_var("SELECT COUNT(*) FROM `{$table_name}`");
                 }
                 if ($entriesCount) {
@@ -276,8 +277,13 @@ class AdminMenuHandler
             'pdf_settings' => [
                 "hash" => "pdf_settings",
                 "title" => __("PDF Settings", 'wp-payment-form'),
-                "svg"   => '<img  src="' . WPPAYFORM_URL . 'assets/images/form/pdf.svg"/>' 
-            ]
+                "svg"   => '<img  src="' . WPPAYFORM_URL . 'assets/images/form/pdf.svg"/>'
+            ],
+            'wppayform_migrator' => [
+                'hash'  => 'wppayform_migrator',
+                'title' => __('Migrator', 'wp-payment-form'),
+                'svg'   => '<img  src="' . WPPAYFORM_URL . 'assets/images/global/givewp.svg"/>'
+            ],
         );
 
 

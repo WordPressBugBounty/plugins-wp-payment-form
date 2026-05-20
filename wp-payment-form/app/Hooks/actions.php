@@ -22,7 +22,29 @@ use WPPayForm\App\Services\Browser;
 
 $app->addAction('admin_menu', 'AdminMenuHandler@add');
 $app->addAction('wppayform/after_create_form', 'FormHandlers@insertTemplate', 10, 3);
-// dd('wppayform/after_create_form');
+
+// -------------------------------------------------------------------------
+// GiveWP → Paymattic Migration Module
+//
+// Bootstrapped at priority 20 so the main Paymattic menu (registered at the
+// AJAX handlers run on wp_ajax_* hooks (admin_menu does not fire on AJAX
+// requests). The migration module filter is registered directly at boot.
+// -------------------------------------------------------------------------
+$givewpMigrationModule = new \WPPayForm\App\Modules\GiveWPMigration\GiveWPMigrationModule();
+$givewpMigrationModule->init();
+
+$migrationAjax = new \WPPayForm\App\Modules\GiveWPMigration\Admin\MigratorAjaxHandler();
+add_action('wp_ajax_wpf_givewp_preflight', [$migrationAjax, 'preflight']);
+add_action('wp_ajax_wpf_givewp_get_migration_state', [$migrationAjax, 'getMigrationState']);
+add_action('wp_ajax_wpf_givewp_reset_migration', [$migrationAjax, 'resetMigration']);
+add_action('wp_ajax_wpf_givewp_migrate_forms',         [$migrationAjax, 'migrateFormsBatch']);
+add_action('wp_ajax_wpf_givewp_migrate_donations',     [$migrationAjax, 'migrateDonationsBatch']);
+add_action('wp_ajax_wpf_givewp_migrate_subscriptions', [$migrationAjax, 'migrateSubscriptionsBatch']);
+add_action('wp_ajax_wpf_givewp_enrich_gift_aid',       [$migrationAjax, 'enrichGiftAidBatch']);
+add_action('wp_ajax_wpf_givewp_enrich_ffm',            [$migrationAjax, 'enrichFFMBatch']);
+add_action('wp_ajax_wpf_givewp_generate_report',       [$migrationAjax, 'generateReport']);
+add_action('wp_ajax_wpf_givewp_rollback',              [$migrationAjax, 'performRollback']);
+add_action('wp_ajax_wpf_givewp_mark_complete',         [$migrationAjax, 'markComplete']);
 add_action('current_screen', function () {
     global $current_screen;
     if ($current_screen->id === "plugins" && Browser::isLiveServer()) {
@@ -52,9 +74,6 @@ add_action('admin_enqueue_scripts', function ($hook) {
 });
 
 // disabled update-notification
-
-// $current_user = wp_get_current_user();
-// dd($current_user);
 
 add_action( 'wp_print_scripts', function () {
     wp_deregister_script('vue.js');

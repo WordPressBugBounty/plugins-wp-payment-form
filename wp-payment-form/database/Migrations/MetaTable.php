@@ -18,7 +18,8 @@ class MetaTable
             meta_value text,
             created_at timestamp NULL,
             updated_at timestamp NULL,
-            PRIMARY  KEY  (id)
+            PRIMARY KEY (id),
+            KEY meta_group_option_key (meta_group, option_id, meta_key)
         ) $charset_collate;";
 
         if ($forced) {

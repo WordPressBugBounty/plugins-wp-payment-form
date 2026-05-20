@@ -375,6 +375,13 @@ class StripeListener
             $totalAmount = intval($totalAmount * 100);
         }
 
+        $paymentIntentId = '';
+        if (!empty($data->payment_intent)) {
+            $paymentIntentId = is_object($data->payment_intent)
+                ? (isset($data->payment_intent->id) ? $data->payment_intent->id : '')
+                : (string) $data->payment_intent;
+        }
+
         $transactionId = $subscriptionTransaction->maybeInsertCharge([
             'form_id' => $submission->form_id,
             'user_id' => $submission->user_id,
@@ -389,7 +396,8 @@ class StripeListener
             'payment_mode' => ($data->livemode) ? 'live' : 'test',
             'payment_note' => maybe_serialize($data),
             'created_at' => gmdate('Y-m-d H:i:s', $data->created),
-            'updated_at' => gmdate('Y-m-d H:i:s', $data->created)
+            'updated_at' => gmdate('Y-m-d H:i:s', $data->created),
+            '_alt_charge_ids' => array_filter([$paymentIntentId]),
         ]);
 
         $transaction = $subscriptionTransaction->getTransaction($transactionId);

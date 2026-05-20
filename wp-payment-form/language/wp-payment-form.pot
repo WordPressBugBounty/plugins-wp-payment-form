@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Paymattic - Payments made simple\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-07 05:37+0000\n"
+"POT-Creation-Date: 2026-05-20 11:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -39,7 +39,7 @@ msgid ""
 "slack webhook URL</a> where Paymattic will send JSON payload."
 msgstr ""
 
-#: app/Modules/Builder/Render.php:543
+#: app/Modules/Builder/Render.php:542
 msgid " to "
 msgstr ""
 
@@ -88,6 +88,10 @@ msgstr ""
 
 #: app/Services/TransStrings.php:399
 msgid "a key you can register for one at the provided link."
+msgstr ""
+
+#: app/Modules/GiveWPMigration/Admin/MigratorAjaxHandler.php:96
+msgid "A migration batch is already running. Please wait for it to finish."
 msgstr ""
 
 #: app/Services/GeneralSettings.php:468
@@ -255,7 +259,7 @@ msgid ""
 "Allow FluentCRM integration conditionally based on your submission values"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:548
+#: app/Modules/Builder/Render.php:547
 msgid "AM"
 msgstr ""
 
@@ -303,11 +307,11 @@ msgstr ""
 msgid "Applicable Forms"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:484
+#: app/Modules/Builder/Render.php:483
 msgid "Apr"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:498
+#: app/Modules/Builder/Render.php:497
 msgid "April"
 msgstr ""
 
@@ -363,11 +367,11 @@ msgstr ""
 msgid "Asterisk Position"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:488
+#: app/Modules/Builder/Render.php:487
 msgid "Aug"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:502
+#: app/Modules/Builder/Render.php:501
 msgid "August"
 msgstr ""
 
@@ -443,7 +447,7 @@ msgstr ""
 msgid "Billing Address"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:189
+#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:197
 msgid "Billing address from stripe has been logged in the submission data"
 msgstr ""
 
@@ -674,7 +678,7 @@ msgstr ""
 msgid "click here to check again"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:546
+#: app/Modules/Builder/Render.php:545
 msgid "Click to toggle"
 msgstr ""
 
@@ -922,7 +926,7 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:318
+#: app/Modules/FormComponents/DonationComponent.php:323
 msgid "Custom Amount"
 msgstr ""
 
@@ -984,7 +988,7 @@ msgstr ""
 msgid "Customer Name"
 msgstr ""
 
-#: app/Services/TransStrings.php:65 app/Hooks/Handlers/AdminMenuHandler.php:113
+#: app/Services/TransStrings.php:65 app/Hooks/Handlers/AdminMenuHandler.php:114
 msgid "Customers"
 msgstr ""
 
@@ -1022,7 +1026,7 @@ msgid "Date:"
 msgstr ""
 
 #: app/Services/TransStrings.php:467
-#: app/Modules/FormComponents/DonationComponent.php:269
+#: app/Modules/FormComponents/DonationComponent.php:274
 msgid "Day"
 msgstr ""
 
@@ -1042,11 +1046,11 @@ msgstr ""
 msgid "Deactivate License"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:492
+#: app/Modules/Builder/Render.php:491
 msgid "Dec"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:506
+#: app/Modules/Builder/Render.php:505
 msgid "December"
 msgstr ""
 
@@ -1058,7 +1062,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: app/Hooks/actions.php:190
+#: app/Hooks/actions.php:209
 msgid "Demo"
 msgstr ""
 
@@ -1134,7 +1138,7 @@ msgstr ""
 msgid "Djiboutian Franc"
 msgstr ""
 
-#: app/Hooks/actions.php:188
+#: app/Hooks/actions.php:207
 msgid "Docs"
 msgstr ""
 
@@ -1154,6 +1158,10 @@ msgstr ""
 msgid "Dominican Republic"
 msgstr ""
 
+#: app/Modules/GiveWPMigration/Writers/PaymatticFormWriter.php:609
+msgid "Donate Now"
+msgstr ""
+
 #: app/Views/leaderBoard/template_3.php:77
 msgid "Donation Amount"
 msgstr ""
@@ -1171,7 +1179,7 @@ msgid "Donation Progress Bar Shortcode"
 msgstr ""
 
 #: app/Services/TransStrings.php:132
-#: app/Modules/FormComponents/DonationComponent.php:364
+#: app/Modules/FormComponents/DonationComponent.php:369
 #: app/Views/leaderBoard/template_2.php:158
 #: app/Views/leaderBoard/template_2.php:201
 msgid "Donations"
@@ -1452,11 +1460,11 @@ msgstr ""
 msgid "Faroe Islands"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:482
+#: app/Modules/Builder/Render.php:481
 msgid "Feb"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:496
+#: app/Modules/Builder/Render.php:495
 msgid "February"
 msgstr ""
 
@@ -1666,7 +1674,7 @@ msgid "Form Validation failed"
 msgstr ""
 
 #: app/Services/TransStrings.php:469
-#: app/Modules/FormComponents/DonationComponent.php:271
+#: app/Modules/FormComponents/DonationComponent.php:276
 msgid "Fortnight"
 msgstr ""
 
@@ -1694,11 +1702,11 @@ msgstr ""
 msgid "French Southern Territories"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:525
+#: app/Modules/Builder/Render.php:524
 msgid "Fri"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:516
+#: app/Modules/Builder/Render.php:515
 msgid "Friday"
 msgstr ""
 
@@ -1753,7 +1761,7 @@ msgstr ""
 msgid "Get api key from"
 msgstr ""
 
-#: app/Hooks/actions.php:189
+#: app/Hooks/actions.php:208
 msgid "Get Support"
 msgstr ""
 
@@ -1765,11 +1773,43 @@ msgstr ""
 msgid "Gibraltar"
 msgstr ""
 
+#: app/Modules/GiveWPMigration/Admin/MigratorAjaxHandler.php:270
+msgid ""
+"give-currency-switcher is active but Paymattic Pro is not. Currency switcher "
+"form configuration (the list of accepted currencies per form) requires "
+"Paymattic Pro and will be skipped."
+msgstr ""
+
+#: app/Modules/GiveWPMigration/Admin/MigratorAjaxHandler.php:255
+msgid ""
+"give-gift-aid is active and Gift Aid donations were detected. You MUST "
+"export the Gift Aid declarations CSV from GiveWP (Tools → Export → Gift Aid "
+"Donations) BEFORE running this migration. Once GiveWP is deactivated, that "
+"export is permanently unavailable. This migration cannot replace HMRC-format "
+"reporting."
+msgstr ""
+
+#: app/Modules/GiveWPMigration/MigrationReporter.php:270
+msgid ""
+"give-gift-aid is active. Ensure you have exported the Gift Aid declarations "
+"CSV from GiveWP (Tools → Export → Gift Aid Donations) before deactivating "
+"GiveWP."
+msgstr ""
+
+#. 1: GiveWP period name, 2: frequency multiplier, 3: resulting interval count, 4: Paymattic base interval
+#: app/Modules/GiveWPMigration/Mappers/IntervalMapper.php:110
+#, php-format
+msgid ""
+"GiveWP \"%1$s\" (frequency %2$d) preserved as every %3$d %4$s in Paymattic. "
+"Cadence is stored on the subscription as interval_count = %3$d — gateway "
+"billing schedule is unchanged."
+msgstr ""
+
 #: app/Services/TransStrings.php:312
 msgid "Go to Donation Progress Item settings"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:370
+#: app/Modules/FormComponents/DonationComponent.php:375
 msgid "Goal"
 msgstr ""
 
@@ -1826,7 +1866,7 @@ msgid "Haiti"
 msgstr ""
 
 #: app/Services/TransStrings.php:472
-#: app/Modules/FormComponents/DonationComponent.php:274
+#: app/Modules/FormComponents/DonationComponent.php:279
 msgid "Half Year"
 msgstr ""
 
@@ -2014,7 +2054,7 @@ msgstr ""
 msgid "Integration successfully updated"
 msgstr ""
 
-#: app/Services/TransStrings.php:19 app/Hooks/Handlers/AdminMenuHandler.php:120
+#: app/Services/TransStrings.php:19 app/Hooks/Handlers/AdminMenuHandler.php:121
 #: app/Views/admin/global/global_menu.php:27
 msgid "Integrations"
 msgstr ""
@@ -2080,7 +2120,7 @@ msgid "Ireland"
 msgstr ""
 
 #: app/Modules/FormComponents/BaseComponent.php:468
-#: app/Modules/Builder/Render.php:557
+#: app/Modules/Builder/Render.php:556
 msgid "is required"
 msgstr ""
 
@@ -2096,7 +2136,7 @@ msgstr ""
 msgid "Italy"
 msgstr ""
 
-#: app/Services/TransStrings.php:56 app/Modules/Builder/Render.php:561
+#: app/Services/TransStrings.php:56 app/Modules/Builder/Render.php:560
 #: app/Views/elements/order_items_table.php:16
 msgid "Item"
 msgstr ""
@@ -2121,11 +2161,11 @@ msgstr ""
 msgid "Jamaica"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:481
+#: app/Modules/Builder/Render.php:480
 msgid "Jan"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:495
+#: app/Modules/Builder/Render.php:494
 msgid "January"
 msgstr ""
 
@@ -2149,19 +2189,19 @@ msgstr ""
 msgid "Jordan"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:487
+#: app/Modules/Builder/Render.php:486
 msgid "Jul"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:501
+#: app/Modules/Builder/Render.php:500
 msgid "July"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:486
+#: app/Modules/Builder/Render.php:485
 msgid "Jun"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:500
+#: app/Modules/Builder/Render.php:499
 msgid "June"
 msgstr ""
 
@@ -2277,7 +2317,7 @@ msgstr ""
 msgid "Limit Per User(Email Based)"
 msgstr ""
 
-#: app/Services/TransStrings.php:58 app/Modules/Builder/Render.php:564
+#: app/Services/TransStrings.php:58 app/Modules/Builder/Render.php:563
 #: app/Views/elements/order_items_table.php:26
 msgid "Line Total"
 msgstr ""
@@ -2406,11 +2446,11 @@ msgstr ""
 msgid "Manage Subscription"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:483
+#: app/Modules/Builder/Render.php:482
 msgid "Mar"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:497
+#: app/Modules/Builder/Render.php:496
 msgid "March"
 msgstr ""
 
@@ -2442,7 +2482,7 @@ msgstr ""
 msgid "Maximum Number of Entries"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:485 app/Modules/Builder/Render.php:499
+#: app/Modules/Builder/Render.php:484 app/Modules/Builder/Render.php:498
 msgid "May"
 msgstr ""
 
@@ -2474,6 +2514,10 @@ msgstr ""
 msgid "Micronesia"
 msgstr ""
 
+#: app/Hooks/Handlers/AdminMenuHandler.php:284
+msgid "Migrator"
+msgstr ""
+
 #: app/Services/TransStrings.php:369
 msgid "Min Purchase Amount"
 msgstr ""
@@ -2490,7 +2534,7 @@ msgstr ""
 msgid "Moldova"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:521
+#: app/Modules/Builder/Render.php:520
 msgid "Mon"
 msgstr ""
 
@@ -2498,7 +2542,7 @@ msgstr ""
 msgid "Monaco"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:512
+#: app/Modules/Builder/Render.php:511
 msgid "Monday"
 msgstr ""
 
@@ -2511,7 +2555,7 @@ msgid "Montenegro"
 msgstr ""
 
 #: app/Services/TransStrings.php:470
-#: app/Modules/FormComponents/DonationComponent.php:272
+#: app/Modules/FormComponents/DonationComponent.php:277
 msgid "Month"
 msgstr ""
 
@@ -2640,7 +2684,7 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:478
+#: app/Modules/Builder/Render.php:477
 msgid "Next Month"
 msgstr ""
 
@@ -2738,11 +2782,11 @@ msgstr ""
 msgid "Notification Title"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:491
+#: app/Modules/Builder/Render.php:490
 msgid "Nov"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:505
+#: app/Modules/Builder/Render.php:504
 msgid "November"
 msgstr ""
 
@@ -2750,11 +2794,11 @@ msgstr ""
 msgid "Number of entry has been exceeds, Please check back later"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:490
+#: app/Modules/Builder/Render.php:489
 msgid "Oct"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:504
+#: app/Modules/Builder/Render.php:503
 msgid "October"
 msgstr ""
 
@@ -2869,7 +2913,7 @@ msgid "Paraguayan Guaraní"
 msgstr ""
 
 #: app/Hooks/Handlers/AdminMenuHandler.php:34
-#: app/Hooks/Handlers/AdminMenuHandler.php:601
+#: app/Hooks/Handlers/AdminMenuHandler.php:607
 msgid "Paymattic"
 msgstr ""
 
@@ -2919,6 +2963,21 @@ msgstr ""
 msgid "Paymattic Modules"
 msgstr ""
 
+#: app/Modules/GiveWPMigration/Admin/MigratorAjaxHandler.php:266
+msgid ""
+"Paymattic Pro is not active. Donations from PayPal, Razorpay, Mollie, "
+"Paystack, and Square will be migrated with the correct gateway name, but "
+"some Pro-only features (such as gateway dashboard links and advanced reports)"
+" will not be available without Paymattic Pro."
+msgstr ""
+
+#: app/Modules/GiveWPMigration/MigrationReporter.php:274
+msgid ""
+"Paymattic Pro is not active. Pro features and payment gateways (PayPal, "
+"Razorpay, Mollie, Paystack, Square, etc.) will not work until Paymattic Pro "
+"is installed and activated."
+msgstr ""
+
 #: app/Services/TransStrings.php:409
 msgid ""
 "Paymattic user dashboard is only accessible for Paymattic User roles. You "
@@ -2942,7 +3001,7 @@ msgstr ""
 msgid "Paymattic User Permission"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:575
+#: app/Hooks/Handlers/AdminMenuHandler.php:581
 msgid "Paymattic User Profile"
 msgstr ""
 
@@ -2990,7 +3049,7 @@ msgid "Payment Failed"
 msgstr ""
 
 #. %s: failure reason message
-#: app/Modules/PaymentMethods/Stripe/StripeListener.php:705
+#: app/Modules/PaymentMethods/Stripe/StripeListener.php:713
 #, php-format
 msgid "Payment Failed in Stripe. Reason: %s"
 msgstr ""
@@ -3012,7 +3071,7 @@ msgid "Payment Gateway"
 msgstr ""
 
 #: app/Services/TransStrings.php:190
-#: app/Hooks/Handlers/AdminMenuHandler.php:126
+#: app/Hooks/Handlers/AdminMenuHandler.php:127
 msgid "Payment Gateways"
 msgstr ""
 
@@ -3086,7 +3145,7 @@ msgid "Payment Refunded by Admin. Refunded: %1$s %2$s"
 msgstr ""
 
 #. %s: refunded amount
-#: app/Modules/PaymentMethods/Stripe/StripeListener.php:530
+#: app/Modules/PaymentMethods/Stripe/StripeListener.php:538
 #, php-format
 msgid "Payment Refunded By Stripe. Refunded: %s"
 msgstr ""
@@ -3180,7 +3239,7 @@ msgstr ""
 msgid "PDF Downloads"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:278
+#: app/Hooks/Handlers/AdminMenuHandler.php:279
 #: app/Modules/PDF/Manager/WPPayFormPdfBuilder.php:93
 msgid "PDF Settings"
 msgstr ""
@@ -3191,6 +3250,10 @@ msgstr ""
 
 #: app/Views/receipt/payment_info.php:22
 msgid "pending"
+msgstr ""
+
+#: app/Modules/GiveWPMigration/Admin/MigratorAjaxHandler.php:42
+msgid "Permission denied."
 msgstr ""
 
 #: app/Services/TransStrings.php:235
@@ -3211,6 +3274,14 @@ msgstr ""
 
 #: app/Modules/FormComponents/DemoTabularProductsComponent.php:113
 msgid "Photo"
+msgstr ""
+
+#. %s: current PHP memory_limit value, e.g. "64M"
+#: app/Modules/GiveWPMigration/Admin/MigratorAjaxHandler.php:276
+#, php-format
+msgid ""
+"PHP memory_limit is %s. For large GiveWP datasets (10k+ donations), 256MB or "
+"more is recommended. Ask your host to increase it."
 msgstr ""
 
 #: app/Modules/Debug/Debug.php:214
@@ -3307,12 +3378,16 @@ msgstr ""
 msgid "Please validate your Turnstile siteKey first and then hit save."
 msgstr ""
 
-#: app/Modules/Builder/Render.php:555
+#: app/Modules/Builder/Render.php:554
 msgid "Please verify cloudflare turnstile first"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:554
+#: app/Modules/Builder/Render.php:553
 msgid "Please verify reCAPTCHA first"
+msgstr ""
+
+#: app/Modules/GiveWPMigration/Writers/PaymatticFormWriter.php:610
+msgid "Please Wait..."
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/StripeHostedHandler.php:179
@@ -3320,11 +3395,11 @@ msgid ""
 "Please wait... You are redirecting to Secure Payment page powered by Stripe"
 msgstr ""
 
-#: app/Models/Form.php:386 app/Modules/Builder/Render.php:341
+#: app/Models/Form.php:386 app/Modules/Builder/Render.php:340
 msgid "Please Wait…"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:549
+#: app/Modules/Builder/Render.php:548
 msgid "PM"
 msgstr ""
 
@@ -3377,11 +3452,11 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:477
+#: app/Modules/Builder/Render.php:476
 msgid "Previous Month"
 msgstr ""
 
-#: app/Services/TransStrings.php:59 app/Modules/Builder/Render.php:562
+#: app/Services/TransStrings.php:59 app/Modules/Builder/Render.php:561
 #: app/Views/elements/order_items_table.php:22
 msgid "Price"
 msgstr ""
@@ -3436,7 +3511,7 @@ msgstr ""
 msgid "Qatar"
 msgstr ""
 
-#: app/Services/TransStrings.php:57 app/Modules/Builder/Render.php:563
+#: app/Services/TransStrings.php:57 app/Modules/Builder/Render.php:562
 msgid "Qty"
 msgstr ""
 
@@ -3446,7 +3521,7 @@ msgid "Quantity"
 msgstr ""
 
 #: app/Services/TransStrings.php:471
-#: app/Modules/FormComponents/DonationComponent.php:273
+#: app/Modules/FormComponents/DonationComponent.php:278
 msgid "Quarter"
 msgstr ""
 
@@ -3466,7 +3541,7 @@ msgstr ""
 msgid "Radio Input Field"
 msgstr ""
 
-#: app/Modules/FormComponents/DonationComponent.php:357
+#: app/Modules/FormComponents/DonationComponent.php:362
 msgid "Raised"
 msgstr ""
 
@@ -3556,7 +3631,7 @@ msgstr ""
 msgid "Reply To"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:108
+#: app/Hooks/Handlers/AdminMenuHandler.php:109
 #: app/Views/admin/global/global_menu.php:31
 msgid "Reports"
 msgstr ""
@@ -3651,11 +3726,11 @@ msgstr ""
 msgid "San Marino"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:526
+#: app/Modules/Builder/Render.php:525
 msgid "Sat"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:517
+#: app/Modules/Builder/Render.php:516
 msgid "Saturday"
 msgstr ""
 
@@ -3719,7 +3794,7 @@ msgstr ""
 msgid "SCA is required for this payment. Requested SCA info from customer"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:545
+#: app/Modules/Builder/Render.php:544
 msgid "Scroll to increment"
 msgstr ""
 
@@ -3875,11 +3950,11 @@ msgstr ""
 msgid "Senegal"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:489
+#: app/Modules/Builder/Render.php:488
 msgid "Sep"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:503
+#: app/Modules/Builder/Render.php:502
 msgid "September"
 msgstr ""
 
@@ -3935,8 +4010,8 @@ msgstr ""
 msgid "Setting up a Form in a minute and accept payments"
 msgstr ""
 
-#: app/Services/TransStrings.php:17 app/Hooks/Handlers/AdminMenuHandler.php:133
-#: app/Hooks/Handlers/AdminMenuHandler.php:134
+#: app/Services/TransStrings.php:17 app/Hooks/Handlers/AdminMenuHandler.php:134
+#: app/Hooks/Handlers/AdminMenuHandler.php:135
 #: app/Views/admin/global/global_menu.php:41
 msgid "Settings"
 msgstr ""
@@ -4054,7 +4129,7 @@ msgstr ""
 msgid "Somalia"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:556
+#: app/Modules/Builder/Render.php:555
 msgid "Something is wrong when submitting the form"
 msgstr ""
 
@@ -4114,7 +4189,7 @@ msgid ""
 "later."
 msgstr ""
 
-#: app/Services/AccessControl.php:364
+#: app/Services/AccessControl.php:377
 #: app/Http/Controllers/GlobalSettingsController.php:104
 #: app/Http/Controllers/GlobalSettingsController.php:202
 msgid ""
@@ -4122,7 +4197,7 @@ msgid ""
 "permissions"
 msgstr ""
 
-#: app/Services/AccessControl.php:77
+#: app/Services/AccessControl.php:90
 msgid "Sorry, You do not have permission to do this action: "
 msgstr ""
 
@@ -4200,7 +4275,7 @@ msgid ""
 "the issue"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:559
+#: app/Modules/Builder/Render.php:558
 msgid "Stripe error, Check Stripe setup"
 msgstr ""
 
@@ -4215,7 +4290,7 @@ msgstr ""
 msgid "Stripe Meta Data"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:143
+#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:151
 msgid "Stripe One time payment has marked as paid."
 msgstr ""
 
@@ -4224,7 +4299,7 @@ msgid "Stripe recurring payments synced from upstream"
 msgstr ""
 
 #: app/Modules/PaymentMethods/Stripe/StripeHandler.php:141
-#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:83
+#: app/Modules/PaymentMethods/Stripe/PaymentSuccessHandler.php:91
 msgid "Stripe recurring subscription successfully initiated"
 msgstr ""
 
@@ -4308,7 +4383,7 @@ msgstr ""
 msgid "Submissions"
 msgstr ""
 
-#: app/Models/Form.php:385 app/Modules/Builder/Render.php:345
+#: app/Models/Form.php:385 app/Modules/Builder/Render.php:344
 msgid "Submit"
 msgstr ""
 
@@ -4389,7 +4464,7 @@ msgstr ""
 msgid "Successfully installed %s"
 msgstr ""
 
-#: app/Services/AccessControl.php:361
+#: app/Services/AccessControl.php:374
 msgid "Successfully updated the role(s)."
 msgstr ""
 
@@ -4397,19 +4472,19 @@ msgstr ""
 msgid "Sudan"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:520
+#: app/Modules/Builder/Render.php:519
 msgid "Sun"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:511
+#: app/Modules/Builder/Render.php:510
 msgid "Sunday"
 msgstr ""
 
-#: app/Hooks/actions.php:189
+#: app/Hooks/actions.php:208
 msgid "Support"
 msgstr ""
 
-#: app/Hooks/Handlers/AdminMenuHandler.php:167
+#: app/Hooks/Handlers/AdminMenuHandler.php:168
 msgid "Support & Debug"
 msgstr ""
 
@@ -4512,6 +4587,14 @@ msgid ""
 "confirmation to verify each email address is a verified user."
 msgstr ""
 
+#. %s: comma-separated list of addon names
+#: app/Modules/GiveWPMigration/MigrationReporter.php:280
+#, php-format
+msgid ""
+"The following GiveWP addons have NO migration path to Paymattic: %s. Export "
+"any data from these addons before deactivating GiveWP."
+msgstr ""
+
 #: app/Services/TransStrings.php:177
 msgid "The Following JavaScrip variables are available that you can use"
 msgstr ""
@@ -4538,7 +4621,7 @@ msgstr ""
 msgid "The submission have the same status"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeListener.php:567
+#: app/Modules/PaymentMethods/Stripe/StripeListener.php:575
 msgid "The Subscription Has been cancelled"
 msgstr ""
 
@@ -4546,7 +4629,7 @@ msgstr ""
 msgid "The subscription has been cancelled"
 msgstr ""
 
-#: app/Modules/PaymentMethods/Stripe/StripeListener.php:424
+#: app/Modules/PaymentMethods/Stripe/StripeListener.php:432
 msgid "The Subscription Term Period has been completed"
 msgstr ""
 
@@ -4597,11 +4680,11 @@ msgstr ""
 msgid "This will also cancel the subscription in your"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:524
+#: app/Modules/Builder/Render.php:523
 msgid "Thu"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:515
+#: app/Modules/Builder/Render.php:514
 msgid "Thursday"
 msgstr ""
 
@@ -4689,7 +4772,7 @@ msgstr ""
 msgid "Top Donor first"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:565
+#: app/Modules/Builder/Render.php:564
 #: app/Views/elements/order_items_table.php:170
 #: app/Views/elements/user_submissions_table.php:8
 msgid "Total"
@@ -4740,11 +4823,11 @@ msgstr ""
 msgid "Trinidad and Tobago"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:522
+#: app/Modules/Builder/Render.php:521
 msgid "Tue"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:513
+#: app/Modules/Builder/Render.php:512
 msgid "Tuesday"
 msgstr ""
 
@@ -4822,6 +4905,12 @@ msgstr ""
 msgid "United States (US) Virgin Islands"
 msgstr ""
 
+#. 1: GiveWP period value
+#: app/Modules/GiveWPMigration/Mappers/IntervalMapper.php:95
+#, php-format
+msgid "Unknown GiveWP period \"%s\" mapped to monthly — review required."
+msgstr ""
+
 #: app/Services/TransStrings.php:14
 msgid "Unlock in Pro"
 msgstr ""
@@ -4844,7 +4933,7 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: app/Hooks/actions.php:193 app/Views/admin/global/global_menu.php:59
+#: app/Hooks/actions.php:212 app/Views/admin/global/global_menu.php:59
 msgid "Upgrade to Pro"
 msgstr ""
 
@@ -4948,7 +5037,7 @@ msgstr ""
 msgid "Validation failed, Please fill up card details"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:558
+#: app/Modules/Builder/Render.php:557
 msgid "Validation failed, please fill-up required fields"
 msgstr ""
 
@@ -5004,7 +5093,7 @@ msgstr ""
 msgid "View Documentations"
 msgstr ""
 
-#: app/Hooks/actions.php:188
+#: app/Hooks/actions.php:207
 msgid "View Fluent Form Documentation"
 msgstr ""
 
@@ -5043,16 +5132,16 @@ msgstr ""
 msgid "Webhook URL"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:523
+#: app/Modules/Builder/Render.php:522
 msgid "Wed"
 msgstr ""
 
-#: app/Modules/Builder/Render.php:514
+#: app/Modules/Builder/Render.php:513
 msgid "Wednesday"
 msgstr ""
 
 #: app/Services/TransStrings.php:468
-#: app/Modules/FormComponents/DonationComponent.php:270
+#: app/Modules/FormComponents/DonationComponent.php:275
 msgid "Week"
 msgstr ""
 
@@ -5096,7 +5185,7 @@ msgstr ""
 msgid "whether you want to hide or reset the form."
 msgstr ""
 
-#: app/Modules/Builder/Render.php:544
+#: app/Modules/Builder/Render.php:543
 msgid "Wk"
 msgstr ""
 
@@ -5138,8 +5227,8 @@ msgid "WPManageNinja LLC"
 msgstr ""
 
 #: app/Services/TransStrings.php:473
-#: app/Modules/FormComponents/DonationComponent.php:275
-#: app/Modules/Builder/Render.php:551
+#: app/Modules/FormComponents/DonationComponent.php:280
+#: app/Modules/Builder/Render.php:550
 msgid "Year"
 msgstr ""
 

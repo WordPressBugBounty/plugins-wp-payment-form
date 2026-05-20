@@ -54,6 +54,13 @@ class PaymentSuccessHandler
 
             // We have to calculate the payment total
 
+            $paymentIntentId = '';
+            if (!empty($invoice->payment_intent)) {
+                $paymentIntentId = is_object($invoice->payment_intent)
+                    ? (isset($invoice->payment_intent->id) ? $invoice->payment_intent->id : '')
+                    : (string) $invoice->payment_intent;
+            }
+
             $transactionItem = [
                 'form_id' => $submission->form_id,
                 'user_id' => $submission->user_id,
@@ -68,7 +75,8 @@ class PaymentSuccessHandler
                 'payment_mode' => ($invoice->livemode) ? 'live' : 'test',
                 'payment_note' => maybe_serialize($invoice),
                 'created_at' => wp_date('Y-m-d H:i:s', $invoice->created),
-                'updated_at' => wp_date('Y-m-d H:i:s', $invoice->created)
+                'updated_at' => wp_date('Y-m-d H:i:s', $invoice->created),
+                '_alt_charge_ids' => array_filter([$paymentIntentId]),
             ];
             $subscriptionTransactionModel->maybeInsertCharge($transactionItem);
         }

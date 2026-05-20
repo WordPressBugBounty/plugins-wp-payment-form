@@ -145,17 +145,18 @@ class PlaceholderParser
                     }
                 } elseif ($groupKey == 'submission') {
                     // $parsedData[$placeholder] = $entry->{$targetItem};
-                    // Cache the payment_total value  
-                    if ($targetItem === 'payment_total') {  
-                        if (!isset(self::$cachedValues[$cacheKey])) {  
-                            self::$cachedValues[$cacheKey] = $entry->{$targetItem};  
-                        }  
-                        $parsedData[$placeholder] = self::$cachedValues[$cacheKey];  
+                    // Cache the payment_total value per submission to avoid cross-submission leakage
+                    if ($targetItem === 'payment_total') {
+                        $submissionCacheKey = $cacheKey . '_' . (int) $entry->getSubmission()->id;
+                        if (!isset(self::$cachedValues[$submissionCacheKey])) {
+                            self::$cachedValues[$submissionCacheKey] = self::getNetPaymentTotal($entry);
+                        }
+                        $parsedData[$placeholder] = self::$cachedValues[$submissionCacheKey];
                     } elseif ($targetItem === 'customer_full_name') {
                         $parsedData[$placeholder] = $entry->getInput($targetItem);
-                    } else {  
+                    } else {
                         $parsedData[$placeholder] = $entry->{$targetItem};
-                    }  
+                    }
                 } elseif ($groupKey == 'pdf') {
                     if (1 === strpos($placeholder, 'pdf.download_link.')) {
                        $parsedData[$placeholder] =  apply_filters('wppayform_shortcode_parser_callback_pdf.download_link.public', $targetItem, $entry);
@@ -249,5 +250,44 @@ class PlaceholderParser
             return $rawInput[$targetItem];
         }
         return '';
+    }
+
+    protected static function getNetPaymentTotal($entry)
+    {
+        $submission = $entry->getSubmission();
+        $submissionId = (int) $submission->id;
+        $formId = (int) $submission->form_id;
+
+        $netCents = null;
+
+        $firstPaidTxn = \WPPayForm\App\Models\Transaction::where('submission_id', $submissionId)
+            ->where('status', 'paid')
+            ->where('transaction_type', '!=', 'refund')
+            ->orderBy('id', 'ASC')
+            ->first();
+        if ($firstPaidTxn && $firstPaidTxn->payment_total) {
+            $netCents = (int) $firstPaidTxn->payment_total;
+        }
+
+        if ($netCents === null) {
+            $base = (int) $submission->payment_total;
+            $subscriptionItems = $entry->getSubscriptionItems();
+            if (count($subscriptionItems)) {
+                foreach ($subscriptionItems as $subscription) {
+                    $base += (int) $subscription->recurring_amount;
+                    if (!empty($subscription->initial_amount)) {
+                        $base += (int) $subscription->initial_amount;
+                    }
+                }
+            }
+
+            $discountTotal = (new \WPPayForm\App\Models\OrderItem())->getDiscountTotal($submissionId);
+            $netCents = max(0, $base - (int) $discountTotal);
+        }
+
+        return wpPayFormFormattedMoney(
+            $netCents,
+            \WPPayForm\App\Models\Form::getCurrencyAndLocale($formId)
+        );
     }
 }

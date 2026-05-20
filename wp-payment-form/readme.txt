@@ -4,9 +4,9 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 4.5
-Tested up to: 6.9
-Stable tag: 4.6.21
-Requires PHP: 7.1
+Tested up to: 7.0
+Stable tag: 4.6.22
+Requires PHP: 7.4
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
 
@@ -559,6 +559,13 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.22 – 20 May, 2026 =
+- Adds GiveWP to Paymattic migration with pre-checks, compatibility report, and one-click rollback.
+- Improves Customer list and entry view to flag migrated GiveWP donors with a tooltip badge.
+- Fixes Donation progress bar not reflecting the current goal total.
+- Fixes Payment Total shortcode not applying the discounted price.
+- Fixes Configurable permitted roles for User Dashboard access.
+
 = 4.6.21 – 07 May, 2026 =
 - Adds Conditional option to choose payment method in email notifications.
 - Improves compatibility with the Fluentforms-pdf.

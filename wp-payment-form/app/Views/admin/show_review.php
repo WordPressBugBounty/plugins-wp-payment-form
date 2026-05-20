@@ -400,12 +400,14 @@
         });
     </script>
         <script>
-            lightGallery(document.getElementById('lightgallery'), {
-                plugins: [lgZoom, lgThumbnail],
-                licenseKey: 'your_license_key',
-                speed: 500,
-                // ... other settings
-            });
+            var lgEl = document.getElementById('lightgallery');
+            if (lgEl) {
+                lightGallery(lgEl, {
+                    plugins: [lgZoom, lgThumbnail],
+                    licenseKey: 'your_license_key',
+                    speed: 500,
+                });
+            }
         </script>
         <script type="text/javascript">
             jQuery(document).ready(function() {

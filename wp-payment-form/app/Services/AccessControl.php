@@ -44,15 +44,28 @@ class AccessControl
         return false;
     }
 
-    public static function isPaymatticUser() 
+    public static function isPaymatticUser()
     {
-        $menuPermission = self::hasTopLevelMenuPermission();
-        $current_user = wp_get_current_user();
-        $rules = $current_user->roles;
-        $userRole = Arr::get($rules, 0);
+        if (self::hasGrandAccess()) {
+            return false;
+        }
 
-        if ($userRole == 'paymattic_donor' || $userRole == 'paymattic_user' || $userRole == 'paymattic_subscriber') {
+        $current_user = wp_get_current_user();
+        $userRoles = $current_user->roles;
+        $userRole = Arr::get($userRoles, 0);
+
+        $defaultRoles = ['paymattic_donor', 'paymattic_user', 'paymattic_subscriber'];
+        if (in_array($userRole, $defaultRoles, true)) {
             return true;
+        }
+
+        $permittedRoles = get_option('_wppayform_dashboard_permitted_roles', []);
+        if (is_array($permittedRoles) && !empty($permittedRoles)) {
+            foreach ($userRoles as $role) {
+                if (in_array($role, $permittedRoles, true)) {
+                    return true;
+                }
+            }
         }
 
         return false;

@@ -31,9 +31,8 @@ class Render
 
         $form_status = $form->post_status;
 
-        if ($form_status != 'publish') {
+        if ($form_status !== 'publish' && !apply_filters('wppayform/allow_draft_preview', false)) {
             return;
-            // return "<p style='text-align: center'>Notice: This form is not accessible right now</p>";
         }
 
 

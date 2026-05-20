@@ -49,10 +49,17 @@ class SubscriptionTransaction extends Model
 
     public function maybeInsertCharge($item)
     {
-        $exists = $this->where('transaction_type', 'subscription')
+        $altChargeIds = isset($item['_alt_charge_ids']) ? (array) $item['_alt_charge_ids'] : [];
+        unset($item['_alt_charge_ids']);
+
+        $lookupIds = array_values(array_unique(array_filter(
+            array_merge([$item['charge_id']], $altChargeIds)
+        )));
+
+        $exists = $this->whereIn('transaction_type', ['subscription', 'one_time'])
             ->where('submission_id', $item['submission_id'])
             ->where('subscription_id', $item['subscription_id'])
-            ->where('charge_id', $item['charge_id'])
+            ->whereIn('charge_id', $lookupIds)
             ->where('payment_method', $item['payment_method'])
             ->first();
 

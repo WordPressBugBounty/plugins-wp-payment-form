@@ -1011,13 +1011,12 @@ class StripeHostedHandler extends StripeHandler
         $cancelSubscription = Arr::get($elements, 'cancel_Subscription', false);
         $subscription = Arr::get($elements, 'subscription', []);
         $submission = Arr::get($elements, 'submission', []);
-        
+
         if (!$chargeId) {
             return new \WP_Error('missing_charge', __('Missing Stripe charge ID for refund.', 'wp-payment-form'));
         }
 
         $refundRequest = [
-            'charge'  => $chargeId,
             'amount'  => $amount,
             'metadata' => [
                 'form_id'    => Arr::get($transaction, 'form_id', ''),
@@ -1025,6 +1024,14 @@ class StripeHostedHandler extends StripeHandler
                 'note'       => Arr::get($transaction, 'note', ''),
             ],
         ];
+        // Stripe /refunds accepts either `charge` (ch_xxx) OR `payment_intent` (pi_xxx),
+        // not both. GiveWP migrations store the PaymentIntent id in charge_id for
+        // donations placed through the v2/v3 Stripe gateway, so route accordingly.
+        if (strpos($chargeId, 'pi_') === 0) {
+            $refundRequest['payment_intent'] = $chargeId;
+        } else {
+            $refundRequest['charge'] = $chargeId;
+        }
 
         if (!empty($reason)) {
             $refundRequest['reason'] = $reason;

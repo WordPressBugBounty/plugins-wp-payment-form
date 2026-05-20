@@ -570,9 +570,12 @@ class Submission extends Model
     public function getSubmission($submissionId, $with = array())
     {
         $result = $this->select(array('wpf_submissions.*', 'posts.post_title'))
-            ->join('posts', 'posts.ID', '=', 'wpf_submissions.form_id')
+            ->leftJoin('posts', 'posts.ID', '=', 'wpf_submissions.form_id')
             ->where('wpf_submissions.id', $submissionId)
             ->first();
+        if (!$result) {
+            return null;
+        }
         $result->form_data_raw = wppayform_safeUnserialize($result->form_data_raw);
         $result->form_data_formatted = wppayform_safeUnserialize($result->form_data_formatted);
         if ($result->user_id) {
