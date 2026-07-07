@@ -75,6 +75,22 @@ class EmailNotificationMapper
             'subject' => 'New Donation - #{submission.id}',
             'message' => '<p>A new donation of {submission.payment_total} was received from {submission.customer_name} ({submission.customer_email}).</p><p>{submission.all_input_field_html}</p>',
         ],
+        // GiveWP leaves these subjects empty when the admin never customised them
+        // (it falls back to built-in strings at send time). Without a default here
+        // the migrated notification is created with a blank subject, so mirror
+        // GiveWP's built-in defaults using Paymattic smartcodes.
+        'failed-donation' => [
+            'subject' => 'Donation Failed - #{submission.id}',
+            'message' => '<p>A donation attempt of {submission.payment_total} by {submission.customer_name} ({submission.customer_email}) has failed.</p><p>{submission.all_input_field_html}</p>',
+        ],
+        'offline-donation-instruction' => [
+            'subject' => 'Offline Donation Instructions',
+            'message' => '<p>Dear {submission.customer_name},</p><p>Thank you for your donation of {submission.payment_total}. Please follow the instructions below to complete your offline donation.</p><p>{submission.all_input_field_html}</p>',
+        ],
+        'new-offline-donation' => [
+            'subject' => 'New Offline Donation - #{submission.id}',
+            'message' => '<p>A new offline donation of {submission.payment_total} was submitted by {submission.customer_name} ({submission.customer_email}).</p><p>{submission.all_input_field_html}</p>',
+        ],
     ];
 
     public static function mapNotifications(array $giveNotifications, string $fromName = '', string $fromEmail = ''): array

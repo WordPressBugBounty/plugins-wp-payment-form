@@ -130,6 +130,7 @@ class Stripe
 
         foreach ($subscriptionItems as $subscriptionItem) {
             if ($subscriptionItem['initial_amount']) {
+                $initialAmount = absint($subscriptionItem['initial_amount']);
                 $signupLabel = __('Signup Fee for', 'wp-payment-form');
                 $signupLabel .= ' ' . $subscriptionItem['item_name'];
                 $signupLabel = apply_filters('wppayform/signup_fee_label', $signupLabel, $subscriptionItem, $form_data);
@@ -138,8 +139,8 @@ class Stripe
                     'parent_holder' => $subscriptionItem['element_id'],
                     'item_name' => $signupLabel,
                     'quantity' => 1,
-                    'item_price' => $subscriptionItem['initial_amount'] + $signupFee,
-                    'line_total' => $subscriptionItem['initial_amount'] + $signupFee,
+                    'item_price' => $initialAmount + $signupFee,
+                    'line_total' => $initialAmount + $signupFee,
                     'created_at' => current_time('mysql'),
                     'updated_at' => current_time('mysql'),
                 );
@@ -262,6 +263,7 @@ class Stripe
             'company_name' => get_bloginfo('name'),
             'checkout_logo' => '',
             'send_meta_data' => 'no',
+            'disable_subscription_proration' => 'no',
             'is_encrypted' => 'no'
         );
         $settings = $this->mapper($defaults, $request, false);
@@ -314,6 +316,11 @@ class Stripe
         if (isset($settings['send_meta_data'])) {
             $data['send_meta_data'] = sanitize_text_field(Arr::get($settings, 'send_meta_data'));
         }
+
+        if (isset($settings['disable_subscription_proration'])) {
+            $data['disable_subscription_proration'] = sanitize_text_field(Arr::get($settings, 'disable_subscription_proration'));
+        }
+
         do_action('wppayform/before_save_stripe_settings', $data);
 
         // CRITICAL-01: only encrypt keys that were actually submitted (not preserved placeholders)
@@ -400,6 +407,7 @@ class Stripe
             'company_name' => get_bloginfo('name'),
             'checkout_logo' => '',
             'send_meta_data' => 'no',
+            'disable_subscription_proration' => 'no',
             'is_encrypted' => 'no'
         );
         $settings = wp_parse_args($settings, $defaults);
@@ -482,6 +490,14 @@ class Stripe
             //     'label' => __('Checkout Logo', 'wp-payment-form'),
             //     'type' => 'image'
             // ),
+            'disable_subscription_proration' => array(
+                'value' => 'no',
+                'label' => __('Subscription Proration', 'wp-payment-form'),
+                'type' => 'checkbox',
+                'is_pro_required' => false,
+                'desc' => __('Disable prorated charges on subscription cancellation', 'wp-payment-form'),
+                'tooltip' => __('When enabled, Stripe will not generate a prorated charge if a fixed-term subscription (e.g. "12-week plan") cancels mid-billing-cycle.', 'wp-payment-form'),
+            ),
             'webhook_desc' => array(
                 'value' => "<h3>Stripe Webhook (For Subscription Payments and Place a hold on a payment) </h3> <p>In order for Stripe to function completely for subscription/recurring payments/Place a hold on a payment, you must configure your Stripe webhooks. Visit your <a href='https://dashboard.stripe.com/account/webhooks' target='_blank' rel='noopener'>account dashboard</a> to configure them. Please add a webhook endpoint for the URL below. </p><h4>Webhook URL: </h4><code> ". site_url('?wpf_stripe_listener=1') . "</code> <p>See <a href='https://paymattic.com/docs/how-to-configure-stripe-payment-gateway-in-wordpress-with-paymattic/' target='_blank' rel='noopener'>our documentation</a> for more information.</p> <div><b>Please enable the following Webhook events for this URL:</b> <ul> <li><code>charge.succeeded</code></li> <li><code>charge.captured</code></li><li><code>invoice.payment_succeeded</code></li> <li><code>charge.refunded</code></li> <li><code>customer.subscription.deleted</code></li> <li><code>checkout.session.completed</code></li> </ul> </div>",
                 'label' => __('Webhook URL', 'wp-payment-form'),

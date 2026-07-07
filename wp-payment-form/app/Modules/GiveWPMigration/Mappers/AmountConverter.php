@@ -68,4 +68,28 @@ class AmountConverter
     {
         return $amount / 100.0;
     }
+
+    /**
+     * Format a minor-unit integer as a plain decimal string, currency-aware.
+     *
+     * For zero-decimal currencies (JPY, KRW, …) the minor unit IS the whole unit,
+     * so no division is applied. For all others, divides by 100 and formats to two
+     * decimal places. No currency symbol is included.
+     *
+     * Example (USD): 5000 → "50.00"
+     * Example (JPY): 500  → "500"
+     *
+     * @param int    $minorUnits Amount in minor units.
+     * @param string $currency   ISO 4217 currency code (e.g. "USD").
+     *
+     * @return string Plain decimal string without currency symbol.
+     */
+    public static function toFormattedDecimal(int $minorUnits, string $currency = 'USD'): string
+    {
+        if (GeneralSettings::isZeroDecimal(strtoupper($currency))) {
+            return (string) $minorUnits;
+        }
+
+        return number_format($minorUnits / 100, 2, '.', '');
+    }
 }

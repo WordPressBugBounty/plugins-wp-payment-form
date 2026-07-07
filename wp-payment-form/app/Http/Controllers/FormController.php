@@ -4,6 +4,7 @@ namespace WPPayForm\App\Http\Controllers;
 
 use Exception;
 use WPPayForm\App\Models\Form;
+use WPPayForm\App\Services\AccessControl;
 use WPPayForm\App\Services\FormPlaceholders;
 use WPPayForm\App\Services\GeneralSettings;
 use WPPayForm\App\Services\GlobalTools;
@@ -198,6 +199,56 @@ class FormController extends Controller
         $formId = intval($formId);
         $globalTools = new GlobalTools();
         $globalTools->exportFormJson($formId);
+    }
+
+    public function giftAidExport($formId)
+    {
+        if (!(defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO)) {
+            wp_send_json_error(
+                ['message' => __('Gift Aid export requires the Paymattic Pro plugin.', 'wp-payment-form')],
+                403
+            );
+        }
+        $formId      = absint($formId);
+
+        $form = get_post($formId);
+        if (!$form || $form->post_type !== 'wp_payform') {
+            wp_send_json_error(
+                ['message' => __('Form not found.', 'wp-payment-form')],
+                404
+            );
+        }
+
+        $userId     = get_current_user_id();
+        $hasGrand   = AccessControl::hasGrandAccess();
+        $canViewAll = $hasGrand || current_user_can('wpf_can_view_all_entries');
+        $canViewOwn = current_user_can('wpf_can_view_entries_of_own_created_forms');
+
+        if (!$canViewAll && !($canViewOwn && (int) $form->post_author === $userId)) {
+            wp_send_json_error(
+                ['message' => __('You do not have permission to export entries for this form.', 'wp-payment-form')],
+                403
+            );
+        }
+
+        $charityName = sanitize_text_field($this->request->get('charity_name', ''));
+        $hmrcRef     = sanitize_text_field($this->request->get('hmrc_ref', ''));
+        $dateFrom    = sanitize_text_field($this->request->get('date_from', ''));
+        $dateTo      = sanitize_text_field($this->request->get('date_to', ''));
+
+        if (empty($charityName) || empty($hmrcRef)) {
+            wp_send_json_error(
+                ['message' => __('Charity name and HMRC reference are required.', 'wp-payment-form')],
+                400
+            );
+        }
+
+        \WPPayForm\App\Services\GiftAidExporter::export($formId, [
+            'charity_name' => $charityName,
+            'hmrc_ref'     => $hmrcRef,
+            'date_from'    => $dateFrom,
+            'date_to'      => $dateTo,
+        ]);
     }
 
     // get currency rates

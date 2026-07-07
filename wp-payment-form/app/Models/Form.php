@@ -133,7 +133,9 @@ class Form extends Model
             'default_value' => 'sanitize_textarea_field',
             'wrapper_class' => 'sanitize_text_field',
             'element_class' => 'sanitize_text_field',
-            'custom_html' => 'wppayform_sanitize_html'
+            'custom_html' => 'wppayform_sanitize_html',
+            'gift_aid_title' => 'sanitize_text_field',
+            'gift_aid_declaration' => 'sanitize_textarea_field',
         ];
 
         $fieldOptionsKeys = array_keys($fieldOptionsMap);
@@ -481,6 +483,30 @@ class Form extends Model
         $elements = Form::getBuilderSettings($formId);
         foreach ($elements as $element) {
             if ($element['type'] == $type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * True when the form has a donation_item with Gift Aid enabled. Scans
+     * container elements too (multi-step) so a Gift Aid field nested in a step
+     * is detected. Gates the Gift Aid declaration smartcode + entry button.
+     */
+    public static function hasGiftAid($formId)
+    {
+        if (!(defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO)) {
+            return false;
+        }
+        $elements = Form::getBuilderSettings($formId);
+        $container_elements = (new Render)->getContainerElements($elements);
+        $elements = array_merge($elements, $container_elements);
+        foreach ($elements as $element) {
+            if (
+                Arr::get($element, 'type') === 'donation_item'
+                && Arr::get($element, 'field_options.enable_gift_aid') === 'yes'
+            ) {
                 return true;
             }
         }

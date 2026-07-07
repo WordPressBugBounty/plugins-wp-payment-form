@@ -585,6 +585,7 @@ class Render
 
             wp_register_script('dropzone', WPPAYFORM_URL . 'assets/libs/dropzone/dropzone.min.js', array('jquery'), '5.5.0', true);
             wp_register_script('wppayform_file_upload', WPPAYFORM_URL . 'assets/js/fileupload.js', array('jquery', 'wppayform_public', 'dropzone'), WPPAYFORM_VERSION, true);
+            wp_register_script('wpf_fee_recovery', WPPAYFORM_URL . 'assets/js/fee-recovery.js', ['jquery', 'wppayform_public'], WPPAYFORM_VERSION, true);
 
             wp_register_style('wpf-intlTelInput', WPPAYFORM_URL . 'assets/libs/intl-tel-input/css/intlTelInput.min.css', [], '24.5.0', 'all');
             wp_register_script('wpf-intlTelInputUtils', WPPAYFORM_URL . 'assets/libs/intl-tel-input/js/utils.js', [], '24.5.0', true);

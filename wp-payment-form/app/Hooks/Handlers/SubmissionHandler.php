@@ -115,7 +115,7 @@ class SubmissionHandler
 
         $subscriptionItems = apply_filters('wppayform/submitted_subscription_items', $subscriptionItems, $formattedElements, $form_data);
 
-        $discountBaseItems = apply_filters('wppayform/submitted_payment_items', $paymentItems, $formattedElements, $form_data, 0);
+        $discountBaseItems = apply_filters('wppayform/submitted_payment_items', $paymentItems, $formattedElements, $form_data, 0, $subscriptionItems);
         $serverCalculatedTotal = 0;
         foreach ($discountBaseItems as $paymentItem) {
             // Skip recurring_tax marker rows — subscriptions are summed explicitly below.
@@ -125,14 +125,19 @@ class SubmissionHandler
             if (Arr::get($paymentItem, 'type') === 'tax_line') {
                 continue;
             }
+            // Exclude fee recovery from discount base — coupons apply to the donation, not the fee.
+            if (Arr::get($paymentItem, 'parent_holder') === 'fee_recovery_item') {
+                continue;
+            }
             if (isset($paymentItem['line_total'])) {
                 $serverCalculatedTotal += $paymentItem['line_total'];
             }
         }
         foreach ($subscriptionItems as $subscriptionItem) {
             $recurringAmount = intval(Arr::get($subscriptionItem, 'recurring_amount', 0));
-            $subQuantity = intval(Arr::get($subscriptionItem, 'quantity', 1)) ?: 1;
-            $serverCalculatedTotal += $recurringAmount * $subQuantity;
+            $initialAmount   = intval(Arr::get($subscriptionItem, 'initial_amount', 0));
+            $subQuantity     = intval(Arr::get($subscriptionItem, 'quantity', 1)) ?: 1;
+            $serverCalculatedTotal += ($recurringAmount * $subQuantity) + $initialAmount;
         }
 
         $discountPercent = 0;
@@ -144,7 +149,7 @@ class SubmissionHandler
             $this->validCoupons = (new \WPPayFormPro\Classes\Coupons\CouponController())->getTotalLine($validCouponItems, $amountToPay);
             $discountPercent = ($this->validCoupons['totalDiscounts'] * 100) / $amountToPay;
         }
-        $paymentItems = apply_filters('wppayform/submitted_payment_items', $paymentItems, $formattedElements, $form_data, $discountPercent);
+        $paymentItems = apply_filters('wppayform/submitted_payment_items', $paymentItems, $formattedElements, $form_data, $discountPercent, $subscriptionItems);
         /*
          * providing filter hook for payment method to push some payment data
          *  from $subscriptionItems
@@ -175,7 +180,7 @@ class SubmissionHandler
                     $taxTotal += $paymentItem['line_total'];
                 }
 
-                $parentHolder = $paymentItem['parent_holder'];
+                $parentHolder = Arr::get($paymentItem, 'parent_holder', '');
                 $recurringParent = preg_replace('/(_\d+)$/', '', $parentHolder);
 
                 if ($paymentItem['type'] == 'tax_line' && $recurringParent === 'recurring_payment_item') {  
@@ -680,12 +685,7 @@ class SubmissionHandler
 
     private function getIp()
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return sanitize_text_field(wp_unslash($_SERVER['HTTP_CLIENT_IP']));
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']));
-        }
-        elseif (isset($_SERVER['REMOTE_ADDR'])) {
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
             return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
         }
         return null;
@@ -718,7 +718,7 @@ class SubmissionHandler
         if ($payment['type'] != 'recurring_payment_item') {
             return array();
         }
-        if (!isset($formData[$paymentId])) {
+        if (!isset($formData[$paymentId]) || $formData[$paymentId] === '') {
             return array();
         }
         $label = Arr::get($payment, 'options.label');

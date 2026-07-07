@@ -12,8 +12,16 @@ use WPPayForm\App\Modules\GiveWPMigration\MigrationState;
  * GiftAidEnricher — enriches already-migrated submissions with Gift Aid declaration data.
  *
  * GiveWP's Gift Aid add-on (give-gift-aid) records the donor's Gift Aid opt-in
- * and UK address details in give_donationmeta. This enricher reads those meta
- * keys and writes them as wpf_meta rows on the corresponding Paymattic submission.
+ * flag in give_donationmeta, but stores the UK address in give_donormeta (on the
+ * donor record, not the individual donation). This enricher:
+ *
+ *   1. Reads _give_gift_aid_accept_term_condition from give_donationmeta to determine
+ *      opt-in status per donation.
+ *   2. For opted-in donations, resolves the GiveWP donor ID from
+ *      _give_payment_donor_id (also in give_donationmeta).
+ *   3. Reads the donor's Gift Aid address from give_donormeta using the
+ *      _give_gift_aid_card_* keys that the give-gift-aid plugin writes.
+ *   4. Writes all data as wpf_meta rows on the corresponding Paymattic submission.
  *
  * IMPORTANT — pre-migration requirement:
  *   Before this migration runs, the admin MUST have exported the Gift Aid
@@ -22,12 +30,16 @@ use WPPayForm\App\Modules\GiveWPMigration\MigrationState;
  *   This migration cannot replace that reporting requirement — it only preserves
  *   the raw declaration data in Paymattic for record-keeping.
  *
- * Meta keys read from give_donationmeta:
- *   _give_gift_aid_accept_term_condition  — opt-in flag: 'on' or 'enabled'
- *   _give_gift_aid_home_address           — UK house number / first line
- *   _give_gift_aid_address_line2          — address line 2
- *   _give_gift_aid_city                   — city / town
- *   _give_gift_aid_postcode               — UK postcode
+ * Source meta keys:
+ *   give_donationmeta (per donation):
+ *     _give_gift_aid_accept_term_condition  — opt-in flag: 'on' or 'enabled'
+ *     _give_payment_donor_id                — FK → give_donors.id
+ *
+ *   give_donormeta (per donor, shared across all donations):
+ *     _give_gift_aid_card_address           — UK house number / first line
+ *     _give_gift_aid_card_address_2         — address line 2
+ *     _give_gift_aid_card_city              — city / town
+ *     _give_gift_aid_card_zip               — UK postcode
  *
  * Opt-in handling:
  *   GiveWP versions use two different values for the opt-in flag:
@@ -64,24 +76,30 @@ class GiftAidEnricher
         global $wpdb;
 
         $donationMetaTable = $wpdb->prefix . 'give_donationmeta';
+        $donorMetaTable    = $wpdb->prefix . 'give_donormeta';
         $metaTable         = $wpdb->prefix . 'wpf_meta';
         $now               = current_time('mysql');
 
         // ------------------------------------------------------------------
-        // The meta keys we pull from give_donationmeta, mapped to the
-        // Paymattic meta key names they will be stored under.
+        // Keys read from give_donationmeta (per-donation).
         // ------------------------------------------------------------------
 
-        $metaKeyMap = [
-            '_give_gift_aid_accept_term_condition' => null,            // handled specially below
-            '_give_gift_aid_home_address'          => 'gift_aid_address',
-            '_give_gift_aid_address_line2'         => 'gift_aid_address_line2',
-            '_give_gift_aid_city'                  => 'gift_aid_city',
-            '_give_gift_aid_postcode'              => 'gift_aid_postcode',
-        ];
+        $donationKeys  = ['_give_gift_aid_accept_term_condition', '_give_payment_donor_id'];
+        $donationPlaceholders = implode(', ', array_fill(0, count($donationKeys), '%s'));
 
-        $allGiveKeys  = array_keys($metaKeyMap);
-        $placeholders = implode(', ', array_fill(0, count($allGiveKeys), '%s'));
+        // ------------------------------------------------------------------
+        // Keys read from give_donormeta (per-donor, shared across donations).
+        // The give-gift-aid plugin writes address to the donor object, not
+        // to individual donation meta — source: class-give-gift-aid-frontend.php.
+        // ------------------------------------------------------------------
+
+        $donorAddressKeys  = [
+            '_give_gift_aid_card_address',
+            '_give_gift_aid_card_address_2',
+            '_give_gift_aid_card_city',
+            '_give_gift_aid_card_zip',
+        ];
+        $donorPlaceholders = implode(', ', array_fill(0, count($donorAddressKeys), '%s'));
 
         foreach ($donationIdMap as $giveDonationId => $wpfSubmissionId) {
             $giveDonationId  = absint($giveDonationId);
@@ -118,31 +136,30 @@ class GiftAidEnricher
             }
 
             // ------------------------------------------------------------------
-            // Load all relevant give_donationmeta rows in a single query.
+            // Step 1: load opt-in flag + donor ID from give_donationmeta.
             // ------------------------------------------------------------------
 
             // phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
-            $rawMeta = $wpdb->get_results(
+            $rawDonationMeta = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT meta_key, meta_value
                      FROM {$donationMetaTable}
                      WHERE donation_id = %d
-                       AND meta_key IN ({$placeholders})",
-                    array_merge([$giveDonationId], $allGiveKeys)
+                       AND meta_key IN ({$donationPlaceholders})",
+                    array_merge([$giveDonationId], $donationKeys)
                 ),
                 ARRAY_A
             );
             // phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 
-            if (empty($rawMeta)) {
+            if (empty($rawDonationMeta)) {
                 $skipped++;
                 continue;
             }
 
-            // Flatten to key => value.
-            $giveMetaValues = [];
-            foreach ($rawMeta as $row) {
-                $giveMetaValues[$row['meta_key']] = $row['meta_value'];
+            $donationMeta = [];
+            foreach ($rawDonationMeta as $row) {
+                $donationMeta[$row['meta_key']] = $row['meta_value'];
             }
 
             // ------------------------------------------------------------------
@@ -153,7 +170,7 @@ class GiftAidEnricher
             // Missing or any other value = not opted in; skip the record.
             // ------------------------------------------------------------------
 
-            $optInRaw   = $giveMetaValues['_give_gift_aid_accept_term_condition'] ?? '';
+            $optInRaw   = $donationMeta['_give_gift_aid_accept_term_condition'] ?? '';
             $optInValue = strtolower(trim($optInRaw));
             $optedIn    = ($optInValue === 'on' || $optInValue === 'enabled');
 
@@ -168,7 +185,55 @@ class GiftAidEnricher
             }
 
             // ------------------------------------------------------------------
-            // Look up form_id for the submission so we can populate wpf_meta.form_id.
+            // Step 2: resolve the GiveWP donor ID and load address from
+            // give_donormeta. The give-gift-aid plugin stores address on the
+            // donor object (shared across all their donations) — not per donation.
+            // Source: class-give-gift-aid-frontend.php lines 533–538.
+            // ------------------------------------------------------------------
+
+            $giveDonorId = absint($donationMeta['_give_payment_donor_id'] ?? 0);
+
+            $donorAddress = [
+                'address'  => '',
+                'address2' => '',
+                'city'     => '',
+                'postcode' => '',
+            ];
+
+            if ($giveDonorId > 0) {
+                // phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+                $rawDonorMeta = $wpdb->get_results(
+                    $wpdb->prepare(
+                        "SELECT meta_key, meta_value
+                         FROM {$donorMetaTable}
+                         WHERE donor_id = %d
+                           AND meta_key IN ({$donorPlaceholders})",
+                        array_merge([$giveDonorId], $donorAddressKeys)
+                    ),
+                    ARRAY_A
+                );
+                // phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+
+                foreach ((array) $rawDonorMeta as $row) {
+                    switch ($row['meta_key']) {
+                        case '_give_gift_aid_card_address':
+                            $donorAddress['address']  = $row['meta_value'];
+                            break;
+                        case '_give_gift_aid_card_address_2':
+                            $donorAddress['address2'] = $row['meta_value'];
+                            break;
+                        case '_give_gift_aid_card_city':
+                            $donorAddress['city']     = $row['meta_value'];
+                            break;
+                        case '_give_gift_aid_card_zip':
+                            $donorAddress['postcode'] = $row['meta_value'];
+                            break;
+                    }
+                }
+            }
+
+            // ------------------------------------------------------------------
+            // Step 3: look up form_id for the submission (needed for wpf_meta.form_id).
             // ------------------------------------------------------------------
 
             $formId = absint(
@@ -181,6 +246,8 @@ class GiftAidEnricher
             );
 
             // Helper closure — inserts one meta row; skips if value is empty.
+            // $wpdb->insert() returns false on failure, not an exception — check the
+            // return value rather than wrapping in try/catch which would never fire.
             $insertMeta = function (string $key, string $value) use (
                 $wpdb, $metaTable, $wpfSubmissionId, $formId, $now
             ): bool {
@@ -188,53 +255,43 @@ class GiftAidEnricher
                     return false;
                 }
 
-                try {
-                    return (bool) $wpdb->insert(
-                        $metaTable,
-                        [
-                            'meta_group' => 'wpf_submissions',
-                            'option_id'  => $wpfSubmissionId,
-                            'form_id'    => $formId,
-                            'meta_key'   => $key,
-                            'meta_value' => $value,
-                            'created_at' => $now,
-                            'updated_at' => $now,
-                        ],
-                        ['%s', '%d', '%d', '%s', '%s', '%s', '%s']
-                    );
-                } catch (\Exception $e) {
+                $result = $wpdb->insert(
+                    $metaTable,
+                    [
+                        'meta_group' => 'wpf_submissions',
+                        'option_id'  => $wpfSubmissionId,
+                        'form_id'    => $formId,
+                        'meta_key'   => $key,
+                        'meta_value' => $value,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ],
+                    ['%s', '%d', '%d', '%s', '%s', '%s', '%s']
+                );
+
+                if ($result === false) {
                     MigrationState::addError(
                         sprintf(
                             'GiftAidEnricher meta insert failed for wpf_submission.id=%d key=%s: %s',
                             $wpfSubmissionId,
                             $key,
-                            substr(sanitize_text_field($e->getMessage()), 0, 200)
+                            substr(sanitize_text_field($wpdb->last_error), 0, 200)
                         )
                     );
                     return false;
                 }
+
+                return true;
             };
 
             // Write the opt-in flag first (the idempotency key for future runs).
             $insertMeta('gift_aid_opted_in', '1');
 
-            // Write address fields — only non-empty values.
-            $insertMeta(
-                'gift_aid_address',
-                sanitize_text_field($giveMetaValues['_give_gift_aid_home_address'] ?? '')
-            );
-            $insertMeta(
-                'gift_aid_address_line2',
-                sanitize_text_field($giveMetaValues['_give_gift_aid_address_line2'] ?? '')
-            );
-            $insertMeta(
-                'gift_aid_city',
-                sanitize_text_field($giveMetaValues['_give_gift_aid_city'] ?? '')
-            );
-            $insertMeta(
-                'gift_aid_postcode',
-                sanitize_text_field($giveMetaValues['_give_gift_aid_postcode'] ?? '')
-            );
+            // Write address fields from give_donormeta — only non-empty values.
+            $insertMeta('gift_aid_address',      sanitize_text_field($donorAddress['address']));
+            $insertMeta('gift_aid_address_line2', sanitize_text_field($donorAddress['address2']));
+            $insertMeta('gift_aid_city',          sanitize_text_field($donorAddress['city']));
+            $insertMeta('gift_aid_postcode',      strtoupper(sanitize_text_field($donorAddress['postcode'])));
 
             $enriched++;
         }

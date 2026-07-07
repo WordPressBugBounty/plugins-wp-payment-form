@@ -148,6 +148,8 @@ $router->prefix('form/{id}')->withPolicy('AdminPolicy')->group(function ($router
 
         $router->get('/lists', 'IntegrationController@lists')->int('id');
     });
+
+    $router->get('/gift-aid/export', 'FormController@giftAidExport')->int('id');
 });
 
 // pdf routes

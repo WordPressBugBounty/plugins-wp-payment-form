@@ -578,12 +578,11 @@ class PaymatticSubscriptionWriter
         // GiveWP installations.
         // ------------------------------------------------------------------
 
-        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- $wpdb->prefix is a trusted, server-controlled value.
+        // phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix (trusted); all values bound via $wpdb->prepare().
         $donationMetaTable = $wpdb->prefix . 'give_donationmeta';
 
         // INNER JOIN wp_posts to exclude trashed or draft renewals — only
         // published (paid) renewals should count toward the bill total.
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,PluginCheck.Security.DirectDB.UnescapedDBParameter -- $donationMetaTable and $wpdb->posts use $wpdb->prefix only
         $renewalCount = absint(
             $wpdb->get_var(
                 $wpdb->prepare(
@@ -598,6 +597,7 @@ class PaymatticSubscriptionWriter
                 )
             )
         );
+        // phpcs:enable PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared
 
         if ($renewalCount > 0) {
             // TRACE-DB-001: Sum lifetime paid revenue for this subscription

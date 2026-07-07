@@ -631,7 +631,7 @@ class StripeListener
         // Try to get submission ID from metadata
         $submissionId = null;
         if (!empty($paymentIntent->metadata)) {
-            $submissionId = $paymentIntent->metadata->{'Submission ID'} ?? $paymentIntent->metadata['Submission ID'] ?? null;
+            $submissionId = $paymentIntent->metadata->{'Submission ID'} ?? null;
         }
         
         // If not in metadata, try to find transaction by payment_intent ID

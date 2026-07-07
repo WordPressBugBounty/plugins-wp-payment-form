@@ -8,6 +8,7 @@ use WPPayForm\App\Models\Submission;
 use WPPayForm\App\Models\SubmissionActivity;
 use WPPayForm\App\Models\Transaction;
 use WPPayForm\App\Services\GeneralSettings;
+use WPPayForm\App\Services\AccessControl;
 use WPPayForm\App\Models\Subscription;
 
 class SubmissionController extends Controller
@@ -46,9 +47,12 @@ class SubmissionController extends Controller
         }
 
         wp_send_json_success([
-            'reports' => $reports,
-            'currencySettings' => Form::getCurrencyAndLocale($formId),
-            'is_payment_form' => Form::hasPaymentFields($formId)
+            'reports'                   => $reports,
+            'currencySettings'          => Form::getCurrencyAndLocale($formId),
+            'is_payment_form'           => Form::hasPaymentFields($formId),
+            'has_gift_aid_declarations' => (defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO)
+                ? \WPPayForm\App\Services\GiftAidExporter::hasDeclarations($formId)
+                : false,
         ], 200);
     }
 
@@ -86,9 +90,39 @@ class SubmissionController extends Controller
 
         $submission['widgets'] = apply_filters('wppayform_single_entry_widgets', [], array('submission' => $submission));
 
+        $giftAidData = null;
+        if (defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO) {
+            $giftAidOpt  = (new \WPPayForm\App\Models\Meta())
+                ->where('meta_group', 'wpf_submissions')
+                ->where('option_id', $submission->id)
+                ->where('form_id', $formId)
+                ->where('meta_key', 'gift_aid_opted_in')
+                ->first();
+
+            if ($giftAidOpt && $giftAidOpt->meta_value === '1') {
+                $getMeta = function ($key) use ($submission, $formId) {
+                    $row = (new \WPPayForm\App\Models\Meta())
+                        ->where('meta_group', 'wpf_submissions')
+                        ->where('option_id', $submission->id)
+                        ->where('form_id', $formId)
+                        ->where('meta_key', $key)
+                        ->first();
+                    return $row ? (string) $row->meta_value : '';
+                };
+                $giftAidData = [
+                    'opted_in'      => true,
+                    'address'       => $getMeta('gift_aid_address'),
+                    'address_line2' => $getMeta('gift_aid_address_line2'),
+                    'city'          => $getMeta('gift_aid_city'),
+                    'postcode'      => $getMeta('gift_aid_postcode'),
+                ];
+            }
+        }
+
         return array(
             'submission' => $submission,
-            'entry' => (object) $parsedEntry
+            'entry'      => (object) $parsedEntry,
+            'gift_aid'   => $giftAidData,
         );
     }
     public function getSubmission($formId, $submissionId = false)
@@ -410,7 +444,7 @@ class SubmissionController extends Controller
      */
     private function assertOwnsSubmission($submission)
     {
-        if (current_user_can('manage_options')) {
+        if (AccessControl::hasGrandAccess()) {
             return;
         }
 

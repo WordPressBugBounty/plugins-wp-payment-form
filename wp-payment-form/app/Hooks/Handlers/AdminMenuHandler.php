@@ -405,6 +405,8 @@ class AdminMenuHandler
             $payment_routes = apply_filters('wppayform_payment_method_settings_routes', ProRoutes::getRoutes());
             $paymentAddons = apply_filters('wppayform/available_payment_addons', ProRoutes::getPaymentAddons());
 
+            $activePaymentGateways = $this->getActivePaymentGateways($payment_methods, $paymentAddons);
+
             $fluentPdfActive = 'no';
             $downloadable_font_files = [];
             
@@ -461,6 +463,7 @@ class AdminMenuHandler
                     'default_currency' => GeneralSettings::getGlobalCurrencySettings()['currency'],
                     'i18n' => TransStrings::getStrings(),
                     'wppayformUpgradeUrl' => wppayformUpgradeUrl(),
+                    'active_payment_gateways' => $activePaymentGateways,
                 )
             );
 
@@ -670,5 +673,23 @@ class AdminMenuHandler
         </g>
         </svg>';
         return 'data:image/svg+xml;base64,' . base64_encode($svg);
+    }
+    private function getActivePaymentGateways(array $paymentMethods, array $paymentAddons): array
+    {
+        $active = [];
+        foreach ($paymentMethods as $gwKey => $gwMethod) {
+            if (!isset($paymentAddons[$gwKey])) {
+                $active[$gwKey] = $gwMethod;
+                continue;
+            }
+            $addonInfo  = $paymentAddons[$gwKey];
+
+            $addonSlug  = $addonInfo['slug'] ?? "{$gwKey}-payment-for-paymattic";
+            $pluginFile = "{$addonSlug}/{$addonSlug}.php";
+            if (function_exists('is_plugin_active') && is_plugin_active($pluginFile)) {
+                $active[$gwKey] = $gwMethod;
+            }
+        }
+        return $active;
     }
 }

@@ -203,12 +203,13 @@ class MigratorAjaxHandler
                         "SELECT COUNT(*)
                          FROM {$wpdb->prefix}give_donationmeta dm
                          INNER JOIN {$wpdb->posts} p ON p.ID = dm.donation_id
-                         WHERE dm.meta_key   = %s
-                           AND dm.meta_value = %s
-                           AND p.post_type   = %s
+                         WHERE dm.meta_key    = %s
+                           AND dm.meta_value IN (%s, %s)
+                           AND p.post_type    = %s
                            AND p.post_status != %s",
                         '_give_gift_aid_accept_term_condition',
                         'on',
+                        'enabled',
                         'give_payment',
                         'trash'
                     )
@@ -1147,6 +1148,8 @@ class MigratorAjaxHandler
                 if ($existingPost !== null && $existingPost->post_status !== 'trash') {
                     if (!$dryRun) {
                         PaymatticFormWriter::patchFFMElementsIfMissing($giveFormId, $cachedWpfId);
+                        PaymatticFormWriter::patchEmailNotifications($giveFormId, $cachedWpfId);
+                        PaymatticFormWriter::patchGiftAidSettings($giveFormId, $cachedWpfId);
                     }
                     $skipped++;
                     continue;
@@ -1183,6 +1186,7 @@ class MigratorAjaxHandler
                 if (!$dryRun) {
                     PaymatticFormWriter::patchFFMElementsIfMissing($giveFormId, $existingPostId);
                     PaymatticFormWriter::patchEmailNotifications($giveFormId, $existingPostId);
+                    PaymatticFormWriter::patchGiftAidSettings($giveFormId, $existingPostId);
                 }
                 $skipped++;
                 continue;
@@ -1909,13 +1913,19 @@ class MigratorAjaxHandler
 
             $submissionFormMap = [];
             if (!empty($submissionIdMap)) {
-                $submissionIds = array_values($submissionIdMap);
-                $idList        = implode(',', array_map('absint', $submissionIds));
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $idList is absint()-cast integers only
+                $submissionIds  = array_values(array_map('absint', $submissionIdMap));
+                $idPlaceholders = implode(', ', array_fill(0, count($submissionIds), '%d'));
+
+                // phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
                 $rows = $wpdb->get_results(
-                    "SELECT id, form_id FROM {$wpdb->prefix}wpf_submissions WHERE id IN ({$idList})",
+                    $wpdb->prepare(
+                        "SELECT id, form_id FROM {$wpdb->prefix}wpf_submissions WHERE id IN ({$idPlaceholders})",
+                        ...$submissionIds
+                    ),
                     ARRAY_A
                 );
+                // phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+
                 foreach ((array) $rows as $row) {
                     $submissionFormMap[absint($row['id'])] = absint($row['form_id']);
                 }

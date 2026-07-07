@@ -280,6 +280,12 @@ $app->addAction('wppayform_loaded', function ($app) {
             new WPPayForm\App\Modules\PDF\Manager\WPPayFormPdfBuilder();
         }
 
+        // Gift Aid is a pro-only feature: register smartcode + download handlers
+        // only when the pro plugin is active. (Still engine-agnostic re: Fluent PDF.)
+        if (defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO) {
+            new \WPPayForm\App\Services\GiftAidDeclarationPdf();
+        }
+
         new \WPPayForm\App\Services\Integrations\MailChimp\MailChimpIntegration($app);
 
         new \WPPayForm\App\Services\Integrations\Slack\Bootstrap();

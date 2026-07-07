@@ -3,6 +3,7 @@
 namespace WPPayForm\App\Modules\FormComponents;
 
 use WPPayForm\App\Models\Form;
+use WPPayForm\App\Models\Meta;
 use WPPayForm\App\Services\GeneralSettings;
 use WPPayForm\Framework\Support\Arr;
 use WPPayForm\App\Models\Submission;
@@ -13,10 +14,37 @@ if (!defined('ABSPATH')) {
 
 class DonationComponent extends BaseComponent
 {
+    /** @var array<int, string[]> Gift Aid HTML fragments deferred per form ID. */
+    private static $giftAidQueue = [];
+
+    /**
+     * Payment summary HTML captured via output buffering when Gift Aid is active.
+     * Keyed by form ID. Flushed at priority 7 (after Gift Aid at 5, before payment method at 10).
+     *
+     * @var array<int, string[]>
+     */
+    private static $paymentSummaryQueue = [];
+
+    /**
+     * Payment method HTML captured via output buffering when Gift Aid is active.
+     * Keyed by form ID. Initialized to [] for a form ID once capture hooks are registered
+     * so the array_key_exists guard prevents duplicate hook registration.
+     *
+     * @var array<int, string[]>
+     */
+    private static $paymentMethodQueue = [];
+
     public function __construct()
     {
         parent::__construct('donation_item', 2);
         add_filter('wppayform/validate_component_on_save_payment_item', array($this, 'validateOnSave'), 1, 3);
+        if (defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO) {
+            add_action('wppayform/wpf_before_submission_data_insert', array($this, 'validateGiftAid'), 10, 4);
+            add_action('wppayform/after_submission_data_insert', array($this, 'saveGiftAidMeta'), 10, 4);
+            add_action('wppayform/form_render_before_submit_button', array($this, 'renderDeferredGiftAid'), 5, 1);
+        }
+        add_action('wppayform/form_render_before_submit_button', array($this, 'renderDeferredPaymentSummary'), 7, 1);
+        add_action('wppayform/form_render_before_submit_button', array($this, 'renderDeferredPaymentMethod'), 10, 1);
     }
 
     public function component()
@@ -82,6 +110,9 @@ class DonationComponent extends BaseComponent
                 'label' => 'Donation Progress Item',
                 'required' => 'yes',
                 'enable_image' => 'yes',
+                'enable_gift_aid'      => 'no',
+                'gift_aid_title'       => __('Boost your donation with Gift Aid', 'wp-payment-form'),
+                'gift_aid_declaration' => __('I am a UK taxpayer and want this donation to qualify for Gift Aid. I understand that the charity will reclaim 25p for every £1 I donate and that I must have paid at least that amount in UK Income Tax and/or Capital Gains Tax during the tax year.', 'wp-payment-form'),
                 'intial_raising_amount' => '0',
                 'conditional_logic_option' => array(
                     'conditional_logic' => 'no',
@@ -431,11 +462,7 @@ class DonationComponent extends BaseComponent
                         $attributesRadio['checked'] = 'true';
                     }
 
-                    // if($index == 'custom') {
-                    //     dd($attributesRadio);
-                    // }
 
-                    // echo $index; echo $defaultValue; echo Arr::get($attributesRadio, 'checked');
                 ?>
                     <div class="form-check">
                         <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -489,9 +516,278 @@ class DonationComponent extends BaseComponent
                 <?php endif; ?>
             </div>
             <?php endif; ?>
+
+        <?php
+        $enableGiftAid = Arr::get($fieldOptions, 'enable_gift_aid') === 'yes'
+            && defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO;
+        if ($enableGiftAid) :
+            $declarationText   = mb_substr((string) Arr::get($fieldOptions, 'gift_aid_declaration', ''), 0, 2000);
+            $giftAidTitle      = mb_substr((string) Arr::get($fieldOptions, 'gift_aid_title', __('Boost your donation with Gift Aid', 'wp-payment-form')), 0, 255);
+            $giftAidCheckboxId = $inputId . '_gift_aid';
+            $giftAidElementId  = $element['id'];
+            ob_start();
+        ?>
+        <div class="wpf_form_group wpf_item_donation_item wpf_gift_aid_wrapper">
+            <div class="wpf_gift_aid_card">
+                <div class="wpf_gift_aid_card__header">
+                    <input type="checkbox"
+                           name="<?php echo esc_attr($giftAidElementId); ?>_gift_aid"
+                           id="<?php echo esc_attr($giftAidCheckboxId); ?>"
+                           class="form-check-input wpf_gift_aid_toggle"
+                           value="1" />
+                    <div class="wpf_gift_aid_card__body">
+                        <label class="wpf_gift_aid_card__title" for="<?php echo esc_attr($giftAidCheckboxId); ?>"><?php echo esc_html($giftAidTitle); ?></label>
+                        <p class="wpf_gift_aid_card__declaration"><?php echo esc_html($declarationText); ?></p>
+                    </div>
+                </div>
+                <div class="wpf_gift_aid_address" style="display:none;">
+                    <p class="wpf_gift_aid_address__label"><?php echo esc_html__('Your address for Gift Aid', 'wp-payment-form'); ?></p>
+                    <input type="text"
+                           name="<?php echo esc_attr($giftAidElementId); ?>_gift_aid_address"
+                           class="wpf_input"
+                           placeholder="<?php echo esc_attr__('House name or number', 'wp-payment-form'); ?>" />
+                    <input type="text"
+                           name="<?php echo esc_attr($giftAidElementId); ?>_gift_aid_address2"
+                           class="wpf_input"
+                           placeholder="<?php echo esc_attr__('Address line 2 (optional)', 'wp-payment-form'); ?>" />
+                    <div class="wpf_gift_aid_address__row">
+                        <input type="text"
+                               name="<?php echo esc_attr($giftAidElementId); ?>_gift_aid_city"
+                               class="wpf_input"
+                               placeholder="<?php echo esc_attr__('Town or city', 'wp-payment-form'); ?>" />
+                        <input type="text"
+                               name="<?php echo esc_attr($giftAidElementId); ?>_gift_aid_postcode"
+                               class="wpf_input wpf_gift_aid_postcode"
+                               placeholder="<?php echo esc_attr__('Postcode', 'wp-payment-form'); ?>" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+            $wpfFormId = absint($form->ID);
+            self::$giftAidQueue[$wpfFormId][] = ob_get_clean();
+
+            // Defer payment_summary and choose_payment_method to render after Gift Aid.
+            // Pattern: ob_start() at priority 1 (before real component at priority 10),
+            // ob_get_clean() at PHP_INT_MAX (after). Guard prevents duplicate registration.
+            if (!array_key_exists($wpfFormId, self::$paymentSummaryQueue)) {
+                self::$paymentSummaryQueue[$wpfFormId] = [];
+                add_action(
+                    'wppayform/render_component_payment_summary',
+                    static function ($_, $fm) use ($wpfFormId) {
+                        if (absint($fm->ID) === $wpfFormId) {
+                            ob_start();
+                        }
+                    },
+                    1, 3
+                );
+                add_action(
+                    'wppayform/render_component_payment_summary',
+                    static function ($_, $fm) use ($wpfFormId) {
+                        if (absint($fm->ID) === $wpfFormId && ob_get_level() > 0) {
+                            self::$paymentSummaryQueue[$wpfFormId][] = ob_get_clean();
+                        }
+                    },
+                    PHP_INT_MAX, 3
+                );
+            }
+
+            if (!array_key_exists($wpfFormId, self::$paymentMethodQueue)) {
+                self::$paymentMethodQueue[$wpfFormId] = [];
+                add_action(
+                    'wppayform/render_component_choose_payment_method',
+                    static function ($_, $fm) use ($wpfFormId) {
+                        if (absint($fm->ID) === $wpfFormId) {
+                            ob_start();
+                        }
+                    },
+                    1, 3
+                );
+                add_action(
+                    'wppayform/render_component_choose_payment_method',
+                    static function ($_, $fm) use ($wpfFormId) {
+                        if (absint($fm->ID) === $wpfFormId && ob_get_level() > 0) {
+                            self::$paymentMethodQueue[$wpfFormId][] = ob_get_clean();
+                        }
+                    },
+                    PHP_INT_MAX, 3
+                );
+            }
+        endif; ?>
+
         </div>
 
         </div>
         <?php
+    }
+
+    /**
+     * Flush queued Gift Aid HTML for this form before the submit button.
+     *
+     * Hooked on 'wppayform/form_render_before_submit_button' (priority 5).
+     * Outputs and clears fragments deferred from renderSingleChoice() so the
+     * Gift Aid section always appears below every other field regardless of
+     * where donation_item sits in the builder order.
+     *
+     * @param object $form WP_Post object for the current form.
+     */
+    public function renderDeferredGiftAid(object $form)
+    {
+        $formId = absint($form->ID);
+
+        if (empty(self::$giftAidQueue[$formId])) {
+            return;
+        }
+
+        foreach (self::$giftAidQueue[$formId] as $html) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pre-escaped in renderSingleChoice
+            echo $html;
+        }
+
+        unset(self::$giftAidQueue[$formId]);
+    }
+
+    /**
+     * Flush deferred payment summary HTML after Gift Aid (priority 7).
+     *
+     * @param object $form WP_Post object for the current form.
+     */
+    public function renderDeferredPaymentSummary(object $form): void
+    {
+        $formId = absint($form->ID);
+
+        if (empty(self::$paymentSummaryQueue[$formId])) {
+            return;
+        }
+
+        foreach (self::$paymentSummaryQueue[$formId] as $html) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- captured from trusted component render
+            echo $html;
+        }
+
+        unset(self::$paymentSummaryQueue[$formId]);
+    }
+
+    /**
+     * Flush deferred payment method HTML after Gift Aid (priority 10 > Gift Aid priority 5).
+     *
+     * Hooked on 'wppayform/form_render_before_submit_button'.
+     * Only fires for forms where Gift Aid was active — other forms have no queue entry.
+     *
+     * @param object $form WP_Post object for the current form.
+     */
+    public function renderDeferredPaymentMethod(object $form): void
+    {
+        $formId = absint($form->ID);
+
+        if (empty(self::$paymentMethodQueue[$formId])) {
+            return;
+        }
+
+        foreach (self::$paymentMethodQueue[$formId] as $html) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- captured from trusted component render
+            echo $html;
+        }
+
+        unset(self::$paymentMethodQueue[$formId]);
+    }
+
+    /**
+     * Hooked on 'wppayform/wpf_before_submission_data_insert' (SubmissionHandler.php:296).
+     * Calling wp_send_json_error() + exit here is the correct contract — SubmissionHandler
+     * itself uses wp_send_json_error() + exit for all field-level validation failures
+     * (e.g. lines 45, 62, 238 of SubmissionHandler.php). No return value is used.
+     */
+    public function validateGiftAid($submission, $form_data, $paymentItems, $subscriptionItems)
+    {
+        if (!(defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO)) {
+            return;
+        }
+        $formId = absint($submission['form_id'] ?? 0);
+        if (!$formId) {
+            return;
+        }
+
+        $formattedElements = Form::getFormattedElements($formId);
+
+        foreach ($formattedElements['payment'] as $elementId => $element) {
+            if (Arr::get($element, 'type') !== 'donation_item') {
+                continue;
+            }
+            if (Arr::get($element, 'options.enable_gift_aid') !== 'yes') {
+                continue;
+            }
+            if (Arr::get($form_data, $elementId . '_gift_aid') !== '1') {
+                continue;
+            }
+            $address  = sanitize_text_field(Arr::get($form_data, $elementId . '_gift_aid_address', ''));
+            $postcode = sanitize_text_field(Arr::get($form_data, $elementId . '_gift_aid_postcode', ''));
+            $errors   = [];
+
+            if (empty($address)) {
+                $errors[$elementId . '_gift_aid_address'] = __('House name or number is required for Gift Aid.', 'wp-payment-form');
+            }
+            if (empty($postcode)) {
+                $errors[$elementId . '_gift_aid_postcode'] = __('Postcode is required for Gift Aid.', 'wp-payment-form');
+            }
+            if (!empty($errors)) {
+                wp_send_json_error(array(
+                    'message' => __('Form Validation failed', 'wp-payment-form'),
+                    'errors'  => $errors,
+                ), 423);
+                exit;
+            }
+        }
+    }
+
+    public function saveGiftAidMeta($submissionId, $formId, $form_data, $formattedElements)
+    {
+        if (!(defined('WPPAYFORMHASPRO') && WPPAYFORMHASPRO)) {
+            return;
+        }
+        $submissionId = absint($submissionId);
+        $formId       = absint($formId);
+
+        if (empty($formattedElements['payment']) || !is_array($formattedElements['payment'])) {
+            return;
+        }
+
+        $metaModel = new Meta();
+
+        foreach ($formattedElements['payment'] as $elementId => $element) {
+            if (Arr::get($element, 'type') !== 'donation_item') {
+                continue;
+            }
+            if (Arr::get($element, 'options.enable_gift_aid') !== 'yes') {
+                continue;
+            }
+            if (Arr::get($form_data, $elementId . '_gift_aid') !== '1') {
+                continue;
+            }
+
+            $metaModel->updateOrderMeta('wpf_submissions', $submissionId, 'gift_aid_opted_in', '1', $formId);
+
+            $address = sanitize_text_field(Arr::get($form_data, $elementId . '_gift_aid_address', ''));
+            if ($address !== '') {
+                $metaModel->updateOrderMeta('wpf_submissions', $submissionId, 'gift_aid_address', $address, $formId);
+            }
+
+            $address2 = sanitize_text_field(Arr::get($form_data, $elementId . '_gift_aid_address2', ''));
+            if ($address2 !== '') {
+                $metaModel->updateOrderMeta('wpf_submissions', $submissionId, 'gift_aid_address_line2', $address2, $formId);
+            }
+
+            $city = sanitize_text_field(Arr::get($form_data, $elementId . '_gift_aid_city', ''));
+            if ($city !== '') {
+                $metaModel->updateOrderMeta('wpf_submissions', $submissionId, 'gift_aid_city', $city, $formId);
+            }
+
+            $postcode = strtoupper(sanitize_text_field(Arr::get($form_data, $elementId . '_gift_aid_postcode', '')));
+            if ($postcode !== '') {
+                $metaModel->updateOrderMeta('wpf_submissions', $submissionId, 'gift_aid_postcode', $postcode, $formId);
+            }
+
+            break; // Only one donation_item with gift_aid per form.
+        }
     }
 }

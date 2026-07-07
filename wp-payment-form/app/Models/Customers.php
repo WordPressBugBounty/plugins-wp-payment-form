@@ -51,8 +51,10 @@ class Customers extends Model
             ->orderBy($sortBy, $sortType);
       
         $query->when($search, function ($query) use ($search) {
-            return $query->where('customer_email', 'like', "%$search%")
-                ->orWhere('customer_name', 'like', "%$search%");
+            global $wpdb;
+            $safeSearch = $wpdb->esc_like($search);
+            return $query->where('customer_email', 'like', "%{$safeSearch}%")
+                ->orWhere('customer_name', 'like', "%{$safeSearch}%");
         });
         
         $query->when($startDate, function ($query) use ($startDate, $endDate) {
@@ -268,7 +270,7 @@ class Customers extends Model
 
         foreach ($spends as $spend) {
             $spend->sign = GeneralSettings::getCurrencySymbol($spend->currency);
-            $spend->formatted_price = floatval($spend["total_paid"]) / 100;
+            $spend->formatted_price = (int) $spend["total_paid"] / 100;
         }
 
         return array(

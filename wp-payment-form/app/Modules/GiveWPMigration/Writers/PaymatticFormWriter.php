@@ -7,8 +7,8 @@ if (!defined('ABSPATH')) {
 }
 
 use WPPayForm\App\Modules\GiveWPMigration\Enrichers\FFMEnricher;
-use WPPayForm\App\Modules\GiveWPMigration\Mappers\AmountConverter;
 use WPPayForm\App\Modules\GiveWPMigration\Mappers\EmailNotificationMapper;
+use WPPayForm\App\Modules\GiveWPMigration\Mappers\GatewayMapper;
 use WPPayForm\App\Modules\GiveWPMigration\Mappers\IntervalMapper;
 use WPPayForm\App\Modules\GiveWPMigration\MigrationState;
 use WPPayForm\App\Modules\GiveWPMigration\Readers\GiveEmailReader;
@@ -76,7 +76,7 @@ class PaymatticFormWriter
 
             $multiplePricing[] = [
                 'label' => isset($level['_give_text']) ? sanitize_text_field($level['_give_text']) : '',
-                'value' => (string) $level['_give_amount'],
+                'value' => self::normalizeAmount($level['_give_amount']),
             ];
         }
 
@@ -84,8 +84,8 @@ class PaymatticFormWriter
         // (price_option = 'set' means one fixed amount). Fall back to three defaults
         // only when even the fixed price is absent/zero.
         if (empty($multiplePricing)) {
-            $setPriceDollars = (string) ($giveForm['set_price'] ?? '0');
-            if (!empty($setPriceDollars) && (float) $setPriceDollars > 0) {
+            $setPriceDollars = self::normalizeAmount($giveForm['set_price'] ?? '0');
+            if ((float) $setPriceDollars > 0) {
                 $multiplePricing = [
                     ['label' => '', 'value' => $setPriceDollars],
                 ];
@@ -137,6 +137,44 @@ class PaymatticFormWriter
 
         $donationItemId = 'donation_item_' . wp_generate_uuid4();
 
+        // ------------------------------------------------------------------
+        // Gift Aid settings for the donation_item element.
+        //
+        // When the source GiveWP form had give_gift_aid_enable_disable =
+        // 'enabled' or 'global', we set enable_gift_aid = 'yes' so that
+        // Paymattic renders the Gift Aid checkbox and address fields.
+        // The declaration text is preserved from the GiveWP form or falls
+        // back to the Paymattic default.
+        // ------------------------------------------------------------------
+
+        $enableGiftAid     = ($giveForm['gift_aid_enabled'] ?? false) ? 'yes' : 'no';
+        $giftAidDeclaration = (string) ($giveForm['gift_aid_declaration'] ?? '');
+        if ($giftAidDeclaration === '' || self::isGiveWpDefaultDeclaration($giftAidDeclaration)) {
+            $giftAidDeclaration = __('I am a UK taxpayer and want this donation to qualify for Gift Aid. I understand that the charity will reclaim 25p for every £1 I donate and that I must have paid at least that amount in UK Income Tax and/or Capital Gains Tax during the tax year.', 'wp-payment-form');
+        }
+        $giftAidTitle = __('Boost your donation with Gift Aid', 'wp-payment-form');
+
+        // ------------------------------------------------------------------
+        // Donation goal for the donation_item element.
+        //
+        // Paymattic stores donation_goals in MAJOR units (e.g. 1000 = $1000) —
+        // it is rendered directly as "{currency}{donation_goals}" and divided
+        // into the raised total to draw the progress bar. It must NOT be
+        // converted to minor units here.
+        //
+        // GiveWP keeps a leftover _give_set_goal value even when the goal is
+        // turned off (_give_goal_option = 'disabled'). Only honour the amount
+        // when the goal was actually enabled; otherwise fall back to Paymattic's
+        // default goal of 1000 so the migrated form never shows a stale/oversized
+        // figure in the "Donation goal amount" field.
+        // ------------------------------------------------------------------
+
+        $hasGoal = ($giveForm['goal_option'] === 'enabled') && ((float) $giveForm['goal_amount'] > 0);
+
+        $donationGoalValue = $hasGoal
+            ? self::normalizeAmount($giveForm['goal_amount'])
+            : '1000';
+
         if ($isPro) {
             $donationItemElement = [
                 'type'           => 'donation_item',
@@ -184,7 +222,7 @@ class PaymatticFormWriter
                     ],
                     'pricing_details' => [
                         'show_statistic'      => 'yes',
-                        'donation_goals'      => AmountConverter::toMinorUnits((string) ($giveForm['goal_amount'] ?? '0')),
+                        'donation_goals'      => $donationGoalValue,
                         'progress_bar'        => 'yes',
                         'one_time_type'       => 'choose_single',
                         'image_url'           => [
@@ -205,7 +243,10 @@ class PaymatticFormWriter
                         'intervals'           => $isRecurring ? [$billingInterval] : ['day', 'week', 'month', 'year'],
                         'interval_options'    => $isRecurring ? [$billingInterval] : ['day', 'week', 'month', 'year'],
                     ],
-                    'default_value' => 0,
+                    'default_value'        => 0,
+                    'enable_gift_aid'      => $enableGiftAid,
+                    'gift_aid_title'       => $giftAidTitle,
+                    'gift_aid_declaration' => $giftAidDeclaration,
                 ],
                 'id'          => $donationItemId,
                 'active_page' => 0,
@@ -257,7 +298,7 @@ class PaymatticFormWriter
                     ],
                     'pricing_details' => [
                         'show_statistic'      => 'no',
-                        'donation_goals'      => 0,
+                        'donation_goals'      => $donationGoalValue,
                         'progress_bar'        => 'no',
                         'one_time_type'       => 'choose_single',
                         'image_url'           => [
@@ -276,7 +317,10 @@ class PaymatticFormWriter
                         'intervals'           => $isRecurring ? [$billingInterval] : ['day', 'week', 'month', 'year'],
                         'interval_options'    => $isRecurring ? [$billingInterval] : ['day', 'week', 'month', 'year'],
                     ],
-                    'default_value' => 0,
+                    'default_value'        => 0,
+                    'enable_gift_aid'      => $enableGiftAid,
+                    'gift_aid_title'       => $giftAidTitle,
+                    'gift_aid_declaration' => $giftAidDeclaration,
                 ],
                 'id'          => $donationItemId,
                 'active_page' => 0,
@@ -497,6 +541,25 @@ class PaymatticFormWriter
         }
 
         // ------------------------------------------------------------------
+        // 3d. Append fee_recovery_item element (give-fee-recovery add-on).
+        //
+        // fee_recovery_item is a pro-only component — skip when Pro is not active.
+        // Injected when the source GiveWP form had _form_give_fee_recovery set
+        // to 'enabled' or 'global'. The element id is the literal string
+        // 'fee_recovery_item' so FeeRecoveryComponent::pushFeeRecoveryItem()
+        // locates it by type in the formatted elements array.
+        // ------------------------------------------------------------------
+
+        $feeRecoveryData = $giveForm['fee_recovery'] ?? [];
+
+        if ($isPro && !empty($feeRecoveryData['enabled'])) {
+            $builderSettings = self::spliceBeforePaymentMethod(
+                $builderSettings,
+                self::buildFeeRecoveryElement($feeRecoveryData)
+            );
+        }
+
+        // ------------------------------------------------------------------
         // 4. Build the form-level settings.
         //
         // show_goal / donation_goal / goal_format: present only when the GiveWP
@@ -511,15 +574,13 @@ class PaymatticFormWriter
             'currency' => '',  // Use site default — GiveWP per-form currency is in the switcher add-on.
         ];
 
-        $hasGoal      = ($giveForm['goal_option'] === 'enabled') && ((float) $giveForm['goal_amount'] > 0);
         $formIsClosed = ($giveForm['form_status'] === 'closed');
 
         if ($hasGoal) {
-            // Convert goal amount to minor units (cents) for Paymattic storage.
-            $goalMinorUnits = AmountConverter::toMinorUnits((string) $giveForm['goal_amount']);
-
+            // donation_goal mirrors the donation_item element's donation_goals and
+            // is stored in MAJOR units (not cents) for consistency.
             $formSettings['show_goal']      = true;
-            $formSettings['donation_goal']  = $goalMinorUnits;
+            $formSettings['donation_goal']  = $donationGoalValue;
             $formSettings['goal_format']    = sanitize_text_field($giveForm['goal_format'] ?? 'amount');
         }
 
@@ -679,6 +740,7 @@ class PaymatticFormWriter
     {
         global $wpdb;
 
+        // phpcs:disable PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared -- table name from $wpdb->prefix (trusted); all values bound via $wpdb->prepare().
         $rawMeta = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT meta_key, meta_value FROM {$wpdb->prefix}give_formmeta WHERE form_id = %d",
@@ -686,6 +748,7 @@ class PaymatticFormWriter
             ),
             ARRAY_A
         );
+        // phpcs:enable PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared
 
         $meta = [];
         foreach ($rawMeta as $row) {
@@ -698,6 +761,59 @@ class PaymatticFormWriter
 
         $mapped = EmailNotificationMapper::mapNotifications($notifications, $fromName, $fromEmail);
         update_post_meta($wpfFormId, 'wpf_email_notifications', $mapped);
+    }
+
+    /**
+     * Upsert Gift Aid settings on an already-migrated Paymattic form's donation_item.
+     *
+     * Reads give_gift_aid_enable_disable from wp_postmeta on the source form.
+     * When enabled (or 'global'), sets enable_gift_aid = 'yes' and writes the
+     * declaration text on every donation_item element in the builder settings.
+     * No-ops when Gift Aid is not active on the source form or when
+     * the target form already has enable_gift_aid = 'yes'.
+     *
+     * Safe to call on every re-run — idempotent.
+     *
+     * @param int $giveFormId  Source GiveWP form post ID.
+     * @param int $wpfFormId   Target Paymattic wp_payform post ID.
+     * @return bool            True when builder settings were updated; false otherwise.
+     */
+    public static function patchGiftAidSettings(int $giveFormId, int $wpfFormId): bool
+    {
+        $giftAidStatus = sanitize_text_field((string) get_post_meta($giveFormId, 'give_gift_aid_enable_disable', true));
+        $hasGiftAid    = in_array($giftAidStatus, ['enabled', 'global'], true);
+
+        if (!$hasGiftAid) {
+            return false;
+        }
+
+        $declarationRaw = sanitize_text_field((string) get_post_meta($giveFormId, 'give_gift_aid_agreement', true));
+        $declaration    = ($declarationRaw === '' || self::isGiveWpDefaultDeclaration($declarationRaw))
+            ? __('I am a UK taxpayer and want this donation to qualify for Gift Aid. I understand that the charity will reclaim 25p for every £1 I donate and that I must have paid at least that amount in UK Income Tax and/or Capital Gains Tax during the tax year.', 'wp-payment-form')
+            : $declarationRaw;
+        $patchTitle     = __('Boost your donation with Gift Aid', 'wp-payment-form');
+
+        $current = get_post_meta($wpfFormId, 'wppayform_paymentform_builder_settings', true);
+        $current = is_array($current) ? $current : (wppayform_safeUnserialize($current) ?: []);
+
+        $changed = false;
+        foreach ($current as &$element) {
+            if (isset($element['type']) && $element['type'] === 'donation_item') {
+                if (($element['field_options']['enable_gift_aid'] ?? '') !== 'yes') {
+                    $element['field_options']['enable_gift_aid']      = 'yes';
+                    $element['field_options']['gift_aid_title']       = $patchTitle;
+                    $element['field_options']['gift_aid_declaration']  = $declaration;
+                    $changed = true;
+                }
+            }
+        }
+        unset($element);
+
+        if ($changed) {
+            update_post_meta($wpfFormId, 'wppayform_paymentform_builder_settings', $current);
+        }
+
+        return $changed;
     }
 
     /**
@@ -718,6 +834,240 @@ class PaymatticFormWriter
      *
      * @return array|null  Ready-to-use builder element array, or null when unusable.
      */
+
+    /**
+     * Upsert a fee_recovery_item element on an already-migrated Paymattic form.
+     *
+     * Reads fee recovery config directly from give_formmeta for the source form.
+     * Appends the element only when fee recovery is active and no fee_recovery_item
+     * element is already present. Safe to call on every re-run — idempotent.
+     *
+     * No-ops when:
+     *   - Paymattic Pro is not active (fee_recovery_item is pro-only)
+     *   - _form_give_fee_recovery is 'disabled' or absent on the source form
+     *   - A fee_recovery_item element already exists in the builder settings
+     *
+     * @param int $giveFormId  Source GiveWP form post ID.
+     * @param int $wpfFormId   Target Paymattic wp_payform post ID.
+     * @return bool            True when builder settings were updated; false otherwise.
+     */
+    public static function patchFeeRecoveryElement(int $giveFormId, int $wpfFormId): bool
+    {
+        if (!defined('WPPAYFORMHASPRO')) {
+            return false;
+        }
+
+        global $wpdb;
+
+        // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter -- table from $wpdb->prefix only
+        $rawMeta = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT meta_key, meta_value FROM {$wpdb->prefix}give_formmeta WHERE form_id = %d",
+                $giveFormId
+            ),
+            ARRAY_A
+        );
+
+        $meta = [];
+        foreach ($rawMeta as $row) {
+            $meta[$row['meta_key']] = $row['meta_value'];
+        }
+
+        $feeStatus = sanitize_text_field((string) ($meta['_form_give_fee_recovery'] ?? 'disabled'));
+        if (!in_array($feeStatus, ['enabled', 'global'], true)) {
+            return false;
+        }
+
+        $current = get_post_meta($wpfFormId, 'wppayform_paymentform_builder_settings', true);
+        $current = is_array($current) ? $current : (wppayform_safeUnserialize($current) ?: []);
+
+        // Skip if a fee_recovery_item is already present.
+        foreach ($current as $element) {
+            if (isset($element['type']) && $element['type'] === 'fee_recovery_item') {
+                return false;
+            }
+        }
+
+        // Reconstruct the fee recovery config from the raw meta map.
+        $feeRecovery = [
+            'enabled'       => true,
+            'percent'       => isset($meta['_form_give_fee_percentage'])
+                                   ? (float) $meta['_form_give_fee_percentage']
+                                   : 2.9,
+            'base_amount'   => isset($meta['_form_give_fee_base_amount'])
+                                   ? (float) $meta['_form_give_fee_base_amount']
+                                   : 0.30,
+            'mode'          => sanitize_text_field((string) ($meta['_form_give_fee_mode'] ?? 'donor_opt_in')),
+            'configuration' => sanitize_text_field((string) ($meta['_form_give_fee_configuration'] ?? 'all_gateways')),
+            'per_gateway'   => [],
+        ];
+
+        foreach ($meta as $metaKey => $metaValue) {
+            if (strpos($metaKey, '_form_gateway_fee_percentage_') === 0) {
+                $gwSlug = sanitize_key(substr($metaKey, strlen('_form_gateway_fee_percentage_')));
+                if ($gwSlug !== '') {
+                    $enableKey = '_form_gateway_fee_enable_' . $gwSlug;
+                    if (!isset($meta[$enableKey]) || $meta[$enableKey] !== 'enabled') {
+                        continue;
+                    }
+                    if (!isset($feeRecovery['per_gateway'][$gwSlug])) {
+                        $feeRecovery['per_gateway'][$gwSlug] = ['percent' => 0.0, 'base_amount' => 0.0];
+                    }
+                    $feeRecovery['per_gateway'][$gwSlug]['percent'] = (float) $metaValue;
+                }
+            }
+            if (strpos($metaKey, '_form_gateway_fee_base_amount_') === 0) {
+                $gwSlug = sanitize_key(substr($metaKey, strlen('_form_gateway_fee_base_amount_')));
+                if ($gwSlug !== '') {
+                    $enableKey = '_form_gateway_fee_enable_' . $gwSlug;
+                    if (!isset($meta[$enableKey]) || $meta[$enableKey] !== 'enabled') {
+                        continue;
+                    }
+                    if (!isset($feeRecovery['per_gateway'][$gwSlug])) {
+                        $feeRecovery['per_gateway'][$gwSlug] = ['percent' => 0.0, 'base_amount' => 0.0];
+                    }
+                    $feeRecovery['per_gateway'][$gwSlug]['base_amount'] = (float) $metaValue;
+                }
+            }
+        }
+
+        $current = self::spliceBeforePaymentMethod($current, self::buildFeeRecoveryElement($feeRecovery));
+        update_post_meta($wpfFormId, 'wppayform_paymentform_builder_settings', $current);
+
+        return true;
+    }
+
+    /**
+     * Build a Paymattic fee_recovery_item element from GiveWP fee recovery config.
+     *
+     * Maps GiveWP fee recovery form meta to the field_options structure expected
+     * by FeeRecoveryComponent::component() in wp-payment-form-pro. The element id
+     * is the literal string 'fee_recovery_item' — this is also the component type
+     * and is used as parent_holder on the order item written at submission time.
+     *
+     * Mapping:
+     *   _form_give_fee_percentage  → global_rate.percent  (float)
+     *   _form_give_fee_base_amount → global_rate.fixed    (dollars * 100 → cents integer)
+     *   _form_give_fee_mode:
+     *     'donor_opt_in'  → donor_opt_in = true  (checkbox shown to donor)
+     *     'forced_opt_in' → donor_opt_in = false (fee added silently)
+     *   _form_give_fee_configuration:
+     *     'all_gateways' → rate_type = 'global_rate'
+     *     'per_gateway'  → rate_type = 'per_gateway' + gateway_rates rows
+     *
+     * For per-gateway rates, GiveWP gateway slugs are mapped through GatewayMapper
+     * so the stored gateway keys match Paymattic's gateway identifiers.
+     * Duplicate mapped gateways (e.g. both 'stripe' and 'stripe_checkout' map to
+     * 'stripe') are deduplicated — last value wins.
+     *
+     * @param array $feeRecovery  Fee recovery sub-array from GiveFormReader::getAll().
+     * @return array              Ready-to-use builder element array.
+     */
+    private static function buildFeeRecoveryElement(array $feeRecovery): array
+    {
+        $donorOptIn = ($feeRecovery['mode'] ?? 'donor_opt_in') === 'donor_opt_in';
+        $rateType   = (($feeRecovery['configuration'] ?? 'all_gateways') === 'per_gateway')
+                      ? 'per_gateway'
+                      : 'global_rate';
+
+        $percent    = (float)  ($feeRecovery['percent']     ?? 2.9);
+        // base_amount stored as dollars (e.g. 0.30) → convert to cents for Paymattic.
+        $fixedCents = absint((int) round((float) ($feeRecovery['base_amount'] ?? 0.30) * 100));
+
+        $gatewayRates = [];
+        if ($rateType === 'per_gateway') {
+            $deduped = [];
+            foreach ($feeRecovery['per_gateway'] ?? [] as $giveGateway => $rates) {
+                $wpfGateway = GatewayMapper::mapGateway((string) $giveGateway);
+                // Last value wins when multiple GiveWP gateways map to the same
+                // Paymattic slug (e.g. 'stripe' + 'stripe_checkout' → 'stripe').
+                $deduped[$wpfGateway] = [
+                    'gateway' => $wpfGateway,
+                    'percent' => (float) ($rates['percent']     ?? 0.0),
+                    'fixed'   => absint((int) round((float) ($rates['base_amount'] ?? 0.0) * 100)),
+                ];
+            }
+            $gatewayRates = array_values($deduped);
+        }
+
+        return [
+            'type'                => 'fee_recovery_item',
+            'editor_title'        => 'Fee Recovery',
+            'group'               => 'payment',
+            'postion_group'       => 'payment',
+            'is_pro'              => 'yes',
+            'is_system_field'     => true,
+            'is_payment_field'    => true,
+            'quick_checkout_form' => true,
+            'editor_elements'  => [
+                'fee_recovery_settings' => [
+                    'type'  => 'fee_recovery_settings',
+                    'group' => 'general',
+                    'label' => 'Fee Recovery Settings',
+                ],
+                'admin_label'        => ['label' => 'Admin Label',             'type' => 'text', 'group' => 'advanced'],
+                'wrapper_class'      => ['label' => 'Field Wrapper CSS Class', 'type' => 'text', 'group' => 'advanced'],
+                'element_class'      => ['label' => 'Input Element CSS Class', 'type' => 'text', 'group' => 'advanced'],
+                'conditional_render' => [
+                    'type'              => 'conditional_render',
+                    'group'             => 'advanced',
+                    'label'             => 'Conditional Render',
+                    'selection_type'    => 'Conditional logic',
+                    'conditional_logic' => ['yes' => 'Yes', 'no' => 'No'],
+                    'conditional_type'  => ['any' => 'Any', 'all' => 'All'],
+                ],
+            ],
+            'field_options' => [
+                'disable'      => false,
+                'label'        => __('I\'d like to cover the {fee_amount} transaction fee.', 'wp-payment-form'),
+                'rate_type'    => $rateType,
+                'donor_opt_in' => $donorOptIn,
+                'global_rate'  => ['percent' => $percent, 'fixed' => $fixedCents],
+                'gateway_rates' => $gatewayRates,
+                'conditional_logic_option' => [
+                    'conditional_logic' => 'no',
+                    'conditional_type'  => 'any',
+                    'options'           => [
+                        ['target_field' => '', 'condition' => '', 'value' => ''],
+                    ],
+                ],
+            ],
+            // 'fee_recovery_item' is the component type and is used as parent_holder
+            // on the order item written at submission time by FeeRecoveryComponent.
+            'id' => 'fee_recovery_item',
+        ];
+    }
+
+    /**
+     * Insert $element into $elements immediately before the first element whose
+     * group is 'payment_method_element'. Falls back to append when no such element
+     * exists (standard forms without a payment-method selector).
+     *
+     * @param array[] $elements  Existing builder-settings element array.
+     * @param array   $element   Element to insert.
+     * @return array[]           Updated element array.
+     */
+    private static function spliceBeforePaymentMethod(array $elements, array $element): array
+    {
+        foreach ($elements as $i => $el) {
+            if (($el['group'] ?? '') === 'payment_method_element') {
+                array_splice($elements, $i, 0, [$element]);
+                return $elements;
+            }
+        }
+        $elements[] = $element;
+        return $elements;
+    }
+
+    /**
+     * Returns true if $text matches GiveWP's built-in default Gift Aid declaration.
+     * Used during migration to replace the GiveWP default with Paymattic's text.
+     */
+    private static function isGiveWpDefaultDeclaration(string $text): bool
+    {
+        return strpos($text, 'By ticking the') === 0;
+    }
+
     private static function buildCurrencySwitcherElement(array $currencySwitcher): ?array
     {
         $supported = (array) ($currencySwitcher['supported'] ?? []);
@@ -876,6 +1226,28 @@ class PaymatticFormWriter
         }
 
         return $elements;
+    }
+
+    /**
+     * Normalise a GiveWP decimal money string to a clean Paymattic amount string.
+     *
+     * GiveWP stores donation levels / prices with six trailing decimals
+     * (e.g. "10.000000"). Paymattic renders the donation_item value verbatim in
+     * the amount input, so the raw string would display as "10.000000". This
+     * strips the redundant decimals: whole amounts become integer strings
+     * ("10"), fractional amounts keep two decimals ("10.50").
+     *
+     * @param mixed $value Raw amount (string or numeric).
+     *
+     * @return string Clean amount string in major units.
+     */
+    private static function normalizeAmount($value): string
+    {
+        $float = (float) $value;
+
+        return (fmod($float, 1.0) === 0.0)
+            ? (string) (int) $float
+            : (string) round($float, 2);
     }
 
     /**

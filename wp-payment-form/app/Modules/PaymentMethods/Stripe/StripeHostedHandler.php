@@ -581,9 +581,13 @@ class StripeHostedHandler extends StripeHandler
         $stripe = new Stripe();
         ApiRequest::set_secret_key($stripe->getSecretKey($formId));
 
-        return ApiRequest::request([
-            'cancel_at' => $cancelAt
-        ], 'subscriptions/' . $stripeSub->id, 'POST');
+        $stripeSettings = $this->getStripeSettings();
+        $requestData = ['cancel_at' => $cancelAt];
+        if (Arr::get($stripeSettings, 'disable_subscription_proration') === 'yes') {
+            $requestData['proration_behavior'] = 'none';
+        }
+
+        return ApiRequest::request($requestData, 'subscriptions/' . $stripeSub->id, 'POST');
     }
 
 

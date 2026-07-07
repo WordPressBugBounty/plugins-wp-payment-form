@@ -38,9 +38,10 @@ class GiveWPMigrationModule
     {
         add_filter('wppayform/admin_app_vars', function (array $vars): array {
             $vars['wppayform_migrator'] = [
-                'ajaxUrl' => admin_url('admin-ajax.php'),
-                'nonce'   => wp_create_nonce('wpf_givewp_migration'),
-                'isPro'   => defined('WPPAYFORMHASPRO'),
+                'ajaxUrl'      => admin_url('admin-ajax.php'),
+                'nonce'        => wp_create_nonce('wpf_givewp_migration'),
+                'isPro'        => defined('WPPAYFORMHASPRO'),
+                'givewpActive' => class_exists('Give'),
             ];
             return $vars;
         });

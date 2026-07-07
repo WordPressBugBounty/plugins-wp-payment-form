@@ -33,8 +33,9 @@ use WPPayForm\App\Modules\GiveWPMigration\Mappers\StatusMapper;
  * Amount handling:
  *   _give_payment_total is stored as a decimal string (e.g. "50.00") and already
  *   INCLUDES any fee recovery amount. We convert to minor units (cents) and store
- *   the full charged amount. The _give_fee_amount is preserved in wpf_meta for
- *   auditing but is NOT subtracted from payment_total.
+ *   the full charged amount. When _give_fee_status = 'accepted', we split the
+ *   single order item into a donation row + a fee_recovery_item row and write
+ *   Paymattic's native _wpf_fee_* meta keys so the entry view shows the breakdown.
  *
  * @package WPPayForm\App\Modules\GiveWPMigration\Writers
  * @since   4.6.21
@@ -61,11 +62,10 @@ class PaymatticSubmissionWriter
         $donationId = absint($donation['donation_id']);
 
         // ------------------------------------------------------------------
-        // 1. Idempotency check.
+        // 1. Idempotency check — fast path before lock.
         //
-        // Query wpf_meta for an existing row that marks this GiveWP donation
-        // as already migrated. Returns the Paymattic submission ID if found.
-        // This check runs even in dry-run mode to accurately report 'skipped'.
+        // For donations already migrated in a prior run this avoids lock
+        // contention. The lock-protected re-check below covers the TOCTOU gap.
         // ------------------------------------------------------------------
 
         $existingSubmissionId = $wpdb->get_var(
@@ -83,7 +83,52 @@ class PaymatticSubmissionWriter
         );
 
         if ($existingSubmissionId) {
-            // Already migrated — return existing ID so callers can update maps.
+            return absint($existingSubmissionId);
+        }
+
+        // Dry-run exits here: fast-path already reported 'skipped' for migrated
+        // donations above; no lock needed since no writes will happen.
+        if ($dryRun) {
+            return 0;
+        }
+
+        // ------------------------------------------------------------------
+        // 1b. Per-donation advisory lock (TOCTOU guard).
+        //
+        // Two workers that both pass the SELECT above before either inserts
+        // the idempotency marker would both write full submission rows.
+        // GET_LOCK() serializes them: only one proceeds at a time.
+        //
+        // Released explicitly on every exit path because WordPress may use
+        // persistent DB connections where it would otherwise persist across
+        // requests even after this function returns.
+        // ------------------------------------------------------------------
+        $lockName     = sprintf('wpf_give_mig_%d', $donationId);
+        $lockAcquired = (bool) $wpdb->get_var($wpdb->prepare("SELECT GET_LOCK(%s, 10)", $lockName));
+        if (!$lockAcquired) {
+            return 0;
+        }
+
+        $releaseLock = fn() => $wpdb->get_var($wpdb->prepare("SELECT RELEASE_LOCK(%s)", $lockName));
+
+        // Re-check inside the lock: another worker may have completed migration
+        // between the fast-path SELECT above and this worker's lock acquisition.
+        $existingSubmissionId = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT option_id
+                 FROM {$wpdb->prefix}wpf_meta
+                 WHERE meta_key   = %s
+                   AND meta_value = %s
+                   AND meta_group = %s
+                 LIMIT 1",
+                'give_source_donation_id',
+                (string) $donationId,
+                'wpf_submissions'
+            )
+        );
+
+        if ($existingSubmissionId) {
+            $releaseLock();
             return absint($existingSubmissionId);
         }
 
@@ -118,11 +163,65 @@ class PaymatticSubmissionWriter
         $giveGateway    = $rawGiveGateway;
         $paymentMethod  = GatewayMapper::mapGateway($giveGateway);
 
-        $rawAmount      = (string) ($donation['_give_payment_total'] ?? '0');
-        $amountCents    = AmountConverter::toMinorUnits($rawAmount);
-
         $currency       = strtoupper(sanitize_text_field($donation['_give_payment_currency'] ?? 'USD'));
         $paymentMode    = sanitize_text_field($donation['_give_payment_mode'] ?? 'live');
+
+        $rawAmount      = (string) ($donation['_give_payment_total'] ?? '0');
+        $amountCents    = AmountConverter::toMinorUnits($rawAmount, $currency);
+
+        // ------------------------------------------------------------------
+        // 3b. Fee recovery resolution.
+        //
+        // GiveWP bakes the fee into _give_payment_total, so $amountCents is
+        // always the full charged amount — we never subtract the fee.
+        //
+        // When the donor accepted the fee (_give_fee_status = 'accepted') we:
+        //   a) use _give_fee_donation_amount for the donation order item so
+        //      the two line items sum back to payment_total, and
+        //   b) insert a separate fee_recovery_item order item + Paymattic's
+        //      native _wpf_fee_* meta keys so the entry view shows the split.
+        //
+        // If _give_fee_donation_amount is absent (older GiveWP data), we fall
+        // back to amountCents − feeCents.
+        // ------------------------------------------------------------------
+
+        $rawFeeAmount         = trim((string) ($donation['_give_fee_amount']          ?? ''));
+        $rawFeeDonationAmount = trim((string) ($donation['_give_fee_donation_amount'] ?? ''));
+        $feeStatus            = sanitize_text_field((string) ($donation['_give_fee_status'] ?? ''));
+
+        $hasFeeRecovery = ($feeStatus === 'accepted'
+            && $rawFeeAmount !== ''
+            && (float) $rawFeeAmount > 0.0);
+
+        $feeCents         = 0;
+        $feeDonationCents = 0;
+        if ($hasFeeRecovery) {
+            $feeCents         = AmountConverter::toMinorUnits($rawFeeAmount, $currency);
+            $feeDonationCents = ($rawFeeDonationAmount !== '')
+                ? AmountConverter::toMinorUnits($rawFeeDonationAmount, $currency)
+                : max(0, $amountCents - $feeCents);
+
+            // Guard 1: donation amount must be positive.
+            if ($feeDonationCents === 0 && $amountCents > 0) {
+                $hasFeeRecovery = false;
+                $feeCents       = 0;
+            }
+
+            // Guard 2: order items must sum to payment_total.
+            // _give_fee_donation_amount can disagree with payment_total - fee_amount
+            // when GiveWP data is inconsistent. Recompute from total - fee so the
+            // wpf_order_items rows always reconcile with wpf_submissions.payment_total.
+            if ($hasFeeRecovery && ($feeCents + $feeDonationCents !== $amountCents)) {
+                $feeDonationCents = max(0, $amountCents - $feeCents);
+                if ($feeDonationCents === 0) {
+                    $hasFeeRecovery = false;
+                    $feeCents       = 0;
+                }
+            }
+        }
+
+        // Donation order-item amount: pre-fee when split; full total otherwise.
+        $donationOrderItemCents = $hasFeeRecovery ? $feeDonationCents : $amountCents;
 
         // ------------------------------------------------------------------
         // 4. Build donor identity fields.
@@ -154,13 +253,12 @@ class PaymatticSubmissionWriter
         $createdAt      = !empty($donation['post_date'])     ? $donation['post_date']     : current_time('mysql');
         $updatedAt      = !empty($donation['post_modified']) ? $donation['post_modified'] : current_time('mysql');
 
-        // ------------------------------------------------------------------
-        // 5. Dry-run exit.
-        // ------------------------------------------------------------------
-
-        if ($dryRun) {
-            return 0;
-        }
+        // Wrap all table writes in a transaction so the idempotency marker
+        // (give_source_donation_id in wpf_meta) is always atomic with the
+        // submission row. Without this, a process failure between the submissions
+        // insert and the meta write leaves orphaned rows that bypass the guard
+        // on retry, producing duplicate submissions.
+        $wpdb->query('START TRANSACTION');
 
         // ------------------------------------------------------------------
         // 6. Insert into wpf_submissions.
@@ -193,6 +291,7 @@ class PaymatticSubmissionWriter
                     'customer_name'  => $customerName,
                     'customer_email' => $customerEmail,
                 ]),
+                'status'              => 'new',
                 'created_at'          => $createdAt,
                 'updated_at'          => $updatedAt,
             ],
@@ -210,13 +309,15 @@ class PaymatticSubmissionWriter
                 '%s',  // submission_hash
                 '%s',  // form_data_raw
                 '%s',  // form_data_formatted
+                '%s',  // status
                 '%s',  // created_at
                 '%s',  // updated_at
             ]
         );
 
         if (!$submissionInserted) {
-            // $wpdb->last_error is available to the caller via global $wpdb if needed.
+            $wpdb->query('ROLLBACK');
+            $releaseLock();
             return 0;
         }
 
@@ -234,7 +335,7 @@ class PaymatticSubmissionWriter
 
         $transactionId  = sanitize_text_field($donation['_give_payment_transaction_id'] ?? '');
 
-        $wpdb->insert(
+        $transactionInserted = $wpdb->insert(
             $wpdb->prefix . 'wpf_order_transactions',
             [
                 'form_id'          => $paymatticFormId,
@@ -274,6 +375,12 @@ class PaymatticSubmissionWriter
             ]
         );
 
+        if (!$transactionInserted) {
+            $wpdb->query('ROLLBACK');
+            $releaseLock();
+            return 0;
+        }
+
         // ------------------------------------------------------------------
         // 8. Insert into wpf_order_items.
         //
@@ -287,7 +394,7 @@ class PaymatticSubmissionWriter
 
         $itemName = sanitize_text_field($donation['_give_payment_form_title'] ?? 'Donation');
 
-        $wpdb->insert(
+        $donationItemInserted = $wpdb->insert(
             $wpdb->prefix . 'wpf_order_items',
             [
                 'form_id'       => $paymatticFormId,
@@ -296,24 +403,47 @@ class PaymatticSubmissionWriter
                 'parent_holder' => 'donation_item',
                 'item_name'     => $itemName,
                 'quantity'      => 1,
-                'item_price'    => $amountCents,
-                'line_total'    => $amountCents,
+                'item_price'    => $donationOrderItemCents,
+                'line_total'    => $donationOrderItemCents,
                 'created_at'    => $createdAt,
                 'updated_at'    => $updatedAt,
             ],
-            [
-                '%d',  // form_id
-                '%d',  // submission_id
-                '%s',  // type
-                '%s',  // parent_holder
-                '%s',  // item_name
-                '%d',  // quantity
-                '%d',  // item_price
-                '%d',  // line_total
-                '%s',  // created_at
-                '%s',  // updated_at
-            ]
+            ['%d', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s']
         );
+
+        if (!$donationItemInserted) {
+            $wpdb->query('ROLLBACK');
+            $releaseLock();
+            return 0;
+        }
+
+        // Fee recovery order item — only when donor opted in and fee > 0.
+        // type = 'single' with parent_holder = 'fee_recovery_item' is the exact
+        // discriminator Paymattic uses to identify fee rows in order-item queries.
+        if ($hasFeeRecovery && $feeCents > 0) {
+            $feeItemInserted = $wpdb->insert(
+                $wpdb->prefix . 'wpf_order_items',
+                [
+                    'form_id'       => $paymatticFormId,
+                    'submission_id' => $submissionId,
+                    'type'          => 'single',
+                    'parent_holder' => 'fee_recovery_item',
+                    'item_name'     => 'Processing Fee',
+                    'quantity'      => 1,
+                    'item_price'    => $feeCents,
+                    'line_total'    => $feeCents,
+                    'created_at'    => $createdAt,
+                    'updated_at'    => $updatedAt,
+                ],
+                ['%d', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s']
+            );
+
+            if (!$feeItemInserted) {
+                $wpdb->query('ROLLBACK');
+                $releaseLock();
+                return 0;
+            }
+        }
 
         // ------------------------------------------------------------------
         // 9. Insert wpf_meta rows.
@@ -337,25 +467,27 @@ class PaymatticSubmissionWriter
 
         $now = current_time('mysql');
 
-        // Helper closure to keep insert calls DRY.
-        $insertMeta = function (string $key, string $value) use ($wpdb, $submissionId, $paymatticFormId, $now): void {
-            $wpdb->insert(
-                $wpdb->prefix . 'wpf_meta',
-                [
-                    'meta_group' => 'wpf_submissions',
-                    'option_id'  => $submissionId,
-                    'form_id'    => $paymatticFormId,
-                    'meta_key'   => $key,
-                    'meta_value' => $value,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ],
-                ['%s', '%d', '%d', '%s', '%s', '%s', '%s']
-            );
-        };
+        // Helper to keep insert calls DRY. Returns false on DB error.
+        $insertMeta = fn(string $key, string $value): bool => (bool) $wpdb->insert(
+            "{$wpdb->prefix}wpf_meta",
+            [
+                'meta_group' => 'wpf_submissions',
+                'option_id'  => $submissionId,
+                'form_id'    => $paymatticFormId,
+                'meta_key'   => $key,
+                'meta_value' => $value,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            ['%s', '%d', '%d', '%s', '%s', '%s', '%s']
+        );
 
         // Row 1 — CRITICAL: source donation ID for idempotency + rollback.
-        $insertMeta('give_source_donation_id', (string) $donationId);
+        if (!$insertMeta('give_source_donation_id', (string) $donationId)) {
+            $wpdb->query('ROLLBACK');
+            $releaseLock();
+            return 0;
+        }
 
         // Row 2 — Billing address (stored as a serialized array, matching the
         // address_input field data format used by Paymattic's address component).
@@ -392,8 +524,7 @@ class PaymatticSubmissionWriter
             'donor_company'         => sanitize_text_field((string) ($donation['_give_donation_company'] ?? '')),
             // Honorific/title prefix (Mr., Ms., Dr., etc.).
             'donor_honorific'       => sanitize_text_field((string) ($donation['_give_donor_billing_title_prefix'] ?? '')),
-            // Fee recovery: the amount the donor agreed to cover.
-            // We store it for auditing only; it is NOT subtracted from payment_total.
+            // Fee recovery — generic audit keys (all statuses preserved).
             'fee_amount'            => sanitize_text_field((string) ($donation['_give_fee_amount'] ?? '')),
             'fee_donation_amount'   => sanitize_text_field((string) ($donation['_give_fee_donation_amount'] ?? '')),
             'fee_status'            => sanitize_text_field((string) ($donation['_give_fee_status'] ?? '')),
@@ -407,6 +538,24 @@ class PaymatticSubmissionWriter
         foreach ($optionalMeta as $key => $value) {
             if (!empty($value)) {
                 $insertMeta($key, $value);
+            }
+        }
+
+        // Native Paymattic fee recovery meta — used by the submission entry view
+        // to display the fee breakdown. Only written when the donor accepted the fee.
+        // _wpf_fee_amount and _wpf_net_donation_amount are stored as integer cent
+        // strings; _wpf_fee_formatted is a plain decimal string with no currency sign.
+        // These rows are structural: a submission with a fee_recovery_item order row
+        // but missing _wpf_fee_* meta is inconsistent, so we rollback on any failure.
+        if ($hasFeeRecovery && $feeCents > 0) {
+            $feeFormatted = AmountConverter::toFormattedDecimal($feeCents, $currency);
+            if (!$insertMeta('_wpf_fee_amount',          (string) $feeCents)
+                || !$insertMeta('_wpf_fee_opted_in',        '1')
+                || !$insertMeta('_wpf_net_donation_amount', (string) $feeDonationCents)
+                || !$insertMeta('_wpf_fee_formatted',       $feeFormatted)) {
+                $wpdb->query('ROLLBACK');
+                $releaseLock();
+                return 0;
             }
         }
 
@@ -439,6 +588,9 @@ class PaymatticSubmissionWriter
             $insertMeta('give_transaction_url', $transactionUrl);
         }
 
+        $wpdb->query('COMMIT');
+
+        $releaseLock();
         return $submissionId;
     }
 }

@@ -246,6 +246,139 @@ class GiveFormReader
             }
 
             // ------------------------------------------------------------------
+            // 9a. Gift Aid form configuration.
+            //
+            // give-gift-aid stores form-level settings in wp_postmeta on the
+            // give_forms post (NOT in give_formmeta). Both 'enabled' and 'global'
+            // mean Gift Aid should be active on the migrated Paymattic form.
+            //
+            // Source meta keys (wp_postmeta on give_forms post):
+            //   give_gift_aid_enable_disable — 'enabled' / 'disabled' / 'global'
+            //   give_gift_aid_agreement      — declaration text shown to donor
+            // ------------------------------------------------------------------
+
+            $giftAidStatus      = sanitize_text_field((string) get_post_meta($formId, 'give_gift_aid_enable_disable', true));
+            $giftAidDeclaration = sanitize_text_field((string) get_post_meta($formId, 'give_gift_aid_agreement', true));
+            $hasGiftAid         = in_array($giftAidStatus, ['enabled', 'global'], true);
+
+            // ------------------------------------------------------------------
+            // 9b. Fee Recovery configuration (give-fee-recovery add-on).
+            //
+            // All keys are in give_formmeta (NOT wp_postmeta).
+            // _form_give_fee_recovery: 'enabled' / 'disabled' / 'global'
+            // _form_give_fee_percentage: fee % as decimal string (e.g. '2.90')
+            // _form_give_fee_base_amount: flat fee in dollars (e.g. '0.30') —
+            //   stored as dollars; FormWriter converts to cents.
+            // _form_give_fee_mode: 'donor_opt_in' / 'forced_opt_in'
+            // _form_give_fee_configuration: 'all_gateways' / 'per_gateway'
+            //
+            // Per-gateway rates are discovered by scanning all meta keys for the
+            // patterns _form_gateway_fee_percentage_{gateway} and
+            // _form_gateway_fee_base_amount_{gateway}.
+            // ------------------------------------------------------------------
+
+            $feeRecoveryStatus = isset($meta['_form_give_fee_recovery'])
+                ? sanitize_text_field($meta['_form_give_fee_recovery'])
+                : 'disabled';
+
+            $hasFeeRecovery = in_array($feeRecoveryStatus, ['enabled', 'global'], true);
+
+            // When status = 'global', per-form give_formmeta keys are absent.
+            // GiveWP resolves them at runtime from give_options in wp_options.
+            // We do the same here so migrated forms get the actual configured
+            // rates rather than hardcoded PHP defaults.
+            $globalGiveOpts = ($feeRecoveryStatus === 'global')
+                ? (array) get_option('give_options', [])
+                : [];
+
+            $feeRecovery = [
+                'status'        => $feeRecoveryStatus,
+                'enabled'       => $hasFeeRecovery,
+                // Stored as float; PaymatticFormWriter uses directly as percent.
+                'percent'       => isset($meta['_form_give_fee_percentage'])
+                                       ? (float) $meta['_form_give_fee_percentage']
+                                       : (float) ($globalGiveOpts['give_fee_percentage'] ?? 2.9),
+                // Stored as dollars (e.g. 0.30); PaymatticFormWriter converts to cents.
+                'base_amount'   => isset($meta['_form_give_fee_base_amount'])
+                                       ? (float) $meta['_form_give_fee_base_amount']
+                                       : (float) ($globalGiveOpts['give_fee_base_amount'] ?? 0.30),
+                'mode'          => isset($meta['_form_give_fee_mode'])
+                                       ? sanitize_text_field($meta['_form_give_fee_mode'])
+                                       : sanitize_text_field((string) ($globalGiveOpts['give_fee_mode'] ?? 'donor_opt_in')),
+                'configuration' => isset($meta['_form_give_fee_configuration'])
+                                       ? sanitize_text_field($meta['_form_give_fee_configuration'])
+                                       : sanitize_text_field((string) ($globalGiveOpts['give_fee_configuration'] ?? 'all_gateways')),
+                'per_gateway'   => [],
+            ];
+
+            // Scan all give_formmeta keys for per-gateway fee config.
+            // Keys follow the patterns _form_gateway_fee_percentage_{gateway} and
+            // _form_gateway_fee_base_amount_{gateway} where {gateway} is a GiveWP
+            // gateway slug like 'stripe', 'paypal', 'razorpay', etc.
+            // _form_gateway_fee_enable_{gateway} = 'enabled' means enabled (GiveWP convention).
+            // give_is_setting_enabled() checks strict equality to 'enabled'.
+            // Absent or any other value ('disabled', '') means disabled — skip it.
+            foreach ($meta as $metaKey => $metaValue) {
+                if (strpos($metaKey, '_form_gateway_fee_percentage_') === 0) {
+                    $gwSlug = sanitize_key(substr($metaKey, strlen('_form_gateway_fee_percentage_')));
+                    if ($gwSlug !== '') {
+                        // Require the enable key to be present and explicitly 'enabled'.
+                        $enableKey = '_form_gateway_fee_enable_' . $gwSlug;
+                        if (!isset($meta[$enableKey]) || $meta[$enableKey] !== 'enabled') {
+                            continue;
+                        }
+                        if (!isset($feeRecovery['per_gateway'][$gwSlug])) {
+                            $feeRecovery['per_gateway'][$gwSlug] = ['percent' => 0.0, 'base_amount' => 0.0];
+                        }
+                        $feeRecovery['per_gateway'][$gwSlug]['percent'] = (float) $metaValue;
+                    }
+                }
+                if (strpos($metaKey, '_form_gateway_fee_base_amount_') === 0) {
+                    $gwSlug = sanitize_key(substr($metaKey, strlen('_form_gateway_fee_base_amount_')));
+                    if ($gwSlug !== '') {
+                        $enableKey = '_form_gateway_fee_enable_' . $gwSlug;
+                        if (!isset($meta[$enableKey]) || $meta[$enableKey] !== 'enabled') {
+                            continue;
+                        }
+                        if (!isset($feeRecovery['per_gateway'][$gwSlug])) {
+                            $feeRecovery['per_gateway'][$gwSlug] = ['percent' => 0.0, 'base_amount' => 0.0];
+                        }
+                        $feeRecovery['per_gateway'][$gwSlug]['base_amount'] = (float) $metaValue;
+                    }
+                }
+            }
+
+            // For 'global' status, per-gateway rates also come from give_options
+            // (keys: give_fee_gateway_fee_enable_option_{gw} and
+            // give_fee_gateway_fee_percentage_{gw} / give_fee_gateway_fee_base_amount_{gw}).
+            if (!empty($globalGiveOpts) && empty($feeRecovery['per_gateway'])) {
+                foreach ($globalGiveOpts as $optKey => $optValue) {
+                    if (strpos($optKey, 'give_fee_gateway_fee_percentage_') === 0) {
+                        $gwSlug    = sanitize_key(substr($optKey, strlen('give_fee_gateway_fee_percentage_')));
+                        $enableKey = 'give_fee_gateway_fee_enable_option_' . $gwSlug;
+                        if ($gwSlug !== '' && isset($globalGiveOpts[$enableKey])
+                            && in_array($globalGiveOpts[$enableKey], ['enabled', 'on', 'yes'], true)) {
+                            if (!isset($feeRecovery['per_gateway'][$gwSlug])) {
+                                $feeRecovery['per_gateway'][$gwSlug] = ['percent' => 0.0, 'base_amount' => 0.0];
+                            }
+                            $feeRecovery['per_gateway'][$gwSlug]['percent'] = (float) $optValue;
+                        }
+                    }
+                    if (strpos($optKey, 'give_fee_gateway_fee_base_amount_') === 0) {
+                        $gwSlug    = sanitize_key(substr($optKey, strlen('give_fee_gateway_fee_base_amount_')));
+                        $enableKey = 'give_fee_gateway_fee_enable_option_' . $gwSlug;
+                        if ($gwSlug !== '' && isset($globalGiveOpts[$enableKey])
+                            && in_array($globalGiveOpts[$enableKey], ['enabled', 'on', 'yes'], true)) {
+                            if (!isset($feeRecovery['per_gateway'][$gwSlug])) {
+                                $feeRecovery['per_gateway'][$gwSlug] = ['percent' => 0.0, 'base_amount' => 0.0];
+                            }
+                            $feeRecovery['per_gateway'][$gwSlug]['base_amount'] = (float) $optValue;
+                        }
+                    }
+                }
+            }
+
+            // ------------------------------------------------------------------
             // 10. Assemble the return array for this form.
             // ------------------------------------------------------------------
 
@@ -274,6 +407,11 @@ class GiveFormReader
                 'recurring_enabled'      => $recurringEnabled,
                 'recurring_period'       => $recurringPeriod,
                 'recurring_frequency'    => $recurringFrequency,
+                // Gift Aid configuration (from wp_postmeta, not give_formmeta).
+                'gift_aid_enabled'       => $hasGiftAid,
+                'gift_aid_declaration'   => $giftAidDeclaration,
+                // Fee Recovery configuration (from give_formmeta).
+                'fee_recovery'           => $feeRecovery,
                 // Email notification configuration.
                 'email_notifications'    => GiveEmailReader::getFormEmailNotifications($formId, $meta),
                 'email_from_name'        => sanitize_text_field((string) (isset($meta['_give_from_name']) ? $meta['_give_from_name'] : '')),

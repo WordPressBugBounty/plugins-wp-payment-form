@@ -178,6 +178,9 @@ class StripeInlineHandler extends StripeHandler
             }
             if (!empty($plan['subscription_cancel_at'])) {
                 $subscriptionArgs['cancel_at'] = $plan['subscription_cancel_at'];
+                if (Arr::get($this->getStripeSettings(), 'disable_subscription_proration') === 'yes') {
+                    $subscriptionArgs['proration_behavior'] = 'none';
+                }
             }
         }
 
@@ -342,29 +345,6 @@ class StripeInlineHandler extends StripeHandler
 
         $formHandler = new SubmissionHandler();
         $formHandler->sendSubmissionConfirmation($submission, $submission->form_id);
-    }
-
-    public function getFirstTimePaymentTotal($submission)
-    {
-        $subscriptions = (new Subscription())->getSubscriptions($submission->id);
-        $transaction = (new Transaction())->getLatestTransaction($submission->id);
-
-        $paymentTotal = 0;
-        foreach ($subscriptions as $subscription) {
-            if ($subscription->trial_days) {
-                continue;
-            }
-            if ($submission->initial_amount) {
-                $paymentTotal += $subscription->initial_amount * $subscription->quantity;
-            } else {
-                $paymentTotal += $subscription->recurring_amount * $subscription->quantity;
-            }
-        }
-        if ($transaction) {
-            $paymentTotal += $transaction->payment_total;
-        }
-
-        return $paymentTotal;
     }
 
     /*

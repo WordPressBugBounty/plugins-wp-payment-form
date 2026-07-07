@@ -39,7 +39,7 @@ class StripeHandler
     }
 
     // wpfGetStripePaymentSettings
-    private function getStripeSettings()
+    protected function getStripeSettings()
     {
         $settings = get_option('wppayform_stripe_payment_settings', array());
         $defaults = array(
@@ -50,7 +50,8 @@ class StripeHandler
             'test_secret_key' => '',
             'company_name' => get_bloginfo('name'),
             'checkout_logo' => '',
-            'send_meta_data' => 'no'
+            'send_meta_data' => 'no',
+            'disable_subscription_proration' => 'no',
         );
         return wp_parse_args($settings, $defaults);
     }

@@ -2,6 +2,10 @@
 
 namespace WPPayForm\Database;
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 require_once(WPPAYFORM_DIR.'database/Migrations/OrdersTable.php');
 require_once(WPPAYFORM_DIR.'database/Migrations/TransactionsTable.php');

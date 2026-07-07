@@ -74,10 +74,12 @@ class PendingPaymentExpirationHandler
         if (!$submission) {
             return false;
         }
-        $submissionStatus = $submission->payment_status;
-        $transaction = $submission->transactions->first();
-        $TransactionStatus = $transaction ? $transaction->status : null;
+
+        $transaction = Transaction::where('id', $transaction_id)->first();
         $subscription = $submission->subscriptions->first();
+
+        $submissionStatus = $submission->payment_status;
+        $TransactionStatus = $transaction ? $transaction->status : null;
         $SubscriptionStatus = $subscription ? $subscription->status : null;
 
         if ($submissionStatus !== 'pending') {
@@ -92,17 +94,27 @@ class PendingPaymentExpirationHandler
             return false;
         }
 
-        $updateSubmission = (new Submission())->updateSubmission($submission_id,  ['payment_status' => 'failed']);
-        $updateTransaction = (new Transaction())->updateTransaction($transaction_id,  ['status' => 'failed']);
+        $connection = Submission::resolveConnection();
+        $connection->beginTransaction();
 
-        $updateSubscription = false;
-        if ($subscription) {
-            $updateSubscription = (new Subscription())->updateSubscription($subscription->id,  ['status' => 'cancelled']);
-        }
+        $submissionUpdated = (new Submission())->updateSubmission($submission_id, ['payment_status' => 'failed']);
+        $transactionUpdated = (new Transaction())->updateTransaction($transaction_id, ['status' => 'failed']);
 
-        if ((!$updateSubmission && !$updateTransaction) || (!$updateSubmission && !$updateSubscription)) {
+        if (!$submissionUpdated || !$transactionUpdated) {
+            $connection->rollBack();
             return false;
         }
+
+        if ($subscription) {
+            $subscriptionUpdated = (new Subscription())->updateSubscription($subscription->id, ['status' => 'cancelled']);
+
+            if (!$subscriptionUpdated) {
+                $connection->rollBack();
+                return false;
+            }
+        }
+
+        $connection->commit();
 
         do_action('wppayform/form_submission_activity_start', $form_id);
         do_action('wppayform/after_payment_status_change', $submission_id, 'failed');

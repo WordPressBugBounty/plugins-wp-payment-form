@@ -105,7 +105,10 @@ class Submission extends Model
             return;
         }
 
-        $query->where(function ($query) use ($searchString) {
+        global $wpdb;
+        $safeSearch = $wpdb->esc_like($searchString);
+
+        $query->where(function ($query) use ($safeSearch) {
             $fields = [
                 'customer_name',
                 'customer_email',
@@ -116,7 +119,7 @@ class Submission extends Model
             ];
 
             foreach ($fields as $field) {
-                $query->orWhere("wpf_submissions.$field", 'LIKE', "%{$searchString}%");
+                $query->orWhere("wpf_submissions.$field", 'LIKE', "%{$safeSearch}%");
             }
         });
 

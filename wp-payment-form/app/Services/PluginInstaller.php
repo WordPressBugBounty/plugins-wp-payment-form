@@ -2,6 +2,9 @@
 
 namespace WPPayForm\App\Services;
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
 
 if ( ! class_exists('Plugin_Upgrader')) {
     include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
