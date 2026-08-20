@@ -745,6 +745,61 @@ class Form extends Model
         }
     }
 
+    private static function formatShortcodeElement($field)
+    {
+        $elementId = Arr::get($field, 'id');
+        $type = Arr::get($field, 'type');
+
+        $options = [];
+        $code = "{input." . $elementId . "}";
+
+        switch ($type) {
+            case 'donation_item':
+                $options = self::getDonationOptions($field);
+                $code = "{input." . $elementId . "}";
+                break;
+            case 'payment_item':
+                $oneTimeType = Arr::get($field, 'field_options.pricing_details.one_time_type');
+                $options = ($oneTimeType === 'single') ? [] : self::getDonationOptions($field);
+                $code = "{payment_item." . $elementId . "}";
+                break;
+            case 'choose_payment_method':
+                $options = self::getPaymentMethodOptions($field);
+                $code = "{payment_method." . $elementId . "}";
+                break;
+            default:
+                $options = [];
+                $code = "{input." . $elementId . "}";
+                break;
+        }
+
+        return array(
+            "element"     => $elementId,
+            "admin_label" => Arr::get($field, 'field_options.admin_label'),
+            "options"     => $options,
+            "attributes"  => array(
+                "name" => self::getLabel($field),
+                "code" => $code,
+                "type" => $type,
+            ),
+        );
+    }
+
+    private static function isShortcodeMappable($field)
+    {
+        if (Arr::get($field, 'group') == 'input') {
+            return true;
+        }
+
+        $mappableTypes = array(
+            'donation_item',
+            'payment_item',
+            'choose_payment_method',
+        );
+
+        return in_array(Arr::get($field, 'type'), $mappableTypes, true);
+    }
+
     public static function getInputShortcode($formId)
     {
         $builderSettings = get_post_meta($formId, 'wppayform_paymentform_builder_settings', true);
@@ -756,86 +811,40 @@ class Form extends Model
         $formattedShortcodes = array();
 
         foreach ($builderSettings as $element) {
-            $elementId = Arr::get($element, 'id');
-            if ($element['group'] == 'input') {
-                $label = self::getLabel($element);
-                $formattedShortcodes[$elementId] = array(
-                    "element" => $elementId,
-                    "admin_label" => Arr::get($element, 'field_options.admin_label'),
-                    "options" => [],
-                    "attributes" => [
-                        "name" => $label,
-                        "code" => "{input." . $elementId . "}",
-                        "type" => $element['type']
-                    ]
-                );
-            } else if ($element['type'] == 'container') {
+            if (Arr::get($element, 'type') == 'container') {
                 $columns = Arr::get($element, 'field_options.columns', []);
                 foreach ($columns as $column) {
                     $fields = Arr::get($column, 'fields', []);
                     foreach ($fields as $field) {
-                        $elementId = Arr::get($field, 'id');
-                        $label = self::getLabel($field);
-
-                        if ($field['type'] == 'donation_item') {
-                            $options = self::getDonationOptions($field);
-                            $code = "{input." . $elementId . "}";
-                        } elseif ($field['type'] == 'choose_payment_method') {
-                            $options = self::getPaymentMethodOptions($field);
-                            $code = "{payment_method." . $elementId . "}";
-                        } else {
-                            $options = [];
-                            $code = "{input." . $elementId . "}";
+                        if (!self::isShortcodeMappable($field)) {
+                            continue;
                         }
-
-                        $formattedShortcodes[$elementId] = array(
-                            "element" => $elementId,
-                            "admin_label" => Arr::get($field, 'field_options.admin_label'),
-                            "options" => $options,
-                            "attributes" => [
-                                "name" => $label,
-                                "code" => $code,
-                                "type" => $field['type']
-                            ]
-                        );
+                        $fieldId = Arr::get($field, 'id');
+                        $formattedShortcodes[$fieldId] = self::formatShortcodeElement($field);
                     }
                 }
-                // dd($columns);
-            } else if ($element['type'] == 'donation_item') {
-                $label = self::getLabel($element);
-                $formattedShortcodes[$elementId] = array(
-                    "element" => $elementId,
-                    "admin_label" => Arr::get($element, 'field_options.admin_label'),
-                    "options" => self::getDonationOptions($element),
-                    "attributes" => [
-                        "name" => $label,
-                        "code" => "{input." . $elementId . "}",
-                        "type" => $element['type']
-                    ]
-                );
-            } elseif ($element['type'] == 'choose_payment_method') {
-                $label = self::getLabel($element);
-                $formattedShortcodes[$elementId] = array(
-                    "element" => $elementId,
-                    "admin_label" => Arr::get($element, 'field_options.admin_label'),
-                    "options" => self::getPaymentMethodOptions($element),
-                    "attributes" => [
-                        "name" => $label,
-                        "code" => "{payment_method." . $elementId . "}",
-                        "type" => $element['type']
-                    ]
-                );
+            } elseif (self::isShortcodeMappable($element)) {
+                $elementId = Arr::get($element, 'id');
+                $formattedShortcodes[$elementId] = self::formatShortcodeElement($element);
             }
         }
+
         return $formattedShortcodes;
     }
     public static function getDonationOptions($element)
     {
         $options = Arr::get($element, 'field_options.pricing_details.multiple_pricing', []);
         $donationOptions = [];
+        if (!is_array($options)) {
+            return $donationOptions;
+        }
         foreach ($options as $key => $option) {
             $label = Arr::get($option, 'label', '');
-            $donationOptions[$key] = $label ? $label : $option['value'];
+            $value = Arr::get($option, 'value', '');
+            if ($label === '' && $value === '') {
+                continue;
+            }
+            $donationOptions[$key] = $label !== '' ? $label : $value;
         }
 
         return $donationOptions;

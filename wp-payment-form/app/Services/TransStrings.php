@@ -451,6 +451,14 @@ class TransStrings
             'Dashboard' => __('Dashboard', 'wp-payment-form'),
             'Manage Subscription' => __('Manage Subscription', 'wp-payment-form'),
             'logout' => __('Logout', 'wp-payment-form'),
+
+            // Subscription card update — rate-limit notice (SubscriptionCard/UpdateCard.js)
+            'You can update your card' => __('You can update your card', 'wp-payment-form'),
+            'more time today' => __('more time today', 'wp-payment-form'),
+            'more times today' => __('more times today', 'wp-payment-form'),
+            'You have reached your 24 hours limit for updating card. Please try again tomorrow.' => __('You have reached your 24 hours limit for updating card. Please try again tomorrow.', 'wp-payment-form'),
+            'Something went wrong. Please try again.' => __('Something went wrong. Please try again.', 'wp-payment-form'),
+
             'Members' => __('Members', 'wp-payment-form'),
             'Lessons' => __('Lessons', 'wp-payment-form'),
             'Sections' => __('Sections', 'wp-payment-form'),

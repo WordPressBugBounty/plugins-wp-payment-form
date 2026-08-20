@@ -2,7 +2,6 @@
 
 namespace WPPayForm\App\Http\Controllers;
 
-use Exception;
 use WPPayForm\App\Models\Form;
 use WPPayForm\App\Services\AccessControl;
 use WPPayForm\App\Services\FormPlaceholders;
@@ -15,19 +14,19 @@ class FormController extends Controller
 {
     public function index(Form $form, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         try {
             return $form->getFormInfo($formId);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError([
-                'message' => $e->getMessage()
+                'message' => __('Failed to load form data. Please try again.', 'wp-payment-form')
             ], 423);
         }
     }
 
     public function store(Form $form, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         try {
             $builderSettings = $this->request->get('builder_settings');
             $form->saveForm($formId, $builderSettings, $this->request->get('submit_button_settings'));
@@ -44,7 +43,7 @@ class FormController extends Controller
 
     public function remove($formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         try {
             Form::deleteForm($formId);
             return array(
@@ -59,7 +58,7 @@ class FormController extends Controller
 
     public function editors($formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         $builderSettings = Form::getBuilderSettings($formId);
         $allComponents = GeneralSettings::getComponents();
 
@@ -74,7 +73,7 @@ class FormController extends Controller
 
     public function saveIntegration(Meta $meta, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         try {
             $insertId = $meta->saveIntegration($this->request->all(), $formId);
         } catch (\Exception $e) {
@@ -92,7 +91,7 @@ class FormController extends Controller
 
     public function getIntegration(Meta $meta, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         try {
             return $this->sendSuccess($meta->getIntegration($formId));
         } catch (\Exception $e) {
@@ -104,7 +103,7 @@ class FormController extends Controller
 
     public function update(Form $form, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         $request_data = $this->request->all();
         try {
             $form->updateForm($formId, $request_data);
@@ -121,7 +120,7 @@ class FormController extends Controller
 
     public function designSettings($formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         return array(
             'layout_settings' => Form::getDesignSettings($formId)
         );
@@ -129,7 +128,7 @@ class FormController extends Controller
 
     public function updateDesignSettings($formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         $layoutSettings = wp_unslash($this->request->layout_settings);
         update_post_meta($formId, 'wppayform_form_design_settings', $layoutSettings);
         return array(
@@ -139,7 +138,7 @@ class FormController extends Controller
 
     public function settings(Form $form, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         $allPages = $form->getAllPages();
         $allPosts = $form->getAllPosts();
 
@@ -161,7 +160,7 @@ class FormController extends Controller
 
     public function saveSettings(Form $form, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         $request_data = $this->request->all();
         try {
             return $form->saveSettings($request_data, $formId);
@@ -175,17 +174,17 @@ class FormController extends Controller
 
     public function duplicateForm(GlobalTools $globalTools, $formId)
     {
-        $formId = intval($formId);
-        $oldForm = '';
+        $formId = absint($formId);
         $oldForm = $globalTools->getForm($formId);
-        $oldForm['post_title'] = '(Duplicate) ' . $oldForm['post_title'];
-        $oldForm = apply_filters('wppayform/form_duplicate', $oldForm);
 
         if (!$oldForm) {
             return $this->sendError([
                 'message' => __('No form found when duplicating the form', 'wp-payment-form')
             ], 423);
         }
+
+        $oldForm['post_title'] = '(Duplicate) ' . $oldForm['post_title'];
+        $oldForm = apply_filters('wppayform/form_duplicate', $oldForm);
 
         $newForm = $globalTools->createFormFromData($oldForm);
         return array(
@@ -196,7 +195,7 @@ class FormController extends Controller
 
     public function export($formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         $globalTools = new GlobalTools();
         $globalTools->exportFormJson($formId);
     }
@@ -243,18 +242,22 @@ class FormController extends Controller
             );
         }
 
-        \WPPayForm\App\Services\GiftAidExporter::export($formId, [
-            'charity_name' => $charityName,
-            'hmrc_ref'     => $hmrcRef,
-            'date_from'    => $dateFrom,
-            'date_to'      => $dateTo,
-        ]);
+        try {
+            \WPPayForm\App\Services\GiftAidExporter::export($formId, [
+                'charity_name' => $charityName,
+                'hmrc_ref'     => $hmrcRef,
+                'date_from'    => $dateFrom,
+                'date_to'      => $dateTo,
+            ]);
+        } catch (\Exception $e) {
+            wp_send_json_error(['message' => __('Export failed. Please try again.', 'wp-payment-form')], 500);
+        }
     }
 
     // get currency rates
     public function getCurrencyRates($baseCurrency, $apiKey, $cachingInterVal, $formId)
     {
-        $formId = intval($formId);
+        $formId = absint($formId);
         $baseCurrency = sanitize_text_field($baseCurrency);
         $apiKey = sanitize_text_field($apiKey);
         $cachingInterVal = sanitize_text_field($cachingInterVal);
@@ -293,8 +296,7 @@ class FormController extends Controller
         $updatedAt = new \DateTime($data->updated_at); // Convert $data->updated_at to a DateTime object
         // Calculate the difference in hours between the current time and $updatedAt
         $hoursDifference = (new \DateTime(current_time('mysql')))->diff($updatedAt)->h;
-        // dd($hoursDifference, intval($cachingInterVal));
-        if ($hoursDifference >= intval($cachingInterVal)) {
+        if ($hoursDifference >= absint($cachingInterVal)) {
             $rates = $this->getRatesFromApi($baseCurrency, $apiKey, $formId);
             if (!empty($rates)) {
                 $meta->updateCurrencyRates($rates, $key);
@@ -325,10 +327,6 @@ class FormController extends Controller
         $body = wp_remote_retrieve_body($response);
 
         $rates = [];
-
-        if (is_wp_error($response)) {
-            return $rates;
-        }
         $jsonData = json_decode($body, true);
         if (isset($jsonData['data'])) {
             $rates = $jsonData['data'];

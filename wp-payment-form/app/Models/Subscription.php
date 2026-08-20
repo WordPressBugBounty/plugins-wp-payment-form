@@ -214,6 +214,39 @@ class Subscription extends Model
         return (object) $formatted;
     }
 
+    /**
+     * One meta key across many subscriptions in a single query, as [subscription_id => value].
+     *
+     * getMetas() is per-subscription: calling it inside a render loop costs one wpf_meta SELECT
+     * and one unserialize per row. The customer dashboard lists every subscription a customer
+     * owns, so that scales with their subscription count for data the page needs all at once.
+     * Missing rows are simply absent from the map — callers should treat that as "no value".
+     *
+     * @param  array  $optionIds subscription ids
+     * @param  string $key       meta_key
+     * @return array
+     */
+    public function getMetaForMany($optionIds, $key)
+    {
+        $optionIds = array_values(array_unique(array_filter(array_map('absint', (array) $optionIds))));
+
+        if (!$optionIds) {
+            return array();
+        }
+
+        $metas = (new Meta())->where('meta_group', $this->table)
+            ->where('meta_key', $key)
+            ->whereIn('option_id', $optionIds)
+            ->get();
+
+        $formatted = array();
+        foreach ($metas as $meta) {
+            $formatted[$meta->option_id] = wppayform_safeUnserialize($meta->meta_value);
+        }
+
+        return $formatted;
+    }
+
     public function getIntentedSubscriptions($submissionId)
     {
         $subscriptions = $this->where('submission_id', $submissionId)

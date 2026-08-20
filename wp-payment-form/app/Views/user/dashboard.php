@@ -22,6 +22,7 @@ $wppayform_read_entry = Arr::get($permissions, 'read_entry');
 $wppayform_read_subscription_entry = Arr::get($permissions, 'read_subscription_entry');
 $wppayform_can_sync_subscription_billings = Arr::get($permissions, 'can_sync_subscription_billings');
 $wppayform_cancel_subscription = Arr::get($permissions, 'cancel_subscription');
+$wppayform_update_subscription_card = Arr::get($permissions, 'update_subscription_card');
 
 if (!function_exists('wppayform_get_payment_status')) {
     function wppayform_get_payment_status($status) {
@@ -370,6 +371,40 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                     <p class="wpf-empty-state-msg"><?php echo esc_html__('You have no subscriptions yet.', 'wp-payment-form'); ?></p>
                                 </div>
                                 <?php
+                                // Pre-pass: collect the subscriptions whose row will render a card
+                                // button, then load all their card metas in ONE query. Doing this
+                                // inside the loop costs a wpf_meta SELECT + unserialize per row,
+                                // and this list is every subscription the customer owns
+                                // (CLAUDE.md OPT-H01: no new N+1 in the dashboard).
+                                // Same predicate as $wppayform_card_updatable below — keep them in step.
+                                // The button is inert without its bundle: every click handler, the
+                                // Elements mount and the ajax flow live in UpdateCard.js, which is
+                                // enqueued by pro's Render::localizedScript() — this view is only
+                                // ever rendered from there, and the enqueue runs before it. If an
+                                // older pro is installed, nothing enqueues it; render no button at
+                                // all rather than one that silently does nothing when clicked.
+                                $wppayform_card_bundle_ready = wp_script_is('wppayform_subscription_card', 'enqueued');
+
+                                $wppayform_card_meta_map = array();
+                                if ($wppayform_update_subscription_card == 'yes' && $wppayform_card_bundle_ready) {
+                                    $wppayform_card_meta_ids = array();
+                                    foreach (Arr::get($donationItems, 'subscriptions', []) as $wppayform_pre_item) {
+                                        $wppayform_pre_owner = absint(Arr::get($wppayform_pre_item, 'submission.submission.user_id', 0));
+                                        if (
+                                            $wppayform_pre_owner
+                                            && $wppayform_pre_owner === get_current_user_id()
+                                            && Arr::get($wppayform_pre_item, 'submission.submission.payment_method', '') === 'stripe'
+                                            && in_array(strtolower((string) Arr::get($wppayform_pre_item, 'status', '')), array('active', 'trialing'), true)
+                                        ) {
+                                            $wppayform_card_meta_ids[] = Arr::get($wppayform_pre_item, 'id');
+                                        }
+                                    }
+                                    if ($wppayform_card_meta_ids) {
+                                        $wppayform_card_meta_map = (new \WPPayForm\App\Models\Subscription())
+                                            ->getMetaForMany($wppayform_card_meta_ids, 'stripe_payment_method');
+                                    }
+                                }
+
                                 $wppayform_i = 1000;
                                 foreach (Arr::get($donationItems, 'subscriptions', []) as $wppayform_donation_key => $wppayform_donation_item):
                                     $wppayform_i++;
@@ -490,6 +525,117 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                                     </div>
                                                 </div>
                                             </div>
+                                            <?php
+                                            $wppayform_sub_form_id = Arr::get($wppayform_donation_item, 'form_id');
+                                            $wppayform_sub_status_now = strtolower((string) Arr::get($wppayform_donation_item, 'status', ''));
+
+                                            // Rows reach this dashboard by customer_email (Customers::customer($email)),
+                                            // but the endpoint authorises by user_id. Mirror the endpoint's rule here, or
+                                            // a guest-checkout row (user_id = 0) carrying this email — or one where someone
+                                            // typed this address into another form — renders a card button that can only
+                                            // ever 403, and shows that submission's brand/last4 to the wrong person.
+                                            $wppayform_sub_owner_id = absint(Arr::get($wppayform_donation_item, 'submission.submission.user_id', 0));
+                                            $wppayform_sub_is_owned = $wppayform_sub_owner_id
+                                                && $wppayform_sub_owner_id === get_current_user_id();
+
+                                            // Keep this predicate in step with the pre-pass above —
+                                            // if they drift, rows lose their card display or the
+                                            // pre-pass loads metas nothing reads.
+                                            $wppayform_card_updatable = $wppayform_update_subscription_card == 'yes'
+                                                && $wppayform_card_bundle_ready
+                                                && $wppayform_sub_is_owned
+                                                && $wppayform_payment_method === 'stripe'
+                                                && in_array($wppayform_sub_status_now, array('active', 'trialing'), true);
+
+                                            $wppayform_stripe_pub_key = '';
+                                            $wppayform_sub_card = array();
+
+                                            // Inside the gate on purpose: getPubKey() reads that form's payment settings,
+                                            // so calling it for PayPal/cancelled/non-Stripe rows that never render a button
+                                            // is wasted work. Cached per form_id — the dashboard mixes forms, but a customer
+                                            // usually has few. Card meta comes from the single pre-pass query above.
+                                            if ($wppayform_card_updatable) {
+                                                static $wppayform_pub_key_cache = array();
+                                                if (!isset($wppayform_pub_key_cache[$wppayform_sub_form_id])) {
+                                                    $wppayform_pub_key_cache[$wppayform_sub_form_id] = (new \WPPayForm\App\Modules\PaymentMethods\Stripe\Stripe())->getPubKey($wppayform_sub_form_id);
+                                                }
+                                                $wppayform_stripe_pub_key = $wppayform_pub_key_cache[$wppayform_sub_form_id];
+
+                                                if ($wppayform_stripe_pub_key) {
+                                                    // From the single pre-pass query above — no per-row SELECT.
+                                                    $wppayform_sub_meta_id = absint(Arr::get($wppayform_donation_item, 'id'));
+                                                    $wppayform_sub_card = isset($wppayform_card_meta_map[$wppayform_sub_meta_id])
+                                                        ? (array) $wppayform_card_meta_map[$wppayform_sub_meta_id]
+                                                        : array();
+                                                }
+                                            }
+                                            ?>
+                                            <?php if ($wppayform_card_updatable && $wppayform_stripe_pub_key): ?>
+                                            <div id="<?php echo esc_attr('wpf_update_card_modal' . $wppayform_i) ?>"
+                                                class="wpf-dashboard-modal wpf-confirmation-modal wpf-update-card-modal">
+                                                <div class="modal-content">
+                                                    <div class="modal-title">
+                                                        <p class="title">
+                                                            <?php echo esc_html__('Update Card', 'wp-payment-form'); ?>
+                                                        </p>
+                                                        <span class="wpf-card-close" aria-label="<?php echo esc_attr__('Close', 'wp-payment-form'); ?>">&times;</span>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <?php // Single-method chip. Stripe card only for now, so it is static and marked
+                                                              // current for screen readers rather than being a real control that does nothing. ?>
+                                                        <div class="wpf-card-method" aria-current="true">
+                                                            <span class="wpf-icon-svg" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M16 15h2"/></svg>'; ?></span>
+                                                            <span><?php echo esc_html__('Card', 'wp-payment-form'); ?></span>
+                                                        </div>
+
+                                                        <p class="wpf-card-display">
+                                                            <?php if (!empty($wppayform_sub_card['last4'])): ?>
+                                                                <?php echo esc_html__('Current card:', 'wp-payment-form'); ?>
+                                                                <?php echo esc_html($wppayform_sub_card['brand']); ?>
+                                                                &bull;&bull;&bull;&bull; <?php echo esc_html($wppayform_sub_card['last4']); ?>
+                                                            <?php endif ?>
+                                                        </p>
+
+                                                        <?php // Three separate Stripe Elements rather than one combined 'card'. Each needs its
+                                                              // own mount point, and the ids must be unique per row — the dashboard renders one
+                                                              // modal per subscription, and Stripe mounts by selector. ?>
+                                                        <div class="wpf-card-field">
+                                                            <label for="<?php echo esc_attr('wpf_card_number' . $wppayform_i); ?>"><?php echo esc_html__('Card Number', 'wp-payment-form'); ?></label>
+                                                            <div class="wpf-card-element" id="<?php echo esc_attr('wpf_card_number' . $wppayform_i); ?>"></div>
+                                                        </div>
+
+                                                        <div class="wpf-card-field-row">
+                                                            <div class="wpf-card-field">
+                                                                <label for="<?php echo esc_attr('wpf_card_expiry' . $wppayform_i); ?>"><?php echo esc_html__('MM/YY', 'wp-payment-form'); ?></label>
+                                                                <div class="wpf-card-element" id="<?php echo esc_attr('wpf_card_expiry' . $wppayform_i); ?>"></div>
+                                                            </div>
+                                                            <div class="wpf-card-field">
+                                                                <label for="<?php echo esc_attr('wpf_card_cvc' . $wppayform_i); ?>"><?php echo esc_html__('CVC', 'wp-payment-form'); ?></label>
+                                                                <div class="wpf-card-element" id="<?php echo esc_attr('wpf_card_cvc' . $wppayform_i); ?>"></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="wpf-card-error" role="alert"></p>
+                                                        <?php // Filled by UpdateCard.js from wpf_subscription_card_attempts; stays empty if that read fails. ?>
+                                                        <div class="wpf-rate-limit-notice" role="note" hidden></div>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="modal-btn wpf-card-cancel">
+                                                            <?php echo esc_html__('Cancel', 'wp-payment-form'); ?>
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            class="modal-btn wpf-success wpf-confirm-card-update"
+                                                            data-subscription_id="<?php echo esc_attr($wppayform_donation_item['id']); ?>"
+                                                            data-pubkey="<?php echo esc_attr($wppayform_stripe_pub_key); ?>">
+                                                            <?php echo esc_html__('Update', 'wp-payment-form'); ?>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endif ?>
                                             <div class="wpf-subscription-action-btn">
                                                 <?php
                                                 $wppayform_sub_status = strtolower((string) Arr::get($wppayform_donation_item, 'status', ''));
@@ -503,6 +649,22 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                                             <?php echo $wppayform_cancel_btn_enabled ? '' : ' disabled'; ?>>
                                                         <span class="wpf-cancel-label" aria-hidden="true"><?php echo esc_html__('Cancel Subscription', 'wp-payment-form'); ?></span>
                                                         <span class="wpf-icon-svg wpf-icon-dots" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>'; ?></span>
+                                                    </button>
+                                                <?php endif ?>
+                                                <?php if ($wppayform_card_updatable && $wppayform_stripe_pub_key): ?>
+                                                    <button type="button"
+                                                            class="wpf-icon-button wpf-update-card-button"
+                                                            data-modal_id="<?php echo esc_attr('wpf_update_card_modal' . $wppayform_i) ?>"
+                                                            data-subscription_id="<?php echo esc_attr($wppayform_donation_item['id']); ?>"
+                                                            data-pubkey="<?php echo esc_attr($wppayform_stripe_pub_key); ?>"
+                                                            title="<?php echo esc_attr__('Update payment method', 'wp-payment-form'); ?>"
+                                                            aria-label="<?php echo esc_attr__('Update payment method', 'wp-payment-form'); ?>">
+                                                        <?php // Credit card: body, magnetic stripe, and two number dashes. The dashes are what
+                                                              // make it read as a card rather than an empty box at 18px — a bare rect + stripe
+                                                              // is what the plain lucide credit-card glyph gives, and it disappears at this size.
+                                                              // Lucide grid + stroke to match the neighbouring download/eye icons.
+                                                              // The action ("swap this card") is carried by title/aria-label, not the glyph. ?>
+                                                        <span class="wpf-icon-svg" aria-hidden="true"><?php echo '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M16 15h2"/></svg>'; ?></span>
                                                     </button>
                                                 <?php endif ?>
                                                 <span class="wpf-sub-id wpf_toal_amount_btn wpf-icon-button"

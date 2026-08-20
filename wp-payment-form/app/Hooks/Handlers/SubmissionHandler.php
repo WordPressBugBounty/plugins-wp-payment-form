@@ -49,8 +49,15 @@ class SubmissionHandler
 
         parse_str($_REQUEST['form_data'], $form_data);
         // Now Validate the form please
+        $formId = 0;
         if(isset($_REQUEST['form_id'])){
             $formId = absint(sanitize_text_field(wp_unslash($_REQUEST['form_id'])));
+        }
+        if (!$formId) {
+            wp_send_json_error(array(
+                'message' => __('Form ID is required.', 'wp-payment-form'),
+            ), 400);
+            exit;
         }
         $this->formID = $formId;
 
@@ -165,7 +172,7 @@ class SubmissionHandler
         foreach ($formattedElements['input'] as $inputName => $inputElement) {
             $value = Arr::get($form_data, $inputName);
             $inputItems[$inputName] = apply_filters('wppayform/submitted_value_' . $inputElement['type'], $this->sanitizeFormData($value, $inputElement['type']), $inputElement, $form_data);
-            if($inputElement['type'] == 'customer_full_name'){
+            if($inputElement['type'] == 'customer_full_name' && !$this->customerName){
                 $this->customerName = $inputItems[$inputName];
             }
         }
@@ -397,56 +404,6 @@ class SubmissionHandler
                 'content'       => 'After payment actions processed.',
             ));
 
-            add_action('payment_handle_after_hundred_percent_discount', function ($transactionId, $submissionId, $hasSubscriptions, $formId) {
-                $transactionModel = new Transaction();
-                $transaction = $transactionModel->getTransaction($transactionId);
-  
-                if ($transactionId) {
-                    $transactionModel->updateTransaction($transactionId, array(
-                        'payment_mode' => '',
-                        'status'       => 'paid',
-                    ));
-                }
-
-                $submissionModel = new Submission();
-                $submission = $submissionModel->getSubmission($transaction->submission_id);
-                $submissionModel->updateSubmission($submissionId, array(
-                    'payment_mode'   => '',
-                    'payment_status' => 'paid',
-                ));
-
-                if($hasSubscriptions) {
-                    $subscriptionModel = new Subscription();
-                    $subscriptionModel->updateSubscriptionBySubmissionId($submissionId, array(
-                        'status' => 'active',
-                        'vendor_subscriptipn_id' => $submissionId . '-100%discount',
-                    ));
-                }
-
-                do_action('wppayform/after_payment_status_change', $submissionId, 'paid');
-                $updateData['updated_at'] = current_time('Y-m-d H:i:s');
-                do_action('wppayform/form_payment_success', $submission, $transaction, $transaction->form_id, $updateData);
-                if ($transaction) {
-                    SubmissionActivity::createActivity(array(
-                        'form_id'       => $formId,
-                        'submission_id' => $submissionId,
-                        'type'          => 'info',
-                        'created_by'    => 'Paymattic Bot',
-                        'content'       => __('Payment success with 100% discount and the status updated Paid', 'wp-payment-form'),
-                    ));
-                }
-                
-                if ($hasSubscriptions) {
-                    SubmissionActivity::createActivity(array(
-                        'form_id'       => $formId,
-                        'submission_id' => $submissionId,
-                        'type'          => 'info',
-                        'created_by'    => 'Paymattic Bot',
-                        'content'       => __('Subscription status updated to active with 100% discount', 'wp-payment-form'),
-                    ));
-                }
-            }, 10, 4);
-
             if ($paymentMethod) {
                 if (apply_filters('wppayform/validate_gateway_api_' . $paymentMethod, false, $form) === false && $paymentMethod != 'offline') {
                     wp_send_json_error(array(
@@ -454,8 +411,16 @@ class SubmissionHandler
                     ), 423);
                 }
                 if (100 <= $discountPercent) {
-                    //phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-                    do_action('payment_handle_after_hundred_percent_discount', $transactionId, $submissionId, $hasSubscriptions, $formId);
+                    // Deprecated alias — fires callbacks registered on the old unprefixed hook.
+                    // Internal handler is NOT registered here; it runs via the namespaced hook below.
+                    do_action_deprecated(
+                        'payment_handle_after_hundred_percent_discount',
+                        array($transactionId, $submissionId, $hasSubscriptions, $formId),
+                        '4.6.25',
+                        'wppayform/payment_handle_after_hundred_percent_discount',
+                        __('Use the wppayform/payment_handle_after_hundred_percent_discount action instead.', 'wp-payment-form')
+                    );
+                    do_action('wppayform/payment_handle_after_hundred_percent_discount', $transactionId, $submissionId, $hasSubscriptions, $formId);
                 } else {
                     do_action('wppayform/form_submission_make_payment_' . $paymentMethod, $transactionId, $submissionId, $form_data, $form, $hasSubscriptions, $totalPayable, $paymentItems);
                 }
@@ -514,6 +479,19 @@ class SubmissionHandler
         }
         $label = Arr::get($payment, 'label');
         $amountTotal = Arr::get($form_data, $paymentId . '_custom');
+
+        if (Arr::get($pricings, 'allow_custom_amount') !== 'yes') {
+            $predefinedPrices = Arr::get($pricings, 'multiple_pricing', []);
+            $allowedCents = array_map(function ($price) {
+                return wpPayFormConverToCents(floatval($price['value']));
+            }, $predefinedPrices);
+            if (!in_array(wpPayFormConverToCents(floatval($amountTotal)), $allowedCents, true)) {
+                wp_send_json_error(array(
+                    'message' => __('Invalid donation amount.', 'wp-payment-form'),
+                ), 423);
+            }
+        }
+
         $subscription = array(
             'element_id'       => $paymentId,
             'item_name'        => $label,
@@ -559,10 +537,7 @@ class SubmissionHandler
 
                 if ($element['type'] == 'customer_name' && !$customerName && isset($form_data[$elementId])) {
                     $customerName = $form_data[$elementId];
-                } elseif ($element['type'] == 'customer_full_name' && !$customerName && isset($form_data[$elementId])) {
-                    $customerName = $form_data[$elementId];
-                }
-                 elseif ($element['type'] == 'customer_email' && !$customerEmail && isset($form_data[$elementId])) {
+                } elseif ($element['type'] == 'customer_email' && !$customerEmail && isset($form_data[$elementId])) {
                     $customerEmail = $form_data[$elementId];
                 }
             }
@@ -866,11 +841,26 @@ class SubmissionHandler
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } elseif ($payment['type'] == 'donation_item') {
             $rawValue = floatval($formData[$paymentId . '_custom']);
+            $pricingDetails = Arr::get($payment, 'options.pricing_details', []);
+
             if ($rawValue < 0) {
                 wp_send_json_error(array(
                     'message' => __('Donation amount cannot be negative', 'wp-payment-form'),
                 ), 423);
             }
+
+            if (Arr::get($pricingDetails, 'allow_custom_amount') !== 'yes') {
+                $predefinedPrices = Arr::get($pricingDetails, 'multiple_pricing', []);
+                $allowedCents = array_map(function ($price) {
+                    return wpPayFormConverToCents(floatval($price['value']));
+                }, $predefinedPrices);
+                if (!in_array(wpPayFormConverToCents($rawValue), $allowedCents, true)) {
+                    wp_send_json_error(array(
+                        'message' => __('Invalid donation amount.', 'wp-payment-form'),
+                    ), 423);
+                }
+            }
+
             $payItem['item_price'] = wpPayFormConverToCents($rawValue);
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } elseif($payment['type'] === 'dynamic_payment_item'){
@@ -911,7 +901,7 @@ class SubmissionHandler
             'confirmation'  => $confirmation,
         ), 200);
     }
-    public function paymentHandelerAfterHundredDiscount($transactionId, $submissionId)
+    public function handlePaymentAfterHundredDiscount($transactionId, $submissionId, $hasSubscriptions, $formId)
     {
         $transactionModel = new Transaction();
         $transaction = $transactionModel->getTransaction($transactionId);
@@ -919,21 +909,51 @@ class SubmissionHandler
         if ($transactionId) {
             $transactionModel->updateTransaction($transactionId, array(
                 'payment_mode' => '',
+                'status'       => 'paid',
             ));
+            // Re-fetch so the hook receives the updated status (TRACE-HANDLER-009).
+            $transaction = $transactionModel->getTransaction($transactionId);
         }
 
         $submissionModel = new Submission();
+        $submission = $submissionModel->getSubmission($transaction->submission_id);
         $submissionModel->updateSubmission($submissionId, array(
-            'payment_mode' => '',
+            'payment_mode'   => '',
+            'payment_status' => 'paid',
         ));
 
-        SubmissionActivity::createActivity(array(
-            'form_id'       => $transaction->form_id,
-            'submission_id' => $transaction->submission_id,
-            'type'          => 'info',
-            'created_by'    => 'Paymattic Bot',
-            'content'       => __('Offline Payment recorded and change the status to pending', 'wp-payment-form'),
-        ));
+        if ($hasSubscriptions) {
+            $subscriptionModel = new Subscription();
+            $subscriptionModel->updateSubscriptionBySubmissionId($submissionId, array(
+                'status'                 => 'active',
+                'vendor_subscriptipn_id' => $submissionId . '-100%discount',
+            ));
+        }
+
+        do_action('wppayform/after_payment_status_change', $submissionId, 'paid');
+        $updateData = [];
+        $updateData['updated_at'] = current_time('Y-m-d H:i:s');
+        do_action('wppayform/form_payment_success', $submission, $transaction, $transaction->form_id, $updateData);
+
+        if ($transaction) {
+            SubmissionActivity::createActivity(array(
+                'form_id'       => $formId,
+                'submission_id' => $submissionId,
+                'type'          => 'info',
+                'created_by'    => 'Paymattic Bot',
+                'content'       => __('Payment success with 100% discount and the status updated Paid', 'wp-payment-form'),
+            ));
+        }
+
+        if ($hasSubscriptions) {
+            SubmissionActivity::createActivity(array(
+                'form_id'       => $formId,
+                'submission_id' => $submissionId,
+                'type'          => 'info',
+                'created_by'    => 'Paymattic Bot',
+                'content'       => __('Subscription status updated to active with 100% discount', 'wp-payment-form'),
+            ));
+        }
     }
 
     private function enforceStripeForTrialWithSignupFee($subscriptionItem, $paymentMethod)

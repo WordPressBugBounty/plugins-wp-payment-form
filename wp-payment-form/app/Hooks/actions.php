@@ -156,8 +156,10 @@ add_filter('wppayform/print_styles', function ($styles) {
 
 
 // Form Submission Handler
-add_action('wp_ajax_wpf_submit_form', array(new \WPPayForm\App\Hooks\Handlers\SubmissionHandler(), 'handleSubmission'));
-add_action('wp_ajax_nopriv_wpf_submit_form', array(new \WPPayForm\App\Hooks\Handlers\SubmissionHandler(), 'handleSubmission'));
+$submissionHandler = new \WPPayForm\App\Hooks\Handlers\SubmissionHandler();
+add_action('wp_ajax_wpf_submit_form', array($submissionHandler, 'handleSubmission'));
+add_action('wp_ajax_nopriv_wpf_submit_form', array($submissionHandler, 'handleSubmission'));
+add_action('wppayform/payment_handle_after_hundred_percent_discount', array($submissionHandler, 'handlePaymentAfterHundredDiscount'), 10, 4);
 
 // Leaderboard render Handler
 add_action('wp_ajax_wpf_leader_board_render', array(new \WPPayForm\App\Modules\LeaderBoard\Render(), 'leaderBoardRender'));

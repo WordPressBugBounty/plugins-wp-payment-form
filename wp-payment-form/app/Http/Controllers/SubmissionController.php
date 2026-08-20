@@ -255,7 +255,7 @@ class SubmissionController extends Controller
                 )
             );
 
-        $transaction = Transaction::where('submission_id', $submissionId);
+        $transaction = Transaction::where('submission_id', $submissionId)->first();
 
         do_action('wppayform/form_submission_activity_start', $submission->form_id);
         
@@ -316,6 +316,14 @@ class SubmissionController extends Controller
         $submissionId = absint($submissionId);
         $paymentMethod = sanitize_text_field($this->request->payment_method);
         $amountToCapture = floatval($this->request->amount_to_be_captured);
+        if ($amountToCapture <= 0) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Invalid capture amount. Amount must be a positive integer in minor units (cents).', 'wp-payment-form')
+                ),
+                400
+            );
+        }
         if ('stripe' === $paymentMethod) {
             // $this->captureStripeAuthorizedAmount($formId, $submissionId);
             do_action('wppayform/capture_authorized_amount_' . $paymentMethod, $formId, $submissionId, $amountToCapture);
@@ -336,7 +344,12 @@ class SubmissionController extends Controller
         $submissionModel = new Submission();
         $entry = $submissionModel->getSubmission($submissionId);
         if (empty($entry->payment_method)) {
-            return;
+            wp_send_json_error(
+                array(
+                    'message' => __('No payment method on record for this entry.', 'wp-payment-form')
+                ),
+                422
+            );
         }
         do_action('wppayform/subscription_settings_sync_' . $entry->payment_method, $formId, $submissionId);
     }
@@ -368,8 +381,29 @@ class SubmissionController extends Controller
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
         $subscription = $this->request->subscription;
-        $newStatus = sanitize_text_field($this->request->newStatus);
- 
+        $newStatusRaw = $this->request->newStatus;
+
+        if (!is_array($newStatusRaw)) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Invalid status data.', 'wp-payment-form')
+                ),
+                422
+            );
+        }
+
+        $status = sanitize_text_field(Arr::get($newStatusRaw, 'status', ''));
+        $note   = sanitize_textarea_field(Arr::get($newStatusRaw, 'note', ''));
+
+        if (!is_array($subscription) || empty($subscription['id']) || !is_numeric($subscription['id'])) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Invalid subscription data.', 'wp-payment-form')
+                ),
+                422
+            );
+        }
+
         if ('offline' != $submission->payment_method) {
             wp_send_json_error(
                 array(
@@ -379,9 +413,15 @@ class SubmissionController extends Controller
             );
         }
 
-        $status = Arr::get($newStatus, 'status');
-
-        $note = Arr::get($newStatus, 'note');
+        $allowedSubscriptionStatuses = ['active', 'failing', 'trialing', 'cancelled', 'pending'];
+        if (!in_array($status, $allowedSubscriptionStatuses, true)) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Invalid subscription status.', 'wp-payment-form')
+                ),
+                422
+            );
+        }
 
         do_action('wppayform/offline_action_subcr_status_change', $submission, $subscription, $status, $note);
     }
@@ -392,7 +432,25 @@ class SubmissionController extends Controller
         $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
+        if (!$submission) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Submission not found.', 'wp-payment-form')
+                ),
+                404
+            );
+        }
+
         $subscription_payment = $this->request->subscription_payment;
+
+        if (!is_array($subscription_payment) || empty($subscription_payment['id']) || !is_numeric($subscription_payment['id'])) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Invalid subscription payment data.', 'wp-payment-form')
+                ),
+                422
+            );
+        }
 
         $newStatus = $this->request->newStatus;
         $statusTobeUpdated = Arr::get($newStatus, 'status');

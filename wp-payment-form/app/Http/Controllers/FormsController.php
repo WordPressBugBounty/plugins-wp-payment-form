@@ -35,7 +35,6 @@ class FormsController extends Controller
                 'message' => $e->getMessage()
             ], 423);
         }
-
         return array(
             'message' => __('Form successfully created.', 'wp-payment-form'),
             'form_id' => $formId
@@ -45,8 +44,8 @@ class FormsController extends Controller
     public function remove()
     {
         $formIds = (array) $this->request->get('forms_ids', []);
-        $formIds = array_map('absint', $formIds);  
-        
+        $formIds = array_map('absint', $formIds);
+
         do_action('wppayform/before_delete_forms', $formIds);
         $formModel = new Form();
         $formModel->deleteForms($formIds);
@@ -60,7 +59,7 @@ class FormsController extends Controller
     public function demo()
     {
         try {
-            $forms  = DemoForms::getDemoForms();
+            $forms = DemoForms::getDemoForms();
         } catch (\Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage()
@@ -91,7 +90,7 @@ class FormsController extends Controller
     public function import()
     {
         try {
-           return (new GlobalTools())->handleImportForm();
+            return (new GlobalTools())->handleImportForm();
         } catch (\Exception $e) {
             return $this->sendError([
                 'message' => $e->getMessage()

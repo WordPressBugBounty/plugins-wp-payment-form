@@ -120,7 +120,6 @@ class CustomPhoneNumber extends BaseComponent
     public function render($element, $form, $elements)
     {
         wp_enqueue_script('wpf-intlTelInput');
-        wp_enqueue_script('wpf-intlTelInputUtils');
         wp_enqueue_style('wpf-intlTelInput');
 
         $element['type'] = 'tel';

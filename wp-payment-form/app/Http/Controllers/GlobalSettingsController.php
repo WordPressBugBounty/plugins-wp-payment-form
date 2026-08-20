@@ -29,7 +29,6 @@ class GlobalSettingsController extends Controller
         }
 
         return array('roles' => $roles, 'dashboardRoles' => $dashboardRoles, 'selectedDashboardRoles' => $selectedDashboardRoles);
-        
     }
 
     public function setRoles()
@@ -87,6 +86,19 @@ class GlobalSettingsController extends Controller
         try {
             if (current_user_can('manage_options')) {
                 $capability = get_option('_wppayform_enable_paymattic_user_dashboard', 'no');
+
+                // Backfill keys added after this site last saved its permissions — the
+                // settings UI renders only what is stored, so an unmerged option can never
+                // expose a newly shipped capability.
+                if (is_array($capability) && !empty($capability['paymatticUserPermissions'])) {
+                    $defaultCaps = Arr::get($this->getPaymatticUserRoles(), 'paymatticUserPermissions.paymattic_user.capabilities', []);
+                    foreach ($capability['paymatticUserPermissions'] as $roleKey => $role) {
+                        $existing = isset($role['capabilities']) && is_array($role['capabilities']) ? $role['capabilities'] : [];
+                        // Existing values win; only genuinely absent keys are added, off.
+                        $capability['paymatticUserPermissions'][$roleKey]['capabilities'] = $existing + array_fill_keys(array_keys($defaultCaps), false);
+                    }
+                }
+
                 $submissionStatusFilter = get_option('_wppayform_dashboard_submission_status_filter', 'all');
                 if (!is_array($submissionStatusFilter)) {
                     $submissionStatusFilter = $submissionStatusFilter === 'all' ? 'all' : (array) $submissionStatusFilter;
@@ -124,6 +136,7 @@ class GlobalSettingsController extends Controller
                     "read_subscription_entry" => false,
                     "can_sync_subscription_billings" => false,
                     "cancel_subscription" => false,
+                    "update_subscription_card" => false,
                 ]
             )
         ];
@@ -335,6 +348,13 @@ class GlobalSettingsController extends Controller
     public function saveDonationLeaderboardSettings()
     {
         $donation_leaderboard_settings = $this->request->donation_leaderboard_settings;
+
+        if (!is_array($donation_leaderboard_settings)) {
+            return $this->sendError([
+                'message' => __('Invalid leaderboard settings provided.', 'wp-payment-form')
+            ], 422);
+        }
+
         $donation_leaderboard_settings = $this->sanitizeDonationLeaderboardSettings($donation_leaderboard_settings);
         $option_key = 'wppayform_donation_leaderboard_settings';
         $form_id = Arr::get($donation_leaderboard_settings, 'form_id', 0);
@@ -394,6 +414,12 @@ class GlobalSettingsController extends Controller
     {
         $settings = $this->request->settings;
 
+        if (!is_array($settings)) {
+            return $this->sendError([
+                'message' => __('Invalid settings provided.', 'wp-payment-form')
+            ], 422);
+        }
+
         $sanitizedSettings = [];
         foreach ($settings as $settingKey => $setting) {
             $sanitizedSettings[$settingKey] = sanitize_text_field($setting);
@@ -435,6 +461,12 @@ class GlobalSettingsController extends Controller
                 'message' => __('Your Turnstile settings are deleted.', 'wp-payment-form'),
                 'status' => false
             ], 200);
+        }
+
+        if (!is_array($settings)) {
+            return $this->sendError([
+                'message' => __('Invalid settings provided.', 'wp-payment-form')
+            ], 422);
         }
 
         $sanitizedSettings = [];
@@ -504,8 +536,11 @@ class GlobalSettingsController extends Controller
         if (!function_exists('wp_handle_upload')) {
             require_once (ABSPATH . 'wp-admin/includes/file.php');
         }
-        if(isset($_FILES['file'])){
+        if (isset($_FILES['file'])) {
             $uploadedfile = $_FILES['file'];
+        } else {
+            wp_send_json_error(['message' => __('No file uploaded.', 'wp-payment-form')], 400);
+            return;
         }
 
         $acceptedFilles = array(

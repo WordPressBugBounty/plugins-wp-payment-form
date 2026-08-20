@@ -788,17 +788,6 @@ class StripeHostedHandler extends StripeHandler
 
     public function cancelSubscription($formId, $submission, $subscription, $cancelReason = '')
     {
-        $subscriptionId = Arr::get($subscription, 'vendor_subscriptipn_id');
-        
-        if (!$subscriptionId) {
-            wp_send_json_error(
-                array(
-                    'message' => 'No subscription ID found!',
-                ),
-                423
-            );
-        }
-
         $response = CancelSubscription::Cancel($formId, $subscription, $submission);
         
         if (is_wp_error(($response))) {

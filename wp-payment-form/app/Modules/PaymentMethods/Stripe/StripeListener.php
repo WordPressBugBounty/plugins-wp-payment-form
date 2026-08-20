@@ -131,6 +131,11 @@ class StripeListener
                 }
 
                 $event = $this->retrive($eventId);
+
+                if (is_wp_error($event)) {
+                    error_log('[WPF-LITE-IPN] retrive() WP_Error: ' . $event->get_error_message());
+                }
+
                 if ($event && !is_wp_error($event)) {
                     $eventType = $event->type;
                     if ($eventType == 'charge.succeeded') {
@@ -150,6 +155,8 @@ class StripeListener
                         $this->handlePaymentIntentSucceeded($event);
                     } elseif ($eventType == 'charge.failed') {
                         $this->handleChargeFailed($event);
+                    } elseif ($eventType == 'invoice.payment_failed') {
+                        $this->handleSubscriptionPaymentFailed($event);
                     }
                 }
             } catch (\Exception $e) {
@@ -343,11 +350,41 @@ class StripeListener
     private function maybeHandleSubscriptionPayment($event)
     {
         $data = $event->data->object;
-        $subscriptionId = false;
-        if (property_exists($data, 'subscription')) {
-            $subscriptionId = $data->subscription;
+
+        // Webhook events are immutable and render in the account's default API version
+        // (Basil 2025+), which drops top-level invoice.subscription and invoice.charge.
+        // Re-fetch the invoice with a direct API call so Stripe renders it in our pinned
+        // version (2019-05-16), restoring both fields and keeping charge_id identical to
+        // the creation/sync flows (both use $invoice->charge = ch_...) so dedup matches
+        // and the admin "Charge ID" link resolves to a real charge.
+        if (!empty($data->id)) {
+            $freshInvoice = ApiRequest::request([], 'invoices/' . $data->id, 'GET');
+            if (!is_wp_error($freshInvoice) && !empty($freshInvoice->id)) {
+                $data = $freshInvoice;
+            }
         }
+
+        // Resolve subscription id across Stripe API versions.
+        // Old (<= 2025-03): top-level invoice.subscription.
+        // New (Basil, 2025-05-28+): invoice.parent.subscription_details.subscription,
+        // fallback per-line invoice.lines.data[].parent.subscription_item_details.subscription.
+        $subscriptionId = false;
+        if (!empty($data->subscription)) {
+            $subscriptionId = $data->subscription;
+        } elseif (isset($data->parent->subscription_details->subscription)) {
+            $subscriptionId = $data->parent->subscription_details->subscription;
+        } elseif (isset($data->lines->data[0]->parent->subscription_item_details->subscription)) {
+            $subscriptionId = $data->lines->data[0]->parent->subscription_item_details->subscription;
+        }
+
         if (!$subscriptionId) {
+            return;
+        }
+
+        // The first invoice (billing_reason = subscription_create) is already recorded
+        // synchronously by the checkout/creation flow. Skip it here to avoid inserting a
+        // duplicate transaction; only renewals (subscription_cycle/update) are webhook-owned.
+        if (($data->billing_reason ?? '') === 'subscription_create') {
             return;
         }
 
@@ -356,12 +393,14 @@ class StripeListener
             ->first();
 
         if (!$subscription) {
+            error_log('[WPF-LITE-IPN] ABORT: no wpf_subscriptions match for sub=' . $subscriptionId . ' customer=' . $data->customer);
             return;
         }
 
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($subscription->submission_id);
         if (!$submission) {
+            error_log('[WPF-LITE-IPN] ABORT: no submission for subscription ' . $subscription->id);
             return;
         }
 
@@ -382,6 +421,22 @@ class StripeListener
                 : (string) $data->payment_intent;
         }
 
+        // Resolve a real, linkable Stripe payment id for this renewal. The re-fetched
+        // (version-pinned) invoice normally exposes the charge (ch_...) — the same id the
+        // creation/sync flows store, so dedup matches and the admin link resolves. Fall
+        // back to the payment intent (pi_..., still a valid Stripe object), and only as an
+        // absolute last resort the invoice id (in_..., unique but not linkable).
+        $chargeId = '';
+        if (!empty($data->charge)) {
+            $chargeId = is_object($data->charge) ? ($data->charge->id ?? '') : (string) $data->charge;
+        }
+        if (!$chargeId && $paymentIntentId) {
+            $chargeId = $paymentIntentId;
+        }
+        if (!$chargeId) {
+            $chargeId = $data->id;
+        }
+
         $transactionId = $subscriptionTransaction->maybeInsertCharge([
             'form_id' => $submission->form_id,
             'user_id' => $submission->user_id,
@@ -389,7 +444,7 @@ class StripeListener
             'subscription_id' => $subscription->id,
             'transaction_type' => 'subscription',
             'payment_method' => 'stripe',
-            'charge_id' => $data->charge,
+            'charge_id' => $chargeId,
             'payment_total' => $totalAmount,
             'status' => $data->status,
             'currency' => $submission->currency,
@@ -442,6 +497,91 @@ class StripeListener
             do_action('wppayform/subscription_payment_received', $submission, $transaction, $submission->form_id, $subscription);
             do_action('wppayform/subscription_payment_received_stripe', $submission, $transaction, $submission->form_id, $subscription);
         }
+    }
+
+    /*
+     * Handle Subscription Renewal Payment Failure
+     * Fires on invoice.payment_failed when a recurring charge fails (expired/declined card).
+     * Unlike charge.failed, this event carries the subscription context directly, so site
+     * owners can hook custom logic (dunning, access hold, notifications) on each failed attempt.
+     * MVP: log activity + fire actions only; final cancellation stays owned by
+     * customer.subscription.deleted.
+     */
+    private function handleSubscriptionPaymentFailed($event)
+    {
+        $data = $event->data->object;
+
+        // Re-fetch the invoice in our pinned API version (2019-05-16) to restore
+        // subscription/charge fields dropped by newer default API versions — same
+        // reason as the renewal-success flow.
+        if (!empty($data->id)) {
+            $freshInvoice = ApiRequest::request([], 'invoices/' . $data->id, 'GET');
+            if (!is_wp_error($freshInvoice) && !empty($freshInvoice->id)) {
+                $data = $freshInvoice;
+            }
+        }
+
+        // Resolve subscription id across Stripe API versions.
+        $subscriptionId = false;
+        if (!empty($data->subscription)) {
+            $subscriptionId = $data->subscription;
+        } elseif (isset($data->parent->subscription_details->subscription)) {
+            $subscriptionId = $data->parent->subscription_details->subscription;
+        } elseif (isset($data->lines->data[0]->parent->subscription_item_details->subscription)) {
+            $subscriptionId = $data->lines->data[0]->parent->subscription_item_details->subscription;
+        }
+
+        if (!$subscriptionId) {
+            return;
+        }
+
+        $subscription = Subscription::where('vendor_subscriptipn_id', $subscriptionId)
+            ->where('vendor_customer_id', $data->customer)
+            ->first();
+
+        if (!$subscription) {
+            return;
+        }
+
+        // Skip already-terminal subscriptions.
+        if (in_array($subscription->status, array('cancelled', 'completed'))) {
+            return;
+        }
+
+        $submissionModel = new Submission();
+        $submission = $submissionModel->getSubmission($subscription->submission_id);
+        if (!$submission) {
+            return;
+        }
+
+        do_action('wppayform/form_submission_activity_start', $submission->form_id);
+
+        $attemptCount = isset($data->attempt_count) ? absint($data->attempt_count) : 0;
+        $nextAttempt = !empty($data->next_payment_attempt)
+            ? gmdate('Y-m-d H:i:s', $data->next_payment_attempt)
+            : '';
+
+        $note = __('Subscription renewal payment failed.', 'wp-payment-form');
+        if ($attemptCount) {
+            /* translators: %d: retry attempt count */
+            $note .= ' ' . sprintf(__('Attempt: %d.', 'wp-payment-form'), $attemptCount);
+        }
+        if ($nextAttempt) {
+            /* translators: %s: next retry datetime (UTC) */
+            $note .= ' ' . sprintf(__('Next retry: %s UTC.', 'wp-payment-form'), $nextAttempt);
+        }
+
+        SubmissionActivity::createActivity(array(
+            'form_id' => $submission->form_id,
+            'submission_id' => $submission->id,
+            'type' => 'info',
+            'created_by' => 'Paymattic BOT',
+            'content' => $note
+        ));
+
+        // Fire hooks so site owners can trigger custom logic on recurring failure.
+        do_action('wppayform/subscription_payment_failed', $submission, $subscription, $submission->form_id, $data);
+        do_action('wppayform/subscription_payment_failed_stripe', $submission, $subscription, $submission->form_id, $data);
     }
 
     /*

@@ -46,18 +46,25 @@ class ConditionAssesor
                 $fieldKey = '__wpf_selected_payment_method';
             }
             $inputValue = Arr::get($inputs, $fieldKey, '');
+            $keyMatchableTypes = array('payment_item');
+            $matchArrayKey = is_scalar($conditional['value'])
+                && in_array(Arr::get($conditional, 'field_type'), $keyMatchableTypes, true);
             $isDonaitonRecurring = Arr::get($inputs, 'donation_is_recurring', '');
 
             switch ($conditional['operator']) {
                 case '=':
                     if (is_array($inputValue)) {
-                        return in_array($conditional['value'], $inputValue);
+                        return $matchArrayKey
+                            ? array_key_exists($conditional['value'], $inputValue)
+                            : in_array($conditional['value'], $inputValue);
                     }
                     return $inputValue == $conditional['value'];
                     break;
                 case '!=':
                     if (is_array($inputValue)) {
-                        return !in_array($conditional['value'], $inputValue);
+                        return $matchArrayKey
+                            ? !array_key_exists($conditional['value'], $inputValue)
+                            : !in_array($conditional['value'], $inputValue);
                     }
                     return $inputValue != $conditional['value'];
                     break;

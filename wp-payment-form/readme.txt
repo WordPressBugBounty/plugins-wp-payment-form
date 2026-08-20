@@ -4,8 +4,8 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 5.3
-Tested up to: 7.0
-Stable tag: 4.6.23
+Tested up to: 7.1
+Stable tag: 4.6.25
 Requires PHP: 7.4
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -559,6 +559,24 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+
+= 4.6.25 – 20 August, 2026 =
+- Adds Stripe subscription card update support for the User Dashboard.
+- Adds Payment item field mapping and conditional support in integration feeds.
+- Adds Square webhook signature verification with per-mode signature keys.
+- Improves Failed recurring payment handling for Stripe subscription renewals.
+- Improves JSON export memory usage by streaming results instead of accumulating the full dataset.
+- Fixes User Dashboard access for permitted roles missing dashboard capabilities.
+- Fixes Stripe renewal webhooks not parsing the updated invoice schema.
+- Fixes Duplicate coupon AJAX requests when an Elementor popup reinitializes the form.
+- Fixes Phone field script error caused by the classic utils.js enqueue.
+- Fixes FluentCommunity integration endpoint accessible without authentication.
+- Fixes Webhook and Zapier feed mutations not scoped to the authorized form.
+- Fixes PayPal IPN bypass option removed; IPN always verified; debug log redacted to safe fields.
+- Fixes Subscription cancellation proceeding without ownership verification.
+- Fixes Predefined donation amounts enforced server-side when custom input is disabled.
+- Fixes Customer full name overwritten when form has multiple Full Name fields.
+
 = 4.6.23 – 07 July, 2026 =
 - Adds Gift Aid declaration support.
 - Adds Fee Recovery field.

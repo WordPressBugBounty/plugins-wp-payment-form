@@ -1,5 +1,6 @@
 {
     "/js/Community/CustomerDashboard.js": "/js/Community/CustomerDashboard.js",
+    "/js/SubscriptionCard/UpdateCard.js": "/js/SubscriptionCard/UpdateCard.js",
     "/js/dynamic-calculation.js": "/js/dynamic-calculation.js",
     "/js/fee-recovery.js": "/js/fee-recovery.js",
     "/js/fileupload.js": "/js/fileupload.js",
@@ -28,6 +29,7 @@
     "/js/tabular_template.js": "/js/tabular_template.js",
     "/js/tinymce.js": "/js/tinymce.js",
     "/js/wpf-gutenblock-build.js": "/js/wpf-gutenblock-build.js",
+    "/js/wpf-paypal-polling.js": "/js/wpf-paypal-polling.js",
     "/js/wppayform_deactivate.js": "/js/wppayform_deactivate.js",
     "/js/tinymce_icon.png": "/js/tinymce_icon.png"
 }

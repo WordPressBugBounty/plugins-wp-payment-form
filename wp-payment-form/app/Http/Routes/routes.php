@@ -30,7 +30,7 @@ $router->prefix('forms')->withPolicy('AdminPolicy')->group(function ($router) {
 
     $router->prefix('entries')->group(function ($router) {
         $router->delete('/remove', 'SubmissionController@remove');
-        $router->put('/{id}/pay-status', 'SubmissionController@paymentStatus');
+        $router->put('/{id}/pay-status', 'SubmissionController@paymentStatus')->int('id');
     });
 
     $router->prefix('settings')->group(function ($router) {
@@ -54,7 +54,7 @@ $router->prefix('forms')->withPolicy('AdminPolicy')->group(function ($router) {
         $router->post('/roles', 'GlobalSettingsController@setRoles');
 
         $router->get('/get-paymattic-user-dashboard-data', 'GlobalSettingsController@getPaymatticUserDashboardData');
-        $router->get('/enable-paymattic-user-dashboard', 'GlobalSettingsController@enablePaymatticUserDashboard');
+        $router->post('/enable-paymattic-user-dashboard', 'GlobalSettingsController@enablePaymatticUserDashboard');
         $router->post('/update-paymattic-user-permission', 'GlobalSettingsController@updatePaymatticUserPermission');
 
         $router->get('/recaptcha', 'GlobalSettingsController@getRecaptcha');
@@ -164,7 +164,7 @@ $router->prefix('wppayform-pdf')->withPolicy('WPPayForm\App\Http\Policies\AdminP
         return (new WPPayForm\App\Modules\PDF\Manager\WPPayFormPdfBuilder())->getGlobalSettings();
     });
 
-    $router->get('/save_global_settings', function () {
+    $router->post('/save_global_settings', function () {
         return (new \WPPayForm\App\Modules\PDF\Manager\WPPayFormPdfBuilder())->saveGlobalSettings();
     });
 
