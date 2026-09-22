@@ -6,6 +6,8 @@ use WPPayForm\Framework\Foundation\App;
 use WPPayForm\App\Http\Controllers\FormController;
 use WPPayForm\App\Models\Form;
 use WPPayForm\App\Models\Submission;
+use WPPayForm\App\Models\OrderItem;
+use WPPayForm\App\Services\GeneralSettings;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -26,12 +28,49 @@ class Subscription extends Model
 
     public function getSubscriptions($submissionId)
     {
-        $subscriptions = $this->where('submission_id', $submissionId)
-            ->get();
+        $subscriptions = $this->where('submission_id', $submissionId)->get();
         foreach ($subscriptions as $subscription) {
             $subscription->original_plan = wppayform_safeUnserialize($subscription->original_plan);
             $subscription->vendor_response = wppayform_safeUnserialize($subscription->vendor_response);
         }
+
+        if ($subscriptions->isEmpty()) {
+            return $subscriptions;
+        }
+
+        $discountItems = (new OrderItem())->getDiscountItems($submissionId);
+        if ($discountItems->isEmpty()) {
+            return $subscriptions;
+        }
+
+        $discountTotal = 0;
+        foreach ($discountItems as $item) {
+            $discountTotal += intval($item->line_total);
+        }
+        if (!$discountTotal) {
+            return $subscriptions;
+        }
+
+        $submission = Submission::find($submissionId);
+        $subsTotal = 0;
+        foreach ($subscriptions as $sub) {
+            $subsTotal += intval($sub->recurring_amount) * max(intval($sub->quantity), 1);
+        }
+        $totalPayable = intval($submission->payment_total) + $subsTotal;
+
+        if ($submission->currency && GeneralSettings::isZeroDecimal($submission->currency)) {
+            $discountTotal = intval($discountTotal / 100);
+        }
+
+        if (!$totalPayable) {
+            return $subscriptions;
+        }
+
+        foreach ($subscriptions as $subscription) {
+            $base = intval($subscription->recurring_amount);
+            $subscription->discounted_recurring_amount = intval($base - ($discountTotal / $totalPayable) * $base);
+        }
+
         return $subscriptions;
     }
 

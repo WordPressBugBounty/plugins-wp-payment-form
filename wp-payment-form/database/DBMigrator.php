@@ -76,10 +76,34 @@ class DBMigrator
 
     public static function forceUpgradeDB()
     {
+        global $wpdb;
+
         // We are upgrading the DB forcedly
         \WPPayForm\Database\Migrations\TransactionsTable::migrate(true);
         \WPPayForm\Database\Migrations\MetaTable::migrate(true);
         \WPPayForm\Database\Migrations\Subscriptions::migrate(true);
+
+        // Add idx_user_id on wpf_submissions if it does not already exist (DB version 123+).
+        // dbDelta() in SubmissionsTable::migrate() handles fresh installs; this guard covers
+        // existing installations that are upgraded without a fresh table create.
+        $submissionsTable = $wpdb->prefix . 'wpf_submissions';
+        $indexExists = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM information_schema.STATISTICS
+                 WHERE table_schema = DATABASE()
+                   AND table_name = %s
+                   AND index_name = 'idx_user_id'",
+                $submissionsTable
+            )
+        );
+        if (!$indexExists) {
+            $wpdb->query("ALTER TABLE `{$submissionsTable}` ADD INDEX `idx_user_id` (`user_id`)"); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            if (!empty($wpdb->last_error)) {
+                // ALTER failed; leave DB version unchanged so the next plugins_loaded fires a retry.
+                return;
+            }
+        }
+
         update_option('WPF_DB_VERSION', self::WPFDBV, false);
     }
 }

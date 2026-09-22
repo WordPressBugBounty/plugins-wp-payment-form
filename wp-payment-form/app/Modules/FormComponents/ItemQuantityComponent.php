@@ -56,12 +56,14 @@ class ItemQuantityComponent extends BaseComponent
                 'min_value' => array(
                     'label' => 'Minimum Quantity',
                     'type' => 'number',
-                    'group' => 'general'
+                    'group' => 'general',
+                    'min' => 0
                 ),
                 'max_value' => array(
                     'label' => 'Maximum Quantity',
                     'type' => 'number',
-                    'group' => 'general'
+                    'group' => 'general',
+                    'min' => 0
                 ),
                 'admin_label' => array(
                     'label' => 'Admin Label',
@@ -118,6 +120,7 @@ class ItemQuantityComponent extends BaseComponent
     public function validateOnSave($error, $element, $formId)
     {
         $disable = Arr::get($element, 'field_options.disable', false);
+
         if ($disable) {
             return;
         }
@@ -125,12 +128,33 @@ class ItemQuantityComponent extends BaseComponent
         if (!Arr::get($element, 'field_options.target_product')) {
             $error = __('Target Product is required for item:', 'wp-payment-form') . ' ' . Arr::get($element, 'field_options.label');
         }
+
+        $minValue = Arr::get($element, 'field_options.min_value');
+        $maxValue = Arr::get($element, 'field_options.max_value');
+        $label    = Arr::get($element, 'field_options.label');
+
+        if ($minValue !== null && $minValue !== '' && (int) $minValue < 0) {
+            return __('Minimum Quantity must be 0 or greater for item:', 'wp-payment-form') . ' ' . $label;
+        }
+
+        if ($maxValue !== null && $maxValue !== '' && (int) $maxValue < 0) {
+            return __('Maximum Quantity must be 0 or greater for item:', 'wp-payment-form') . ' ' . $label;
+        }
+
+        if (
+            $minValue !== null && $minValue !== '' &&
+            $maxValue !== null && $maxValue !== '' &&
+            (int) $maxValue < (int) $minValue
+        ) {
+            return __('Maximum Quantity must be greater than or equal to Minimum Quantity for item:', 'wp-payment-form') . ' ' . $label;
+        }
+
         return $error;
     }
 
     public function validateOnSubmission($error, $elementId, $element, $form_data)
     {
-        $disable = Arr::get($element, 'field_options.disable', false);
+        $disable = Arr::get($element, 'options.disable', false);
         if ($disable) {
             return;
         }
@@ -138,26 +162,46 @@ class ItemQuantityComponent extends BaseComponent
         if ($error) {
             return $error;
         }
-        // Check if Min & max valid with data
-        $itemValue = Arr::get($form_data, $elementId);
 
-        if (!$itemValue) {
+        $itemValue = Arr::get($form_data, $elementId);
+        $formId    = Arr::get($form_data, '__wpf_form_id');
+        $minValue  = Arr::get($element, 'options.min_value');
+        $maxValue  = Arr::get($element, 'options.max_value');
+        $hasMin    = $minValue !== null && $minValue !== '';
+
+        // Empty string, null, or explicit "0" all mean "field not filled / optional item skipped".
+        // Explicit rather than !$itemValue — '0' is falsy in PHP, so relying on that is fragile.
+        if ($itemValue === '' || $itemValue === null || $itemValue === '0') {
+            if ($hasMin && (int) $minValue > 0) {
+                return $this->getErrorLabel(
+                    $element,
+                    $formId,
+                    sprintf(__('Minimum quantity is %d', 'wp-payment-form'), (int) $minValue)
+                );
+            }
             return $error;
         }
 
-        $minValue = Arr::get($element, 'options.min_value');
-        $maxValue = Arr::get($element, 'options.max_value');
-
-        $formId = Arr::get($form_data, '__wpf_form_id');
-        // check the min value
-        if ($minValue && $itemValue < $minValue) {
-            $errorText = sprintf('need to be greater or equal %d', $minValue);
-            return $this->getErrorLabel($element, $formId, $errorText);
+        // At this point $itemValue is a non-empty, non-zero string. Require a valid integer ≥ 1.
+        $intValue = filter_var($itemValue, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($intValue === false) {
+            return $this->getErrorLabel($element, $formId, __('Quantity must be a valid positive whole number.', 'wp-payment-form'));
         }
 
-        if ($maxValue && $itemValue > $maxValue) {
-            $errorText = sprintf('need to be less than or equal %d', $maxValue);
-            return $this->getErrorLabel($element, $formId, $errorText);
+        if ($hasMin && $intValue < (int) $minValue) {
+            return $this->getErrorLabel(
+                $element,
+                $formId,
+                sprintf(__('Minimum quantity is %d', 'wp-payment-form'), (int) $minValue)
+            );
+        }
+
+        if ($maxValue !== null && $maxValue !== '' && $intValue > (int) $maxValue) {
+            return $this->getErrorLabel(
+                $element,
+                $formId,
+                sprintf(__('Maximum quantity is %d', 'wp-payment-form'), (int) $maxValue)
+            );
         }
         return $error;
     }

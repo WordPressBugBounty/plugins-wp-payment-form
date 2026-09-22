@@ -43,6 +43,12 @@ class ProcessDemoPage
     {
         $form = Form::getForm($formId);
         if ($onlyPreviewPage == "yes") {
+            if (!AccessControl::hasTopLevelMenuPermission()) {
+                $postData = get_post(absint($formId));
+                if (!$postData || (int) $postData->post_author !== get_current_user_id()) {
+                    return;
+                }
+            }
             // Enqueue light-gallery assets
             $this->enqueueLightGalleryAssets();
 
@@ -52,6 +58,14 @@ class ProcessDemoPage
             exit();
         }
         else if ($form) {
+            // PM-SEC-07: delegated (non-admin) users may only preview forms they authored.
+            // Top-level admins (wpf_full_access) can preview any form.
+            if (!AccessControl::hasTopLevelMenuPermission()) {
+                $postData = get_post($formId);
+                if ($postData && (int) $postData->post_author !== get_current_user_id()) {
+                    return;
+                }
+            }
             // Enqueue light-gallery assets
             $this->enqueueLightGalleryAssets();
             add_filter('wppayform/allow_draft_preview', '__return_true');

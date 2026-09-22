@@ -183,7 +183,7 @@ class SubmissionHandler
         $recurringTaxTotal = [];
         if ($paymentItems) {
             foreach ($paymentItems as $paymentItem) {
-                if ($paymentItem['type'] == 'tax_line') {
+                if ($paymentItem['type'] == 'tax_line' && (empty($paymentItem['recurring_tax']) || $paymentItem['recurring_tax'] !== 'yes')) {
                     $taxTotal += $paymentItem['line_total'];
                 }
 
@@ -349,10 +349,14 @@ class SubmissionHandler
             $subscription = new Subscription();
             foreach ($subscriptionItems as $subscriptionItem) {
                 $quantity = isset($subscriptionItem['quantity']) ? $subscriptionItem['quantity'] : 1;
-                $elementId = $subscriptionItem['element_id']; 
-                $recurringTaxTotal = Arr::get($recurringTaxTotal, $elementId, 0);
-                $subscriptionItem['recurring_amount'] = $subscriptionItem['recurring_amount'] + $recurringTaxTotal;
-
+                $elementId = $subscriptionItem['element_id'];
+                $itemRecurringTax = Arr::get($recurringTaxTotal, $elementId, 0);
+                // Store recurring tax in its own column so display can show pre-tax price separately
+                if ($itemRecurringTax && empty($subscriptionItem['recurring_tax'])) {
+                    $subscriptionItem['recurring_tax'] = $itemRecurringTax;
+                }
+                // Keep recurring_amount tax-inclusive so Stripe plan creation charges the correct amount
+                $subscriptionItem['recurring_amount'] = $subscriptionItem['recurring_amount'] + $itemRecurringTax;
                 $linePrice = $subscriptionItem['recurring_amount'] * $quantity;
                 $subsTotal += intval($linePrice);
 
@@ -677,7 +681,18 @@ class SubmissionHandler
         foreach ($quantityElements as $key => $element) {
             if (Arr::get($element, 'options.target_product') == $tragetItemId) {
                 if (isset($formData[$key])) {
-                    return absint($formData[$key]);
+                    $rawValue = $formData[$key];
+                    if ($rawValue === '' || $rawValue === null) {
+                        return 0;
+                    }
+                    // filter_var distinguishes valid zero ("0" → 0, optional item) from
+                    // malformed values that absint() silently truncates to 0 (e.g. "1e309" → false).
+                    $qty = filter_var($rawValue, FILTER_VALIDATE_INT);
+                    if ($qty === false) {
+                        wp_send_json_error(['message' => __('Invalid quantity value.', 'wp-payment-form')], 422);
+                        exit;
+                    }
+                    return absint($qty);
                 }
             }
         }
@@ -704,16 +719,14 @@ class SubmissionHandler
         $pricings = Arr::get($payment, 'options.recurring_payment_options.pricing_options');
 
         $paymentIndex = (int)$formData[$paymentId];
-        
-        if ( is_string($paymentIndex) ) {
-           $paymentIndex = 0;
-        }
-       
-        $plan = $pricings[$paymentIndex];
 
-        if (!$plan) {
-            return array();
+        if (!isset($pricings[$paymentIndex])) {
+            wp_send_json_error(array(
+                'message' => __('Invalid subscription plan selection.', 'wp-payment-form'),
+            ), 422);
         }
+
+        $plan = $pricings[$paymentIndex];
 
         if (Arr::get($plan, 'user_input') == 'yes') {
             $plan['subscription_amount'] = Arr::get($formData, $paymentId . '__' . $paymentIndex);
@@ -802,7 +815,13 @@ class SubmissionHandler
             $payType = Arr::get($priceDetailes, 'one_time_type');
             if ($payType == 'choose_single') {
                 $pricings = $priceDetailes['multiple_pricing'];
-                $price = $pricings[$formData[$paymentId]];
+                $submittedIndex = (int) $formData[$paymentId];
+                if (!isset($pricings[$submittedIndex]) || !isset($pricings[$submittedIndex]['value'])) {
+                    wp_send_json_error(array(
+                        'message' => __('Invalid payment item selection.', 'wp-payment-form'),
+                    ), 422);
+                }
+                $price = $pricings[$submittedIndex];
                 $priceLabel = !empty($price['label']) ? $price['label'] : $payment['label'];
                 $payItem['item_name'] = wp_strip_all_tags($priceLabel);
                 $payItem['item_price'] = wpPayFormConverToCents($price['value']);
@@ -812,9 +831,15 @@ class SubmissionHandler
                 $pricings = $priceDetailes['multiple_pricing'];
                 $payItems = array();
                 foreach ($selctedItems as $itemIndex => $selctedItem) {
+                    $intIndex = (int) $itemIndex;
+                    if (!isset($pricings[$intIndex]) || !isset($pricings[$intIndex]['value'])) {
+                        wp_send_json_error(array(
+                            'message' => __('Invalid payment item selection.', 'wp-payment-form'),
+                        ), 422);
+                    }
                     $itemClone = $payItem;
-                    $itemClone['item_name'] = wp_strip_all_tags($pricings[$itemIndex]['label']);
-                    $itemClone['item_price'] = wpPayFormConverToCents($pricings[$itemIndex]['value']);
+                    $itemClone['item_name'] = wp_strip_all_tags($pricings[$intIndex]['label']);
+                    $itemClone['item_price'] = wpPayFormConverToCents($pricings[$intIndex]['value']);
                     $itemClone['line_total'] = $itemClone['item_price'] * $quantity;
                     $payItems[] = $itemClone;
                 }
@@ -865,13 +890,14 @@ class SubmissionHandler
             $payItem['line_total'] = $payItem['item_price'] * $quantity;
         } elseif($payment['type'] === 'dynamic_payment_item'){
             $rawValue = floatval($formData[$paymentId]);
-            if ($rawValue < 0) {
+            $itemPriceCents = wpPayFormConverToCents($rawValue);
+            if ($itemPriceCents <= 0) {
                 wp_send_json_error(array(
-                    'message' => __('Dynamic Payment amount cannot be negative', 'wp-payment-form'),
+                    'message' => __('Dynamic payment amount must be greater than zero.', 'wp-payment-form'),
                 ), 423);
             }
-            $payItem['item_price'] = wpPayFormConverToCents($rawValue);
-            $payItem['line_total'] = $payItem['item_price'] * $quantity;
+            $payItem['item_price'] = $itemPriceCents;
+            $payItem['line_total'] = $itemPriceCents * $quantity;
         } else {
             return array();
         }

@@ -124,12 +124,29 @@ class PaymentReceipt
 
         if ($submission->subscriptions) {
             foreach ($submission->subscriptions as $subscription) {
+                $recurringTax = intval($subscription->recurring_tax ?? 0);
+                $displayPrice = intval($subscription->recurring_amount) - $recurringTax;
+
                 $submission->order_items[] = (object) [
                     'item_name' => $subscription->item_name . ' (' . $subscription->plan_name . ')',
                     'quantity' => $subscription->quantity,
-                    'item_price' => $subscription->recurring_amount,
-                    'line_total' => $subscription->recurring_amount * $subscription->quantity
+                    'item_price' => $displayPrice,
+                    'line_total' => $displayPrice * intval($subscription->quantity)
                 ];
+
+                if ($recurringTax > 0) {
+                    $taxLabel = !empty($subscription->recurring_tax_label)
+                        ? $subscription->recurring_tax_label
+                        : __('Tax', 'wp-payment-form');
+                    $submission->order_items[] = (object) [
+                        'item_name' => $taxLabel,
+                        'quantity' => 1,
+                        'item_price' => $recurringTax,
+                        'line_total' => $recurringTax,
+                        'type' => 'tax_line'
+                    ];
+                }
+
                 // note: temp solution, in case of stripe solution for initial amount is already a order item
                 if ('stripe' !== $submission->payment_method && intval($subscription->initial_amount) > 0) {
                     $submission->order_items[] = (object) [

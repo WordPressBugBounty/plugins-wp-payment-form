@@ -56,10 +56,18 @@ class CancelSubscription
             return new \WP_Error('wrong_status', __('Sorry, You can not cancel this subscription', 'wp-payment-form'));
         }
 
-        $submissionUserId = \is_object($submission)
+        $submissionUserId    = \is_object($submission)
             ? absint($submission->user_id ?? 0)
             : absint($submission['user_id'] ?? 0);
-        $isOwner = $submissionUserId > 0 && $submissionUserId === \get_current_user_id();
+        $submissionEmail     = \is_object($submission)
+            ? sanitize_email($submission->customer_email ?? '')
+            : sanitize_email($submission['customer_email'] ?? '');
+        $currentUserId       = \get_current_user_id();
+        $currentUserEmail    = sanitize_email(\wp_get_current_user()->user_email);
+        // Accept email-matched guest submissions (user_id = 0) as owned, mirroring the
+        // ownershipFilter in Customers::customerForDashboard().
+        $isOwner = ($submissionUserId > 0 && $submissionUserId === $currentUserId)
+            || ($submissionUserId === 0 && $currentUserId > 0 && $submissionEmail && $submissionEmail === $currentUserEmail);
 
         $stripe = new Stripe();
         ApiRequest::set_secret_key($stripe->getSecretKey($formId));

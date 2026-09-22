@@ -94,6 +94,31 @@ class PendingPaymentExpirationHandler
             return false;
         }
 
+        // PM-SEC-05: Before marking the submission failed, confirm Stripe has not already
+        // captured the payment. IPN delivery can be delayed; if Stripe reports succeeded
+        // or processing we must not overwrite the real outcome with a local timeout.
+        if ($transaction && $transaction->charge_id && $transaction->payment_method === 'stripe') {
+            try {
+                $stripeInstance = new \WPPayForm\App\Modules\PaymentMethods\Stripe\Stripe();
+                \WPPayForm\App\Modules\PaymentMethods\Stripe\ApiRequest::set_secret_key(
+                    $stripeInstance->getSecretKey(absint($transaction->form_id))
+                );
+                $chargeId = $transaction->charge_id;
+                $endpoint = (strpos($chargeId, 'pi_') === 0)
+                    ? 'payment_intents/' . $chargeId
+                    : 'charges/' . $chargeId;
+                $remoteObj = \WPPayForm\App\Modules\PaymentMethods\Stripe\ApiRequest::request(
+                    [], $endpoint, 'GET'
+                );
+                $remoteStatus = isset($remoteObj->status) ? $remoteObj->status : '';
+                if (in_array($remoteStatus, ['succeeded', 'processing'], true)) {
+                    return false;
+                }
+            } catch (\Exception $e) {
+                // Cannot reach Stripe — proceed with local expiration decision
+            }
+        }
+
         $connection = Submission::resolveConnection();
         $connection->beginTransaction();
 

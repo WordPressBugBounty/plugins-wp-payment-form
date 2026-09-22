@@ -39,7 +39,7 @@ function wpPayFormFormattedMoney($amountInCents, $currencySettings)
         $wppayform_thousand_separator = '.';
     }
     $wppayform_decimal_points = 2;
-    if ($amountInCents % 100 == 0 && $wppayform_arr::get($currencySettings, 'decimal_points') == 0) {
+    if ((int) round($amountInCents) % 100 == 0 && $wppayform_arr::get($currencySettings, 'decimal_points') == 0) {
         $wppayform_decimal_points = 0;
     }
 

@@ -108,26 +108,24 @@ class StripeListener
         $body = @file_get_contents('php://input');
 
         $event = json_decode($body);
+        // return if the event is not valid
+        if (!$event || !isset($event->id)) {
+            status_header(400);
+            die('-1'); // Invalid payload
+        }
+
         $eventId = $event->id ?? null;
 
+        // Removed signature key verification as webhook secret has no configuration path and was never working.
+        // We verify via pulling the event from stripe to make sure it's valid and not a fake request
         if ($eventId) {
             status_header(200);
             try {
-                // TR-STR-2: Extract form_id from event metadata to support per-form Stripe keys
+                // TR-STR-2: Now safe — extract form_id from body to support per-form Stripe keys
                 $formId = $event->data->object->metadata->form_id ?? null;
                 if ($formId) {
                     $stripe = new Stripe();
                     ApiRequest::set_secret_key($stripe->getSecretKey(intval($formId)));
-                }
-
-                // S-H3: Verify Stripe-Signature header if a signing secret is configured
-                $signingSecret = get_option('wppayform_stripe_webhook_signing_secret', '');
-                if ($signingSecret) {
-                    $sigHeader = isset($_SERVER['HTTP_STRIPE_SIGNATURE']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_STRIPE_SIGNATURE'])) : '';
-                    if (!$this->verifyStripeSignature($body, $sigHeader, $signingSecret)) {
-                        status_header(400);
-                        die('Webhook signature verification failed');
-                    }
                 }
 
                 $event = $this->retrive($eventId);
@@ -626,16 +624,18 @@ class StripeListener
             $status = 'partially-refunded';
         }
 
-        Transaction::where('id', $transaction->id)
-            ->update([
-                'status' => $status
+        Transaction::where('id', $transaction->id)->update(['status' => $status]);
+
+        // PM-SEC-04: For subscription renewal refunds, skip parent-submission status
+        // propagation. A refunded renewal must not flip the original submission to
+        // "refunded". Fall through to record the refund rows normally.
+        if ($transaction->transaction_type !== 'subscription') {
+            do_action('wppayform/after_payment_status_change', $transaction->submission_id, $status);
+
+            $submissionModel->updateSubmission($submission->id, [
+                'payment_status' => $status
             ]);
-
-        do_action('wppayform/after_payment_status_change', $transaction->submission_id, $status);
-
-        $submissionModel->updateSubmission($submission->id, [
-            'payment_status' => $status
-        ]);
+        }
 
         // We have to record this refund to be honest
         $refunds = $data->refunds->data;

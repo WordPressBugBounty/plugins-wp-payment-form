@@ -62,6 +62,9 @@ class SubmissionController extends Controller
         $submissionId = $submissionId ? absint($submissionId) : $submissionId;
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId, array('transactions', 'order_items', 'tax_items', 'activities', 'refunds', 'discount'));
+        if (!$submission) {
+            return $this->sendError(['message' => __('Submission not found.', 'wp-payment-form')], 404);
+        }
         if ($submission->status == 'new') {
             $submissionModel->where('form_id', $submission->form_id)
                 ->where('id', $submission->id)
@@ -130,7 +133,9 @@ class SubmissionController extends Controller
         $formId = absint($formId);
         $submissionId = $submissionId ? absint($submissionId) : $submissionId;
         $submission = $this->getSubmissionPrepared($formId, $submissionId);
-        // HIGH-01: Enforce ownership for non-admin dashboard users
+        if (!is_array($submission)) {
+            return $submission;
+        }
         $this->assertOwnsSubmission($submission['submission']);
         wp_send_json_success($submission, 200);
     }
@@ -228,6 +233,14 @@ class SubmissionController extends Controller
         $newStatus = sanitize_text_field($this->request->new_payment_status);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
+        if (!$submission) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Submission not found.', 'wp-payment-form')
+                ),
+                404
+            );
+        }
         if ($submission->payment_status == $newStatus) {
             wp_send_json_error(
                 array(
@@ -343,6 +356,14 @@ class SubmissionController extends Controller
         $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $entry = $submissionModel->getSubmission($submissionId);
+        if (!$entry) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Submission not found.', 'wp-payment-form')
+                ),
+                404
+            );
+        }
         if (empty($entry->payment_method)) {
             wp_send_json_error(
                 array(
@@ -380,6 +401,14 @@ class SubmissionController extends Controller
         $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
+        if (!$submission) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Submission not found.', 'wp-payment-form')
+                ),
+                404
+            );
+        }
         $subscription = $this->request->subscription;
         $newStatusRaw = $this->request->newStatus;
 
@@ -477,6 +506,14 @@ class SubmissionController extends Controller
         $submissionId = absint($submissionId);
         $submissionModel = new Submission();
         $submission = $submissionModel->getSubmission($submissionId);
+        if (!$submission) {
+            wp_send_json_error(
+                array(
+                    'message' => __('Submission not found.', 'wp-payment-form')
+                ),
+                404
+            );
+        }
         $subscription = $this->request->subscription;
 
         // HIGH-01: Enforce ownership for non-admin dashboard users
@@ -506,16 +543,37 @@ class SubmissionController extends Controller
             return;
         }
 
-        $userId = is_object($submission)
-            ? intval(isset($submission->user_id) ? $submission->user_id : 0)
-            : intval(isset($submission['user_id']) ? $submission['user_id'] : 0);
-
-        if ($userId === 0 || $userId !== get_current_user_id()) {
+        $currentUserId = get_current_user_id();
+        if (!$currentUserId) {
             wp_send_json_error(
                 ['message' => __('You do not have permission to access this submission.', 'wp-payment-form')],
                 403
             );
         }
+
+        $ownerId = is_object($submission)
+            ? absint(isset($submission->user_id) ? $submission->user_id : 0)
+            : absint(isset($submission['user_id']) ? $submission['user_id'] : 0);
+
+        if ($ownerId === $currentUserId) {
+            return;
+        }
+
+        // Mirror ownershipFilter / validateAjaxRequest: email-matched guest submission.
+        if ($ownerId === 0) {
+            $submissionEmail  = is_object($submission)
+                ? sanitize_email($submission->customer_email ?? '')
+                : sanitize_email($submission['customer_email'] ?? '');
+            $currentUserEmail = sanitize_email(wp_get_current_user()->user_email);
+            if ($submissionEmail && $currentUserEmail && $submissionEmail === $currentUserEmail) {
+                return;
+            }
+        }
+
+        wp_send_json_error(
+            ['message' => __('You do not have permission to access this submission.', 'wp-payment-form')],
+            403
+        );
     }
 
 }

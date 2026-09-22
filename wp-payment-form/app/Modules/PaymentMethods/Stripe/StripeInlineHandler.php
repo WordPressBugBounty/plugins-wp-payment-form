@@ -209,6 +209,15 @@ class StripeInlineHandler extends StripeHandler
 
         if ($invoice->payment_intent && $invoice->payment_intent->status == 'requires_action' &&
             $invoice->payment_intent->next_action->type == 'use_stripe_sdk') {
+            // Anchor the invoice PaymentIntent ID in the transaction row so
+            // confirmScaSetupIntentsPayment() can verify the client-supplied ID
+            // server-side.  Stripe never copies subscription metadata onto the
+            // invoice PaymentIntent, so metadata cannot be used as the binding.
+            if ($transaction) {
+                (new Transaction())->updateTransaction($transaction->id, [
+                    'charge_id' => $invoice->payment_intent->id,
+                ]);
+            }
             // We need to factor authentication now
             wp_send_json_success([
                 'stripe_subscription_id' => $stripeSubscription->id,
@@ -283,6 +292,19 @@ class StripeInlineHandler extends StripeHandler
         if (is_wp_error($intent)) {
             $form = Form::getForm($submission->form_id);
             $this->handlePaymentChargeError($intent->get_error_message(), $submission, false, $form, false, 'payment_intent');
+        }
+
+        // Verify the supplied PaymentIntent ID matches the one stored server-side
+        // for this submission.  Stripe does not propagate subscription metadata
+        // onto invoice PaymentIntents, so metadata['Submission ID'] is always
+        // absent in the subscription SCA flow; charge_id (written by
+        // handleSetupIntent() before the SCA challenge was dispatched) is the
+        // reliable server-side anchor — mirroring confirmScaPayment().
+        $transaction = (new Transaction())->getLatestTransaction($submissionId);
+        if (!$transaction || !isset($intentId) || $intentId !== $transaction->charge_id) {
+            wp_send_json_error([
+                'message' => __('Security verification failed. Please refresh and try again.', 'wp-payment-form'),
+            ], 403);
         }
 
         $invoice = $intent->invoice;
@@ -379,6 +401,14 @@ class StripeInlineHandler extends StripeHandler
             $paymentIntentId = sanitize_text_field(wp_unslash($_REQUEST['payment_intent_id']));
         }
         $transaction = $transactionModel->getLatestTransaction($submissionId);
+
+        // Verify the supplied intent matches the one we created for this submission.
+        // charge_id holds the original PaymentIntent ID set when status='intended' (3DS pending).
+        if (!$transaction || !isset($paymentIntentId) || $paymentIntentId !== $transaction->charge_id) {
+            wp_send_json_error([
+                'message' => __('Security verification failed. Please refresh and try again.', 'wp-payment-form'),
+            ], 403);
+        }
 
         do_action('wppayform/form_submission_activity_start', $submission->form_id);
 
@@ -535,6 +565,13 @@ class StripeInlineHandler extends StripeHandler
     public function handlePaymentSuccess($intend, $transaction, $submission, $type = 'intend')
     {
         $charge = $intend->charges->data[0];
+
+        // Defense-in-depth: reject if the captured amount is less than the expected total.
+        if (isset($charge->amount) && (int) $charge->amount < (int) $transaction->payment_total) {
+            wp_send_json_error([
+                'message' => __('Payment verification failed. Please refresh and try again.', 'wp-payment-form'),
+            ], 403);
+        }
 
         $paymentMode = $this->getMode($submission->form_id);
         $transactionModel = new Transaction();

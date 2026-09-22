@@ -21,6 +21,10 @@ return function ($file) {
     }
 
 
+    add_action('plugins_loaded', function () {
+        \WPPayForm\Database\DBMigrator::maybeUpgradeDB();
+    }, 1);
+
     add_action('plugins_loaded', function () use ($file) {
         // check the server here
         if (substr(phpversion(), 0, 3) == '7.0') {

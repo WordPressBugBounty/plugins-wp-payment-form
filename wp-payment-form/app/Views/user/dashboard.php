@@ -24,6 +24,19 @@ $wppayform_can_sync_subscription_billings = Arr::get($permissions, 'can_sync_sub
 $wppayform_cancel_subscription = Arr::get($permissions, 'cancel_subscription');
 $wppayform_update_subscription_card = Arr::get($permissions, 'update_subscription_card');
 
+// Submission status filter — validated and passed by Render.php; default here for
+// any caller that renders this template without setting wpf_active_status.
+if (empty($wpf_active_status) || !in_array($wpf_active_status, ['all', 'paid', 'pending', 'failed', 'refunded'], true)) {
+    $wpf_active_status = 'all';
+}
+$wpf_status_labels = [
+    'all'      => __('All', 'wp-payment-form'),
+    'paid'     => __('Paid', 'wp-payment-form'),
+    'pending'  => __('Pending', 'wp-payment-form'),
+    'failed'   => __('Failed', 'wp-payment-form'),
+    'refunded' => __('Refunded', 'wp-payment-form'),
+];
+
 if (!function_exists('wppayform_get_payment_status')) {
     function wppayform_get_payment_status($status) {
         $wppayform_asset_url = WPPAYFORM_URL . 'assets/images/payment-status';
@@ -147,7 +160,7 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                 <div class="info">
                                     <span data-v-5e7a3b24=""><?php echo esc_html__('Total Orders', 'wp-payment-form') ?></span>
                                     <h4 class="h4">
-                                        <?php echo esc_html(count(Arr::get($donationItems, 'orders', []))) ?>
+                                        <?php echo esc_html(absint(Arr::get($donationItems, 'total_orders', count(Arr::get($donationItems, 'orders', []))))) ?>
                                     </h4>
                                 </div>
                             </div>
@@ -178,30 +191,19 @@ if (!function_exists('wppayform_get_menu_icon')) {
                         <div class="wpf-payment-filter-wrap">
                             <div class="wpf-custom-select" id="wpf-payment-status-select">
                                 <button class="wpf-custom-select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                                    <span class="wpf-custom-select__label"><?php echo esc_html__('All', 'wp-payment-form'); ?></span>
+                                    <span class="wpf-custom-select__label"><?php echo esc_html($wpf_status_labels[$wpf_active_status]); ?></span>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                 </button>
                                 <ul class="wpf-custom-select__menu" role="listbox">
-                                    <li class="wpf-custom-select__item active" data-filter="all" role="option" aria-selected="true">
-                                        <span><?php echo esc_html__('All', 'wp-payment-form'); ?></span>
+                                    <?php foreach ($wpf_status_labels as $wpf_status_key => $wpf_status_label): ?>
+                                    <li class="wpf-custom-select__item<?php echo ($wpf_active_status === $wpf_status_key) ? ' active' : ''; ?>"
+                                        data-filter="<?php echo esc_attr($wpf_status_key); ?>"
+                                        role="option"
+                                        aria-selected="<?php echo ($wpf_active_status === $wpf_status_key) ? 'true' : 'false'; ?>">
+                                        <span><?php echo esc_html($wpf_status_label); ?></span>
                                         <svg class="wpf-check-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                     </li>
-                                    <li class="wpf-custom-select__item" data-filter="paid" role="option" aria-selected="false">
-                                        <span><?php echo esc_html__('Paid', 'wp-payment-form'); ?></span>
-                                        <svg class="wpf-check-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    </li>
-                                    <li class="wpf-custom-select__item" data-filter="pending" role="option" aria-selected="false">
-                                        <span><?php echo esc_html__('Pending', 'wp-payment-form'); ?></span>
-                                        <svg class="wpf-check-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    </li>
-                                    <li class="wpf-custom-select__item" data-filter="failed" role="option" aria-selected="false">
-                                        <span><?php echo esc_html__('Failed', 'wp-payment-form'); ?></span>
-                                        <svg class="wpf-check-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    </li>
-                                    <li class="wpf-custom-select__item" data-filter="refunded" role="option" aria-selected="false">
-                                        <span><?php echo esc_html__('Refunded', 'wp-payment-form'); ?></span>
-                                        <svg class="wpf-check-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                    </li>
+                                    <?php endforeach; ?>
                                 </ul>
                             </div>
                         </div>
@@ -231,7 +233,7 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                     $wppayform_payment_total = Arr::get($wppayform_donation_item, 'payment_total', 0);
                                     $wppayform_i++;
                                     ?>
-                                    <div class=" wpf-user-dashboard-table__row" data-payment-status="<?php echo esc_attr(Arr::get($wppayform_donation_item, 'payment_status', '')); ?>">
+                                    <div class=" wpf-user-dashboard-table__row">
                                         <div id="<?php echo esc_attr('wpf_toal_amount_modal' . $wppayform_i) ?>" class="wpf-dashboard-modal">
                                             <!-- Modal content -->
                                             <div class="modal-content">
@@ -318,6 +320,41 @@ if (!function_exists('wppayform_get_menu_icon')) {
                         </div><!-- /.wpf-table-scroll-wrapper -->
                     </div>
                 </div>
+                <?php
+                $wpf_total     = absint(Arr::get($donationItems, 'total', 0));
+                $wpf_per_page  = max(1, absint(Arr::get($donationItems, 'per_page', 20)));
+                $wpf_cur_page  = max(1, absint(Arr::get($donationItems, 'current_page', 1)));
+                $wpf_last_page = (int) ceil($wpf_total / $wpf_per_page);
+                if ($wpf_total > $wpf_per_page):
+                    $wpf_base = remove_query_arg('wpf_page');
+                ?>
+                <div class="wpf-pagination" role="navigation" aria-label="<?php esc_attr_e('Submissions pagination', 'wp-payment-form'); ?>">
+                    <?php if ($wpf_cur_page > 1): ?>
+                        <a class="wpf-pagination-btn"
+                           href="<?php echo esc_url(add_query_arg('wpf_page', $wpf_cur_page - 1, $wpf_base)); ?>"
+                           aria-label="<?php esc_attr_e('Previous page', 'wp-payment-form'); ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            <?php esc_html_e('Previous', 'wp-payment-form'); ?>
+                        </a>
+                    <?php endif; ?>
+                    <span class="wpf-pagination-info">
+                        <?php echo esc_html(sprintf(
+                            /* translators: 1: current page number, 2: total page count */
+                            __('Page %1$d of %2$d', 'wp-payment-form'),
+                            $wpf_cur_page,
+                            $wpf_last_page
+                        )); ?>
+                    </span>
+                    <?php if ($wpf_cur_page < $wpf_last_page): ?>
+                        <a class="wpf-pagination-btn"
+                           href="<?php echo esc_url(add_query_arg('wpf_page', $wpf_cur_page + 1, $wpf_base)); ?>"
+                           aria-label="<?php esc_attr_e('Next page', 'wp-payment-form'); ?>">
+                            <?php esc_html_e('Next', 'wp-payment-form'); ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </a>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
             </div>
             <!-- <div class="wpf-content" id="wpf-donor-history">Donor history</div> -->
             <div class="wpf-content wpf-dashboard" id="content-wpf-subscription">
@@ -385,14 +422,19 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                 // all rather than one that silently does nothing when clicked.
                                 $wppayform_card_bundle_ready = wp_script_is('wppayform_subscription_card', 'enqueued');
 
-                                $wppayform_card_meta_map = array();
+                                $wppayform_card_meta_map   = array();
+                                $wppayform_current_user_id = get_current_user_id();
+                                $wppayform_current_email   = sanitize_email(wp_get_current_user()->user_email);
                                 if ($wppayform_update_subscription_card == 'yes' && $wppayform_card_bundle_ready) {
-                                    $wppayform_card_meta_ids = array();
+                                    $wppayform_card_meta_ids   = array();
                                     foreach (Arr::get($donationItems, 'subscriptions', []) as $wppayform_pre_item) {
-                                        $wppayform_pre_owner = absint(Arr::get($wppayform_pre_item, 'submission.submission.user_id', 0));
+                                        $wppayform_pre_uid   = absint(Arr::get($wppayform_pre_item, 'submission.submission.user_id', 0));
+                                        $wppayform_pre_email = sanitize_email((string) Arr::get($wppayform_pre_item, 'submission.submission.customer_email', ''));
+                                        // Mirror validateAjaxRequest: user_id match OR email-matched guest (user_id=0).
+                                        $wppayform_pre_owned = ($wppayform_pre_uid && $wppayform_pre_uid === $wppayform_current_user_id)
+                                            || ($wppayform_pre_uid === 0 && $wppayform_current_email && $wppayform_pre_email === $wppayform_current_email);
                                         if (
-                                            $wppayform_pre_owner
-                                            && $wppayform_pre_owner === get_current_user_id()
+                                            $wppayform_pre_owned
                                             && Arr::get($wppayform_pre_item, 'submission.submission.payment_method', '') === 'stripe'
                                             && in_array(strtolower((string) Arr::get($wppayform_pre_item, 'status', '')), array('active', 'trialing'), true)
                                         ) {
@@ -529,14 +571,13 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                             $wppayform_sub_form_id = Arr::get($wppayform_donation_item, 'form_id');
                                             $wppayform_sub_status_now = strtolower((string) Arr::get($wppayform_donation_item, 'status', ''));
 
-                                            // Rows reach this dashboard by customer_email (Customers::customer($email)),
-                                            // but the endpoint authorises by user_id. Mirror the endpoint's rule here, or
-                                            // a guest-checkout row (user_id = 0) carrying this email — or one where someone
-                                            // typed this address into another form — renders a card button that can only
-                                            // ever 403, and shows that submission's brand/last4 to the wrong person.
-                                            $wppayform_sub_owner_id = absint(Arr::get($wppayform_donation_item, 'submission.submission.user_id', 0));
-                                            $wppayform_sub_is_owned = $wppayform_sub_owner_id
-                                                && $wppayform_sub_owner_id === get_current_user_id();
+                                            // Mirror validateAjaxRequest ownership rule: user_id match OR
+                                            // email-matched guest submission (user_id = 0/NULL). Keeping these
+                                            // in step prevents showing a button that the endpoint would 403.
+                                            $wppayform_sub_owner_id  = absint(Arr::get($wppayform_donation_item, 'submission.submission.user_id', 0));
+                                            $wppayform_sub_email     = sanitize_email((string) Arr::get($wppayform_donation_item, 'submission.submission.customer_email', ''));
+                                            $wppayform_sub_is_owned  = ($wppayform_sub_owner_id && $wppayform_sub_owner_id === $wppayform_current_user_id)
+                                                || ($wppayform_sub_owner_id === 0 && $wppayform_current_email && $wppayform_sub_email === $wppayform_current_email);
 
                                             // Keep this predicate in step with the pre-pass above —
                                             // if they drift, rows lose their card display or the
@@ -679,6 +720,16 @@ if (!function_exists('wppayform_get_menu_icon')) {
                                 <?php endforeach ?>
                             </div>
                             </div><!-- /.wpf-table-scroll-wrapper -->
+                            <?php if (!empty($donationItems['subscriptions_history_truncated'])): ?>
+                                <p class="wpf-truncation-notice">
+                                    <?php echo esc_html__('Only the most recent subscriptions are shown. Contact support to view older records.', 'wp-payment-form'); ?>
+                                </p>
+                            <?php endif; ?>
+                            <?php if (!empty($donationItems['subscription_transactions_truncated'])): ?>
+                                <p class="wpf-truncation-notice">
+                                    <?php echo esc_html__('Payment history has been truncated. Only the most recent transactions are shown. Contact support to view older records.', 'wp-payment-form'); ?>
+                                </p>
+                            <?php endif; ?>
                         </div>
                     </div>
             </div>

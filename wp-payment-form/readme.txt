@@ -5,7 +5,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 5.3
 Tested up to: 7.1
-Stable tag: 4.6.25
+Stable tag: 4.6.26
 Requires PHP: 7.4
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -559,6 +559,24 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.26 – 22 September, 2026 =
+- Adds Server-side pagination for User Dashboard submission entries.
+- Fixes Stripe SCA payment and subscription confirmation not binding PaymentIntent to the target submission.
+- Fixes Razorpay redirect and callback handlers not binding payment IDs to the target submission.
+- Fixes Mollie IPN handler processing events without verifying submission binding.
+- Fixes Stripe hosted checkout cancel link changing status on already-paid submissions.
+- Fixes Draft form preview visible to other users by guessing the post ID.
+- Fixes Stripe subscription renewal refunds incorrectly marking the original payment as refunded.
+- Fixes Integration notifications triggerable without authentication.
+- Fixes Stripe webhook events verified by re-fetching from Stripe instead of trusting the raw payload.
+- Fixes Dashboard showing submissions belonging to other users.
+- Fixes Stripe customer lookup using the wrong API key in connected account setups.
+- Fixes Duplicate step and conditional listeners on Elementor popup reopen.
+- Fixes Item_quantity values that overflow absint accepted as valid.
+- Fixes Pricing index not validated before array dereference in paymentItem.
+- Fixes Subscription plan index not validated before array dereference.
+- Fixes Subscription amount incorrectly in embedded stripe on subscription entries.
+- Fixes Schedule security audit
 
 = 4.6.25 – 20 August, 2026 =
 - Adds Stripe subscription card update support for the User Dashboard.

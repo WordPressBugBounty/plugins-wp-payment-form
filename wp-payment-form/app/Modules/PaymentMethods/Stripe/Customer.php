@@ -70,10 +70,10 @@ class Customer
         return $errors;
     }
 
-    public static function getCustomer($customerId, $args = [])
+    public static function getCustomer($customerId, $args = [], $formId = false)
     {
         $stripe = new Stripe();
-        ApiRequest::set_secret_key($stripe->getSecretKey());
+        ApiRequest::set_secret_key($stripe->getSecretKey($formId));
 
         $response = ApiRequest::request($args, 'customers/' . $customerId, 'GET');
         return $response;

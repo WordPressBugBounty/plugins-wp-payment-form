@@ -405,12 +405,35 @@ class StripeHostedHandler extends StripeHandler
             return;
         }
 
-        $transaction = (new Transaction())->getLatestTransaction($submission->id);
-         // Fire Action Hooks to make the payment
-         do_action('wppayform/form_payment_failed_stripe', $submission->form_id, $submission, $transaction);
-         do_action('wppayform/form_payment_failed', $submission, $submission->form_id, $transaction, 'stripe');
+        // PM-SEC-06: Only allow cancel->failed transition from pre-payment states.
+        // The cancel URL shares the same hash as the success URL; allowing any state
+        // would let a bearer overwrite authorized, processing, or partially-refunded
+        // submissions with a failed status.
+        $prePaymentStates = ['pending', 'intented'];
+        if (!in_array($submission->payment_status, $prePaymentStates, true)) {
+            return;
+        }
 
-         $submissionModel->updateSubmission($submission->id, [
+        // Verify with Stripe that the session is genuinely not paid before marking failed.
+        // Fail closed on API error — never corrupt a valid payment state on our side.
+        $sessionId = $submissionModel->getMeta($submission->id, 'stripe_intended_session');
+        if ($sessionId) {
+            try {
+                $session = CheckoutSession::retrive($sessionId, [], $submission->form_id);
+                if ($session && $session->status === 'complete') {
+                    return;
+                }
+            } catch (\Exception $e) {
+                return;
+            }
+        }
+
+        $transaction = (new Transaction())->getLatestTransaction($submission->id);
+        // Fire Action Hooks to make the payment
+        do_action('wppayform/form_payment_failed_stripe', $submission->form_id, $submission, $transaction);
+        do_action('wppayform/form_payment_failed', $submission, $submission->form_id, $transaction, 'stripe');
+
+        $submissionModel->updateSubmission($submission->id, [
             'payment_status' => 'failed',
             'payment_method' => 'stripe',
             'payment_mode' => $this->getMode($submission->form_id)
@@ -694,7 +717,7 @@ class StripeHostedHandler extends StripeHandler
             $customerReferenceId = str_replace('.', '_', $customerReferenceId);
             $existingCustomerId = get_option($customerReferenceId);
             if ($existingCustomerId) {
-                $existingCustomer = Customer::getCustomer($existingCustomerId);
+                $existingCustomer = Customer::getCustomer($existingCustomerId, [], $formId);
                 if (!is_wp_error($existingCustomer) && !empty($existingCustomer->id) && empty($existingCustomer->deleted)) {
                     return $existingCustomerId;
                 }

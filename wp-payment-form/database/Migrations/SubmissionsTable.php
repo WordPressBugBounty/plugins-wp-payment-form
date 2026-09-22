@@ -40,7 +40,8 @@ class SubmissionsTable
 			KEY idx_status (status),
 			KEY idx_created_at (created_at),
 			KEY idx_submission_hash (submission_hash),
-			KEY idx_form_payment_status (form_id, payment_status)
+			KEY idx_form_payment_status (form_id, payment_status),
+			KEY idx_user_id (user_id)
 		) $charset_collate;";
 
         dbDelta($sql);

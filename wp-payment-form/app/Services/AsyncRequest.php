@@ -27,6 +27,17 @@ class AsyncRequest
 
     public function dispatchAjax($data = [])
     {
+        // PM-SEC-02: Mint a short-lived one-time token tied to origin_id and pass it in
+        // the loopback POST body. The handler verifies this token before processing.
+        // wp_create_nonce() cannot guard the loopback because the separate HTTP request
+        // runs without the submitter's session cookies, so WP nonce checks always fail.
+        $originId = isset($data['origin_id']) ? absint($data['origin_id']) : 0;
+        if ($originId) {
+            $token = wp_generate_password(32, false);
+            set_transient('wppayform_bg_' . $originId, $token, 60);
+            $data['bg_token'] = $token;
+        }
+
         $args = array(
             'timeout' => 0.1,
             'blocking' => false,
@@ -47,18 +58,30 @@ class AsyncRequest
     public function handleBackgroundCall()
     {
         // This is a server-to-server loopback request fired by dispatchAjax().
-        // Nonce verification is unreliable here because wp_remote_post arrives
-        // as a separate HTTP request without the original user's session/cookies,
-        // causing check_ajax_referer() to fail for guest (nopriv) submissions
-        // and triggering a fatal wp_die() → 500 error on the frontend.
+        // check_ajax_referer() cannot be used here: the loopback arrives as a separate
+        // HTTP request without the submitter's session cookies, so WP nonces fail.
+        // We use a short-lived transient token instead (PM-SEC-02).
         if (!wp_doing_ajax()) {
             wp_die('Invalid request', 403);
         }
 
-        $originId = false;
-        if (isset($_REQUEST['origin_id'])) {
-            $originId = intval($_REQUEST['origin_id']);
+        $originId = isset($_REQUEST['origin_id']) ? absint($_REQUEST['origin_id']) : 0;
+
+        if (!$originId) {
+            wp_send_json_error(['message' => __('Invalid request.', 'wp-payment-form')], 400);
+            return;
         }
+
+        $bgToken  = isset($_REQUEST['bg_token']) ? sanitize_text_field(wp_unslash($_REQUEST['bg_token'])) : '';
+        $expected = get_transient('wppayform_bg_' . $originId);
+
+        if (!$expected || !hash_equals($expected, $bgToken)) {
+            wp_send_json_error(['message' => __('Invalid request.', 'wp-payment-form')], 400);
+            return;
+        }
+
+        // Consume the token immediately — one request only.
+        delete_transient('wppayform_bg_' . $originId);
 
         $this->processActions($originId);
         echo 'success';
