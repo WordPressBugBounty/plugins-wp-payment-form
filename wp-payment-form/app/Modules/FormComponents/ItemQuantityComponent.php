@@ -176,6 +176,7 @@ class ItemQuantityComponent extends BaseComponent
                 return $this->getErrorLabel(
                     $element,
                     $formId,
+                    /* translators: %d: minimum quantity value */
                     sprintf(__('Minimum quantity is %d', 'wp-payment-form'), (int) $minValue)
                 );
             }
@@ -192,6 +193,7 @@ class ItemQuantityComponent extends BaseComponent
             return $this->getErrorLabel(
                 $element,
                 $formId,
+                /* translators: %d: minimum quantity value */
                 sprintf(__('Minimum quantity is %d', 'wp-payment-form'), (int) $minValue)
             );
         }
@@ -200,6 +202,7 @@ class ItemQuantityComponent extends BaseComponent
             return $this->getErrorLabel(
                 $element,
                 $formId,
+                /* translators: %d: maximum quantity value */
                 sprintf(__('Maximum quantity is %d', 'wp-payment-form'), (int) $maxValue)
             );
         }

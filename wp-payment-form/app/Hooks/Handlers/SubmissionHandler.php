@@ -85,7 +85,7 @@ class SubmissionHandler
         $subscriptionItems = array();
 
         foreach ($formattedElements['payment'] as $paymentId => $payment) {
-            $quantity = $this->getItemQuantity($formattedElements['item_quantity'], $paymentId, $form_data);
+            $quantity = $this->getItemQuantity($formattedElements['item_quantity'], $paymentId, $form_data, $payment);
             if ($quantity == 0) {
                 continue;
             }
@@ -373,10 +373,16 @@ class SubmissionHandler
                     $item['form_id'] = $formId;
                     $itemModel->create($item);
                 }
-                //issue on bottom line- should minus discount based on percent
-                $newTotal = ($paymentTotal - $taxTotal);
+                
+                $feeRecoveryTotal = 0;
+                foreach ($paymentItems as $paymentItem) {
+                    if (Arr::get($paymentItem, 'parent_holder') === 'fee_recovery_item') {
+                        $feeRecoveryTotal += absint(Arr::get($paymentItem, 'line_total', 0));
+                    }
+                }
+                $newTotal = ($paymentTotal - $taxTotal - $feeRecoveryTotal);
                 $newDiscount = ($newTotal * $discountPercent) / 100;
-                $paymentTotal = $newTotal - $newDiscount + $taxTotal;
+                $paymentTotal = $newTotal - $newDiscount + $taxTotal + $feeRecoveryTotal;
             }
             do_action('wppayform/after_form_submission_complete', $submission, $formId);
             if ($paymentItems) {
@@ -670,7 +676,7 @@ class SubmissionHandler
         return null;
     }
 
-    private function getItemQuantity($quantityElements, $tragetItemId, $formData)
+    private function getItemQuantity($quantityElements, $tragetItemId, $formData, $paymentElement = array())
     {
         $state = Arr::get($quantityElements, 'item_quantity.options.disable');
 
@@ -680,20 +686,32 @@ class SubmissionHandler
 
         foreach ($quantityElements as $key => $element) {
             if (Arr::get($element, 'options.target_product') == $tragetItemId) {
-                if (isset($formData[$key])) {
-                    $rawValue = $formData[$key];
-                    if ($rawValue === '' || $rawValue === null) {
-                        return 0;
-                    }
-                    // filter_var distinguishes valid zero ("0" → 0, optional item) from
-                    // malformed values that absint() silently truncates to 0 (e.g. "1e309" → false).
-                    $qty = filter_var($rawValue, FILTER_VALIDATE_INT);
-                    if ($qty === false) {
-                        wp_send_json_error(['message' => __('Invalid quantity value.', 'wp-payment-form')], 422);
+                $rawValue = array_key_exists($key, $formData) ? $formData[$key] : null;
+                if ($rawValue === '' || $rawValue === null || $rawValue === '0') {
+                    $quantityRequired = Arr::get($element, 'options.required') === 'yes';
+                    $paymentRequired  = Arr::get($paymentElement, 'options.required') === 'yes';
+                    if ($quantityRequired || $paymentRequired) {
+                        $itemLabel = Arr::get($paymentElement, 'options.label')
+                            ?: Arr::get($element, 'options.label')
+                            ?: __('this payment item', 'wp-payment-form');
+                        wp_send_json_error(
+                            ['message' => sprintf(
+                                /* translators: %s: payment item label */
+                                __('A valid positive quantity is required for "%s".', 'wp-payment-form'),
+                                $itemLabel
+                            )],
+                            422
+                        );
                         exit;
                     }
-                    return absint($qty);
+                    return 0;
                 }
+                $qty = filter_var($rawValue, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+                if ($qty === false) {
+                    wp_send_json_error(['message' => __('Invalid quantity value.', 'wp-payment-form')], 422);
+                    exit;
+                }
+                return absint($qty);
             }
         }
         return 1;

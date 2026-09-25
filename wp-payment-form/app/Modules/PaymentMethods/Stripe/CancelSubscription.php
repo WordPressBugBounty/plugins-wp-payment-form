@@ -64,10 +64,10 @@ class CancelSubscription
             : sanitize_email($submission['customer_email'] ?? '');
         $currentUserId       = \get_current_user_id();
         $currentUserEmail    = sanitize_email(\wp_get_current_user()->user_email);
-        // Accept email-matched guest submissions (user_id = 0) as owned, mirroring the
-        // ownershipFilter in Customers::customerForDashboard().
-        $isOwner = ($submissionUserId > 0 && $submissionUserId === $currentUserId)
-            || ($submissionUserId === 0 && $currentUserId > 0 && $submissionEmail && $submissionEmail === $currentUserEmail);
+        $isOwner = $currentUserId > 0 && (
+            $submissionUserId === $currentUserId
+            || ($submissionUserId === 0 && $submissionEmail && $submissionEmail === $currentUserEmail)
+        );
 
         $stripe = new Stripe();
         ApiRequest::set_secret_key($stripe->getSecretKey($formId));

@@ -4,8 +4,8 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Tags: fundraising, payment, donation, stripe payment, payment plugin
 Requires at least: 5.3
-Tested up to: 7.1
-Stable tag: 4.6.26
+Tested up to: 7.1.2
+Stable tag: 4.6.27
 Requires PHP: 7.4
 
 Create payment form, donate button to accept payments and donations. Manage subscription payment, recurring donation with customer/donor management.
@@ -559,6 +559,12 @@ You are most welcome. You can do the following:
 17. Paymattic - Fast, Secure, and Simple WordPress Payment & Donation Plugin.
 
 == CHANGELOG ==
+= 4.6.27 – 25 September, 2026 =
+- Adds Webhook feeds now support custom header key names.
+- Improves Zero-total submissions are blocked when a required product has a blank or zero quantity.
+- Fixes Stripe subscription cancellations are restricted to the subscription owner.
+- Fixes Receipt settings no longer get overwritten when saving confirmation settings.
+
 = 4.6.26 – 22 September, 2026 =
 - Adds Server-side pagination for User Dashboard submission entries.
 - Fixes Stripe SCA payment and subscription confirmation not binding PaymentIntent to the target submission.
